@@ -54,7 +54,7 @@
 - [ ] T021 [US1] 统一 Remove 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RemoveConfigPanel.xaml`
 - [ ] T022 [US1] 统一 Randomize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
 - [ ] T023 [US1] 统一 Padding 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
-- [ ] T024 [US1] 统一 Transliterate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
+- [X] T024 [US1] 统一 Transliterate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
 - [ ] T025 [US1] 统一 ReformatDate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
 - [ ] T026 [US1] 统一 UserInput 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
 - [ ] T027 [US1] 统一 Mapping 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
@@ -101,7 +101,7 @@
 - [X] T048 [US3] 为 Extension 的 New Extension / Remove Duplicate 区域建立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
 - [X] T049 [US3] 为 CleanUp 的散装 CheckBox 重组为"空格处理/Unicode/其他"于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
 - [ ] T050 [US3] 为 Case 的 ForceCase 与 Extension 选项建立独立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
-- [ ] T051 [US3] 为 Transliterate 右侧拆分“方向/说明/选项”分区于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
+- [X] T051 [US3] 为 Transliterate 右侧拆分“方向/说明/选项”分区于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
 - [ ] T052 [US3] 为 UserInput 选项区重构为清晰分组布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
 - [ ] T053 [US3] 为 Mapping 选项区改为固定分组布局并增强空态引导于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
 
@@ -132,7 +132,7 @@
 ### Implementation for User Story 5
 - [ ] T060 [US5] 将 Strip 只读 TextBox 背景改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
 - [ ] T061 [US5] 将 Rearrange Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
-- [ ] T062 [US5] 将 Transliterate Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
+- [X] T062 [US5] 将 Transliterate Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
 - [ ] T063 [US5] 将其余面板 Hint/说明色统一为 `DialogHintText` 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 - [ ] T064 [US5] 全量扫描并清理面板硬编码颜色于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 

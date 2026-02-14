@@ -6,27 +6,35 @@
              Background="{DynamicResource CardBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="16"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!-- Alphabet -->
-        <StackPanel>
-            <TextBlock Text="{DynamicResource RuleCfg_Transliterate_Alphabet}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <TextBox x:Name="txtAlphabet" AcceptsReturn="True" TextWrapping="NoWrap"
-                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                     Height="200" FontFamily="Consolas"
-                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_TransliterateAlphabet}"/>
-        </StackPanel>
-        <!-- Options -->
-        <StackPanel Grid.Column="1" Margin="16,0,0,0" HorizontalAlignment="Stretch">
-            <TextBlock Text="{DynamicResource RuleCfg_Transliterate_Direction}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <RadioButton x:Name="rbForward" Content="{DynamicResource RuleCfg_Transliterate_Forward}" GroupName="Dir" IsChecked="True" Margin="8,2" VerticalContentAlignment="Center"/>
-            <RadioButton x:Name="rbBackward" Content="{DynamicResource RuleCfg_Transliterate_Backward}" GroupName="Dir" Margin="8,2" VerticalContentAlignment="Center"/>
-            <TextBlock Text="{DynamicResource RuleCfg_Transliterate_HintTitle}" Margin="0,16,0,4" FontWeight="SemiBold"/>
-            <TextBlock TextWrapping="Wrap"
-                       Text="{DynamicResource RuleCfg_Transliterate_Hint}" Style="{DynamicResource DialogHintText}"/>
-            <CheckBox x:Name="chkAutoCase" Content="{DynamicResource RuleCfg_Transliterate_AutoCase}" IsChecked="True" Margin="0,16,0,4" VerticalContentAlignment="Center"/>
-            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,4" VerticalContentAlignment="Center"/>
+        <GroupBox Grid.Column="0" Header="{DynamicResource RuleCfg_Transliterate_Alphabet}">
+            <Grid Margin="8,6">
+                <TextBox x:Name="txtAlphabet" AcceptsReturn="True" TextWrapping="NoWrap"
+                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                         MinHeight="200" VerticalAlignment="Stretch" FontFamily="Consolas"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_TransliterateAlphabet}"/>
+            </Grid>
+        </GroupBox>
+        <StackPanel Grid.Column="2">
+            <GroupBox Header="{DynamicResource RuleCfg_Transliterate_Direction}" Margin="0,0,0,16">
+                <StackPanel Margin="8,6">
+                    <RadioButton x:Name="rbForward" Content="{DynamicResource RuleCfg_Transliterate_Forward}" GroupName="Dir" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbBackward" Content="{DynamicResource RuleCfg_Transliterate_Backward}" GroupName="Dir" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="{DynamicResource RuleCfg_Transliterate_HintTitle}" Margin="0,0,0,16">
+                <TextBlock Margin="8,6" TextWrapping="Wrap"
+                           Text="{DynamicResource RuleCfg_Transliterate_Hint}" Style="{DynamicResource DialogHintText}"/>
+            </GroupBox>
+            <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
+                <StackPanel Margin="8,6">
+                    <CheckBox x:Name="chkAutoCase" Content="{DynamicResource RuleCfg_Transliterate_AutoCase}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </Grid>
 </UserControl>
