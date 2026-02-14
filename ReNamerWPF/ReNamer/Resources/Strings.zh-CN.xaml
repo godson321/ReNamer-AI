@@ -713,11 +713,11 @@
     <sys:String x:Key="RuleCfg_Randomize_ReplaceCurrent">替换当前名称</sys:String>
 
     <sys:String x:Key="RuleCfg_Rearrange_SplitUsing">拆分方式：</sys:String>
-    <sys:String x:Key="RuleCfg_Rearrange_Delimiters">分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Delimiters">分隔符：</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Positions">位置</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">分隔符精确模式</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_NewPattern">新模式：</sys:String>
-    <sys:String x:Key="RuleCfg_Rearrange_Hint">提示：使用 $1..$N 引用分隔后的部分，$-1..$-N 从末尾引用，$0 表示原始名称。</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Hint">提示：$1..$N 引用第 1..N 段，$-1..$-N 从末尾引用，$0 为原始名称。例：Artist - Song，分隔符“ - ”，新模式“$2 - $1” → Song - Artist。</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Separator">| 分隔符</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 元标签</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">向“分隔符”输入框插入分隔符</sys:String>
@@ -832,8 +832,9 @@
     <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">例如：10000-10FFFF</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">输入正则表达式</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">输入替换模式</sys:String>
-    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">例如：._-</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">例如：.|_|-</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">例如：$2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint">分隔符：输入一个或多个分隔符；多个用 “|” 分开（例：.|_|-）。不含 “|” 时按完整字符串切分（如“ - ”）。位置：输入 3,6 表示在第 3/6 个字符后切分。精确模式：把输入当作单个完整分隔符字符串。</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">输入要移除的文本</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">例如：ABC123</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_PaddingChars">例如：0_</sys:String>

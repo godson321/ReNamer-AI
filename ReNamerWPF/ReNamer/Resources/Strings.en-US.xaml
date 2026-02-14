@@ -706,7 +706,7 @@
     <sys:String x:Key="RuleCfg_Rearrange_Positions">Positions</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">Exact pattern of delimiters</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_NewPattern">New pattern:</sys:String>
-    <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: Use $1..$N to reference delimited parts in the new pattern, $-1..$-N to reference from the end, $0 for the original name.</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: $1..$N references parts 1..N, $-1..$-N references from the end, $0 is the original name. Example: Artist - Song with delimiter “ - ” and pattern “$2 - $1” → Song - Artist.</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Separator">| Separator</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 Meta Tag</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">Insert separator into Delimiters</sys:String>
@@ -821,8 +821,9 @@
     <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">e.g. 10000-10FFFF</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">Enter regex expression</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">Enter replacement pattern</sys:String>
-    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">e.g. ._-</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">e.g. .|_|-</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">e.g. $2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint">Delimiters: enter one or more delimiters; use “|” to separate multiple (e.g. .|_|-). If there is no “|”, the whole input is treated as one delimiter (e.g. “ - ”). Positions: enter 3,6 to split after the 3rd/6th character. Exact pattern: treat the input as a single full delimiter string.</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">Enter text to remove</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">e.g. ABC123</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_PaddingChars">e.g. 0_</sys:String>
