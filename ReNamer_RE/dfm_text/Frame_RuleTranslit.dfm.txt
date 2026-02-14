@@ -1,0 +1,184 @@
+object Frame_RuleTranslit: TFrame_RuleTranslit
+  Left = 0
+  Height = 260
+  Top = 0
+  Width = 440
+  ClientHeight = 260
+  ClientWidth = 440
+  TabOrder = 0
+  DesignLeft = 395
+  DesignTop = 280
+  object Memo_Alphabet: TMemo
+    Left = 24
+    Height = 202
+    Top = 40
+    Width = 113
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Font.Height = 243
+    ParentFont = False
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    WordWrap = False
+  end
+  object BitBtn_Translits: TBitBtn
+    Left = 24
+    Height = 25
+    Top = 15
+    Width = 113
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Alphabet'
+    Glyph.Data = 
+    {
+      36040000424D36040000000000003600
+      00002800000010000000100000000100
+      20000000000000040000640000006400
+      00000000000000000000FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF009061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF007F49
+      00FEAA8655EBFFFFFF00FFFFFF00FFFF
+      FF00CCB699CB7F4900FEBB9E77DE7F49
+      00FE7F4900FC7F4900FC7F4900FC9061
+      22EFD4C2AABFFFFFFF00FFFFFF00996D
+      33F4885511FBF6F3EE2FFFFFFF00FFFF
+      FF00A17A44F07F4900FFBB9E77FF7F49
+      00FFE5DBCC94FFFFFF00FFFFFF00996D
+      33F4906122F8FFFFFF00FFFFFF00CCB6
+      99CB7F4900FE7F4900FC7F4900FC7F49
+      00FC7F4900FEA17A44FFBB9E77FF7F49
+      00FFE5DBCC94FFFFFF00FFFFFF00BB9E
+      77DE7F4900FEFFFFFF00FFFFFF00FFFF
+      FF00885511FB996D33F4FFFFFF00C3AA
+      88D77F4900FED4C2AABFBB9E77DE7F49
+      00FFE5DBCC94FFFFFF00FFFFFF00996D
+      33F47F4900FEFFFFFF00FFFFFF00FFFF
+      FF00B29266E57F4900FEE5DBCC94996D
+      33F4906122F8FFFFFF00BB9E77DE7F49
+      00FF7F4900FC7F4900FC7F4900FC7F49
+      00FECCB699CBFFFFFF00FFFFFF00FFFF
+      FF00E5DBCC947F4900FEAA8655FF7F49
+      00FFBB9E77DEFFFFFF00BB9E77DE7F49
+      00FFE5DBCC94FFFFFF00F6F3EE2F8855
+      11FFAA8655EBFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00996D33F47F4900FF7F49
+      00FEE5DBCC94FFFFFF00BB9E77DE7F49
+      00FFE5DBCC94FFFFFF00F6F3EE2F8855
+      11FFA17A44F0FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00C3AA88D77F4900FE7F49
+      00FEFFFFFF00FFFFFF00BB9E77DE7F49
+      00FE7F4900FC7F4900FC7F4900FC9061
+      22F8E5DBCC94FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF009061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FF906122FF906122FF9061
+      22FF906122FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00
+    }
+    OnClick = BitBtn_TranslitsClick
+    TabOrder = 0
+  end
+  object Panel_Options: TPanel
+    Left = 142
+    Height = 260
+    Top = 0
+    Width = 298
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 260
+    ClientWidth = 298
+    TabOrder = 2
+    object Label2: TLabel
+      Left = 16
+      Height = 15
+      Top = 16
+      Width = 51
+      Caption = 'Direction:'
+      ParentColor = False
+    end
+    object Label_HintText: TLabel
+      Left = 16
+      Height = 80
+      Top = 112
+      Width = 264
+      AutoSize = False
+      Caption = 'Alphabet is a set of couples represented by letters and separated with an equal sign; they stand for translation of non-english characters to their english representation.'
+      ParentColor = False
+      WordWrap = True
+    end
+    object Label3: TLabel
+      Left = 16
+      Height = 15
+      Top = 96
+      Width = 26
+      Caption = 'Hint:'
+      ParentColor = False
+    end
+    object RadioButton_DirectionBackward: TRadioButton
+      Left = 24
+      Height = 19
+      Top = 64
+      Width = 69
+      Caption = 'Backward'
+      TabOrder = 1
+    end
+    object RadioButton_DirectionForward: TRadioButton
+      Left = 24
+      Height = 19
+      Top = 40
+      Width = 61
+      Caption = 'Forward'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object CheckBox_SkipExtension: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 223
+      Width = 94
+      Caption = 'Skip extension'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+    end
+    object CheckBox_AdjustCase: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 200
+      Width = 133
+      Caption = 'Auto case adjustment'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+  end
+  object PopupMenu_Translits: TPopupMenu
+    OnPopup = PopupMenu_TranslitsPopup
+    Left = 304
+    Top = 32
+  end
+end

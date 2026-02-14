@@ -1,0 +1,144 @@
+﻿object Frame_RuleCase: TFrame_RuleCase
+  Left = 0
+  Height = 265
+  Top = 0
+  Width = 440
+  ClientHeight = 265
+  ClientWidth = 440
+  TabOrder = 0
+  DesignLeft = 387
+  DesignTop = 259
+  object Label_CaseForceHint: TLabel
+    Left = 232
+    Height = 95
+    Top = 88
+    Width = 193
+    AutoSize = False
+    Caption = 'Hint: fragments separated with comma will be put in the same case as they are typed in this text box, for example: CD,DVD,DJ'
+    ParentColor = False
+    WordWrap = True
+  end
+  object CheckBox_CaseExtensionAlwaysLowerCase: TCheckBox
+    Left = 232
+    Height = 19
+    Top = 192
+    Width = 165
+    Caption = 'Extension always lower case'
+    TabOrder = 3
+    OnClick = CheckBox_CaseExtensionAlwaysLowerCaseClick
+  end
+  object Edit_CaseForce: TEdit
+    Left = 232
+    Height = 25
+    Top = 56
+    Width = 193
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 2
+    OnChange = Edit_CaseForceChange
+  end
+  object CheckBox_CaseForce: TCheckBox
+    Left = 232
+    Height = 19
+    Top = 32
+    Width = 151
+    Caption = 'Force case for fragments:'
+    TabOrder = 1
+  end
+  object GroupBox_CaseChange: TGroupBox
+    Left = 16
+    Height = 244
+    Top = 8
+    Width = 200
+    Caption = 'Case change:'
+    ClientHeight = 224
+    ClientWidth = 196
+    TabOrder = 0
+    object RB_CaseAllLower: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 31
+      Width = 88
+      Caption = 'all lower case'
+      TabOrder = 1
+    end
+    object RB_NoneOfAbove: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 146
+      Width = 122
+      Caption = '(none of the above)'
+      TabOrder = 6
+    end
+    object RB_CaseInvert: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 77
+      Width = 85
+      Caption = 'iNVERT cASE'
+      TabOrder = 3
+    end
+    object RB_CaseFirstLetterCapital: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 100
+      Width = 108
+      Caption = 'First letter capital'
+      TabOrder = 4
+    end
+    object RB_CaseCapitalize: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 8
+      Width = 132
+      Caption = 'Capitalize Every Word'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object RB_CaseAllUpper: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 54
+      Width = 107
+      Caption = 'ALL UPPER CASE'
+      TabOrder = 2
+    end
+    object RB_CaseSentences: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 123
+      Width = 92
+      Caption = 'Sentence case'
+      TabOrder = 5
+    end
+    object CheckBox_CasePreserve: TCheckBox
+      Left = 14
+      Height = 19
+      Top = 169
+      Width = 88
+      Caption = 'Preserve case'
+      TabOrder = 7
+    end
+    object CheckBox_CaseSkipExtension: TCheckBox
+      Left = 14
+      Height = 19
+      Top = 192
+      Width = 94
+      Caption = 'Skip extension'
+      Checked = True
+      State = cbChecked
+      TabOrder = 8
+    end
+  end
+  object CheckBox_CaseExtensionAlwaysUpperCase: TCheckBox
+    Left = 232
+    Height = 19
+    Top = 216
+    Width = 167
+    Caption = 'Extension always upper case'
+    TabOrder = 4
+    OnClick = CheckBox_CaseExtensionAlwaysUpperCaseClick
+  end
+end
+

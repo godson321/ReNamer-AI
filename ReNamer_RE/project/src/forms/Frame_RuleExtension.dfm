@@ -1,0 +1,76 @@
+﻿object Frame_RuleExtension: TFrame_RuleExtension
+  Left = 0
+  Height = 272
+  Top = 0
+  Width = 440
+  ClientHeight = 272
+  ClientWidth = 440
+  TabOrder = 0
+  DesignLeft = 388
+  DesignTop = 262
+  object Label_Hint: TLabel
+    Left = 56
+    Height = 64
+    Top = 136
+    Width = 344
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'Note: Some files may have multiple extensions matching their data type, for example: doc/ppt/xls have the same signature. Unrecognised files will remain unchanged.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object CheckBox_ExtensionAppend: TCheckBox
+    Left = 56
+    Height = 19
+    Top = 80
+    Width = 186
+    Caption = 'Append to the original filename'
+    TabOrder = 2
+  end
+  object Edit_Extension: TEdit
+    Left = 56
+    Height = 25
+    Top = 48
+    Width = 208
+    Anchors = [akTop, akLeft, akRight]
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 1
+  end
+  object CheckBox_DetectBinSign: TCheckBox
+    Left = 56
+    Height = 19
+    Top = 104
+    Width = 182
+    Caption = 'Detect using "binary signature"'
+    TabOrder = 3
+    OnClick = CheckBox_DetectBinSignClick
+  end
+  object CheckBox_NewExtension: TCheckBox
+    Left = 40
+    Height = 19
+    Top = 24
+    Width = 211
+    Caption = 'New file extension (without the dot):'
+    Checked = True
+    State = cbChecked
+    TabOrder = 0
+  end
+  object CheckBox_RemoveDuplicateExtensions: TCheckBox
+    Left = 40
+    Height = 19
+    Top = 208
+    Width = 172
+    Caption = 'Remove duplicate extensions'
+    TabOrder = 4
+  end
+  object CheckBox_CaseSensitive: TCheckBox
+    Left = 56
+    Height = 19
+    Top = 232
+    Width = 91
+    Caption = 'Case sensitive'
+    TabOrder = 5
+  end
+end
+

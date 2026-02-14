@@ -1,0 +1,255 @@
+object Form_Browse: TForm_Browse
+  Left = 539
+  Height = 405
+  Top = 311
+  Width = 377
+  BorderIcons = [biSystemMenu]
+  Caption = 'Browse'
+  ClientHeight = 405
+  ClientWidth = 377
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '3.8.0.0'
+  object Label_Title: TLabel
+    Left = 16
+    Height = 15
+    Top = 8
+    Width = 186
+    Caption = 'Select folders that you want to add:'
+    ParentColor = False
+  end
+  object SB_GoToFolder: TSpeedButton
+    Left = 313
+    Height = 19
+    Top = 307
+    Width = 48
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'Go To'
+    Flat = True
+    Glyph.Data = 
+    {
+      0A010000424D0A010000000000004200
+      0000280000000A0000000A0000000100
+      100003000000C8000000120B0000120B
+      00000000000000000000007C0000E003
+      00001F000000FF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FE71CE71CE71CE71CFF7F
+      FF7FFF7FFF7FFF7F6B2DE71C7C6F7C6F
+      E71CE71CE71CE71CE71C6B2DFF7FE71C
+      E71CE71CE71CE71C7C6F7C6FE71CFF7F
+      FF7FFF7FFF7FFF7FFF7FE71C7C6F7C6F
+      E71CFF7FFF7FFF7FFF7FFF7FFF7FE71C
+      E71CE71CE71C6B2DFF7FE71CE71CE71C
+      E71CFF7FFF7FFF7FFF7FFF7F6B2DE71C
+      7C6F7C6FE71CFF7FFF7FFF7FFF7FFF7F
+      FF7FE71CE71CE71CE71CFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+    }
+    OnClick = SB_GoToFolderClick
+  end
+  object SpeedButton_FilterSettings: TSpeedButton
+    Left = 272
+    Height = 19
+    Top = 325
+    Width = 89
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'Filter Settings'
+    Flat = True
+    Glyph.Data = 
+    {
+      0A010000424D0A010000000000004200
+      0000280000000A0000000A0000000100
+      100003000000C8000000120B0000120B
+      00000000000000000000007C0000E003
+      00001F000000FF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FE71CE71CE71CFF7FFF7FFF7F
+      FF7F6B2D6B2D6B2DE71C7C6FE71CFF7F
+      FF7FFF7FFF7F6B2DFF7FFF7FE71CE71C
+      E71CFF7FFF7FFF7FFF7F6B2DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FE71CE71C
+      E71CFF7FFF7FFF7FE71CE71CE71CFF7F
+      E71C7C6FE71C6B2D6B2D6B2DE71C7C6F
+      E71CFF7FE71CE71CE71CFF7FFF7FFF7F
+      E71CE71CE71CFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+    }
+    OnClick = SpeedButton_FilterSettingsClick
+  end
+  object TreeView: TTreeView
+    Left = 16
+    Height = 276
+    Top = 26
+    Width = 345
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    HideSelection = False
+    Images = ImageList
+    MultiSelect = True
+    MultiSelectStyle = [msControlSelect, msShiftSelect, msVisibleOnly]
+    PopupMenu = PopupMenu
+    ReadOnly = True
+    TabOrder = 0
+    OnClick = TreeViewClick
+    OnDeletion = TreeViewDeletion
+    OnExpanding = TreeViewExpanding
+    OnKeyUp = TreeViewKeyUp
+    OnMouseDown = TreeViewMouseDown
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 382
+    Width = 377
+    Panels = <
+    >
+  end
+  object BitBtn_Cancel: TBitBtn
+    Left = 256
+    Height = 26
+    Top = 348
+    Width = 105
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    OnClick = BitBtn_CancelClick
+    TabOrder = 4
+  end
+  object BitBtn_Ok: TBitBtn
+    Left = 16
+    Height = 26
+    Top = 348
+    Width = 225
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Add Folders'
+    Default = True
+    Glyph.Data = 
+    {
+      36040000424D36040000000000003600
+      00002800000010000000100000000100
+      20000000000000040000640000006400
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      00000000001E00000033000000330000
+      00330000001E00000000469AD300469A
+      D300469AD300469AD300469AD300469A
+      D300469AD300479AD5004D99DF000000
+      001E008C53AC009E5EFF009D5DFF009E
+      5EFF008C55AC0000001E469AD3000000
+      000B0000000A0000000A0000000A0000
+      000A0000000A0000000A00000008008D
+      4BAA00A668FF00BA86FF77DFC4FF00BA
+      86FF00A66AFF008C55AC0000002F2959
+      7A5F2655755C2655745C2655745C2655
+      745C2655745C2653745A24486851009E
+      52FF00C08AFF00BB82FFFFFFFFFF00BB
+      82FF00C08CFF009E5EFF4598D0F14398
+      D2FF4094D0FF3E92CFFF3E92CEFF3F92
+      CEFF3F92CEFF4092D1FF4792DAFF009B
+      4EFF75E5CAFFFFFFFFFFFFFFFFFFFFFF
+      FFFF77E5CCFF009C5CFF4499D2FF3F94
+      D0FFABFBFFFF9BF3FFFF92F1FFFF93F1
+      FFFF93F1FFFF95F1FFFF9EF4FFFF0096
+      4AFF00CA93FF00C78EFFFFFFFFFF00C8
+      8FFF00CC97FF009D5CFF4397D1FF56AC
+      DDFF8EDAF5FFA2EDFFFF82E5FEFF84E5
+      FEFF84E5FEFF86E6FFFF8DE9FFFF35BA
+      9EFF00A965FF00D299FF74ECD1FF00D2
+      9AFF00AE6CFF009F56924296D1FF71C4
+      EAFF6CBCE6FFBBF2FFFF75DEFDFF77DE
+      FCFF78DEFCFF7CDFFDFF80E1FFFF89E4
+      FFFF32B89EFF009549FF00954AFF0097
+      4BFF1F9E91FF000000124095D0FF90DD
+      F8FF44A0D8FFDDFCFFFFDAFAFFFFDBF9
+      FFFFDEFAFFFF74DCFCFF76DBFBFF78DB
+      FEFF7CDDFFFF7FDFFFFF7FDFFFFFADEC
+      FFFF82C1EEFF3575A7703E93CFFFB2F6
+      FFFF51ACDEFF358ACAFF358ACAFF358A
+      CAFF368ACAFF5BBDE9FF6ED9FBFF6AD6
+      FAFF69D5FBFF69D5FBFF68D5FCFF84DE
+      FEFFABE1F8FF3A8AC1C83D92CFFFB8F3
+      FFFF77DFFEFF7BE0FEFF7CE1FEFF7CE1
+      FFFF7DE2FFFF52ABDDFF56B9E8FFDAF8
+      FFFFD6F6FFFFD6F6FFFFD5F6FFFFD5F7
+      FFFFDBFCFFFF3E94D0FF3C92CFFFC0F3
+      FFFF70D9FBFF73DAFBFF74DAFBFF74DA
+      FBFF74DBFBFF76DEFDFF4FA9DCFF368B
+      CAFF358BCBFF338BCBFF338CCCFF3790
+      CEFF3D94D0FF4398D2AE3B92CFFFCAF6
+      FFFF69D5F9FF6CD5F9FF6AD4F9FF69D4
+      F9FF69D5F9FF6AD6FAFF6BD8FBFF6BD9
+      FCFF6BDAFDFF69DAFDFFDAFDFFFF3C93
+      D0FF367BAA2F469AD3003B92CFFFD5F7
+      FFFF60D1F9FF61D0F8FFB4EBFDFFD9F6
+      FFFFDAF8FFFFDAF8FFFFDAF9FFFFDBF9
+      FFFFDAF9FFFFDAFAFFFFDFFEFFFF3D94
+      D0FF4599D335469AD3003D94D0FFDCFC
+      FFFFD8F7FFFFD8F7FFFFDBFAFFFF358E
+      CDFF3991CEFF3A92CFFF3A92CFFF3A92
+      CFFF3A92CFFF3A92CFFF3D94D0FF4298
+      D2EA469AD300469AD3004398D2EF3D94
+      D0FF3A92CFFF3A92CFFF3D94D0FF4197
+      D1E44398D22B4498D2324498D2334498
+      D2334498D2334499D2334499D337459A
+      D300469AD300469AD300
+    }
+    OnClick = BitBtn_OkClick
+    TabOrder = 3
+  end
+  object CheckBox_ShowHidden: TCheckBox
+    Left = 16
+    Height = 19
+    Top = 307
+    Width = 126
+    Anchors = [akLeft, akBottom]
+    Caption = 'Show hidden folders'
+    TabOrder = 1
+    OnClick = CheckBox_ShowHiddenClick
+  end
+  object CheckBox_ShowSystem: TCheckBox
+    Left = 16
+    Height = 19
+    Top = 325
+    Width = 126
+    Anchors = [akLeft, akBottom]
+    Caption = 'Show system folders'
+    TabOrder = 2
+    OnClick = CheckBox_ShowSystemClick
+  end
+  object ImageList: TImageList
+    Left = 104
+    Top = 144
+  end
+  object PopupMenu: TPopupMenu
+    Left = 176
+    Top = 144
+    object MenuItem_ExploreFolder: TMenuItem
+      Caption = 'Explore selected folder'
+      OnClick = MenuItem_ExploreFolderClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem_RefreshTree: TMenuItem
+      Caption = 'Refresh Tree'
+      ShortCut = 116
+      OnClick = MenuItem_RefreshTreeClick
+    end
+    object MenuItem_CollapseAll: TMenuItem
+      Caption = 'Collapse All'
+      OnClick = MenuItem_CollapseAllClick
+    end
+    object MenuItem_GoToFolder: TMenuItem
+      Caption = 'Go To Folder'
+      OnClick = MenuItem_GoToFolderClick
+    end
+  end
+end

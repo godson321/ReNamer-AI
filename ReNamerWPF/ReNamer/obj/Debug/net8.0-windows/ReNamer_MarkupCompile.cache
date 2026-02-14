@@ -1,0 +1,20 @@
+﻿ReNamer
+
+
+winexe
+C#
+.cs
+E:\90 AI\项目\ReNamer_RE\ReNamerWPF\ReNamer\obj\Debug\net8.0-windows\
+ReNamer
+none
+false
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+E:\90 AI\项目\ReNamer_RE\ReNamerWPF\ReNamer\App.xaml
+281174076044
+
+40-1127103085
+208-1256707717
+Controls\NumericUpDown.xaml;Resources\DesignSystemResources.xaml;Resources\Icons\IconResources.xaml;Resources\Strings.en-US.xaml;Resources\Strings.zh-CN.xaml;Themes\Theme.xaml;Views\AddRuleDialog.xaml;Views\FiltersDialog.xaml;Views\MainWindow.xaml;Views\RuleConfigs\CaseConfigPanel.xaml;Views\RuleConfigs\CleanUpConfigPanel.xaml;Views\RuleConfigs\DeleteConfigPanel.xaml;Views\RuleConfigs\ExtensionConfigPanel.xaml;Views\RuleConfigs\InsertConfigPanel.xaml;Views\RuleConfigs\MappingConfigPanel.xaml;Views\RuleConfigs\PaddingConfigPanel.xaml;Views\RuleConfigs\PascalScriptConfigPanel.xaml;Views\RuleConfigs\RandomizeConfigPanel.xaml;Views\RuleConfigs\RearrangeConfigPanel.xaml;Views\RuleConfigs\ReformatDateConfigPanel.xaml;Views\RuleConfigs\RegexConfigPanel.xaml;Views\RuleConfigs\RemoveConfigPanel.xaml;Views\RuleConfigs\ReplaceConfigPanel.xaml;Views\RuleConfigs\SerializeConfigPanel.xaml;Views\RuleConfigs\StripConfigPanel.xaml;Views\RuleConfigs\TransliterateConfigPanel.xaml;Views\RuleConfigs\UserInputConfigPanel.xaml;Views\SettingsDialog.xaml;
+
+False
+

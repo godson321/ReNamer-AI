@@ -1,0 +1,57 @@
+﻿object Form_Register: TForm_Register
+  Left = 481
+  Height = 222
+  Top = 333
+  Width = 409
+  AllowDropFiles = True
+  BorderStyle = bsDialog
+  Caption = 'Registration'
+  ClientHeight = 222
+  ClientWidth = 409
+  OnDropFiles = FormDropFiles
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '3.8.0.0'
+  object Label1: TLabel
+    Left = 16
+    Height = 15
+    Top = 16
+    Width = 185
+    Caption = 'Please enter your registration code:'
+    ParentColor = False
+  end
+  object Memo_Code: TMemo
+    Left = 16
+    Height = 137
+    Top = 32
+    Width = 377
+    Font.Height = 243
+    Font.Name = 'Courier New'
+    ParentFont = False
+    ScrollBars = ssVertical
+    TabOrder = 0
+    OnKeyUp = Memo_CodeKeyUp
+  end
+  object BB_Register: TBitBtn
+    Left = 104
+    Height = 25
+    Top = 184
+    Width = 91
+    Caption = 'Register'
+    Default = True
+    ModalResult = 1
+    OnClick = BB_RegisterClick
+    TabOrder = 1
+  end
+  object BB_Cancel: TBitBtn
+    Left = 216
+    Height = 25
+    Top = 184
+    Width = 89
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end
+

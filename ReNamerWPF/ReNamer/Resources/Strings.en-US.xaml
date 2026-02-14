@@ -1,0 +1,710 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Application Title -->
+    <sys:String x:Key="AppTitle">ReNamer - Batch File Rename Tool</sys:String>
+    
+    <!-- Menu - File -->
+    <sys:String x:Key="Menu_File">_File</sys:String>
+    <sys:String x:Key="Menu_AddFiles">_Add Files...</sys:String>
+    <sys:String x:Key="Menu_AddFolders">Add Fol_ders...</sys:String>
+    <sys:String x:Key="Menu_NewProject">_New Project</sys:String>
+    <sys:String x:Key="Menu_NewInstance">New _Instance</sys:String>
+    <sys:String x:Key="Menu_AddPaths">Add _Paths...</sys:String>
+    <sys:String x:Key="Menu_PasteFiles">_Paste Files</sys:String>
+    <sys:String x:Key="Menu_LoadPreset">_Load Preset...</sys:String>
+    <sys:String x:Key="Menu_SavePreset">_Save Preset</sys:String>
+    <sys:String x:Key="Menu_SavePresetAs">Save Preset _As...</sys:String>
+    <sys:String x:Key="Menu_CreatePresetLinks">Create Links</sys:String>
+    <sys:String x:Key="Menu_Exit">E_xit</sys:String>
+    
+    <!-- Menu - Rules -->
+    <sys:String x:Key="Menu_Rules">_Rules</sys:String>
+    <sys:String x:Key="Menu_AddRule">_Add Rule...</sys:String>
+    <sys:String x:Key="Menu_RemoveRule">_Remove Rule</sys:String>
+    <sys:String x:Key="Menu_MoveUp">Move _Up</sys:String>
+    <sys:String x:Key="Menu_MoveDown">Move _Down</sys:String>
+    
+    <!-- Menu - Actions -->
+    <sys:String x:Key="Menu_Actions">_Actions</sys:String>
+    <sys:String x:Key="Menu_Preview">_Preview</sys:String>
+    <sys:String x:Key="Menu_Rename">_Rename</sys:String>
+    <sys:String x:Key="Menu_Undo">_Undo Rename</sys:String>
+    
+    <!-- Menu - Help -->
+    <sys:String x:Key="Menu_Help">_Help</sys:String>
+    <sys:String x:Key="Menu_About">_About</sys:String>
+    <sys:String x:Key="Menu_Language">_Language</sys:String>
+    <sys:String x:Key="Menu_Presets">Presets</sys:String>
+    <sys:String x:Key="Menu_Settings">Settings</sys:String>
+    <sys:String x:Key="Menu_AllSettings">All Settings...</sys:String>
+    <sys:String x:Key="Menu_Settings_General">General</sys:String>
+    <sys:String x:Key="Menu_Settings_Preview">Preview</sys:String>
+    <sys:String x:Key="Menu_Settings_Rename">Rename</sys:String>
+    <sys:String x:Key="Menu_Settings_MetaTags">Meta Tags</sys:String>
+    <sys:String x:Key="Menu_Settings_Misc">Misc</sys:String>
+    <sys:String x:Key="Menu_Settings_Filters">Filters</sys:String>
+    <sys:String x:Key="Menu_ManagePresets">Manage Presets...</sys:String>
+    <sys:String x:Key="Menu_BrowsePresetsFolder">Browse Presets Folder</sys:String>
+    <sys:String x:Key="Menu_ImportPreset">Import Preset...</sys:String>
+    <sys:String x:Key="Menu_RescanPresets">Rescan Presets</sys:String>
+    <sys:String x:Key="Menu_ExportClipboard">Export to Clipboard</sys:String>
+    <sys:String x:Key="Menu_AnalyzeName">Analyze Name</sys:String>
+    <sys:String x:Key="Menu_HelpOnline">Help Online</sys:String>
+    <sys:String x:Key="Menu_QuickGuide">Quick Guide</sys:String>
+    <sys:String x:Key="Menu_UserManual">User Manual</sys:String>
+    <sys:String x:Key="Menu_Forum">Forum</sys:String>
+    <sys:String x:Key="Menu_LiteVsPro">Lite vs Pro</sys:String>
+    <sys:String x:Key="Menu_Purchase">Purchase</sys:String>
+    <sys:String x:Key="Menu_Register">Register...</sys:String>
+    <sys:String x:Key="Menu_Unregister">Unregister</sys:String>
+    <sys:String x:Key="Menu_VersionHistory">Version History</sys:String>
+    <sys:String x:Key="Menu_Copyrights">Copyrights</sys:String>
+    
+    <!-- Toolbar -->
+    <sys:String x:Key="Toolbar_AddFiles">Add Files</sys:String>
+    <sys:String x:Key="Toolbar_AddFolders">Add Folders</sys:String>
+    <sys:String x:Key="Toolbar_Preview">Preview</sys:String>
+    <sys:String x:Key="Toolbar_Rename">Rename</sys:String>
+    <sys:String x:Key="Toolbar_Add">Add</sys:String>
+    <sys:String x:Key="Toolbar_Remove">Remove</sys:String>
+    <sys:String x:Key="Toolbar_Up">Up</sys:String>
+    <sys:String x:Key="Toolbar_Down">Down</sys:String>
+    
+    <!-- Files Toolbar -->
+    <sys:String x:Key="Toolbar_Files">Files</sys:String>
+    <sys:String x:Key="Toolbar_Filters">Filters</sys:String>
+    <sys:String x:Key="Toolbar_Options">Options</sys:String>
+    <sys:String x:Key="Toolbar_Export">Export</sys:String>
+    <sys:String x:Key="Toolbar_Analyze">Analyze</sys:String>
+    <sys:String x:Key="Toolbar_Columns">Columns</sys:String>
+    <sys:String x:Key="Toolbar_Validate">Validate</sys:String>
+    
+    <!-- Column Headers -->
+    <sys:String x:Key="Column_State">State</sys:String>
+    <sys:String x:Key="Column_Path">Path</sys:String>
+    <sys:String x:Key="Column_Name">Name</sys:String>
+    <sys:String x:Key="Column_NewName">New Name</sys:String>
+    <sys:String x:Key="Column_Extension">Extension</sys:String>
+    <sys:String x:Key="Column_Size">Size</sys:String>
+    <sys:String x:Key="Column_Rule">Rule</sys:String>
+    <sys:String x:Key="Column_Statement">Statement</sys:String>
+    <sys:String x:Key="Column_Error">Error</sys:String>
+    <sys:String x:Key="Column_Folder">Folder</sys:String>
+    <sys:String x:Key="Column_NewPath">New Path</sys:String>
+    <sys:String x:Key="Column_SizeKB">Size KB</sys:String>
+    <sys:String x:Key="Column_SizeMB">Size MB</sys:String>
+    <sys:String x:Key="Column_Created">Created</sys:String>
+    <sys:String x:Key="Column_Modified">Modified</sys:String>
+    <sys:String x:Key="Column_ExifDate">Exif Date</sys:String>
+    <sys:String x:Key="Column_NameDigits">Name Digits</sys:String>
+    <sys:String x:Key="Column_PathDigits">Path Digits</sys:String>
+    <sys:String x:Key="Column_NameLength">Name Length</sys:String>
+    <sys:String x:Key="Column_NewNameLength">New Name Length</sys:String>
+    <sys:String x:Key="Column_PathLength">Path Length</sys:String>
+    <sys:String x:Key="Column_NewPathLength">New Path Length</sys:String>
+    <sys:String x:Key="Column_OldPath">Old Path</sys:String>
+
+    <!-- Context Menu - Rules -->
+    <sys:String x:Key="CtxRule_Add">Add Rule</sys:String>
+    <sys:String x:Key="CtxRule_AddAbove">Add Rule (Above)</sys:String>
+    <sys:String x:Key="CtxRule_AddBelow">Add Rule (Below)</sys:String>
+    <sys:String x:Key="CtxRule_Edit">Edit Rule</sys:String>
+    <sys:String x:Key="CtxRule_Duplicate">Duplicate Rule</sys:String>
+    <sys:String x:Key="CtxRule_Remove">Remove Rule</sys:String>
+    <sys:String x:Key="CtxRule_RemoveAll">Remove All Rules</sys:String>
+    <sys:String x:Key="CtxRule_MoveUp">Move Up</sys:String>
+    <sys:String x:Key="CtxRule_MoveDown">Move Down</sys:String>
+    <sys:String x:Key="CtxRule_Comment">Comment...</sys:String>
+    <sys:String x:Key="CtxRule_SelectAll">Select All</sys:String>
+    <sys:String x:Key="CtxRule_MarkAll">Mark All</sys:String>
+    <sys:String x:Key="CtxRule_UnmarkAll">Unmark All</sys:String>
+
+    <!-- Context Menu - Files -->
+    <sys:String x:Key="CtxFile_EditNewName">Edit New Name</sys:String>
+    <sys:String x:Key="CtxFile_Shell">Shell</sys:String>
+    <sys:String x:Key="CtxFile_OpenFile">Open File</sys:String>
+    <sys:String x:Key="CtxFile_OpenFolder">Open Containing Folder</sys:String>
+    <sys:String x:Key="CtxFile_OpenWithNotepad">Open with Notepad</sys:String>
+    <sys:String x:Key="CtxFile_Properties">File Properties</sys:String>
+    <sys:String x:Key="CtxFile_CutToClipboard">Cut Files to Clipboard</sys:String>
+    <sys:String x:Key="CtxFile_CopyToClipboard">Copy Files to Clipboard</sys:String>
+    <sys:String x:Key="CtxFile_DeleteRecycle">Delete to Recycle Bin</sys:String>
+    <sys:String x:Key="CtxFile_Mark">Mark</sys:String>
+    <sys:String x:Key="CtxFile_MarkItem">Mark</sys:String>
+    <sys:String x:Key="CtxFile_UnmarkItem">Unmark</sys:String>
+    <sys:String x:Key="CtxFile_InvertMarking">Invert Marking</sys:String>
+    <sys:String x:Key="CtxFile_MarkChangedIncCase">Mark Only Changed (Inc. Case)</sys:String>
+    <sys:String x:Key="CtxFile_MarkChangedExcCase">Mark Only Changed (Exc. Case)</sys:String>
+    <sys:String x:Key="CtxFile_MarkByMask">Mark by Mask...</sys:String>
+    <sys:String x:Key="CtxFile_MarkOnlySelected">Mark Only Selected</sys:String>
+    <sys:String x:Key="CtxFile_Clear">Clear</sys:String>
+    <sys:String x:Key="CtxFile_ClearAll">Clear All</sys:String>
+    <sys:String x:Key="CtxFile_ClearRenamed">Clear Renamed</sys:String>
+    <sys:String x:Key="CtxFile_ClearFailed">Clear Failed</sys:String>
+    <sys:String x:Key="CtxFile_ClearValid">Clear Valid</sys:String>
+    <sys:String x:Key="CtxFile_ClearInvalid">Clear Invalid</sys:String>
+    <sys:String x:Key="CtxFile_ClearNotChanged">Clear Not Changed</sys:String>
+    <sys:String x:Key="CtxFile_ClearMarked">Clear Marked</sys:String>
+    <sys:String x:Key="CtxFile_ClearNotMarked">Clear Not Marked</sys:String>
+    <sys:String x:Key="CtxFile_Select">Select</sys:String>
+    <sys:String x:Key="CtxFile_SelectAll">Select All</sys:String>
+    <sys:String x:Key="CtxFile_InvertSelection">Invert Selection</sys:String>
+    <sys:String x:Key="CtxFile_SelectByNameLength">Select by Name Length...</sys:String>
+    <sys:String x:Key="CtxFile_SelectByExtension">Select by Extension...</sys:String>
+    <sys:String x:Key="CtxFile_SelectByMask">Select by Mask...</sys:String>
+    <sys:String x:Key="CtxFile_Move">Move</sys:String>
+    <sys:String x:Key="CtxFile_MoveUp">Up</sys:String>
+    <sys:String x:Key="CtxFile_MoveDown">Down</sys:String>
+    <sys:String x:Key="CtxFile_RemoveSelected">Remove Selected</sys:String>
+    
+    <!-- Rule Names -->
+    <sys:String x:Key="Rule_Replace">Replace</sys:String>
+    <sys:String x:Key="Rule_Insert">Insert</sys:String>
+    <sys:String x:Key="Rule_Delete">Delete</sys:String>
+    <sys:String x:Key="Rule_Remove">Remove</sys:String>
+    <sys:String x:Key="Rule_Case">Case</sys:String>
+    <sys:String x:Key="Rule_Serialize">Serialize</sys:String>
+    <sys:String x:Key="Rule_Extension">Extension</sys:String>
+    <sys:String x:Key="Rule_RegEx">RegEx</sys:String>
+    <sys:String x:Key="Rule_Padding">Padding</sys:String>
+    <sys:String x:Key="Rule_Strip">Strip</sys:String>
+    <sys:String x:Key="Rule_CleanUp">CleanUp</sys:String>
+    <sys:String x:Key="Rule_Transliterate">Transliterate</sys:String>
+    <sys:String x:Key="Rule_Rearrange">Rearrange</sys:String>
+    <sys:String x:Key="Rule_ReformatDate">Reformat Date</sys:String>
+    <sys:String x:Key="Rule_Randomize">Randomize</sys:String>
+    <sys:String x:Key="Rule_PascalScript">PascalScript</sys:String>
+    <sys:String x:Key="Rule_UserInput">User Input</sys:String>
+    <sys:String x:Key="Rule_Mapping">Mapping</sys:String>
+    
+    <!-- Rule Descriptions -->
+    <sys:String x:Key="RuleDesc_Replace">Find and replace text in file names</sys:String>
+    <sys:String x:Key="RuleDesc_Insert">Insert text at a specified position</sys:String>
+    <sys:String x:Key="RuleDesc_Delete">Delete characters from a specified position</sys:String>
+    <sys:String x:Key="RuleDesc_Remove">Remove matching text</sys:String>
+    <sys:String x:Key="RuleDesc_Case">Change letter case</sys:String>
+    <sys:String x:Key="RuleDesc_Serialize">Add sequential numbers to file names</sys:String>
+    <sys:String x:Key="RuleDesc_Extension">Change or modify file extension</sys:String>
+    <sys:String x:Key="RuleDesc_RegEx">Pattern matching using regular expressions</sys:String>
+    
+    <!-- Rule Configuration -->
+    <sys:String x:Key="Config_Find">Find:</sys:String>
+    <sys:String x:Key="Config_Replace">Replace:</sys:String>
+    <sys:String x:Key="Config_CaseSensitive">Case sensitive</sys:String>
+    <sys:String x:Key="Config_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Config_UseRegex">Use regular expressions</sys:String>
+    <sys:String x:Key="Config_Occurrence">Occurrence:</sys:String>
+    <sys:String x:Key="Config_All">All</sys:String>
+    <sys:String x:Key="Config_First">First</sys:String>
+    <sys:String x:Key="Config_Last">Last</sys:String>
+    <sys:String x:Key="Config_Position">Position:</sys:String>
+    <sys:String x:Key="Config_Beginning">Beginning</sys:String>
+    <sys:String x:Key="Config_End">End</sys:String>
+    <sys:String x:Key="Config_At">At position</sys:String>
+    <sys:String x:Key="Config_Text">Text:</sys:String>
+    <sys:String x:Key="Config_Expression">Expression:</sys:String>
+    
+    <!-- Case Options -->
+    <sys:String x:Key="Case_Upper">UPPERCASE</sys:String>
+    <sys:String x:Key="Case_Lower">lowercase</sys:String>
+    <sys:String x:Key="Case_Title">Title Case</sys:String>
+    <sys:String x:Key="Case_Sentence">Sentence case</sys:String>
+    <sys:String x:Key="Case_Invert">iNVERT cASE</sys:String>
+    
+    <!-- Dialogs -->
+    <sys:String x:Key="Dialog_AddRule">Add Rule</sys:String>
+    <sys:String x:Key="Dialog_EditRule">Edit Rule</sys:String>
+    <sys:String x:Key="Dialog_SelectRule">Select a rule to add:</sys:String>
+    <sys:String x:Key="Dialog_OK">OK</sys:String>
+    <sys:String x:Key="Dialog_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Dialog_Close">Close</sys:String>
+    <sys:String x:Key="Dialog_Apply">Apply</sys:String>
+    <sys:String x:Key="Dialog_Configuration">Configuration:</sys:String>
+    
+    <!-- Insert Rule -->
+    <sys:String x:Key="Insert_Label">Insert:</sys:String>
+    <sys:String x:Key="Insert_MetaTag">Insert Meta Tag</sys:String>
+    <sys:String x:Key="Insert_Prefix">Prefix</sys:String>
+    <sys:String x:Key="Insert_Suffix">Suffix</sys:String>
+    <sys:String x:Key="Insert_Position">Position:</sys:String>
+    <sys:String x:Key="Insert_RightToLeft">Right-to-left</sys:String>
+    <sys:String x:Key="Insert_AfterText">After text:</sys:String>
+    <sys:String x:Key="Insert_BeforeText">Before text:</sys:String>
+    <sys:String x:Key="Insert_ReplaceCurrentName">Replace current name</sys:String>
+    
+    <!-- Replace Rule -->
+    <sys:String x:Key="Replace_Find">Find:</sys:String>
+    <sys:String x:Key="Replace_Replace">Replace:</sys:String>
+    <sys:String x:Key="Replace_Occurrences">Occurrences:</sys:String>
+    <sys:String x:Key="Replace_All">All</sys:String>
+    <sys:String x:Key="Replace_First">First</sys:String>
+    <sys:String x:Key="Replace_Last">Last</sys:String>
+    <sys:String x:Key="Replace_CaseSensitive">Case sensitive</sys:String>
+    <sys:String x:Key="Replace_WholeWords">Whole words only</sys:String>
+    <sys:String x:Key="Replace_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Replace_UseWildcards">Interpret '?', '*', '[', ']' as wildcards and '$n' as backreferences?</sys:String>
+    
+    <!-- Delete Rule -->
+    <sys:String x:Key="Delete_From">From:</sys:String>
+    <sys:String x:Key="Delete_Until">Until:</sys:String>
+    <sys:String x:Key="Delete_Position">Position:</sys:String>
+    <sys:String x:Key="Delete_Delimiter">Delimiter:</sys:String>
+    <sys:String x:Key="Delete_Count">Count:</sys:String>
+    <sys:String x:Key="Delete_TillEnd">Till the end</sys:String>
+    <sys:String x:Key="Delete_CurrentName">Delete current name</sys:String>
+    <sys:String x:Key="Delete_RightToLeft">Right-to-left</sys:String>
+    <sys:String x:Key="Delete_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Delete_LeaveDelimiter">Do not remove delimiters</sys:String>
+    
+    <!-- Remove Rule -->
+    <sys:String x:Key="Remove_Label">Remove:</sys:String>
+    <sys:String x:Key="Remove_Occurrences">Occurrences:</sys:String>
+    
+    <!-- Regex Rule -->
+    <sys:String x:Key="Regex_Expression">Expression:</sys:String>
+    <sys:String x:Key="Regex_Replace">Replace:</sys:String>
+    <sys:String x:Key="Regex_Hint">Hint: Use $1..$9 to reference subexpressions.</sys:String>
+    <sys:String x:Key="Regex_CaseSensitive">Case-sensitive</sys:String>
+    <sys:String x:Key="Regex_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Regex_Help">Help</sys:String>
+    
+    <!-- Insert Rule - Where label -->
+    <sys:String x:Key="Insert_Where">Where:</sys:String>
+
+    <!-- Case Rule -->
+    <sys:String x:Key="Case_GroupTitle">Case change:</sys:String>
+    <sys:String x:Key="Case_Capitalize">Capitalize Every Word</sys:String>
+    <sys:String x:Key="Case_AllLower">all lower case</sys:String>
+    <sys:String x:Key="Case_AllUpper">ALL UPPER CASE</sys:String>
+    <sys:String x:Key="Case_FirstLetter">First letter capital</sys:String>
+    <sys:String x:Key="Case_NoneOfAbove">(none of the above)</sys:String>
+    <sys:String x:Key="Case_PreserveCase">Preserve case</sys:String>
+    <sys:String x:Key="Case_ForceCase">Force case for fragments:</sys:String>
+    <sys:String x:Key="Case_ForceCaseHint">Hint: fragments separated with comma will be put in the same case as they are typed in this text box, for example: CD,DVD,DJ</sys:String>
+    <sys:String x:Key="Case_ExtAlwaysLower">Extension always lower case</sys:String>
+    <sys:String x:Key="Case_ExtAlwaysUpper">Extension always upper case</sys:String>
+
+    <!-- Serialize Rule -->
+    <sys:String x:Key="Serialize_IndexStarts">Index starts:</sys:String>
+    <sys:String x:Key="Serialize_Repeat">Repeat:</sys:String>
+    <sys:String x:Key="Serialize_Step">Step:</sys:String>
+    <sys:String x:Key="Serialize_ResetEvery">Reset every:</sys:String>
+    <sys:String x:Key="Serialize_ResetIfFolder">Reset if folder changes</sys:String>
+    <sys:String x:Key="Serialize_ResetIfFileName">Reset if file name changes</sys:String>
+    <sys:String x:Key="Serialize_PadZeros">Pad with zeros to length:</sys:String>
+    <sys:String x:Key="Serialize_InsertWhere">Insert where:</sys:String>
+    <sys:String x:Key="Serialize_Prefix">Prefix</sys:String>
+    <sys:String x:Key="Serialize_Suffix">Suffix</sys:String>
+    <sys:String x:Key="Serialize_Position">Position:</sys:String>
+    <sys:String x:Key="Serialize_ReplaceCurrentName">Replace current name</sys:String>
+    <sys:String x:Key="Serialize_NumberingSystem">Numbering system:</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Decimal">Decimal (0..9)</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Hexadecimal">Hexadecimal (0..9, A..F)</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Octal">Octal (0..7)</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Binary">Binary (0..1)</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Custom">Custom</sys:String>
+    <sys:String x:Key="Serialize_CustomSymbols">Custom numbering symbols:</sys:String>
+
+    <!-- Extension Rule -->
+    <sys:String x:Key="Extension_NewExtension">New file extension (without the dot):</sys:String>
+    <sys:String x:Key="Extension_AppendToOriginal">Append to the original filename</sys:String>
+    <sys:String x:Key="Extension_DetectBinSign">Detect using "binary signature"</sys:String>
+    <sys:String x:Key="Extension_Hint">Note: Some files may have multiple extensions matching their data type, for example: doc/ppt/xls have the same signature. Unrecognised files will remain unchanged.</sys:String>
+    <sys:String x:Key="Extension_RemoveDuplicate">Remove duplicate extensions</sys:String>
+    <sys:String x:Key="Extension_CaseSensitive">Case sensitive</sys:String>
+
+    <!-- Remove Rule extras -->
+    <sys:String x:Key="Remove_All">All</sys:String>
+    <sys:String x:Key="Remove_First">First</sys:String>
+    <sys:String x:Key="Remove_Last">Last</sys:String>
+    <sys:String x:Key="Remove_CaseSensitive">Case sensitive</sys:String>
+    <sys:String x:Key="Remove_WholeWords">Whole words only</sys:String>
+    <sys:String x:Key="Remove_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Remove_UseWildcards">Interpret symbols '?', '*', '[', ']' as wildcards?</sys:String>
+
+    <!-- Messages -->
+    <sys:String x:Key="Msg_ConfirmRename">Are you sure you want to rename {0} files?</sys:String>
+    <sys:String x:Key="Msg_RenameComplete">Rename Complete</sys:String>
+    <sys:String x:Key="Msg_RenameResult">Success: {0} files&#x0a;Failed: {1} files</sys:String>
+    <sys:String x:Key="Msg_About">ReNamer WPF Version&#x0a;Based on ReNamer 7.8&#x0a;&#x0a;For educational purposes only</sys:String>
+    <sys:String x:Key="Msg_ComingSoon">Coming Soon</sys:String>
+    
+    <!-- Status -->
+    <sys:String x:Key="Status_Ready">Ready</sys:String>
+    <sys:String x:Key="Status_Previewing">Previewing...</sys:String>
+    <sys:String x:Key="Status_Renaming">Renaming...</sys:String>
+    <sys:String x:Key="Status_FilesSummary">Files: 0 | Marked: 0 | Selected: 0</sys:String>
+
+    <!-- Dialogs -->
+    <sys:String x:Key="Dialog_Settings">Settings</sys:String>
+    <sys:String x:Key="Dialog_Filters">Filters</sys:String>
+    <sys:String x:Key="Dialog_ClearAll">Clear All</sys:String>
+    <sys:String x:Key="Dialog_RuleDescription">Description</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Tab_General">General</sys:String>
+    <sys:String x:Key="Tab_Preview">Preview</sys:String>
+    <sys:String x:Key="Tab_Rename">Rename</sys:String>
+    <sys:String x:Key="Tab_Misc">Misc</sys:String>
+
+    <!-- Settings -->
+    <sys:String x:Key="Settings_Startup">Startup</sys:String>
+    <sys:String x:Key="Settings_Interface">Interface</sys:String>
+    <sys:String x:Key="Settings_PreviewOptions">Preview Options</sys:String>
+    <sys:String x:Key="Settings_Validation">Validation</sys:String>
+    <sys:String x:Key="Settings_RenameOptions">Rename Options</sys:String>
+    <sys:String x:Key="Settings_ConflictResolution">Conflict Resolution</sys:String>
+    <sys:String x:Key="Settings_MetaTags">Meta Tags</sys:String>
+    <sys:String x:Key="Settings_MiscHint">Additional settings can be added here.</sys:String>
+    <sys:String x:Key="Settings_LoadLastPreset">Load last preset on startup</sys:String>
+    <sys:String x:Key="Settings_RememberWindowPos">Remember window position</sys:String>
+    <sys:String x:Key="Settings_CheckUpdates">Check for updates on startup</sys:String>
+    <sys:String x:Key="Settings_Language">Language:</sys:String>
+    <sys:String x:Key="Settings_Theme">Theme:</sys:String>
+    <sys:String x:Key="Settings_ConfirmExit">Confirm on exit</sys:String>
+    <sys:String x:Key="Settings_ShowInTray">Show in system tray</sys:String>
+    <sys:String x:Key="Settings_AutoPreviewRules">Auto-preview when rules change</sys:String>
+    <sys:String x:Key="Settings_AutoPreviewOnAdd">Auto-preview when files are added</sys:String>
+    <sys:String x:Key="Settings_HighlightChanges">Highlight changed names</sys:String>
+    <sys:String x:Key="Settings_AutoValidate">Auto-validate new names</sys:String>
+    <sys:String x:Key="Settings_WarnInvalidChars">Warn about invalid characters</sys:String>
+    <sys:String x:Key="Settings_WarnLongPaths">Warn about paths exceeding 260 characters</sys:String>
+    <sys:String x:Key="Settings_ConfirmRename">Confirm before renaming</sys:String>
+    <sys:String x:Key="Settings_AutoRemoveRenamed">Auto-remove successfully renamed files</sys:String>
+    <sys:String x:Key="Settings_CreateUndoLog">Create undo log</sys:String>
+    <sys:String x:Key="Settings_ConflictSkip">Skip conflicting files</sys:String>
+    <sys:String x:Key="Settings_ConflictAddSuffix">Auto-add numeric suffix</sys:String>
+    <sys:String x:Key="Settings_ConflictOverwrite">Overwrite existing files (dangerous)</sys:String>
+    <sys:String x:Key="Settings_ResolveMetaTags">Resolve meta tags in Insert/Replace rules</sys:String>
+    <sys:String x:Key="Language_Chinese">Chinese</sys:String>
+    <sys:String x:Key="Language_English">English</sys:String>
+    <sys:String x:Key="Theme_Light">Light</sys:String>
+    <sys:String x:Key="Theme_Dark">Dark</sys:String>
+
+    <!-- Filters -->
+    <sys:String x:Key="Filters_NameFilter">File Name Filter</sys:String>
+    <sys:String x:Key="Filters_ExtFilter">Extension Filter</sys:String>
+    <sys:String x:Key="Filters_SizeFilter">Size Filter</sys:String>
+    <sys:String x:Key="Filters_AttrFilter">Attributes Filter</sys:String>
+    <sys:String x:Key="Filters_EnableNameFilter">Enable file name filter</sys:String>
+    <sys:String x:Key="Filters_Pattern">Pattern:</sys:String>
+    <sys:String x:Key="Filters_WildcardsHint">Wildcards: * and ?</sys:String>
+    <sys:String x:Key="Filters_Include">Include</sys:String>
+    <sys:String x:Key="Filters_Exclude">Exclude</sys:String>
+    <sys:String x:Key="Filters_EnableExtFilter">Enable extension filter</sys:String>
+    <sys:String x:Key="Filters_Extensions">Extensions:</sys:String>
+    <sys:String x:Key="Filters_ExtensionsHint">Separate with ; e.g. .jpg;.png;.bmp</sys:String>
+    <sys:String x:Key="Filters_EnableSizeFilter">Enable size filter</sys:String>
+    <sys:String x:Key="Filters_Min">Min:</sys:String>
+    <sys:String x:Key="Filters_Max">Max:</sys:String>
+    <sys:String x:Key="Filters_Unit_B">B</sys:String>
+    <sys:String x:Key="Filters_Unit_KB">KB</sys:String>
+    <sys:String x:Key="Filters_Unit_MB">MB</sys:String>
+    <sys:String x:Key="Filters_Unit_GB">GB</sys:String>
+    <sys:String x:Key="Filters_EnableAttrFilter">Enable</sys:String>
+    <sys:String x:Key="Filters_ReadOnly">Read-only</sys:String>
+    <sys:String x:Key="Filters_Hidden">Hidden</sys:String>
+    <sys:String x:Key="Filters_System">System</sys:String>
+
+    <!-- Rule Config Shared -->
+    <sys:String x:Key="Config_RightToLeft">Right-to-left</sys:String>
+    <sys:String x:Key="RuleCfg_SeparateItems">Separate multiple items</sys:String>
+    <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag (Ctrl+Ins)</sys:String>
+
+    <!-- CleanUp -->
+    <sys:String x:Key="CleanUp_Dot">Dot (.)</sys:String>
+    <sys:String x:Key="CleanUp_Comma">Comma (,)</sys:String>
+    <sys:String x:Key="CleanUp_SkipVersions">Skip number sequences, e.g. version 1.2.3.4</sys:String>
+    <sys:String x:Key="CleanUp_FixSpaces">Fix spaces: single space, no leading/trailing spaces</sys:String>
+    <sys:String x:Key="CleanUp_NormalizeSpaces">Normalize Unicode spaces to a standard space</sys:String>
+    <sys:String x:Key="CleanUp_StripEmoji">Strip Unicode emoji</sys:String>
+    <sys:String x:Key="CleanUp_StripMarks">Strip Unicode marks (combining/diacritics/accents)</sys:String>
+    <sys:String x:Key="CleanUp_CamelCase">Insert space before capital letters (e.g. CamelCase)</sys:String>
+    <sys:String x:Key="CleanUp_PrepareSharePoint">Prepare for SharePoint (always include extension)</sys:String>
+
+    <!-- Mapping -->
+    <sys:String x:Key="Mapping_Table">Table</sys:String>
+    <sys:String x:Key="Mapping_AllowReuse">Allow reuse</sys:String>
+    <sys:String x:Key="Mapping_PartialMatch">Partial match</sys:String>
+    <sys:String x:Key="Mapping_Inverse">Inverse mapping</sys:String>
+
+    <!-- Padding -->
+    <sys:String x:Key="Padding_AddZero">Add zero padding to length:</sys:String>
+    <sys:String x:Key="Padding_RemoveZero">Remove zero padding</sys:String>
+    <sys:String x:Key="Padding_AddPadding">Add padding to length:</sys:String>
+    <sys:String x:Key="Padding_Characters">Padding characters:</sys:String>
+    <sys:String x:Key="Padding_Position">Position:</sys:String>
+    <sys:String x:Key="Padding_Left">Left</sys:String>
+    <sys:String x:Key="Padding_Right">Right</sys:String>
+
+    <!-- PascalScript -->
+    <sys:String x:Key="PascalScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="PascalScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="PascalScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="PascalScript_Step">Step:</sys:String>
+    <sys:String x:Key="PascalScript_Digits">Digits:</sys:String>
+
+    <!-- Randomize -->
+    <sys:String x:Key="Randomize_Length">Length of random sequence:</sys:String>
+    <sys:String x:Key="Randomize_Unique">Unique if possible</sys:String>
+    <sys:String x:Key="Randomize_Digits">Digits (0..9)</sys:String>
+    <sys:String x:Key="Randomize_Letters">English letters (a..z)</sys:String>
+    <sys:String x:Key="Randomize_UserDefined">User defined:</sys:String>
+    <sys:String x:Key="Randomize_Prefix">Prefix</sys:String>
+    <sys:String x:Key="Randomize_Suffix">Suffix</sys:String>
+    <sys:String x:Key="Randomize_Position">Position:</sys:String>
+    <sys:String x:Key="Randomize_ReplaceCurrent">Replace current name</sys:String>
+
+    <!-- Rearrange -->
+    <sys:String x:Key="Rearrange_SplitUsing">Split using:</sys:String>
+    <sys:String x:Key="Rearrange_Delimiters">Delimiters</sys:String>
+    <sys:String x:Key="Rearrange_Positions">Positions</sys:String>
+    <sys:String x:Key="Rearrange_ExactPattern">Exact pattern of delimiters</sys:String>
+    <sys:String x:Key="Rearrange_NewPattern">New pattern:</sys:String>
+    <sys:String x:Key="Rearrange_Hint">Hint: Use $1..$N to reference delimited parts, $-1..$-N from the end, $0 for the original name.</sys:String>
+    <sys:String x:Key="Rearrange_InsertSeparator">| Separator</sys:String>
+    <sys:String x:Key="Rearrange_InsertSeparatorTip">Insert separator into Delimiters</sys:String>
+    <sys:String x:Key="Rearrange_InsertMetaTag">📎 Meta Tag</sys:String>
+    <sys:String x:Key="Rearrange_InsertMetaTagTip">Insert Meta Tag into New Pattern</sys:String>
+
+    <!-- Reformat Date -->
+    <sys:String x:Key="ReformatDate_FindFormats">Find date/time formats:</sys:String>
+    <sys:String x:Key="ReformatDate_ConvertTo">Convert to date/time format:</sys:String>
+    <sys:String x:Key="ReformatDate_MatchWholeWords">Match as whole words only</sys:String>
+    <sys:String x:Key="ReformatDate_CustomShortMonths">Use custom short months:</sys:String>
+    <sys:String x:Key="ReformatDate_CustomLongMonths">Use custom long months:</sys:String>
+    <sys:String x:Key="ReformatDate_FormatHelp">❓ Format Help</sys:String>
+    <sys:String x:Key="ReformatDate_AdjustTime">Adjust time by:</sys:String>
+    <sys:String x:Key="ReformatDate_Hours">Hours</sys:String>
+    <sys:String x:Key="ReformatDate_Minutes">Minutes</sys:String>
+    <sys:String x:Key="ReformatDate_Seconds">Seconds</sys:String>
+    <sys:String x:Key="ReformatDate_Days">Days</sys:String>
+    <sys:String x:Key="ReformatDate_Months">Months</sys:String>
+    <sys:String x:Key="ReformatDate_Years">Years</sys:String>
+
+    <!-- Regex -->
+    <sys:String x:Key="Regex_InsertExpression">⚡ Insert Expression</sys:String>
+
+    <!-- Strip -->
+    <sys:String x:Key="Strip_English">English:</sys:String>
+    <sys:String x:Key="Strip_Digits">Digits:</sys:String>
+    <sys:String x:Key="Strip_Symbols">Symbols:</sys:String>
+    <sys:String x:Key="Strip_Brackets">Brackets:</sys:String>
+    <sys:String x:Key="Strip_UserDefined">User defined:</sys:String>
+    <sys:String x:Key="Strip_UnicodeRange">Unicode range:</sys:String>
+    <sys:String x:Key="Strip_Everywhere">Everywhere</sys:String>
+    <sys:String x:Key="Strip_Leading">Leading</sys:String>
+    <sys:String x:Key="Strip_Trailing">Trailing</sys:String>
+    <sys:String x:Key="Strip_AllExceptSelected">Strip all characters except selected</sys:String>
+
+    <!-- Transliterate -->
+    <sys:String x:Key="Translit_Alphabet">Alphabet</sys:String>
+    <sys:String x:Key="Translit_Direction">Direction:</sys:String>
+    <sys:String x:Key="Translit_Forward">Forward</sys:String>
+    <sys:String x:Key="Translit_Backward">Backward</sys:String>
+    <sys:String x:Key="Translit_HintTitle">Hint:</sys:String>
+    <sys:String x:Key="Translit_Hint">Alphabet is a set of couples represented by letters and separated with an equal sign; they stand for translation of non-english characters to their english representation.</sys:String>
+    <sys:String x:Key="Translit_AutoCase">Auto case adjustment</sys:String>
+
+    <!-- User Input -->
+    <sys:String x:Key="UserInput_Instructions">Type your new filenames here (one per line):</sys:String>
+    <sys:String x:Key="UserInput_InsertBefore">Insert in front of the current name</sys:String>
+    <sys:String x:Key="UserInput_InsertAfter">Insert after the current name</sys:String>
+    <sys:String x:Key="UserInput_ReplaceCurrent">Replace the current name</sys:String>
+
+    <!-- Meta Tag Menu -->
+    <sys:String x:Key="MetaTag_Group_FileInfo">File Info</sys:String>
+    <sys:String x:Key="MetaTag_Group_Attributes">Attributes</sys:String>
+    <sys:String x:Key="MetaTag_Group_Dynamic">Dynamic</sys:String>
+    <sys:String x:Key="MetaTag_Name">Original file name</sys:String>
+    <sys:String x:Key="MetaTag_NameNoExt">Name without extension</sys:String>
+    <sys:String x:Key="MetaTag_Ext">Extension</sys:String>
+    <sys:String x:Key="MetaTag_Path">Full path</sys:String>
+    <sys:String x:Key="MetaTag_Folder">Folder name</sys:String>
+    <sys:String x:Key="MetaTag_ParentFolder">Parent folder name</sys:String>
+    <sys:String x:Key="MetaTag_Size">File size (bytes)</sys:String>
+    <sys:String x:Key="MetaTag_SizeKB">File size (KB)</sys:String>
+    <sys:String x:Key="MetaTag_SizeMB">File size (MB)</sys:String>
+    <sys:String x:Key="MetaTag_Created">Created date</sys:String>
+    <sys:String x:Key="MetaTag_Modified">Modified date</sys:String>
+    <sys:String x:Key="MetaTag_Accessed">Accessed date</sys:String>
+    <sys:String x:Key="MetaTag_Counter">Auto-increment counter</sys:String>
+    <sys:String x:Key="MetaTag_Random">Random characters</sys:String>
+    <sys:String x:Key="MetaTag_GUID">Generate GUID</sys:String>
+    <sys:String x:Key="MetaTag_Date">Current date</sys:String>
+    <sys:String x:Key="MetaTag_Time">Current time</sys:String>
+
+    <!-- Regex Patterns -->
+    <sys:String x:Key="RegexPattern_Digits">One or more digits</sys:String>
+    <sys:String x:Key="RegexPattern_WordChars">One or more word characters</sys:String>
+    <sys:String x:Key="RegexPattern_LowerLetters">Lowercase letters</sys:String>
+    <sys:String x:Key="RegexPattern_UpperLetters">Uppercase letters</sys:String>
+    <sys:String x:Key="RegexPattern_AnyLetters">Any letters</sys:String>
+    <sys:String x:Key="RegexPattern_AnyGreedy">Any characters (greedy)</sys:String>
+    <sys:String x:Key="RegexPattern_AnyLazy">Any characters (lazy)</sys:String>
+    <sys:String x:Key="RegexPattern_Whitespace">Whitespace</sys:String>
+    <sys:String x:Key="RegexPattern_NoDot">Everything except dot</sys:String>
+    <sys:String x:Key="RegexPattern_DateYMD">Date pattern YYYY-MM-DD</sys:String>
+    <sys:String x:Key="RegexPattern_NameTitle">Name - Title pattern</sys:String>
+    <sys:String x:Key="RegexPattern_LeadingNumber">Leading number with dot</sys:String>
+    <sys:String x:Key="RegexPattern_Parentheses">Text in parentheses</sys:String>
+    <sys:String x:Key="RegexPattern_Brackets">Text in brackets</sys:String>
+
+    <!-- Date Format Help -->
+    <sys:String x:Key="DateFormat_InsertSeparator">Insert separator |</sys:String>
+    <sys:String x:Key="DateFormat_Year4">Year (4 digits)</sys:String>
+    <sys:String x:Key="DateFormat_Year2">Year (2 digits)</sys:String>
+    <sys:String x:Key="DateFormat_Month2">Month (01-12)</sys:String>
+    <sys:String x:Key="DateFormat_MonthShort">Month abbreviation</sys:String>
+    <sys:String x:Key="DateFormat_MonthLong">Month full name</sys:String>
+    <sys:String x:Key="DateFormat_Day2">Day (01-31)</sys:String>
+    <sys:String x:Key="DateFormat_DayShort">Day abbreviation</sys:String>
+    <sys:String x:Key="DateFormat_DayLong">Day full name</sys:String>
+    <sys:String x:Key="DateFormat_Hour24">Hour 24h (00-23)</sys:String>
+    <sys:String x:Key="DateFormat_Hour12">Hour 12h (01-12)</sys:String>
+    <sys:String x:Key="DateFormat_Minute">Minute (00-59)</sys:String>
+    <sys:String x:Key="DateFormat_Second">Second (00-59)</sys:String>
+    <sys:String x:Key="DateFormat_AmPm">AM/PM</sys:String>
+    <sys:String x:Key="DateFormat_Reference">DateTime Format Reference (online)...</sys:String>
+
+    <!-- Rule Config Panels (Dialogs & Helpers) -->
+    <sys:String x:Key="RuleCfg_CleanUp_Dot">. (dot)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Comma">, (comma)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_SkipVersions">Skip number sequences, for example version 1.2.3.4</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_FixSpaces">Fix spaces: only one space at a time, no spaces on sides of basename</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_NormalizeSpaces">Normalize unicode spaces by replacing them with a standard space</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripEmoji">Strip unicode emoji</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripMarks">Strip unicode marks (combining, diacritics, accents)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_CamelCase">Insert a space in front of capitalized letters (e.g. CamelCase)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_SharePoint">Prepare for SharePoint (always inc. extension)</sys:String>
+
+    <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_AllowReuse">Allow reuse</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_PartialMatch">Partial match</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Inverse">Inverse mapping</sys:String>
+
+    <sys:String x:Key="RuleCfg_Padding_AddZeroPadding">Add zero padding to length:</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_RemoveZeroPadding">Remove zero padding</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_AddTextPadding">Add padding to length:</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_PaddingChars">Padding characters:</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Position">Position:</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Left">Left</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Right">Right</sys:String>
+
+    <sys:String x:Key="RuleCfg_PascalScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Step">Step:</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Digits">Digits:</sys:String>
+
+    <sys:String x:Key="RuleCfg_Randomize_Length">Length of random sequence:</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Unique">Unique if possible</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Digits">Digits (0..9)</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Letters">English letters (a..z)</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_UserDefined">User defined:</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Prefix">Prefix</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Suffix">Suffix</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Position">Position:</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_ReplaceCurrent">Replace current name</sys:String>
+
+    <sys:String x:Key="RuleCfg_Rearrange_SplitUsing">Split using:</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Delimiters">Delimiters</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Positions">Positions</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">Exact pattern of delimiters</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_NewPattern">New pattern:</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: Use $1..$N to reference delimited parts in the new pattern, $-1..$-N to reference from the end, $0 for the original name.</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Separator">| Separator</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 Meta Tag</sys:String>
+
+    <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">Find date/time formats:</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">Convert to date/time format:</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_WholeWords">Match as whole words only</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomShortMonths">Use custom short months:</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomLongMonths">Use custom long months:</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">❓ Format Help</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustBy">Adjust time by:</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitHours">Hours</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitMinutes">Minutes</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitSeconds">Seconds</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitDays">Days</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitMonths">Months</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitYears">Years</sys:String>
+
+    <sys:String x:Key="RuleCfg_Strip_English">English:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Digits">Digits:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Symbols">Symbols:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Brackets">Brackets:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_UserDefined">User defined:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_UnicodeRange">Unicode range:</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Everywhere">Everywhere</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Leading">Leading</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Trailing">Trailing</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_AllExcept">Strip all characters except selected</sys:String>
+
+    <sys:String x:Key="RuleCfg_Transliterate_Alphabet">Alphabet</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction:</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Forward">Forward</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Backward">Backward</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_HintTitle">Hint:</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Hint">Alphabet is a set of couples represented by letters and separated with an equal sign; they stand for translation of non-english characters to their english representation.</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_AutoCase">Auto case adjustment</sys:String>
+
+    <sys:String x:Key="RuleCfg_UserInput_Instruction">Type your new filenames here (one per line):</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InsertBefore">Insert in front of the current name</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InsertAfter">Insert after the current name</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_Replace">Replace the current name</sys:String>
+
+    <sys:String x:Key="RuleCfg_MetaTag_Group_FileInfo">File Info</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Group_Attributes">Attributes</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Group_Dynamic">Dynamic</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Name">Original file name</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_NameNoExt">Name without extension</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Ext">Extension</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Path">Full path</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Folder">Folder name</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_ParentFolder">Parent folder name</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Size">File size (bytes)</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_SizeKB">File size (KB)</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_SizeMB">File size (MB)</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Created">Created date</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Modified">Modified date</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Accessed">Accessed date</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Counter">Auto-increment counter</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Random">Random characters</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Guid">Generate GUID</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Date">Current date</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Time">Current time</sys:String>
+
+    <sys:String x:Key="RuleCfg_RegexPattern_Digits">One or more digits</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_WordChars">One or more word characters</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Lowercase">Lowercase letters</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Uppercase">Uppercase letters</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyLetters">Any letters</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyGreedy">Any characters (greedy)</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyLazy">Any characters (lazy)</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Whitespace">Whitespace</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_NotDot">Everything except dot</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_DateYMD">Date pattern YYYY-MM-DD</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_NameTitle">Name - Title pattern</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_LeadingNumber">Leading number with dot</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_ParensText">Text in parentheses</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_BracketsText">Text in brackets</sys:String>
+
+    <sys:String x:Key="RuleCfg_DateFormat_InsertSeparator">Insert separator |</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Year4">Year (4 digits)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Year2">Year (2 digits)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Month2">Month (01-12)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_MonthAbbr">Month abbreviation</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_MonthFull">Month full name</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Day2">Day (01-31)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_DayAbbr">Day abbreviation</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_DayFull">Day full name</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Hour24">Hour 24h (00-23)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Hour12">Hour 12h (01-12)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Minute">Minute (00-59)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Second">Second (00-59)</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_AmPm">AM/PM</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_ReferenceOnline">DateTime Format Reference (online)...</sys:String>
+</ResourceDictionary>

@@ -1,0 +1,41 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.PascalScriptConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:ReNamer.Controls"
+             MinWidth="440" MinHeight="280">
+    <DockPanel Margin="16,8">
+        <ToolBar DockPanel.Dock="Top">
+            <Button x:Name="btnScripts" Content="{DynamicResource RuleCfg_PascalScript_Scripts}" Style="{DynamicResource SecondaryButtonStyle}" Click="Scripts_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{DynamicResource RuleCfg_PascalScript_Basic}" Click="ScriptBasic_Click"/>
+                        <MenuItem Header="{DynamicResource RuleCfg_PascalScript_Counter}" Click="ScriptCounter_Click"/>
+                        <MenuItem Header="{DynamicResource RuleCfg_PascalScript_Folder}" Click="ScriptFolder_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+        </ToolBar>
+
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+            <WrapPanel>
+                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,0,16,0" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkMetaTags" Content="{DynamicResource RuleCfg_PascalScript_EnableMetaTags}" IsChecked="True" VerticalContentAlignment="Center"/>
+            </WrapPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                <TextBlock Text="{DynamicResource RuleCfg_PascalScript_CounterStart}" VerticalAlignment="Center" Style="{DynamicResource FormLabelStyle}" Width="72" TextAlignment="Right"/>
+                <controls:NumericUpDown x:Name="nudCounterStart" Width="60" MinValue="1" MaxValue="999999" Value="1"
+                                        Margin="8,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{DynamicResource RuleCfg_PascalScript_Step}" VerticalAlignment="Center" Style="{DynamicResource FormLabelStyle}" Width="40" TextAlignment="Right"/>
+                <controls:NumericUpDown x:Name="nudCounterStep" Width="50" MinValue="1" MaxValue="999999" Value="1"
+                                        Margin="8,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{DynamicResource RuleCfg_PascalScript_Digits}" VerticalAlignment="Center" Style="{DynamicResource FormLabelStyle}" Width="48" TextAlignment="Right"/>
+                <controls:NumericUpDown x:Name="nudCounterDigits" Width="50" MinValue="0" MaxValue="8" Value="0"
+                                        Margin="8,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBox x:Name="txtScript" AcceptsReturn="True" TextWrapping="NoWrap"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    </DockPanel>
+</UserControl>

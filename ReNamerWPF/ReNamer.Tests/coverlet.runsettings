@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Exclude>
+            [ReNamer]ReNamer.App*
+            [ReNamer]ReNamer.Views.*
+            [ReNamer]ReNamer.ViewModels.*
+            [*]*.g.cs
+            [*]*.xaml.cs
+          </Exclude>
+          <ExcludeByFile>
+            **/Views/**/*.cs
+            **/App.xaml.cs
+            **/*.g.cs
+            **/*.Designer.cs
+          </ExcludeByFile>
+          <IncludeDirectory>../ReNamer/bin/Debug/</IncludeDirectory>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

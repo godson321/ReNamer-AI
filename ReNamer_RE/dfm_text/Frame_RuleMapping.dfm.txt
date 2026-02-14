@@ -1,0 +1,200 @@
+object Frame_RuleMapping: TFrame_RuleMapping
+  Left = 0
+  Height = 294
+  Top = 0
+  Width = 466
+  ClientHeight = 294
+  ClientWidth = 466
+  TabOrder = 0
+  DesignLeft = 594
+  DesignTop = 380
+  object BitBtn_TableMenu: TBitBtn
+    Left = 8
+    Height = 30
+    Top = 8
+    Width = 123
+    Caption = 'Table'
+    Glyph.Data = 
+    {
+      BA040000424DBA040000000000003600
+      00002800000011000000110000000100
+      20000000000084040000640000006400
+      00000000000000000000FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF003F3F
+      3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F
+      3FFF3F3F3FFF3F3F3FFF3F3F3FFFFFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF003F3F3FFFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FF3F3F
+      3FFFFFFFFF00FFFFFF00000000FF0000
+      00FF000000FF000000FF000000FF0000
+      00FF000000FF3F3F3FFFF3F3F3FF0000
+      00FF000000FF000000FF000000FFF3F3
+      F3FF3F3F3FFFFFFFFF00FFFFFF000000
+      00FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FF3F3F3FFFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FF3F3F3FFFFFFFFF00FFFF
+      FF00000000FFF3F3F3FF000000FF0000
+      00FF000000FF000000FF000000FF3F3F
+      3FFFF3F3F3FF000000FF000000FF0000
+      00FF000000FFF3F3F3FF3F3F3FFFFFFF
+      FF00FFFFFF00000000FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FF3F3F3FFFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FF3F3F
+      3FFFFFFFFF00FFFFFF00000000FFF3F3
+      F3FF000000FF000000FF000000FF0000
+      00FF000000FF3F3F3FFFF3F3F3FF0000
+      00FF000000FF000000FF000000FFF3F3
+      F3FF3F3F3FFFFFFFFF00FFFFFF000000
+      00FFA29699FFA29699FFA29699FFA296
+      99FFA29699FFA29699FFA29699FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FF3F3F3FFFFFFFFF00FFFF
+      FF00000000FFA29699FF000000FF0000
+      00FF000000FF000000FF000000FFA296
+      99FFF3F3F3FF000000FF000000FF0000
+      00FF000000FFF3F3F3FF3F3F3FFFFFFF
+      FF00FFFFFF00000000FFA29699FFA296
+      99FFA29699FFA29699FFA29699FFA296
+      99FFA29699FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FF3F3F
+      3FFFFFFFFF00FFFFFF00000000FFF3F3
+      F3FF000000FF000000FF000000FF0000
+      00FF000000FF3F3F3FFF3F3F3FFF3F3F
+      3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F
+      3FFF3F3F3FFFFFFFFF00FFFFFF000000
+      00FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FF0000
+      00FFFFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00000000FFF3F3F3FF000000FF0000
+      00FF000000FF000000FF000000FFF3F3
+      F3FF000000FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00000000FFF3F3F3FFF3F3
+      F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3
+      F3FFF3F3F3FF000000FFFFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00000000FF0000
+      00FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FFFFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00
+    }
+    OnClick = BitBtn_TableMenuClick
+    TabOrder = 0
+  end
+  object CheckBox_AllowReuse: TCheckBox
+    Left = 152
+    Height = 19
+    Top = 6
+    Width = 79
+    Caption = 'Allow reuse'
+    TabOrder = 1
+    OnChange = CheckBox_InverseMappingChange
+  end
+  object CheckBox_PartialMatch: TCheckBox
+    Left = 152
+    Height = 19
+    Top = 25
+    Width = 88
+    Caption = 'Partial match'
+    TabOrder = 2
+  end
+  object CheckBox_InverseMapping: TCheckBox
+    Left = 152
+    Height = 19
+    Top = 44
+    Width = 106
+    Caption = 'Inverse mapping'
+    TabOrder = 3
+    OnChange = CheckBox_InverseMappingChange
+  end
+  object CheckBox_CaseSensitive: TCheckBox
+    Left = 320
+    Height = 19
+    Top = 6
+    Width = 91
+    Caption = 'Case sensitive'
+    TabOrder = 4
+  end
+  object CheckBox_SkipExtension: TCheckBox
+    Left = 320
+    Height = 19
+    Top = 25
+    Width = 94
+    Caption = 'Skip extension'
+    TabOrder = 5
+  end
+  object StringGrid_Mapping: TStringGrid
+    Left = 0
+    Height = 224
+    Top = 70
+    Width = 466
+    Align = alClient
+    AutoFillColumns = True
+    BorderSpacing.Top = 70
+    ColCount = 2
+    Columns = <
+      item
+        Title.Caption = 'Match'
+        Width = 233
+      end
+      item
+        Title.Caption = 'New Name'
+        Width = 232
+      end
+    >
+    FixedCols = 0
+    Flat = True
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goAlwaysShowEditor, goSmoothScroll]
+    RowCount = 2
+    TabOrder = 6
+    ColWidths = (
+      233
+      232
+    )
+  end
+  object PopupMenu_Options: TPopupMenu
+    Left = 72
+    Top = 160
+    object MenuItem_LoadFile: TMenuItem
+      Caption = 'Load from file...'
+      OnClick = MenuItem_LoadFileClick
+    end
+    object MenuItem_LoadClipboard: TMenuItem
+      Caption = 'Load from clipboard'
+      OnClick = MenuItem_LoadClipboardClick
+    end
+    object Separator2: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem_SaveFile: TMenuItem
+      Caption = 'Save to file...'
+      OnClick = MenuItem_SaveFileClick
+    end
+    object MenuItem_SaveClipboard: TMenuItem
+      Caption = 'Save to clipboard'
+      OnClick = MenuItem_SaveClipboardClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem_Clear: TMenuItem
+      Caption = 'Clear'
+      OnClick = MenuItem_ClearClick
+    end
+  end
+end

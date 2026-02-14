@@ -1,0 +1,99 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.SerializeConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:ReNamer.Controls"
+             MinWidth="440" MinHeight="280">
+    <Grid Margin="16,8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Left: Numbering settings -->
+        <StackPanel HorizontalAlignment="Stretch">
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Serialize_IndexStarts}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                <controls:NumericUpDown x:Name="nudIndex" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1"
+                                        HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Serialize_Repeat}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                <controls:NumericUpDown x:Name="nudRepeat" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
+                                        HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Serialize_Step}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                <controls:NumericUpDown x:Name="nudStep" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
+                                        HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="chkResetEvery" Content="{DynamicResource Serialize_ResetEvery}" VerticalContentAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudResetEvery" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
+                                        HorizontalAlignment="Left"/>
+            </Grid>
+            <CheckBox x:Name="chkResetIfFolder" Content="{DynamicResource Serialize_ResetIfFolder}" Margin="0,4"/>
+            <CheckBox x:Name="chkResetIfFileName" Content="{DynamicResource Serialize_ResetIfFileName}" Margin="0,4"/>
+            <Grid Margin="0,8,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="chkPadToLength" Content="{DynamicResource Serialize_PadZeros}" VerticalContentAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudPadLength" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1"
+                                        HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Margin="0,4,0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Serialize_NumberingSystem}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                <ComboBox x:Name="cmbNumberingSystem" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+        <!-- Right: Insert position + symbols -->
+        <StackPanel Grid.Column="2" HorizontalAlignment="Stretch">
+            <GroupBox Header="{DynamicResource Serialize_InsertWhere}" Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                <StackPanel Margin="8">
+                    <RadioButton x:Name="rbPrefix" Content="{DynamicResource Serialize_Prefix}" GroupName="Position" IsChecked="True" Margin="0,2"/>
+                    <RadioButton x:Name="rbSuffix" Content="{DynamicResource Serialize_Suffix}" GroupName="Position" Margin="0,2"/>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton x:Name="rbPosition" Content="{DynamicResource Serialize_Position}" GroupName="Position" VerticalContentAlignment="Center"/>
+                        <controls:NumericUpDown x:Name="nudPositionValue" Grid.Column="1" Width="60" MinValue="1" MaxValue="999999" Value="1"
+                                                HorizontalAlignment="Left"/>
+                    </Grid>
+                    <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Serialize_ReplaceCurrentName}" GroupName="Position" Margin="0,2"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,8,0,0"/>
+                </StackPanel>
+            </GroupBox>
+            <Grid Margin="0,4,0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Serialize_CustomSymbols}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                <TextBox x:Name="txtCustomSymbols" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

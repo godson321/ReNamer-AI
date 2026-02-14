@@ -1,0 +1,57 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.ReformatDateConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:ReNamer.Controls"
+             MinWidth="440" MinHeight="280">
+    <StackPanel Margin="16,8">
+        <!-- Source format -->
+        <TextBlock Text="{DynamicResource RuleCfg_ReformatDate_FindFormats}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cboSourceFormat" IsEditable="True" Margin="0,0,0,8" HorizontalAlignment="Stretch">
+            <ComboBoxItem Content="yyyy-MM-dd"/>
+            <ComboBoxItem Content="dd.MM.yyyy"/>
+            <ComboBoxItem Content="MM-dd-yyyy"/>
+            <ComboBoxItem Content="yyyyMMdd"/>
+            <ComboBoxItem Content="dd MMM yyyy"/>
+            <ComboBoxItem Content="yyyy-MM-dd HH:mm:ss"/>
+        </ComboBox>
+        <!-- Target format -->
+        <TextBlock Text="{DynamicResource RuleCfg_ReformatDate_ConvertTo}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cboTargetFormat" IsEditable="True" Margin="0,0,0,8" HorizontalAlignment="Stretch">
+            <ComboBoxItem Content="yyyy-MM-dd"/>
+            <ComboBoxItem Content="dd.MM.yyyy"/>
+            <ComboBoxItem Content="MM-dd-yyyy"/>
+            <ComboBoxItem Content="yyyyMMdd"/>
+            <ComboBoxItem Content="dd MMM yyyy"/>
+            <ComboBoxItem Content="yyyy-MM-dd HH:mm:ss"/>
+        </ComboBox>
+        <!-- Options -->
+        <CheckBox x:Name="chkWholeWords" Content="{DynamicResource RuleCfg_ReformatDate_WholeWords}" IsChecked="True" Margin="0,4" VerticalContentAlignment="Center"/>
+        <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,4" VerticalContentAlignment="Center"/>
+        <!-- Custom months -->
+        <DockPanel Margin="0,8,0,4">
+            <CheckBox x:Name="chkCustomShortMonths" Content="{DynamicResource RuleCfg_ReformatDate_CustomShortMonths}" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="cboCustomShortMonths" IsEditable="True" HorizontalAlignment="Right" Width="176"/>
+        </DockPanel>
+        <DockPanel Margin="0,4">
+            <CheckBox x:Name="chkCustomLongMonths" Content="{DynamicResource RuleCfg_ReformatDate_CustomLongMonths}" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="cboCustomLongMonths" IsEditable="True" HorizontalAlignment="Right" Width="176"/>
+        </DockPanel>
+        <!-- Help button -->
+        <Button x:Name="btnHelp" Content="{DynamicResource RuleCfg_ReformatDate_FormatHelp}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
+                HorizontalAlignment="Left" Padding="8,3" Margin="0,8,0,0" Click="BtnHelp_Click"/>
+        <!-- Adjust time -->
+        <DockPanel Margin="0,8,0,0">
+            <CheckBox x:Name="chkAdjustTime" Content="{DynamicResource RuleCfg_ReformatDate_AdjustBy}" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="cboTimePart" Width="100" HorizontalAlignment="Right">
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitHours}" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitMinutes}"/>
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitSeconds}"/>
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitDays}"/>
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitMonths}"/>
+                <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitYears}"/>
+            </ComboBox>
+            <controls:NumericUpDown x:Name="nudAdjustBy" Width="60" MinValue="-1000000" MaxValue="1000000"
+                                    HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

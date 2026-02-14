@@ -1,0 +1,344 @@
+object Form_Main: TForm_Main
+  Left = 300
+  Height = 500
+  Top = 150
+  Width = 750
+  AllowDropFiles = True
+  Caption = 'ReNamer Clone'
+  ClientHeight = 500
+  ClientWidth = 750
+  KeyPreview = True
+  Menu = MainMenu
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '3.0.0.0'
+
+  object ToolBar_Main: TToolBar
+    Left = 0
+    Height = 38
+    Top = 0
+    Width = 750
+    AutoSize = True
+    ButtonHeight = 36
+    ButtonWidth = 80
+    EdgeBorders = [ebBottom]
+    List = True
+    ShowCaptions = True
+    TabOrder = 0
+    object ToolButton_AddFiles: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'Add Files'
+      OnClick = ToolButton_AddFilesClick
+    end
+    object ToolButton_AddFolders: TToolButton
+      Left = 81
+      Top = 0
+      Caption = 'Add Folders'
+      OnClick = ToolButton_AddFoldersClick
+    end
+    object ToolButton_Sep1: TToolButton
+      Left = 161
+      Top = 0
+      Width = 8
+      Style = tbsSeparator
+    end
+    object ToolButton_Preview: TToolButton
+      Left = 169
+      Top = 0
+      Caption = 'Preview'
+      OnClick = ToolButton_PreviewClick
+    end
+    object ToolButton_Rename: TToolButton
+      Left = 249
+      Top = 0
+      Caption = 'Rename'
+      OnClick = ToolButton_RenameClick
+    end
+  end
+
+  object Panel_Main: TPanel
+    Left = 0
+    Height = 437
+    Top = 38
+    Width = 750
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+
+    object Panel_Rules: TPanel
+      Left = 0
+      Height = 437
+      Top = 0
+      Width = 250
+      Align = alLeft
+      BevelOuter = bvNone
+      TabOrder = 0
+
+      object ToolBar_Rules: TToolBar
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 250
+        AutoSize = True
+        ButtonHeight = 24
+        ButtonWidth = 60
+        EdgeBorders = [ebBottom]
+        List = True
+        ShowCaptions = True
+        TabOrder = 0
+        object ToolButton_AddRule: TToolButton
+          Left = 1
+          Top = 0
+          Caption = 'Add'
+          OnClick = ToolButton_AddRuleClick
+        end
+        object ToolButton_RemoveRule: TToolButton
+          Left = 61
+          Top = 0
+          Caption = 'Remove'
+          OnClick = ToolButton_RemoveRuleClick
+        end
+        object ToolButton_MoveUpRule: TToolButton
+          Left = 121
+          Top = 0
+          Caption = 'Up'
+          OnClick = ToolButton_MoveUpRuleClick
+        end
+        object ToolButton_MoveDownRule: TToolButton
+          Left = 181
+          Top = 0
+          Caption = 'Down'
+          OnClick = ToolButton_MoveDownRuleClick
+        end
+      end
+
+      object ListView_Rules: TListView
+        Left = 0
+        Height = 411
+        Top = 26
+        Width = 250
+        Align = alClient
+        Checkboxes = True
+        Columns = <
+          item
+            Caption = 'Rule'
+            Width = 180
+          end
+          item
+            Caption = 'Description'
+            Width = 300
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 1
+        ViewStyle = vsReport
+        OnDblClick = ListView_RulesDblClick
+      end
+    end
+
+    object Splitter_Middle: TSplitter
+      Left = 250
+      Height = 437
+      Top = 0
+      Width = 5
+      ResizeAnchor = akLeft
+    end
+
+    object Panel_Files: TPanel
+      Left = 255
+      Height = 437
+      Top = 0
+      Width = 495
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+
+      object ToolBar_Files: TToolBar
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 495
+        AutoSize = True
+        ButtonHeight = 24
+        ButtonWidth = 60
+        EdgeBorders = [ebBottom]
+        List = True
+        ShowCaptions = True
+        TabOrder = 0
+        object ToolButton_ClearFiles: TToolButton
+          Left = 1
+          Top = 0
+          Caption = 'Clear'
+          OnClick = ToolButton_ClearFilesClick
+        end
+        object ToolButton_Sep2: TToolButton
+          Left = 61
+          Top = 0
+          Width = 8
+          Style = tbsSeparator
+        end
+        object ToolButton_Sorting: TToolButton
+          Left = 69
+          Top = 0
+          Caption = 'Sort'
+          OnClick = ToolButton_SortingClick
+        end
+      end
+
+      object ListView_Files: TListView
+        Left = 0
+        Height = 411
+        Top = 26
+        Width = 495
+        Align = alClient
+        Columns = <
+          item
+            Caption = '#'
+            Width = 40
+          end
+          item
+            Caption = 'Original Name'
+            Width = 180
+          end
+          item
+            Caption = 'New Name'
+            Width = 180
+          end
+          item
+            AutoSize = True
+            Caption = 'Path'
+          end>
+        MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
+        PopupMenu = PM_Files
+        TabOrder = 1
+        ViewStyle = vsReport
+      end
+    end
+  end
+
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 25
+    Top = 475
+    Width = 750
+    Panels = <
+      item
+        Text = 'Files: 0'
+        Width = 120
+      end
+      item
+        Text = 'Rules: 0'
+        Width = 120
+      end
+      item
+        Text = 'Ready'
+        Width = 200
+      end>
+  end
+
+  object PM_Files: TPopupMenu
+    Left = 400
+    Top = 200
+    object MI_RemoveSelected: TMenuItem
+      Caption = 'Remove Selected'
+      OnClick = MI_RemoveSelectedClick
+    end
+    object MI_ClearAll: TMenuItem
+      Caption = 'Clear All'
+      OnClick = MI_ClearAllClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object MI_SelectAll: TMenuItem
+      Caption = 'Select All'
+      OnClick = MI_SelectAllClick
+    end
+    object MI_InvertSelection: TMenuItem
+      Caption = 'Invert Selection'
+      OnClick = MI_InvertSelectionClick
+    end
+  end
+
+  object MainMenu: TMainMenu
+    Left = 50
+    Top = 200
+    object MenuItem_File: TMenuItem
+      Caption = '&File'
+      object MI_AddFiles: TMenuItem
+        Caption = 'Add &Files...'
+        OnClick = ToolButton_AddFilesClick
+      end
+      object MI_AddFolders: TMenuItem
+        Caption = 'Add F&olders...'
+        OnClick = ToolButton_AddFoldersClick
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object MI_Preview: TMenuItem
+        Caption = '&Preview'
+        ShortCut = 116
+        OnClick = ToolButton_PreviewClick
+      end
+      object MI_Rename: TMenuItem
+        Caption = '&Rename'
+        ShortCut = 117
+        OnClick = ToolButton_RenameClick
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object MI_Undo: TMenuItem
+        Caption = '&Undo Rename'
+        OnClick = MI_UndoClick
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object MI_Exit: TMenuItem
+        Caption = 'E&xit'
+        OnClick = MI_ExitClick
+      end
+    end
+    object MenuItem_Rules: TMenuItem
+      Caption = '&Rules'
+      object MI_AddRule: TMenuItem
+        Caption = '&Add Rule...'
+        OnClick = ToolButton_AddRuleClick
+      end
+      object MI_RemoveRule: TMenuItem
+        Caption = '&Remove Rule'
+        OnClick = ToolButton_RemoveRuleClick
+      end
+    end
+    object MenuItem_Help: TMenuItem
+      Caption = '&Help'
+      object MI_About: TMenuItem
+        Caption = '&About'
+        OnClick = MI_AboutClick
+      end
+    end
+  end
+
+  object OpenDialog: TOpenDialog
+    Title = 'Add Files'
+    Filter = 'All Files (*.*)|*.*'
+    Options = [ofAllowMultiSelect, ofFileMustExist]
+    Left = 100
+    Top = 200
+  end
+
+  object SelectDirectoryDialog: TSelectDirectoryDialog
+    Title = 'Select Folder'
+    Left = 150
+    Top = 200
+  end
+end

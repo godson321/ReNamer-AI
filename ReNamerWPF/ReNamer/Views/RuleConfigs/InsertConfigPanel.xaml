@@ -1,0 +1,56 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.InsertConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:ReNamer.Controls"
+             MinWidth="440" MinHeight="280">
+    <StackPanel Margin="16,12">
+        <!-- Insert text: Using unified Grid layout -->
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource Insert_Label}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtInsert" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"/>
+        </Grid>
+        <Button x:Name="btnMetaTag" Content="{DynamicResource Insert_MetaTag}" FontSize="11"
+                HorizontalAlignment="Left" Margin="88,0,0,8" Padding="12,3"
+                Style="{DynamicResource SecondaryButtonStyle}"/>
+        <!-- Where to insert -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource Insert_Where}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <RadioButton x:Name="rbPrefix" Content="{DynamicResource Insert_Prefix}" GroupName="InsertWhere" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                <RadioButton x:Name="rbSuffix" Content="{DynamicResource Insert_Suffix}" GroupName="InsertWhere" Margin="0,2" VerticalContentAlignment="Center"/>
+                <!-- Position row -->
+                <Grid Margin="0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton x:Name="rbPosition" Content="{DynamicResource Insert_Position}" GroupName="InsertWhere" VerticalContentAlignment="Center"/>
+                    <controls:NumericUpDown x:Name="nudPosition" Grid.Column="1" Width="60" MinValue="1" MaxValue="999999" Value="1"
+                                            Margin="8,0,12,0" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="chkRightToLeft" Grid.Column="2" Content="{DynamicResource Insert_RightToLeft}" VerticalContentAlignment="Center"/>
+                </Grid>
+                <!-- After text -->
+                <DockPanel Margin="0,2">
+                    <RadioButton x:Name="rbAfterText" Content="{DynamicResource Insert_AfterText}" GroupName="InsertWhere" VerticalContentAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBox x:Name="txtAfterText" Margin="8,0,0,0"/>
+                </DockPanel>
+                <!-- Before text -->
+                <DockPanel Margin="0,2">
+                    <RadioButton x:Name="rbBeforeText" Content="{DynamicResource Insert_BeforeText}" GroupName="InsertWhere" VerticalContentAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBox x:Name="txtBeforeText" Margin="8,0,0,0"/>
+                </DockPanel>
+                <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Insert_ReplaceCurrentName}" GroupName="InsertWhere" Margin="0,2" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,8,0,0" VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

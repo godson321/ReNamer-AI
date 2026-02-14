@@ -1,0 +1,225 @@
+﻿object Frame_RuleSerialize: TFrame_RuleSerialize
+  Left = 0
+  Height = 284
+  Top = 0
+  Width = 440
+  ClientHeight = 284
+  ClientWidth = 440
+  TabOrder = 0
+  DesignLeft = 392
+  DesignTop = 264
+  object CB_ResetEvery: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 99
+    Width = 80
+    Caption = 'Reset every:'
+    TabOrder = 3
+  end
+  object CheckBox_ResetIfFolderChanges: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 126
+    Width = 137
+    Caption = 'Reset if folder changes'
+    TabOrder = 5
+  end
+  object CheckBox_ResetIfFileNameChanges: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 152
+    Width = 155
+    Caption = 'Reset if file name changes'
+    TabOrder = 6
+  end
+  object CheckBox_SerializePadToLength: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 186
+    Width = 148
+    Caption = 'Pad with zeros to length:'
+    TabOrder = 7
+  end
+  object GB_InsertWhere: TGroupBox
+    Left = 224
+    Height = 144
+    Top = 16
+    Width = 193
+    Anchors = [akTop, akRight]
+    Caption = 'Insert where:'
+    ClientHeight = 124
+    ClientWidth = 189
+    TabOrder = 9
+    object RadioButton_SerializePosition: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 48
+      Width = 64
+      Caption = 'Position:'
+      TabOrder = 2
+    end
+    object RadioButton_SerializePrefix: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 6
+      Width = 48
+      Caption = 'Prefix'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object RadioButton_SerializeSuffix: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 27
+      Width = 48
+      Caption = 'Suffix'
+      TabOrder = 1
+    end
+    object SpinEdit_SerializePosition: TSpinEdit
+      Left = 120
+      Height = 23
+      Top = 46
+      Width = 49
+      MaxValue = 260
+      MinValue = 1
+      OnChange = SpinEdit_SerializePositionChange
+      OnKeyDown = SpinEditKeyDown
+      TabOrder = 4
+      Value = 1
+    end
+    object CheckBox_SkipExtension: TCheckBox
+      Left = 14
+      Height = 19
+      Top = 96
+      Width = 94
+      Caption = 'Skip extension'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+    end
+    object RadioButton_ReplaceCurrentName: TRadioButton
+      Left = 14
+      Height = 19
+      Top = 69
+      Width = 133
+      Caption = 'Replace current name'
+      TabOrder = 3
+    end
+  end
+  object SpinEdit_SerializePadToLength: TSpinEdit
+    Left = 224
+    Height = 23
+    Top = 184
+    Width = 57
+    MaxValue = 260
+    MinValue = 1
+    OnChange = SpinEdit_SerializePadToLengthChange
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 8
+    Value = 1
+  end
+  object Label_IndexStarts: TLabel
+    Left = 24
+    Height = 15
+    Top = 27
+    Width = 63
+    Caption = 'Index starts:'
+    ParentColor = False
+  end
+  object Label_Step: TLabel
+    Left = 24
+    Height = 15
+    Top = 75
+    Width = 26
+    Caption = 'Step:'
+    ParentColor = False
+  end
+  object Label_Repeat: TLabel
+    Left = 24
+    Height = 15
+    Top = 51
+    Width = 39
+    Caption = 'Repeat:'
+    ParentColor = False
+  end
+  object SpinEdit_SerializeIndex: TSpinEdit
+    Left = 138
+    Height = 23
+    Top = 24
+    Width = 57
+    MaxValue = 999999999
+    MinValue = -999999999
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 0
+    Value = 1
+  end
+  object SpinEdit_SerializeStep: TSpinEdit
+    Left = 138
+    Height = 23
+    Top = 72
+    Width = 57
+    MaxValue = 99999999
+    MinValue = -99999999
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 2
+    Value = 1
+  end
+  object SE_ResetEveryCount: TSpinEdit
+    Left = 138
+    Height = 23
+    Top = 97
+    Width = 57
+    MaxValue = 99999999
+    MinValue = 1
+    OnChange = SE_ResetEveryCountChange
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 4
+    Value = 1
+  end
+  object SE_Repeat: TSpinEdit
+    Left = 138
+    Height = 23
+    Top = 48
+    Width = 57
+    MaxValue = 99999999
+    MinValue = 1
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 1
+    Value = 1
+  end
+  object ComboBox_NumberingSystem: TComboBox
+    Left = 24
+    Height = 23
+    Top = 240
+    Width = 176
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 10
+    OnChange = ComboBox_NumberingSystemChange
+  end
+  object Label_NumberingSystem: TLabel
+    Left = 24
+    Height = 15
+    Top = 219
+    Width = 104
+    Caption = 'Numbering system:'
+    ParentColor = False
+  end
+  object Edit_CustomNumberingSymbols: TEdit
+    Left = 224
+    Height = 23
+    Top = 240
+    Width = 193
+    TabOrder = 11
+  end
+  object Label_CustomNumberingSymbols: TLabel
+    Left = 224
+    Height = 15
+    Top = 222
+    Width = 154
+    Caption = 'Custom numbering symbols:'
+    ParentColor = False
+  end
+end
+

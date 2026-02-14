@@ -1,0 +1,721 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- 应用标题 -->
+    <sys:String x:Key="AppTitle">ReNamer - 文件批量重命名工具</sys:String>
+    
+    <!-- 菜单 - 文件 -->
+    <sys:String x:Key="Menu_File">文件(_F)</sys:String>
+    <sys:String x:Key="Menu_AddFiles">添加文件(_A)...</sys:String>
+    <sys:String x:Key="Menu_AddFolders">添加文件夹(_D)...</sys:String>
+    <sys:String x:Key="Menu_NewProject">新建项目(_N)</sys:String>
+    <sys:String x:Key="Menu_NewInstance">新建实例(_I)</sys:String>
+    <sys:String x:Key="Menu_AddPaths">添加路径(_P)...</sys:String>
+    <sys:String x:Key="Menu_PasteFiles">粘贴文件(_P)</sys:String>
+    <sys:String x:Key="Menu_LoadPreset">加载预设(_L)...</sys:String>
+    <sys:String x:Key="Menu_SavePreset">保存预设(_S)</sys:String>
+    <sys:String x:Key="Menu_SavePresetAs">预设另存为(_A)...</sys:String>
+    <sys:String x:Key="Menu_CreatePresetLinks">创建链接</sys:String>
+    <sys:String x:Key="Menu_Exit">退出(_X)</sys:String>
+    
+    <!-- 菜单 - 规则 -->
+    <sys:String x:Key="Menu_Rules">规则(_R)</sys:String>
+    <sys:String x:Key="Menu_AddRule">添加规则(_A)...</sys:String>
+    <sys:String x:Key="Menu_RemoveRule">删除规则(_R)</sys:String>
+    <sys:String x:Key="Menu_MoveUp">上移(_U)</sys:String>
+    <sys:String x:Key="Menu_MoveDown">下移(_D)</sys:String>
+    
+    <!-- 菜单 - 操作 -->
+    <sys:String x:Key="Menu_Actions">操作(_A)</sys:String>
+    <sys:String x:Key="Menu_Preview">预览(_P)</sys:String>
+    <sys:String x:Key="Menu_Rename">重命名(_R)</sys:String>
+    <sys:String x:Key="Menu_Undo">撤销重命名(_U)</sys:String>
+    
+    <!-- 菜单 - 帮助 -->
+    <sys:String x:Key="Menu_Help">帮助(_H)</sys:String>
+    <sys:String x:Key="Menu_About">关于(_A)</sys:String>
+    <sys:String x:Key="Menu_Language">语言(_L)</sys:String>
+    <sys:String x:Key="Menu_Presets">预设</sys:String>
+    <sys:String x:Key="Menu_Settings">设置</sys:String>
+    <sys:String x:Key="Menu_AllSettings">全部设置...</sys:String>
+    <sys:String x:Key="Menu_Settings_General">常规</sys:String>
+    <sys:String x:Key="Menu_Settings_Preview">预览</sys:String>
+    <sys:String x:Key="Menu_Settings_Rename">重命名</sys:String>
+    <sys:String x:Key="Menu_Settings_MetaTags">元标签</sys:String>
+    <sys:String x:Key="Menu_Settings_Misc">其他</sys:String>
+    <sys:String x:Key="Menu_Settings_Filters">过滤器</sys:String>
+    <sys:String x:Key="Menu_ManagePresets">管理预设...</sys:String>
+    <sys:String x:Key="Menu_BrowsePresetsFolder">打开预设文件夹</sys:String>
+    <sys:String x:Key="Menu_ImportPreset">导入预设...</sys:String>
+    <sys:String x:Key="Menu_RescanPresets">重新扫描预设</sys:String>
+    <sys:String x:Key="Menu_ExportClipboard">导出到剪贴板</sys:String>
+    <sys:String x:Key="Menu_AnalyzeName">分析名称</sys:String>
+    <sys:String x:Key="Menu_HelpOnline">在线帮助</sys:String>
+    <sys:String x:Key="Menu_QuickGuide">快速指南</sys:String>
+    <sys:String x:Key="Menu_UserManual">用户手册</sys:String>
+    <sys:String x:Key="Menu_Forum">论坛</sys:String>
+    <sys:String x:Key="Menu_LiteVsPro">Lite 与 Pro</sys:String>
+    <sys:String x:Key="Menu_Purchase">购买</sys:String>
+    <sys:String x:Key="Menu_Register">注册...</sys:String>
+    <sys:String x:Key="Menu_Unregister">取消注册</sys:String>
+    <sys:String x:Key="Menu_VersionHistory">版本历史</sys:String>
+    <sys:String x:Key="Menu_Copyrights">版权声明</sys:String>
+    
+    <!-- 工具栏 -->
+    <sys:String x:Key="Toolbar_AddFiles">添加文件</sys:String>
+    <sys:String x:Key="Toolbar_AddFolders">添加文件夹</sys:String>
+    <sys:String x:Key="Toolbar_Preview">预览</sys:String>
+    <sys:String x:Key="Toolbar_Rename">重命名</sys:String>
+    <sys:String x:Key="Toolbar_Add">添加</sys:String>
+    <sys:String x:Key="Toolbar_Remove">删除</sys:String>
+    <sys:String x:Key="Toolbar_Up">上移</sys:String>
+    <sys:String x:Key="Toolbar_Down">下移</sys:String>
+    
+    <!-- 文件工具栏 -->
+    <sys:String x:Key="Toolbar_Files">文件</sys:String>
+    <sys:String x:Key="Toolbar_Filters">过滤器</sys:String>
+    <sys:String x:Key="Toolbar_Options">选项</sys:String>
+    <sys:String x:Key="Toolbar_Export">导出</sys:String>
+    <sys:String x:Key="Toolbar_Analyze">分析</sys:String>
+    <sys:String x:Key="Toolbar_Columns">列</sys:String>
+    <sys:String x:Key="Toolbar_Validate">校验</sys:String>
+    
+    <!-- 列表头 -->
+    <sys:String x:Key="Column_State">状态</sys:String>
+    <sys:String x:Key="Column_Path">路径</sys:String>
+    <sys:String x:Key="Column_Name">文件名</sys:String>
+    <sys:String x:Key="Column_NewName">新文件名</sys:String>
+    <sys:String x:Key="Column_Extension">扩展名</sys:String>
+    <sys:String x:Key="Column_Size">大小</sys:String>
+    <sys:String x:Key="Column_Rule">规则</sys:String>
+    <sys:String x:Key="Column_Statement">描述</sys:String>
+    <sys:String x:Key="Column_Error">错误</sys:String>
+    <sys:String x:Key="Column_Folder">文件夹</sys:String>
+    <sys:String x:Key="Column_NewPath">新路径</sys:String>
+    <sys:String x:Key="Column_SizeKB">大小 KB</sys:String>
+    <sys:String x:Key="Column_SizeMB">大小 MB</sys:String>
+    <sys:String x:Key="Column_Created">创建时间</sys:String>
+    <sys:String x:Key="Column_Modified">修改时间</sys:String>
+    <sys:String x:Key="Column_ExifDate">Exif 日期</sys:String>
+    <sys:String x:Key="Column_NameDigits">名称数字</sys:String>
+    <sys:String x:Key="Column_PathDigits">路径数字</sys:String>
+    <sys:String x:Key="Column_NameLength">名称长度</sys:String>
+    <sys:String x:Key="Column_NewNameLength">新名称长度</sys:String>
+    <sys:String x:Key="Column_PathLength">路径长度</sys:String>
+    <sys:String x:Key="Column_NewPathLength">新路径长度</sys:String>
+    <sys:String x:Key="Column_OldPath">旧路径</sys:String>
+
+    <!-- 右键菜单 - 规则 -->
+    <sys:String x:Key="CtxRule_Add">添加规则</sys:String>
+    <sys:String x:Key="CtxRule_AddAbove">在上方添加规则</sys:String>
+    <sys:String x:Key="CtxRule_AddBelow">在下方添加规则</sys:String>
+    <sys:String x:Key="CtxRule_Edit">编辑规则</sys:String>
+    <sys:String x:Key="CtxRule_Duplicate">复制规则</sys:String>
+    <sys:String x:Key="CtxRule_Remove">删除规则</sys:String>
+    <sys:String x:Key="CtxRule_RemoveAll">删除所有规则</sys:String>
+    <sys:String x:Key="CtxRule_MoveUp">上移</sys:String>
+    <sys:String x:Key="CtxRule_MoveDown">下移</sys:String>
+    <sys:String x:Key="CtxRule_Comment">备注...</sys:String>
+    <sys:String x:Key="CtxRule_SelectAll">全选</sys:String>
+    <sys:String x:Key="CtxRule_MarkAll">全部标记</sys:String>
+    <sys:String x:Key="CtxRule_UnmarkAll">取消全部标记</sys:String>
+
+    <!-- 右键菜单 - 文件 -->
+    <sys:String x:Key="CtxFile_EditNewName">编辑新名称</sys:String>
+    <sys:String x:Key="CtxFile_Shell">系统</sys:String>
+    <sys:String x:Key="CtxFile_OpenFile">打开文件</sys:String>
+    <sys:String x:Key="CtxFile_OpenFolder">打开所在文件夹</sys:String>
+    <sys:String x:Key="CtxFile_OpenWithNotepad">用记事本打开</sys:String>
+    <sys:String x:Key="CtxFile_Properties">文件属性</sys:String>
+    <sys:String x:Key="CtxFile_CutToClipboard">剪切到剪贴板</sys:String>
+    <sys:String x:Key="CtxFile_CopyToClipboard">复制到剪贴板</sys:String>
+    <sys:String x:Key="CtxFile_DeleteRecycle">删除到回收站</sys:String>
+    <sys:String x:Key="CtxFile_Mark">标记</sys:String>
+    <sys:String x:Key="CtxFile_MarkItem">标记</sys:String>
+    <sys:String x:Key="CtxFile_UnmarkItem">取消标记</sys:String>
+    <sys:String x:Key="CtxFile_InvertMarking">反转标记</sys:String>
+    <sys:String x:Key="CtxFile_MarkChangedIncCase">仅标记变更（含大小写）</sys:String>
+    <sys:String x:Key="CtxFile_MarkChangedExcCase">仅标记变更（不含大小写）</sys:String>
+    <sys:String x:Key="CtxFile_MarkByMask">按掩码标记...</sys:String>
+    <sys:String x:Key="CtxFile_MarkOnlySelected">仅标记选中项</sys:String>
+    <sys:String x:Key="CtxFile_Clear">清除</sys:String>
+    <sys:String x:Key="CtxFile_ClearAll">清除全部</sys:String>
+    <sys:String x:Key="CtxFile_ClearRenamed">清除已重命名</sys:String>
+    <sys:String x:Key="CtxFile_ClearFailed">清除失败项</sys:String>
+    <sys:String x:Key="CtxFile_ClearValid">清除有效项</sys:String>
+    <sys:String x:Key="CtxFile_ClearInvalid">清除无效项</sys:String>
+    <sys:String x:Key="CtxFile_ClearNotChanged">清除未变化项</sys:String>
+    <sys:String x:Key="CtxFile_ClearMarked">清除已标记</sys:String>
+    <sys:String x:Key="CtxFile_ClearNotMarked">清除未标记</sys:String>
+    <sys:String x:Key="CtxFile_Select">选择</sys:String>
+    <sys:String x:Key="CtxFile_SelectAll">全选</sys:String>
+    <sys:String x:Key="CtxFile_InvertSelection">反选</sys:String>
+    <sys:String x:Key="CtxFile_SelectByNameLength">按名称长度选择...</sys:String>
+    <sys:String x:Key="CtxFile_SelectByExtension">按扩展名选择...</sys:String>
+    <sys:String x:Key="CtxFile_SelectByMask">按掩码选择...</sys:String>
+    <sys:String x:Key="CtxFile_Move">移动</sys:String>
+    <sys:String x:Key="CtxFile_MoveUp">上移</sys:String>
+    <sys:String x:Key="CtxFile_MoveDown">下移</sys:String>
+    <sys:String x:Key="CtxFile_RemoveSelected">移除选中项</sys:String>
+    
+    <!-- 规则名称 -->
+    <sys:String x:Key="Rule_Replace">替换</sys:String>
+    <sys:String x:Key="Rule_Insert">插入</sys:String>
+    <sys:String x:Key="Rule_Delete">删除</sys:String>
+    <sys:String x:Key="Rule_Remove">移除</sys:String>
+    <sys:String x:Key="Rule_Case">大小写</sys:String>
+    <sys:String x:Key="Rule_Serialize">序列化</sys:String>
+    <sys:String x:Key="Rule_Extension">扩展名</sys:String>
+    <sys:String x:Key="Rule_RegEx">正则表达式</sys:String>
+    <sys:String x:Key="Rule_Padding">填充</sys:String>
+    <sys:String x:Key="Rule_Strip">剥离</sys:String>
+    <sys:String x:Key="Rule_CleanUp">清理</sys:String>
+    <sys:String x:Key="Rule_Transliterate">音译</sys:String>
+    <sys:String x:Key="Rule_Rearrange">重排</sys:String>
+    <sys:String x:Key="Rule_ReformatDate">日期格式化</sys:String>
+    <sys:String x:Key="Rule_Randomize">随机化</sys:String>
+    <sys:String x:Key="Rule_PascalScript">PascalScript</sys:String>
+    <sys:String x:Key="Rule_UserInput">用户输入</sys:String>
+    <sys:String x:Key="Rule_Mapping">映射</sys:String>
+    
+    <!-- 规则描述 -->
+    <sys:String x:Key="RuleDesc_Replace">查找并替换文件名中的文本</sys:String>
+    <sys:String x:Key="RuleDesc_Insert">在指定位置插入文本</sys:String>
+    <sys:String x:Key="RuleDesc_Delete">从指定位置删除字符</sys:String>
+    <sys:String x:Key="RuleDesc_Remove">移除匹配的文本</sys:String>
+    <sys:String x:Key="RuleDesc_Case">更改字母大小写</sys:String>
+    <sys:String x:Key="RuleDesc_Serialize">为文件名添加序列号</sys:String>
+    <sys:String x:Key="RuleDesc_Extension">更改或修改文件扩展名</sys:String>
+    <sys:String x:Key="RuleDesc_RegEx">使用正则表达式进行模式匹配</sys:String>
+    
+    <!-- 规则配置 -->
+    <sys:String x:Key="Config_Find">查找:</sys:String>
+    <sys:String x:Key="Config_Replace">替换:</sys:String>
+    <sys:String x:Key="Config_CaseSensitive">区分大小写</sys:String>
+    <sys:String x:Key="Config_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Config_UseRegex">使用正则表达式</sys:String>
+    <sys:String x:Key="Config_Occurrence">替换次数:</sys:String>
+    <sys:String x:Key="Config_All">全部</sys:String>
+    <sys:String x:Key="Config_First">第一个</sys:String>
+    <sys:String x:Key="Config_Last">最后一个</sys:String>
+    <sys:String x:Key="Config_Position">位置:</sys:String>
+    <sys:String x:Key="Config_Beginning">开头</sys:String>
+    <sys:String x:Key="Config_End">结尾</sys:String>
+    <sys:String x:Key="Config_At">位置</sys:String>
+    <sys:String x:Key="Config_Text">文本:</sys:String>
+    <sys:String x:Key="Config_Expression">表达式:</sys:String>
+    
+    <!-- 大小写选项 -->
+    <sys:String x:Key="Case_Upper">大写</sys:String>
+    <sys:String x:Key="Case_Lower">小写</sys:String>
+    <sys:String x:Key="Case_Title">首字母大写</sys:String>
+    <sys:String x:Key="Case_Sentence">句首大写</sys:String>
+    <sys:String x:Key="Case_Invert">反转大小写</sys:String>
+    
+    <!-- 对话框 -->
+    <sys:String x:Key="Dialog_AddRule">添加规则</sys:String>
+    <sys:String x:Key="Dialog_EditRule">编辑规则</sys:String>
+    <sys:String x:Key="Dialog_SelectRule">选择要添加的规则:</sys:String>
+    <sys:String x:Key="Dialog_OK">确定</sys:String>
+    <sys:String x:Key="Dialog_Cancel">取消</sys:String>
+    <sys:String x:Key="Dialog_Close">关闭</sys:String>
+    <sys:String x:Key="Dialog_Apply">应用</sys:String>
+    <sys:String x:Key="Dialog_Configuration">配置:</sys:String>
+    
+    <!-- 插入规则 -->
+    <sys:String x:Key="Insert_Label">插入:</sys:String>
+    <sys:String x:Key="Insert_MetaTag">插入元信息标签</sys:String>
+    <sys:String x:Key="Insert_Prefix">前缀</sys:String>
+    <sys:String x:Key="Insert_Suffix">后缀</sys:String>
+    <sys:String x:Key="Insert_Position">位置:</sys:String>
+    <sys:String x:Key="Insert_RightToLeft">从右到左</sys:String>
+    <sys:String x:Key="Insert_AfterText">到文本后:</sys:String>
+    <sys:String x:Key="Insert_BeforeText">到文本前:</sys:String>
+    <sys:String x:Key="Insert_ReplaceCurrentName">替换当前名称</sys:String>
+    
+    <!-- 替换规则 -->
+    <sys:String x:Key="Replace_Find">查找:</sys:String>
+    <sys:String x:Key="Replace_Replace">替换:</sys:String>
+    <sys:String x:Key="Replace_Occurrences">替换次数:</sys:String>
+    <sys:String x:Key="Replace_All">全部</sys:String>
+    <sys:String x:Key="Replace_First">第一个</sys:String>
+    <sys:String x:Key="Replace_Last">最后一个</sys:String>
+    <sys:String x:Key="Replace_CaseSensitive">区分大小写</sys:String>
+    <sys:String x:Key="Replace_WholeWords">全字匹配</sys:String>
+    <sys:String x:Key="Replace_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Replace_UseWildcards">将 '?', '*', '[', ']' 解释为通配符，'$n' 为反向引用?</sys:String>
+    
+    <!-- 删除规则 -->
+    <sys:String x:Key="Delete_From">从:</sys:String>
+    <sys:String x:Key="Delete_Until">到:</sys:String>
+    <sys:String x:Key="Delete_Position">位置:</sys:String>
+    <sys:String x:Key="Delete_Delimiter">分隔符:</sys:String>
+    <sys:String x:Key="Delete_Count">数量:</sys:String>
+    <sys:String x:Key="Delete_TillEnd">到末尾</sys:String>
+    <sys:String x:Key="Delete_CurrentName">删除当前名称</sys:String>
+    <sys:String x:Key="Delete_RightToLeft">从右到左</sys:String>
+    <sys:String x:Key="Delete_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Delete_LeaveDelimiter">不删除分隔符</sys:String>
+    
+    <!-- 移除规则 -->
+    <sys:String x:Key="Remove_Label">移除:</sys:String>
+    <sys:String x:Key="Remove_Occurrences">出现次数:</sys:String>
+    
+    <!-- 正则规则 -->
+    <sys:String x:Key="Regex_Expression">表达式:</sys:String>
+    <sys:String x:Key="Regex_Replace">替换:</sys:String>
+    <sys:String x:Key="Regex_Hint">提示: 使用 $1..$9 引用子表达式。</sys:String>
+    <sys:String x:Key="Regex_CaseSensitive">区分大小写</sys:String>
+    <sys:String x:Key="Regex_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Regex_Help">帮助</sys:String>
+    
+    <!-- 插入规则 - 位置标签 -->
+    <sys:String x:Key="Insert_Where">位置:</sys:String>
+
+    <!-- 大小写规则 -->
+    <sys:String x:Key="Case_GroupTitle">大小写更改:</sys:String>
+    <sys:String x:Key="Case_Capitalize">每个单词首字母大写</sys:String>
+    <sys:String x:Key="Case_AllLower">全部小写</sys:String>
+    <sys:String x:Key="Case_AllUpper">全部大写</sys:String>
+    <sys:String x:Key="Case_FirstLetter">首字母大写</sys:String>
+    <sys:String x:Key="Case_NoneOfAbove">(以上都不选)</sys:String>
+    <sys:String x:Key="Case_PreserveCase">保留原大小写</sys:String>
+    <sys:String x:Key="Case_ForceCase">强制片段大小写:</sys:String>
+    <sys:String x:Key="Case_ForceCaseHint">提示: 用逗号分隔的片段将保持输入时的大小写，例如: CD,DVD,DJ</sys:String>
+    <sys:String x:Key="Case_ExtAlwaysLower">扩展名始终小写</sys:String>
+    <sys:String x:Key="Case_ExtAlwaysUpper">扩展名始终大写</sys:String>
+
+    <!-- 序列化规则 -->
+    <sys:String x:Key="Serialize_IndexStarts">起始索引:</sys:String>
+    <sys:String x:Key="Serialize_Repeat">重复:</sys:String>
+    <sys:String x:Key="Serialize_Step">步长:</sys:String>
+    <sys:String x:Key="Serialize_ResetEvery">每隔重置:</sys:String>
+    <sys:String x:Key="Serialize_ResetIfFolder">文件夹更改时重置</sys:String>
+    <sys:String x:Key="Serialize_ResetIfFileName">文件名更改时重置</sys:String>
+    <sys:String x:Key="Serialize_PadZeros">填充零到长度:</sys:String>
+    <sys:String x:Key="Serialize_InsertWhere">插入位置:</sys:String>
+    <sys:String x:Key="Serialize_Prefix">前缀</sys:String>
+    <sys:String x:Key="Serialize_Suffix">后缀</sys:String>
+    <sys:String x:Key="Serialize_Position">位置:</sys:String>
+    <sys:String x:Key="Serialize_ReplaceCurrentName">替换当前名称</sys:String>
+    <sys:String x:Key="Serialize_NumberingSystem">编号系统:</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Decimal">十进制数字（0..9）</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Hexadecimal">十六进制（0..9, A..F）</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Octal">八进制（0..7）</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Binary">二进制（0..1）</sys:String>
+    <sys:String x:Key="Serialize_Numbering_Custom">自定义</sys:String>
+    <sys:String x:Key="Serialize_CustomSymbols">自定义编号符号:</sys:String>
+
+    <!-- 扩展名规则 -->
+    <sys:String x:Key="Extension_NewExtension">新扩展名（不含点）:</sys:String>
+    <sys:String x:Key="Extension_AppendToOriginal">附加到原文件名</sys:String>
+    <sys:String x:Key="Extension_DetectBinSign">使用“二进制签名”检测</sys:String>
+    <sys:String x:Key="Extension_Hint">注意: 某些文件可能有多个与其数据类型匹配的扩展名，例如: doc/ppt/xls 具有相同的签名。无法识别的文件将保持不变。</sys:String>
+    <sys:String x:Key="Extension_RemoveDuplicate">移除重复扩展名</sys:String>
+    <sys:String x:Key="Extension_CaseSensitive">区分大小写</sys:String>
+
+    <!-- 移除规则补充 -->
+    <sys:String x:Key="Remove_All">全部</sys:String>
+    <sys:String x:Key="Remove_First">第一个</sys:String>
+    <sys:String x:Key="Remove_Last">最后一个</sys:String>
+    <sys:String x:Key="Remove_CaseSensitive">区分大小写</sys:String>
+    <sys:String x:Key="Remove_WholeWords">全字匹配</sys:String>
+    <sys:String x:Key="Remove_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Remove_UseWildcards">将符号 '?', '*', '[', ']' 解释为通配符?</sys:String>
+
+    <!-- 消息 -->
+    <sys:String x:Key="Msg_ConfirmRename">确定要重命名 {0} 个文件吗？</sys:String>
+    <sys:String x:Key="Msg_RenameComplete">重命名完成</sys:String>
+    <sys:String x:Key="Msg_RenameResult">成功: {0} 个文件&#x0a;失败: {1} 个文件</sys:String>
+    <sys:String x:Key="Msg_About">ReNamer WPF 版本&#x0a;基于 ReNamer 7.8&#x0a;&#x0a;仅供学习使用</sys:String>
+    <sys:String x:Key="Msg_ComingSoon">即将推出</sys:String>
+    
+    <!-- 状态 -->
+    <sys:String x:Key="Status_Ready">就绪</sys:String>
+    <sys:String x:Key="Status_Previewing">正在预览...</sys:String>
+    <sys:String x:Key="Status_Renaming">正在重命名...</sys:String>
+    <sys:String x:Key="Status_FilesSummary">文件: 0 | 已标记: 0 | 已选择: 0</sys:String>
+
+    <!-- 对话框 -->
+    <sys:String x:Key="Dialog_Settings">设置</sys:String>
+    <sys:String x:Key="Dialog_Filters">过滤器</sys:String>
+    <sys:String x:Key="Dialog_ClearAll">清除全部</sys:String>
+    <sys:String x:Key="Dialog_RuleDescription">说明</sys:String>
+
+    <!-- 标签页 -->
+    <sys:String x:Key="Tab_General">常规</sys:String>
+    <sys:String x:Key="Tab_Preview">预览</sys:String>
+    <sys:String x:Key="Tab_Rename">重命名</sys:String>
+    <sys:String x:Key="Tab_Misc">其他</sys:String>
+
+    <!-- 设置 -->
+    <sys:String x:Key="Settings_Startup">启动</sys:String>
+    <sys:String x:Key="Settings_Interface">界面</sys:String>
+    <sys:String x:Key="Settings_PreviewOptions">预览选项</sys:String>
+    <sys:String x:Key="Settings_Validation">校验</sys:String>
+    <sys:String x:Key="Settings_RenameOptions">重命名选项</sys:String>
+    <sys:String x:Key="Settings_ConflictResolution">冲突处理</sys:String>
+    <sys:String x:Key="Settings_MetaTags">元标签</sys:String>
+    <sys:String x:Key="Settings_MiscHint">此处可添加更多设置。</sys:String>
+    <sys:String x:Key="Settings_LoadLastPreset">启动时加载上次预设</sys:String>
+    <sys:String x:Key="Settings_RememberWindowPos">记住窗口位置</sys:String>
+    <sys:String x:Key="Settings_CheckUpdates">启动时检查更新</sys:String>
+    <sys:String x:Key="Settings_Language">语言:</sys:String>
+    <sys:String x:Key="Settings_Theme">主题:</sys:String>
+    <sys:String x:Key="Settings_ConfirmExit">退出时确认</sys:String>
+    <sys:String x:Key="Settings_ShowInTray">显示在系统托盘</sys:String>
+    <sys:String x:Key="Settings_AutoPreviewRules">规则变更时自动预览</sys:String>
+    <sys:String x:Key="Settings_AutoPreviewOnAdd">添加文件时自动预览</sys:String>
+    <sys:String x:Key="Settings_HighlightChanges">高亮已更改名称</sys:String>
+    <sys:String x:Key="Settings_AutoValidate">自动校验新名称</sys:String>
+    <sys:String x:Key="Settings_WarnInvalidChars">无效字符提示</sys:String>
+    <sys:String x:Key="Settings_WarnLongPaths">路径超过 260 字符提示</sys:String>
+    <sys:String x:Key="Settings_ConfirmRename">重命名前确认</sys:String>
+    <sys:String x:Key="Settings_AutoRemoveRenamed">自动移除已重命名文件</sys:String>
+    <sys:String x:Key="Settings_CreateUndoLog">创建撤销日志</sys:String>
+    <sys:String x:Key="Settings_ConflictSkip">跳过冲突文件</sys:String>
+    <sys:String x:Key="Settings_ConflictAddSuffix">自动添加数字后缀</sys:String>
+    <sys:String x:Key="Settings_ConflictOverwrite">覆盖已有文件（危险）</sys:String>
+    <sys:String x:Key="Settings_ResolveMetaTags">在插入/替换规则中解析元标签</sys:String>
+    <sys:String x:Key="Language_Chinese">中文</sys:String>
+    <sys:String x:Key="Language_English">English</sys:String>
+    <sys:String x:Key="Theme_Light">浅色</sys:String>
+    <sys:String x:Key="Theme_Dark">深色</sys:String>
+
+    <!-- 过滤器 -->
+    <sys:String x:Key="Filters_NameFilter">文件名过滤</sys:String>
+    <sys:String x:Key="Filters_ExtFilter">扩展名过滤</sys:String>
+    <sys:String x:Key="Filters_SizeFilter">大小过滤</sys:String>
+    <sys:String x:Key="Filters_AttrFilter">属性过滤</sys:String>
+    <sys:String x:Key="Filters_EnableNameFilter">启用文件名过滤</sys:String>
+    <sys:String x:Key="Filters_Pattern">模式:</sys:String>
+    <sys:String x:Key="Filters_WildcardsHint">通配符：* 与 ?</sys:String>
+    <sys:String x:Key="Filters_Include">包含</sys:String>
+    <sys:String x:Key="Filters_Exclude">排除</sys:String>
+    <sys:String x:Key="Filters_EnableExtFilter">启用扩展名过滤</sys:String>
+    <sys:String x:Key="Filters_Extensions">扩展名:</sys:String>
+    <sys:String x:Key="Filters_ExtensionsHint">用 ; 分隔，例如 .jpg;.png;.bmp</sys:String>
+    <sys:String x:Key="Filters_EnableSizeFilter">启用大小过滤</sys:String>
+    <sys:String x:Key="Filters_Min">最小:</sys:String>
+    <sys:String x:Key="Filters_Max">最大:</sys:String>
+    <sys:String x:Key="Filters_Unit_B">B</sys:String>
+    <sys:String x:Key="Filters_Unit_KB">KB</sys:String>
+    <sys:String x:Key="Filters_Unit_MB">MB</sys:String>
+    <sys:String x:Key="Filters_Unit_GB">GB</sys:String>
+    <sys:String x:Key="Filters_EnableAttrFilter">启用</sys:String>
+    <sys:String x:Key="Filters_ReadOnly">只读</sys:String>
+    <sys:String x:Key="Filters_Hidden">隐藏</sys:String>
+    <sys:String x:Key="Filters_System">系统</sys:String>
+
+    <!-- 规则配置通用 -->
+    <sys:String x:Key="Config_RightToLeft">从右到左</sys:String>
+    <sys:String x:Key="RuleCfg_SeparateItems">分隔多个项</sys:String>
+    <sys:String x:Key="RuleCfg_InsertMetaTag">插入元标签（Ctrl+Ins）</sys:String>
+
+    <!-- CleanUp -->
+    <sys:String x:Key="CleanUp_Dot">点（.）</sys:String>
+    <sys:String x:Key="CleanUp_Comma">逗号（,）</sys:String>
+    <sys:String x:Key="CleanUp_SkipVersions">跳过数字序列，例如版本号 1.2.3.4</sys:String>
+    <sys:String x:Key="CleanUp_FixSpaces">修正空格：仅保留一个空格，且去除首尾空格</sys:String>
+    <sys:String x:Key="CleanUp_NormalizeSpaces">将 Unicode 空格规范为普通空格</sys:String>
+    <sys:String x:Key="CleanUp_StripEmoji">移除 Unicode 表情符号</sys:String>
+    <sys:String x:Key="CleanUp_StripMarks">移除 Unicode 标记（组合/变音/重音）</sys:String>
+    <sys:String x:Key="CleanUp_CamelCase">在大写字母前插入空格（例如 CamelCase）</sys:String>
+    <sys:String x:Key="CleanUp_PrepareSharePoint">为 SharePoint 准备（始终包含扩展名）</sys:String>
+
+    <!-- Mapping -->
+    <sys:String x:Key="Mapping_Table">表格</sys:String>
+    <sys:String x:Key="Mapping_AllowReuse">允许复用</sys:String>
+    <sys:String x:Key="Mapping_PartialMatch">部分匹配</sys:String>
+    <sys:String x:Key="Mapping_Inverse">反向映射</sys:String>
+
+    <!-- Padding -->
+    <sys:String x:Key="Padding_AddZero">补零到长度:</sys:String>
+    <sys:String x:Key="Padding_RemoveZero">移除补零</sys:String>
+    <sys:String x:Key="Padding_AddPadding">补齐到长度:</sys:String>
+    <sys:String x:Key="Padding_Characters">填充字符:</sys:String>
+    <sys:String x:Key="Padding_Position">位置:</sys:String>
+    <sys:String x:Key="Padding_Left">左</sys:String>
+    <sys:String x:Key="Padding_Right">右</sys:String>
+
+    <!-- PascalScript -->
+    <sys:String x:Key="PascalScript_Scripts">脚本</sys:String>
+    <sys:String x:Key="PascalScript_EnableMetaTags">启用元标签</sys:String>
+    <sys:String x:Key="PascalScript_CounterStart">计数起始:</sys:String>
+    <sys:String x:Key="PascalScript_Step">步长:</sys:String>
+    <sys:String x:Key="PascalScript_Digits">位数:</sys:String>
+
+    <!-- Randomize -->
+    <sys:String x:Key="Randomize_Length">随机序列长度:</sys:String>
+    <sys:String x:Key="Randomize_Unique">尽量保持唯一</sys:String>
+    <sys:String x:Key="Randomize_Digits">数字（0..9）</sys:String>
+    <sys:String x:Key="Randomize_Letters">英文字母（a..z）</sys:String>
+    <sys:String x:Key="Randomize_UserDefined">自定义:</sys:String>
+    <sys:String x:Key="Randomize_Prefix">前缀</sys:String>
+    <sys:String x:Key="Randomize_Suffix">后缀</sys:String>
+    <sys:String x:Key="Randomize_Position">位置:</sys:String>
+    <sys:String x:Key="Randomize_ReplaceCurrent">替换当前名称</sys:String>
+
+    <!-- Rearrange -->
+    <sys:String x:Key="Rearrange_SplitUsing">分割方式:</sys:String>
+    <sys:String x:Key="Rearrange_Delimiters">分隔符</sys:String>
+    <sys:String x:Key="Rearrange_Positions">位置</sys:String>
+    <sys:String x:Key="Rearrange_ExactPattern">精确分隔符模式</sys:String>
+    <sys:String x:Key="Rearrange_NewPattern">新模式:</sys:String>
+    <sys:String x:Key="Rearrange_Hint">提示：使用 $1..$N 引用分段，$-1..$-N 从末尾引用，$0 表示原名。</sys:String>
+    <sys:String x:Key="Rearrange_InsertSeparator">| 分隔符</sys:String>
+    <sys:String x:Key="Rearrange_InsertSeparatorTip">将分隔符插入分隔符列表</sys:String>
+    <sys:String x:Key="Rearrange_InsertMetaTag">📎 元标签</sys:String>
+    <sys:String x:Key="Rearrange_InsertMetaTagTip">将元标签插入新模式</sys:String>
+
+    <!-- Reformat Date -->
+    <sys:String x:Key="ReformatDate_FindFormats">查找日期/时间格式:</sys:String>
+    <sys:String x:Key="ReformatDate_ConvertTo">转换为日期/时间格式:</sys:String>
+    <sys:String x:Key="ReformatDate_MatchWholeWords">仅匹配完整单词</sys:String>
+    <sys:String x:Key="ReformatDate_CustomShortMonths">使用自定义短月份:</sys:String>
+    <sys:String x:Key="ReformatDate_CustomLongMonths">使用自定义长月份:</sys:String>
+    <sys:String x:Key="ReformatDate_FormatHelp">❓ 格式帮助</sys:String>
+    <sys:String x:Key="ReformatDate_AdjustTime">时间偏移:</sys:String>
+    <sys:String x:Key="ReformatDate_Hours">小时</sys:String>
+    <sys:String x:Key="ReformatDate_Minutes">分钟</sys:String>
+    <sys:String x:Key="ReformatDate_Seconds">秒</sys:String>
+    <sys:String x:Key="ReformatDate_Days">天</sys:String>
+    <sys:String x:Key="ReformatDate_Months">月</sys:String>
+    <sys:String x:Key="ReformatDate_Years">年</sys:String>
+
+    <!-- Regex -->
+    <sys:String x:Key="Regex_InsertExpression">⚡ 插入表达式</sys:String>
+
+    <!-- Strip -->
+    <sys:String x:Key="Strip_English">英文:</sys:String>
+    <sys:String x:Key="Strip_Digits">数字:</sys:String>
+    <sys:String x:Key="Strip_Symbols">符号:</sys:String>
+    <sys:String x:Key="Strip_Brackets">括号:</sys:String>
+    <sys:String x:Key="Strip_UserDefined">自定义:</sys:String>
+    <sys:String x:Key="Strip_UnicodeRange">Unicode 范围:</sys:String>
+    <sys:String x:Key="Strip_Everywhere">任意位置</sys:String>
+    <sys:String x:Key="Strip_Leading">开头</sys:String>
+    <sys:String x:Key="Strip_Trailing">结尾</sys:String>
+    <sys:String x:Key="Strip_AllExceptSelected">仅保留选中字符</sys:String>
+
+    <!-- Transliterate -->
+    <sys:String x:Key="Translit_Alphabet">字母表</sys:String>
+    <sys:String x:Key="Translit_Direction">方向:</sys:String>
+    <sys:String x:Key="Translit_Forward">正向</sys:String>
+    <sys:String x:Key="Translit_Backward">反向</sys:String>
+    <sys:String x:Key="Translit_HintTitle">说明:</sys:String>
+    <sys:String x:Key="Translit_Hint">字母表由字母对组成，使用等号分隔；用于将非英文字符转换为对应的英文表示。</sys:String>
+    <sys:String x:Key="Translit_AutoCase">自动大小写调整</sys:String>
+
+    <!-- User Input -->
+    <sys:String x:Key="UserInput_Instructions">在此输入新文件名（每行一个）:</sys:String>
+    <sys:String x:Key="UserInput_InsertBefore">插入到当前名称前</sys:String>
+    <sys:String x:Key="UserInput_InsertAfter">插入到当前名称后</sys:String>
+    <sys:String x:Key="UserInput_ReplaceCurrent">替换当前名称</sys:String>
+
+    <!-- Meta Tag 菜单 -->
+    <sys:String x:Key="MetaTag_Group_FileInfo">文件信息</sys:String>
+    <sys:String x:Key="MetaTag_Group_Attributes">属性</sys:String>
+    <sys:String x:Key="MetaTag_Group_Dynamic">动态</sys:String>
+    <sys:String x:Key="MetaTag_Name">原文件名</sys:String>
+    <sys:String x:Key="MetaTag_NameNoExt">不含扩展名的名称</sys:String>
+    <sys:String x:Key="MetaTag_Ext">扩展名</sys:String>
+    <sys:String x:Key="MetaTag_Path">完整路径</sys:String>
+    <sys:String x:Key="MetaTag_Folder">文件夹名</sys:String>
+    <sys:String x:Key="MetaTag_ParentFolder">父文件夹名</sys:String>
+    <sys:String x:Key="MetaTag_Size">文件大小（字节）</sys:String>
+    <sys:String x:Key="MetaTag_SizeKB">文件大小（KB）</sys:String>
+    <sys:String x:Key="MetaTag_SizeMB">文件大小（MB）</sys:String>
+    <sys:String x:Key="MetaTag_Created">创建日期</sys:String>
+    <sys:String x:Key="MetaTag_Modified">修改日期</sys:String>
+    <sys:String x:Key="MetaTag_Accessed">访问日期</sys:String>
+    <sys:String x:Key="MetaTag_Counter">自动递增计数器</sys:String>
+    <sys:String x:Key="MetaTag_Random">随机字符</sys:String>
+    <sys:String x:Key="MetaTag_GUID">生成 GUID</sys:String>
+    <sys:String x:Key="MetaTag_Date">当前日期</sys:String>
+    <sys:String x:Key="MetaTag_Time">当前时间</sys:String>
+
+    <!-- Regex 模板 -->
+    <sys:String x:Key="RegexPattern_Digits">一个或多个数字</sys:String>
+    <sys:String x:Key="RegexPattern_WordChars">一个或多个单词字符</sys:String>
+    <sys:String x:Key="RegexPattern_LowerLetters">小写字母</sys:String>
+    <sys:String x:Key="RegexPattern_UpperLetters">大写字母</sys:String>
+    <sys:String x:Key="RegexPattern_AnyLetters">任意字母</sys:String>
+    <sys:String x:Key="RegexPattern_AnyGreedy">任意字符（贪婪）</sys:String>
+    <sys:String x:Key="RegexPattern_AnyLazy">任意字符（非贪婪）</sys:String>
+    <sys:String x:Key="RegexPattern_Whitespace">空白字符</sys:String>
+    <sys:String x:Key="RegexPattern_NoDot">除点号外的任意字符</sys:String>
+    <sys:String x:Key="RegexPattern_DateYMD">日期模式 YYYY-MM-DD</sys:String>
+    <sys:String x:Key="RegexPattern_NameTitle">“名称 - 标题”模式</sys:String>
+    <sys:String x:Key="RegexPattern_LeadingNumber">前缀数字加点</sys:String>
+    <sys:String x:Key="RegexPattern_Parentheses">括号内文本</sys:String>
+    <sys:String x:Key="RegexPattern_Brackets">方括号内文本</sys:String>
+
+    <!-- 日期格式帮助 -->
+    <sys:String x:Key="DateFormat_InsertSeparator">插入分隔符 |</sys:String>
+    <sys:String x:Key="DateFormat_Year4">年份（4 位）</sys:String>
+    <sys:String x:Key="DateFormat_Year2">年份（2 位）</sys:String>
+    <sys:String x:Key="DateFormat_Month2">月份（01-12）</sys:String>
+    <sys:String x:Key="DateFormat_MonthShort">月份缩写</sys:String>
+    <sys:String x:Key="DateFormat_MonthLong">月份全称</sys:String>
+    <sys:String x:Key="DateFormat_Day2">日期（01-31）</sys:String>
+    <sys:String x:Key="DateFormat_DayShort">星期缩写</sys:String>
+    <sys:String x:Key="DateFormat_DayLong">星期全称</sys:String>
+    <sys:String x:Key="DateFormat_Hour24">小时 24h（00-23）</sys:String>
+    <sys:String x:Key="DateFormat_Hour12">小时 12h（01-12）</sys:String>
+    <sys:String x:Key="DateFormat_Minute">分钟（00-59）</sys:String>
+    <sys:String x:Key="DateFormat_Second">秒（00-59）</sys:String>
+    <sys:String x:Key="DateFormat_AmPm">上午/下午</sys:String>
+    <sys:String x:Key="DateFormat_Reference">DateTime 格式参考（在线）...</sys:String>
+
+    <!-- 规则配置面板（对话框与帮助菜单） -->
+    <sys:String x:Key="RuleCfg_CleanUp_Dot">.（点）</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Comma">，（逗号）</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_SkipVersions">跳过数字序列，例如版本 1.2.3.4</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_FixSpaces">修正空格：连续空格合并为一个，主文件名两侧不留空格</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_NormalizeSpaces">将 Unicode 空格统一替换为标准空格</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripEmoji">移除 Unicode 表情符号</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripMarks">移除 Unicode 组合标记（变音符、重音等）</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_CamelCase">在大写字母前插入空格（如 CamelCase）</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_SharePoint">为 SharePoint 准备（始终包含扩展名）</sys:String>
+
+    <sys:String x:Key="RuleCfg_Mapping_Table">表格</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_AllowReuse">允许复用</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_PartialMatch">部分匹配</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Inverse">反向映射</sys:String>
+
+    <sys:String x:Key="RuleCfg_Padding_AddZeroPadding">补零到长度：</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_RemoveZeroPadding">移除前导零</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_AddTextPadding">填充到长度：</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_PaddingChars">填充字符：</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Position">位置：</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Left">左侧</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_Right">右侧</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_NumberSequences">数字序列</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_TextPadding">文本填充</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_CharactersToUse">使用的字符：</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_InsertWhere">插入位置：</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">剥离括号内容：</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">替换以下字符为空格：</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Basic">基础: Result := Name;</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Counter">计数: Result := Name + '_' + Counter;</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Folder">文件夹: Result := Folder + '_' + Name;</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Match">匹配</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_NewName">新名称</sys:String>
+
+    <sys:String x:Key="RuleCfg_PascalScript_Scripts">脚本</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_EnableMetaTags">启用元标签</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_CounterStart">计数起始：</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Step">步进：</sys:String>
+    <sys:String x:Key="RuleCfg_PascalScript_Digits">位数：</sys:String>
+
+    <sys:String x:Key="RuleCfg_Randomize_Length">随机序列长度：</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Unique">尽量唯一</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Digits">数字（0..9）</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Letters">英文小写字母（a..z）</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_UserDefined">自定义：</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Prefix">前缀</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Suffix">后缀</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_Position">位置：</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_ReplaceCurrent">替换当前名称</sys:String>
+
+    <sys:String x:Key="RuleCfg_Rearrange_SplitUsing">拆分方式：</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Delimiters">分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Positions">位置</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">分隔符精确模式</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_NewPattern">新模式：</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Hint">提示：使用 $1..$N 引用分隔后的部分，$-1..$-N 从末尾引用，$0 表示原始名称。</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Separator">| 分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 元标签</sys:String>
+
+    <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">查找日期/时间格式：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">转换为日期/时间格式：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_WholeWords">仅匹配完整单词</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomShortMonths">使用自定义短月份：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomLongMonths">使用自定义长月份：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">❓ 格式帮助</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustBy">时间调整：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitHours">小时</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitMinutes">分钟</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitSeconds">秒</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitDays">天</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitMonths">月</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_UnitYears">年</sys:String>
+
+    <sys:String x:Key="RuleCfg_Strip_English">英文：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Digits">数字：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Symbols">符号：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Brackets">括号：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_UserDefined">自定义：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_UnicodeRange">Unicode 范围：</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Everywhere">全部位置</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Leading">开头</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Trailing">结尾</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_AllExcept">移除除所选外的所有字符</sys:String>
+
+    <sys:String x:Key="RuleCfg_Transliterate_Alphabet">字母表</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Direction">方向：</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Forward">正向</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Backward">反向</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_HintTitle">提示：</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Hint">字母表由成对字母组成，以等号分隔，用于将非英文字符转换为对应的英文表示。</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_AutoCase">自动大小写调整</sys:String>
+
+    <sys:String x:Key="RuleCfg_UserInput_Instruction">在此输入新文件名（每行一个）：</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InsertBefore">插入到当前名称前</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InsertAfter">插入到当前名称后</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_Replace">替换当前名称</sys:String>
+
+    <sys:String x:Key="RuleCfg_MetaTag_Group_FileInfo">文件信息</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Group_Attributes">属性</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Group_Dynamic">动态</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Name">原始文件名</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_NameNoExt">去除扩展名的文件名</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Ext">扩展名</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Path">完整路径</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Folder">文件夹名称</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_ParentFolder">父文件夹名称</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Size">文件大小（字节）</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_SizeKB">文件大小（KB）</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_SizeMB">文件大小（MB）</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Created">创建日期</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Modified">修改日期</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Accessed">访问日期</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Counter">自增计数</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Random">随机字符</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Guid">生成 GUID</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Date">当前日期</sys:String>
+    <sys:String x:Key="RuleCfg_MetaTag_Time">当前时间</sys:String>
+
+    <sys:String x:Key="RuleCfg_RegexPattern_Digits">一个或多个数字</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_WordChars">一个或多个单词字符</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Lowercase">小写字母</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Uppercase">大写字母</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyLetters">任意字母</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyGreedy">任意字符（贪婪）</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_AnyLazy">任意字符（懒惰）</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_Whitespace">空白字符</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_NotDot">除点以外的任意字符</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_DateYMD">日期格式 YYYY-MM-DD</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_NameTitle">“名称 - 标题”模式</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_LeadingNumber">以数字加点开头</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_ParensText">括号中的文本</sys:String>
+    <sys:String x:Key="RuleCfg_RegexPattern_BracketsText">方括号中的文本</sys:String>
+
+    <sys:String x:Key="RuleCfg_DateFormat_InsertSeparator">插入分隔符 |</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Year4">年份（4 位）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Year2">年份（2 位）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Month2">月份（01-12）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_MonthAbbr">月份缩写</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_MonthFull">月份全称</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Day2">日期（01-31）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_DayAbbr">星期缩写</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_DayFull">星期全称</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Hour24">小时 24 小时制（00-23）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Hour12">小时 12 小时制（01-12）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Minute">分钟（00-59）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_Second">秒（00-59）</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_AmPm">上午/下午</sys:String>
+    <sys:String x:Key="RuleCfg_DateFormat_ReferenceOnline">DateTime 格式参考（在线）...</sys:String>
+</ResourceDictionary>

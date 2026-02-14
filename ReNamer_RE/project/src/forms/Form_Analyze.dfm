@@ -1,0 +1,176 @@
+﻿object Form_Analyze: TForm_Analyze
+  Left = 549
+  Height = 351
+  Top = 363
+  Width = 540
+  AllowDropFiles = True
+  Caption = 'Analyze'
+  ClientHeight = 351
+  ClientWidth = 540
+  KeyPreview = True
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnDropFiles = FormDropFiles
+  OnHide = FormHide
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  Position = poMainFormCenter
+  ShowInTaskBar = stAlways
+  LCLVersion = '3.8.0.0'
+  object Panel_Controls: TPanel
+    Left = 0
+    Height = 72
+    Top = 279
+    Width = 540
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 72
+    ClientWidth = 540
+    TabOrder = 1
+    object BB_ApplyRules: TBitBtn
+      Left = 16
+      Height = 51
+      Top = 8
+      Width = 168
+      Caption = 'Apply Rules'
+      Default = True
+      Glyph.Data = {Binary: 1214 bytes}
+      OnClick = BB_ApplyRulesClick
+      TabOrder = 0
+    end
+    object CB_ApplyRulesForEachLine: TCheckBox
+      Left = 208
+      Height = 19
+      Top = 23
+      Width = 145
+      Caption = 'Apply rules for each line'
+      TabOrder = 2
+      OnClick = CB_ApplyRulesForEachLineClick
+    end
+    object CB_AutoApplyRules: TCheckBox
+      Left = 208
+      Height = 19
+      Top = 5
+      Width = 152
+      Caption = 'Automatically apply rules'
+      TabOrder = 1
+      OnClick = CB_AutoApplyRulesClick
+    end
+    object CB_WordWrap: TCheckBox
+      Left = 208
+      Height = 19
+      Top = 42
+      Width = 69
+      Caption = 'Line wrap'
+      TabOrder = 3
+      OnClick = CB_WordWrapClick
+    end
+  end
+  object Panel_Data: TPanel
+    Left = 0
+    Height = 279
+    Top = 0
+    Width = 540
+    Align = alClient
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 279
+    ClientWidth = 540
+    TabOrder = 0
+    object Panel_Input: TPanel
+      Left = 0
+      Height = 140
+      Top = 0
+      Width = 540
+      BevelOuter = bvNone
+      ClientHeight = 140
+      ClientWidth = 540
+      TabOrder = 0
+      object Label_TextIn: TLabel
+        Left = 16
+        Height = 15
+        Top = 6
+        Width = 183
+        Caption = 'Enter text that you wish to analyze:'
+        ParentColor = False
+      end
+      object Memo_TextIn: TMemo
+        Left = 16
+        Height = 109
+        Top = 24
+        Width = 367
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = 243
+        ParentFont = False
+        ScrollBars = ssVertical
+        TabOrder = 0
+        OnChange = Memo_TextInChange
+        OnKeyUp = Memo_KeyUp
+        OnMouseDown = Memo_MouseDown
+        OnMouseMove = Memo_MouseMove
+      end
+    end
+    object Panel_Output: TPanel
+      Left = 0
+      Height = 139
+      Top = 140
+      Width = 540
+      BevelOuter = bvNone
+      ClientHeight = 139
+      ClientWidth = 540
+      TabOrder = 1
+      object Label_TextOut: TLabel
+        Left = 16
+        Height = 15
+        Top = 6
+        Width = 128
+        Caption = 'Text after applying rules:'
+        ParentColor = False
+      end
+      object Memo_TextOut: TMemo
+        Left = 16
+        Height = 108
+        Top = 24
+        Width = 367
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = 243
+        ParentColor = True
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssVertical
+        TabOrder = 0
+        OnKeyUp = Memo_KeyUp
+        OnMouseDown = Memo_MouseDown
+        OnMouseMove = Memo_MouseMove
+      end
+    end
+    object Panel_Info: TPanel
+      Left = 390
+      Height = 279
+      Top = 0
+      Width = 150
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 279
+      ClientWidth = 150
+      TabOrder = 2
+      object Memo_TextInfo: TMemo
+        Left = 8
+        Height = 248
+        Top = 24
+        Width = 150
+        BorderStyle = bsNone
+        ParentColor = True
+        ReadOnly = True
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+  end
+end
+

@@ -1,0 +1,197 @@
+﻿object Frame_RuleStrip: TFrame_RuleStrip
+  Left = 0
+  Height = 266
+  Top = 0
+  Width = 410
+  ClientHeight = 266
+  ClientWidth = 410
+  TabOrder = 0
+  DesignLeft = 386
+  DesignTop = 267
+  object Edit_StripBrackets: TEdit
+    Left = 160
+    Height = 25
+    Top = 94
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Color = clBtnFace
+    Font.Height = 243
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 7
+    Text = '(){}[]<>'
+  end
+  object Edit_StripSymbols: TEdit
+    Left = 160
+    Height = 25
+    Top = 68
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Color = clBtnFace
+    Font.Height = 243
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 5
+    Text = '!"#$%&'*+,-./:;=?@\^_`|~'
+  end
+  object Edit_StripDigits: TEdit
+    Left = 160
+    Height = 25
+    Top = 42
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Color = clBtnFace
+    Font.Height = 243
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 3
+    Text = '1234567890'
+  end
+  object Edit_StripUserDefined: TEdit
+    Left = 160
+    Height = 25
+    Top = 120
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 9
+    OnChange = Edit_StripUserDefinedChange
+  end
+  object CheckBox_StripUserDefined: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 122
+    Width = 87
+    Caption = 'User defined:'
+    TabOrder = 8
+  end
+  object CheckBox_StripBrackets: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 96
+    Width = 65
+    Caption = 'Brackets:'
+    TabOrder = 6
+  end
+  object CheckBox_StripSymbols: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 70
+    Width = 66
+    Caption = 'Symbols:'
+    TabOrder = 4
+  end
+  object CheckBox_StripDigits: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 44
+    Width = 51
+    Caption = 'Digits:'
+    TabOrder = 2
+  end
+  object Edit_StripEnglishLetters: TEdit
+    Left = 160
+    Height = 25
+    Top = 16
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Color = clBtnFace
+    Font.Height = 243
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 1
+    Text = 'abcdefghijklmnopqrstuvwxyz'
+  end
+  object CB_StripEnglishLetters: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 18
+    Width = 59
+    Caption = 'English:'
+    TabOrder = 0
+  end
+  object CB_StripAllExceptSelected: TCheckBox
+    Left = 176
+    Height = 19
+    Top = 184
+    Width = 198
+    Caption = 'Strip all characters except selected'
+    TabOrder = 13
+  end
+  object CheckBox_StripSkipExtension: TCheckBox
+    Left = 176
+    Height = 19
+    Top = 232
+    Width = 94
+    Caption = 'Skip extension'
+    Checked = True
+    State = cbChecked
+    TabOrder = 15
+  end
+  object CheckBox_CaseSensitive: TCheckBox
+    Left = 176
+    Height = 19
+    Top = 208
+    Width = 91
+    Caption = 'Case sensitive'
+    TabOrder = 14
+  end
+  object Panel_Where: TPanel
+    Left = 16
+    Height = 80
+    Top = 176
+    Width = 146
+    BevelOuter = bvNone
+    ClientHeight = 80
+    ClientWidth = 146
+    TabOrder = 12
+    object RB_WhereEverywhere: TRadioButton
+      Left = 16
+      Height = 19
+      Top = 8
+      Width = 78
+      Caption = 'Everywhere'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object RB_WhereTrailing: TRadioButton
+      Left = 16
+      Height = 19
+      Top = 56
+      Width = 57
+      Caption = 'Trailing'
+      TabOrder = 2
+    end
+    object RB_WhereLeading: TRadioButton
+      Left = 16
+      Height = 19
+      Top = 32
+      Width = 60
+      Caption = 'Leading'
+      TabOrder = 1
+    end
+  end
+  object CheckBox_StripUnicodeRange: TCheckBox
+    Left = 32
+    Height = 19
+    Top = 148
+    Width = 98
+    Caption = 'Unicode range:'
+    TabOrder = 10
+  end
+  object Edit_StripUnicodeRange: TEdit
+    Left = 160
+    Height = 25
+    Top = 146
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 11
+    Text = '10000-10FFFF'
+    OnChange = Edit_StripUnicodeRangeChange
+  end
+end
+

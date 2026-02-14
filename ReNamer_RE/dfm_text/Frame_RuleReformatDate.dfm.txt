@@ -1,0 +1,233 @@
+object Frame_RuleReformatDate: TFrame_RuleReformatDate
+  Left = 0
+  Height = 274
+  Top = 0
+  Width = 409
+  ClientHeight = 274
+  ClientWidth = 409
+  TabOrder = 0
+  DesignLeft = 367
+  DesignTop = 288
+  object Label_InputFormats: TLabel
+    Left = 24
+    Height = 15
+    Top = 16
+    Width = 125
+    Caption = 'Find date/time formats:'
+    ParentColor = False
+  end
+  object Label_OutputFormat: TLabel
+    Left = 24
+    Height = 15
+    Top = 64
+    Width = 153
+    Caption = 'Convert to date/time format:'
+    ParentColor = False
+  end
+  object CheckBox_UseCustomShortMonths: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 176
+    Width = 157
+    Caption = 'Use custom short months:'
+    TabOrder = 4
+    OnClick = CheckBox_UseCustomShortMonthsClick
+  end
+  object CheckBox_UseCustomLongMonths: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 205
+    Width = 154
+    Caption = 'Use custom long months:'
+    TabOrder = 6
+    OnClick = CheckBox_UseCustomLongMonthsClick
+  end
+  object CheckBox_WholeWordsOnly: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 120
+    Width = 162
+    Caption = 'Match as whole words only'
+    Checked = True
+    State = cbChecked
+    TabOrder = 2
+  end
+  object CheckBox_SkipExtension: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 147
+    Width = 94
+    Caption = 'Skip extension'
+    Checked = True
+    State = cbChecked
+    TabOrder = 3
+  end
+  object ComboBox_CustomShortMonths: TComboBox
+    Left = 216
+    Height = 23
+    Top = 176
+    Width = 176
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactSearchAscending]
+    ItemHeight = 15
+    ParentFont = False
+    TabOrder = 5
+  end
+  object ComboBox_CustomLongMonths: TComboBox
+    Left = 216
+    Height = 23
+    Top = 205
+    Width = 176
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactSearchAscending]
+    ItemHeight = 15
+    TabOrder = 7
+  end
+  object SpeedButton_Help: TSpeedButton
+    Left = 371
+    Height = 24
+    Top = 35
+    Width = 23
+    Anchors = [akTop, akRight]
+    Flat = True
+    Glyph.Data = 
+    {
+      36040000424D36040000000000003600
+      00002800000010000000100000000100
+      20000000000000040000640000006400
+      00000000000000000000FFFFFF000000
+      00000000000000000000000000000000
+      0000000000000000002A000000330000
+      002A0000000000000000000000000000
+      00000000000000000000FFFFFF000000
+      00000000000000000000000000000000
+      00000000002DA17344DDA77745FFA173
+      44DD0000002D00000000000000000000
+      00000000000000000000FFFFFF000000
+      00000000000000000000000000000000
+      002DA17342E9C5A37EFFFBF4E7FFC5A3
+      7EFFA17342E90000002D000000000000
+      00000000000000000000FFFFFF000000
+      000000000000000000000000002DA173
+      42E8C4A47FFFF6EDDFFFC19E79FFF6ED
+      DFFFC4A47FFFA17342E80000002D0000
+      00000000000000000000FFFFFF000000
+      0000000000000000002DA17342E8C5A5
+      81FFF8F1E6FFB4895DFFA3723EFFB489
+      5DFFF8F1E6FFC5A581FFA17342E80000
+      002D0000000000000000FFFFFF000000
+      00000000002DA17342E8C7A684FFFAF4
+      EAFFB3895CFFA2703CFFA3713DFFA270
+      3CFFB3895CFFFAF4EAFFC7A684FFA173
+      42E80000002D00000000FFFFFF000000
+      0026A17241E9C6A784FFFCF7EFFFB38A
+      5FFFB89168FFFAF2E4FFF8EFE0FFFBF3
+      E6FFB99269FFB38B5FFFFCF7EFFFC6A7
+      84FFA17241E90000002AFFFFFF009D70
+      42CCC8A887FFFDF9F2FFB58C60FFA676
+      43FFA57542FFB89066FFFDF8EFFFA26F
+      3AFFA77745FFA67644FFB58C60FFFDF9
+      F2FFC8A887FFA07343DDFFFFFF00A675
+      43FFFFFFFFFFC4A481FFA3723EFFA878
+      47FFA67542FFB99167FFFFFFFEFFA472
+      3EFFA97A4AFFA97A49FFA4723EFFC4A4
+      81FFFFFFFFFFA67543FFFFFFFF00A777
+      46ACC9A989FFFFFFFCFFB48D62FFA574
+      42FFBE9A74FFFFFFFFFFFFFFFFFFA574
+      41FFA97A49FFA77744FFB58D63FFFFFF
+      FCFFC9A989FFA77746C1FFFFFF000000
+      0000A67542A7C9AA8BFFFFFFFFFFB68C
+      62FFA3723DFFA2703BFFA2703BFFA676
+      43FFA67643FFB78D63FFFFFFFFFFC9AA
+      8BFFA67542A700000000FFFFFF000000
+      000000000000A67542A7CAAB8CFFFFFF
+      FFFFB58C61FFBA946BFFFFFFFEFFA371
+      3DFFB68E63FFFFFFFFFFCAAB8CFFA675
+      42A70000000000000000FFFFFF000000
+      00000000000000000000A67542A7CAAC
+      8EFFFFFFFFFFB38A5FFFA06C36FFB48B
+      60FFFFFFFFFFCAAC8EFFA67542A70000
+      00000000000000000000FFFFFF000000
+      0000000000000000000000000000A575
+      42A7CBAD8EFFFFFFFFFFC6A886FFFFFF
+      FFFFCBAD8FFFA57542A7000000000000
+      00000000000000000000FFFFFF000000
+      00000000000000000000000000000000
+      0000A57542A7CBAE91FFFFFFFFFFCBAE
+      91FFA57542A700000000000000000000
+      00000000000000000000FFFFFF000000
+      00000000000000000000000000000000
+      000000000000A77745ACA67541FFA777
+      45AC0000000000000000000000000000
+      00000000000000000000
+    }
+    OnClick = SpeedButton_HelpClick
+  end
+  object ComboBox_SourceFormats: TComboBox
+    Left = 24
+    Height = 25
+    Top = 35
+    Width = 346
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactSearchAscending]
+    Font.Height = 243
+    ItemHeight = 17
+    ParentFont = False
+    TabOrder = 0
+  end
+  object ComboBox_TargetFormat: TComboBox
+    Left = 24
+    Height = 25
+    Top = 83
+    Width = 346
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactSearchAscending]
+    Font.Height = 243
+    ItemHeight = 17
+    ParentFont = False
+    TabOrder = 1
+  end
+  object CheckBox_AdjustTime: TCheckBox
+    Left = 24
+    Height = 19
+    Top = 238
+    Width = 98
+    Caption = 'Adjust time by:'
+    TabOrder = 8
+    OnClick = CheckBox_AdjustTimeClick
+  end
+  object SpinEdit_AdjustTimeBy: TSpinEdit
+    Left = 216
+    Height = 23
+    Top = 236
+    Width = 58
+    MaxValue = 1000000
+    MinValue = -1000000
+    TabOrder = 9
+  end
+  object ComboBox_AdjustTimePart: TComboBox
+    Left = 282
+    Height = 23
+    Top = 236
+    Width = 112
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 10
+  end
+  object PopupMenu_Help: TPopupMenu
+    Left = 320
+    Top = 112
+    object MenuItem_AddSeparator: TMenuItem
+      Caption = 'Separate multiple items'
+      OnClick = MenuItem_AddSeparatorClick
+    end
+    object MenuItem_Break1: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem_DateTimeFormatHelp: TMenuItem
+      Caption = 'Date/time format reference (online)'
+      OnClick = MenuItem_DateTimeFormatHelpClick
+    end
+  end
+end

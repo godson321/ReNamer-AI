@@ -1,0 +1,801 @@
+object Form_Settings: TForm_Settings
+  Left = 507
+  Height = 417
+  Top = 312
+  Width = 424
+  BorderIcons = [biSystemMenu]
+  Caption = 'Settings'
+  ClientHeight = 417
+  ClientWidth = 424
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '3.8.0.0'
+  object BitBtn_Save: TBitBtn
+    Left = 48
+    Height = 25
+    Top = 376
+    Width = 160
+    Caption = 'Save'
+    Default = True
+    Glyph.Data = 
+    {
+      36040000424D36040000000000003600
+      00002800000010000000100000000100
+      20000000000000040000640000006400
+      00000000000000000000000000190000
+      00330000003300000033000000330000
+      00330000000800000008000000330000
+      00330000003300000033000000330000
+      00330000003300000019976C1496B782
+      18FFB68014FFB37A06FFD7CFD2FFD8CE
+      C9FF6C676653593A0053D9CFCEFFD5CA
+      C3FFD4CAC4FFD6CFD2FFB37A06FFB680
+      14FFB78218FF976C1496B78218FFF6CD
+      8BFFF2C67DFFF0C171FFFAF7FBFFFFFF
+      FFFF4C4848FF989392FFFFFFFFFFF7EF
+      EAFFF6EFEBFFF9F6FAFFF0C171FFF2C6
+      7DFFF6CD8BFFB78218FFB68116FFF3CA
+      87FFEDBC6DFFEBB761FFF8F5F7FFFFFF
+      FFFF4A4541FF948C88FFFFFFFFFFF1E8
+      E0FFF0E7E0FFF7F4F7FFEBB761FFEDBC
+      6DFFF3CA87FFB68116FFB68116FFF1CB
+      89FFE9B762FFE7B257FFF9F8FBFFFDF7
+      F2FF877F79FF4A4441FFFEF7F2FFEEE3
+      D8FFEDE2D9FFF8F7FBFFE8B257FFE9B7
+      62FFF1CB89FFB68116FFB68116FFF3CC
+      8EFFE8B25AFFE7AE51FFFCFFFFFFECE0
+      D7FFF1E4DAFFF1E5DAFFEDE0D5FFEADD
+      D3FFE9DED5FFFBFFFFFFE7AE51FFE8B2
+      5AFFF3CC8EFFB68116FFB68115FFF3CE
+      94FFE6AE51FFE5AB4BFFE6C9A4FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFEFFFFFFFDFF
+      FFFFFEFFFFFFE6C9A4FFE5AC4BFFE6AE
+      51FFF3CE94FFB68115FFB68115FFF3D0
+      9AFFE5A845FFE3A640FFE2A136FFE29E
+      2FFFE19D2DFFE19D2CFFE19D2CFFE19D
+      2DFFE29E2FFFE2A136FFE3A640FFE5A8
+      45FFF3D09AFFB68115FFB68114FFF4D4
+      A0FFE1A136FFF2DEB7FFFCFFFFFFFBFF
+      FDFFFBFFFCFFFBFFFDFFFBFFFDFFFBFF
+      FDFFFBFFFDFFFBFFFFFFF2DEB7FFE1A1
+      36FFF4D4A0FFB68114FFB68014FFF6D8
+      A7FFE09C27FFFBFFFFFFFCFBF3FFFCF9
+      EFFFFBF8EEFFFCFAF0FFFCFAF0FFFBF9
+      EEFFF9F8EDFFFAF9F1FFFAFEFEFFE09B
+      27FFF6D8A7FFB68014FFB68014FFF8DC
+      B0FFE0981CFFFBFBF8FF79787BFFA2A0
+      A2FFFCF6EAFF797879FFA3A1A3FFA09F
+      A1FFFAF4E9FF9D9DA0FFF9F9F6FFE098
+      1CFFF8DCB0FFB68014FFB68113FFFCE3
+      BCFF9B6104FFFDFCF9FFFDF5E8FFFEF4
+      E7FFFBF2E5FFFCF2E5FFFBF2E5FFFBF2
+      E5FFFAF1E3FFF9F1E5FFFCFAF7FF9A61
+      04FFFCE3BCFFB68113FFB68012FFFEE9
+      C6FF714100FFFFFFFFFF79797AFF7A7A
+      7AFFA2A1A1FF9F9F9FFFF6ECDEFF7777
+      77FFA1A1A1FF9E9FA0FFFFFFFFFF7041
+      00FFFEE9C6FFB68012FFB68012FFFDEC
+      D1FFDA8600FFFFFFFFFFF1E5D8FFF2E5
+      D8FFF2E5D7FFF0E3D6FFEFE2D5FFF1E4
+      D7FFF1E4D6FFEFE3D6FFFFFFFFFFDA86
+      00FFFDECD1FFB68012FFB78115FFFFEC
+      CDFFFCE7C3FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCE7
+      C3FFFFECCDFFB78115FFB782187CB781
+      14FFB57E0FFFB57C0BFFB57C09FFB57C
+      09FFB57C09FFB57C09FFB57C09FFB57C
+      09FFB57C09FFB57C09FFB57C0BFFB57E
+      0FFFB78114FFB782187C
+    }
+    ModalResult = 1
+    OnClick = BitBtn_SaveClick
+    TabOrder = 1
+  end
+  object BitBtn_Cancel: TBitBtn
+    Left = 232
+    Height = 25
+    Top = 376
+    Width = 137
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    OnClick = BitBtn_CancelClick
+    TabOrder = 2
+  end
+  object PageControl: TPageControl
+    Left = 0
+    Height = 360
+    Top = 0
+    Width = 424
+    ActivePage = TabSheet_General
+    Align = alTop
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet_General: TTabSheet
+      Caption = 'General'
+      ClientHeight = 332
+      ClientWidth = 416
+      object SpeedButton_FilterSettings: TSpeedButton
+        Left = 24
+        Height = 25
+        Top = 264
+        Width = 368
+        Caption = 'Configure Filter Settings'
+        Flat = True
+        Glyph.Data = 
+        {
+          36040000424D36040000000000003600
+          00002800000010000000100000000100
+          20000000000000040000640000006400
+          00000000000000000000000000000000
+          00000000000000000000000000000000
+          000000000000000000000000002F0000
+          00330000000000000000000000000000
+          00000000000000000000BB874700BB87
+          4700BB874700BB874700BB874700BB87
+          4700BB87470000000021B78445F1BB87
+          47FFBB874700BB874700FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BB874700BB87
+          4700BB874700BB874700BB874700BB87
+          470000000022A6763CB8CC9A54FFB985
+          45FFBB874700BB874700FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BB874700BB87
+          4700BB874700BB874700BB874700BA86
+          4600A7763BBDE9C590FFDAAB62FFB884
+          44FFBB874700BB874700FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BB874700BA86
+          4600BA864600BA864700BA864700B985
+          4500B57F3DFFFFF1D0FFD8A85DFFB782
+          42FFBA864600BB874700FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BA864600C896
+          5500C18D4C00C28E4C00C18D4C000000
+          0021B37C3AFFFFFFFAFFD5A55AFFB580
+          40FF00000021BE8B4A00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BA864600C895
+          5400C18D4C00C18D4C0000000021AA7A
+          3EB6DEAE69FFF9D394FFEBC17EFFD9AB
+          6AFFA97A40B600000021FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00BA864600C895
+          5400C08C4B0000000021A9793DB9EDC1
+          82FFF9D293FFF4CD8DFFEEC683FFEAC1
+          80FFDFB576FFA8793DB900000021FFFF
+          FF00FFFFFF00FFFFFF00BA864600C794
+          530000000021A9783CB9EEC78FFFF8D6
+          A0FFF6CF8FFFEFC986FFE9C07DFFE3B8
+          73FFE6C289FFDCB57DFFA7773CB90000
+          0021BD894500BB874700B98545000000
+          0021A9773AB9EFCF9FFFFBDBAEFFF5CC
+          89FFF2CB8AFFECC280FFE6BB76FFDFB3
+          6BFFD9AA63FFE4C494FFDBB786FFA674
+          38B900000021BA86460000000022AE7D
+          40B9F1D6AFFFFDE8C6FFF6CC89FFF3CA
+          87FFEDC37EFFE7BC76FFE1B56CFFDCAD
+          63FFD7A55AFFD2A055FFE6CCA6FFDDBF
+          95FFA77535B900000022A67437BDFFED
+          CCFFFFF2DDFFFADAA7FFFDE8C7FFFFF3
+          E0FFFDF3E3FFF7E7CCFFF5E4CAFFF6EA
+          D7FFF3E2CBFFE8CEA5FFD9B37BFFEFDE
+          C6FFE4CDA9FFA77639BDB57E3AFFFFFE
+          F2FFF5E3C6FFE8CEA4FFDEBB85FFD3A5
+          5EFFD19B49FFD7A24FFFDBA654FFD29A
+          45FFD3A65FFFD6AF73FFD7B47DFFDDC0
+          96FFEEDEC6FFB7803DFFB57E3AFFFFFF
+          FFFFA06200FFAF7212FFB98023FFC58C
+          32FFCF9742FFD8A451FFDDA856FFD39C
+          48FFC99139FFBF872BFFB57A1CFFA96B
+          07FFF7EDE0FFB7813EFFB67F3CFFFFF6
+          DCFFE8C284FFF0D2A2FFF5E0C0FFF6E2
+          C2FFF6E3C1FFF5E0C0FFF4DFBCFFF0DA
+          B7FFECD5B2FFE9D2ADFFDBBA86FFCEA3
+          60FFE0C399FFB88241FFB7814025DDB6
+          8382CB9753CEC89653F4C69452FFC693
+          51FFC4914DFFC6975EFFC2904FFFC08B
+          48FFBF8B47FFBE8946FFBE8945F4BE88
+          43CEC89B6082B9844425
+        }
+        OnClick = SpeedButton_FilterSettingsClick
+      end
+      object Bevel1: TBevel
+        Left = 24
+        Height = 9
+        Top = 240
+        Width = 368
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object Bevel3: TBevel
+        Left = 24
+        Height = 9
+        Top = 141
+        Width = 368
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object Label3: TLabel
+        Left = 42
+        Height = 32
+        Top = 208
+        Width = 350
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        Caption = 'Example: file1, file2 ... file9, file10, file11, and so on.'
+        ParentColor = False
+        WordWrap = True
+      end
+      object CheckBox_RememberLocation: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 48
+        Width = 265
+        Caption = 'Remember position and size of major windows'
+        TabOrder = 1
+      end
+      object CheckBox_SaveAndLoadDefaultPreset: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 96
+        Width = 270
+        Caption = 'Save rules configuration on exit, load on startup'
+        TabOrder = 3
+      end
+      object CheckBox_AlwaysOnTop: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 24
+        Width = 173
+        Caption = 'Stay on top of other windows'
+        TabOrder = 0
+      end
+      object CheckBox_UseNaturalSort: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 184
+        Width = 186
+        Caption = 'Use natural sort order algorithm'
+        TabOrder = 5
+      end
+      object CheckBox_SortingRemember: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 72
+        Width = 220
+        Caption = 'Remember sorting options (files table)'
+        TabOrder = 2
+      end
+      object CB_AllowProcessingExtensionsInFolders: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 160
+        Width = 286
+        Caption = 'Folders also have extensions, process them as such'
+        TabOrder = 4
+      end
+      object CheckBox_ShowMainToolbar: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 120
+        Width = 118
+        Caption = 'Show main toolbar'
+        TabOrder = 6
+      end
+    end
+    object TabSheet_Preview: TTabSheet
+      Caption = 'Preview'
+      ClientHeight = 332
+      ClientWidth = 416
+      ImageIndex = 4
+      object Label5: TLabel
+        Left = 24
+        Height = 53
+        Top = 243
+        Width = 361
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        Caption = 'Note: disabling any of these options will increase performance when processing large amount of files.'
+        ParentColor = False
+        WordWrap = True
+      end
+      object Bevel6: TBevel
+        Left = 24
+        Height = 9
+        Top = 144
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object SB_RealtimePreviewWarning: TSpeedButton
+        Left = 2
+        Height = 19
+        Top = 219
+        Width = 19
+        Flat = True
+        Glyph.Data = 
+        {
+          36040000424D36040000000000003600
+          00002800000010000000100000000100
+          20000000000000040000640000006400
+          00000000000000000000000000000000
+          00000000000000000000000000000000
+          00000000000000000033000000000000
+          00000000000000000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000000000
+          0000000000331E73A8FF000000330000
+          00000000000000000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000000000
+          00331B6DA4FF66F0FFFF1B6DA3FF0000
+          00330000000000000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000331B6D
+          A3FF63E8FFFF55E0FFFF63E7FFFF1A6C
+          A2FF0000003300000000000000000000
+          000000000000FFFFFF00000000000000
+          000000000000000000331B6DA3FF4DC4
+          F0FF4FDBFFFF4DDAFFFF4EDAFFFF66E6
+          FFFF1A6CA2FF00000033000000000000
+          000000000000FFFFFF00000000000000
+          0000000000331B6DA3FF6AE6FFFF4BD5
+          FFFF4AD7FFFF471D11FF49D6FFFF4AD4
+          FFFF6AE5FFFF1B6DA3FF000000330000
+          000000000000FFFFFF00000000000000
+          00331B6DA3FF4EC1F0FF44D1FFFF44CE
+          FFFF44D4FFFF3AA1CAFF44D4FFFF44CE
+          FFFF44D0FFFF4EC1F0FF1B6DA3FF0000
+          003300000000FFFFFF0000000033196D
+          A3FF6FE2FFFF3ECCFFFF3FC9FFFF3FCA
+          FFFF3DD1FFFF654233FF3DD1FFFF3FCA
+          FFFF3FC9FFFF3ECCFFFF6FE2FFFF196D
+          A3FF00000033FFFFFF001C73A8FF9BF5
+          FFFF36C8FFFF39C4FFFF3BC4FFFF3BC6
+          FFFF39CEFFFF5A3A2DFF39CEFFFF3BC6
+          FFFF3BC4FFFF39C4FFFF36C8FFFF9BF5
+          FFFF1C73A8FFFFFFFF0000000000196D
+          A3FF78E0FFFF32C1FFFF34C0FFFF35C2
+          FFFF34CBFFFF503024FF34CBFFFF35C2
+          FFFF34C0FFFF32C1FFFF78E0FFFF196D
+          A3FF00000000FFFFFF00000000000000
+          00001A6DA2FF7CDFFFFF2CBDFFFF2FBE
+          FFFF2FC7FFFF452619FF2FC6FFFF2EBE
+          FFFF2CBDFFFF7CDFFFFF1A6DA2FF0000
+          000000000000FFFFFF00000000000000
+          0000000000001A6EA2FF7EDFFFFF29BB
+          FFFF2AC0FFFF3B1707FF2AC0FFFF27BA
+          FFFF7DDEFFFF1A6DA2FF000000000000
+          000000000000FFFFFF00000000000000
+          000000000000000000001B6FA3FF52B8
+          F1FF22B9FFFF23BAFFFF21B8FFFF81DD
+          FFFF1A6DA2FF00000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000001B6F
+          A3FF83DCFFFF16B2FFFF82DBFFFF1A6E
+          A2FF0000000000000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000000000
+          0000186EA4FFD0F9FFFF186EA3FF0000
+          00000000000000000000000000000000
+          000000000000FFFFFF00000000000000
+          00000000000000000000000000000000
+          0000000000001B73A8FF000000000000
+          00000000000000000000000000000000
+          000000000000FFFFFF00
+        }
+        OnClick = SB_RealtimePreviewWarningClick
+      end
+      object Bevel7: TBevel
+        Left = 24
+        Height = 9
+        Top = 203
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object CheckBox_ValidateOnPreview: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 160
+        Width = 200
+        Caption = 'Validate new filenames on preview'
+        TabOrder = 5
+      end
+      object CheckBox_AutoPreviewOnRulesChange: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 48
+        Width = 269
+        Caption = 'Auto preview on change of rules configurations'
+        TabOrder = 1
+      end
+      object CheckBox_AutoSizeTable: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 24
+        Width = 154
+        Caption = 'Auto size table on change'
+        TabOrder = 0
+      end
+      object CheckBox_PreviewRealTimeUpdate: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 219
+        Width = 187
+        Caption = 'Real-time update of the preview'
+        TabOrder = 7
+      end
+      object CheckBox_AutoPreviewOnFilesAdded: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 72
+        Width = 224
+        Caption = 'Auto preview when new files are added'
+        TabOrder = 2
+      end
+      object CheckBox_FixConflictingNewNamesOnPreview: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 184
+        Width = 217
+        Caption = 'Fix conflicting new names on preview'
+        TabOrder = 6
+      end
+      object CB_HighlightChangedNames: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 96
+        Width = 174
+        Caption = 'Highlight changed file names'
+        TabOrder = 3
+      end
+      object ColorBox_HighlightChangedNames: TColorBox
+        Left = 40
+        Height = 22
+        Top = 120
+        Width = 145
+        Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 4
+      end
+    end
+    object TabSheet_Rename: TTabSheet
+      Caption = 'Rename'
+      ClientHeight = 332
+      ClientWidth = 416
+      ImageIndex = 1
+      object Bevel2: TBevel
+        Left = 24
+        Height = 9
+        Top = 192
+        Width = 368
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object CheckBox_DisplayMsgOnSuccessfulRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 24
+        Width = 222
+        Caption = 'Display message on successful rename'
+        TabOrder = 0
+      end
+      object CheckBox_ClearRulesListOnRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 96
+        Width = 151
+        Caption = 'Clear rules list on rename'
+        TabOrder = 3
+      end
+      object CheckBox_ClearFilesTableOnRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 120
+        Width = 158
+        Caption = 'Clear files table on rename'
+        TabOrder = 4
+      end
+      object CheckBox_OverwriteWithNewName: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 216
+        Width = 186
+        Caption = 'Overwrite files with New Names'
+        TabOrder = 7
+        OnClick = CheckBox_OverwriteWithNewNameClick
+      end
+      object StaticText5: TStaticText
+        Left = 24
+        Height = 48
+        Top = 272
+        Width = 368
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Warning: Overwritten files will be deleted permanently.'
+        TabOrder = 9
+      end
+      object CheckBox_CloseProgramAfterSuccessfulRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 48
+        Width = 223
+        Caption = 'Close program after successful rename'
+        TabOrder = 1
+      end
+      object CheckBox_ClearRenamedFilesOnRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 144
+        Width = 179
+        Caption = 'Clear renamed files on rename'
+        TabOrder = 5
+      end
+      object CB_OverwriteWithNewNameConfirm: TCheckBox
+        Left = 40
+        Height = 19
+        Top = 240
+        Width = 226
+        Caption = 'Must be successfully confirmed by user'
+        TabOrder = 8
+      end
+      object CheckBox_SkipRenamingUnchangedFiles: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 168
+        Width = 195
+        Caption = 'Skip renaming of unchanged files'
+        TabOrder = 6
+      end
+      object CheckBox_UnmarkRulesListOnRename: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 72
+        Width = 166
+        Caption = 'Unmark rules list on rename'
+        TabOrder = 2
+      end
+    end
+    object TabSheet_MetaTags: TTabSheet
+      Caption = 'Meta Tags'
+      ClientHeight = 332
+      ClientWidth = 416
+      ImageIndex = 3
+      object Label1: TLabel
+        Left = 24
+        Height = 15
+        Top = 123
+        Width = 68
+        Caption = 'Date Format:'
+        ParentColor = False
+      end
+      object Label_MetaTagFormatNote: TLabel
+        Left = 24
+        Height = 48
+        Top = 232
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        Caption = 'Note: formats will be saved only if validated successfully.'
+        ParentColor = False
+        WordWrap = True
+      end
+      object SpeedButton_MetaTagFormatsInfo: TSpeedButton
+        Left = 319
+        Height = 81
+        Hint = 'Online Help (F1)'
+        Top = 144
+        Width = 72
+        Anchors = [akTop, akRight]
+        Caption = 'Help'
+        Flat = True
+        Glyph.Data = 
+        {
+          36040000424D36040000000000003600
+          00002800000010000000100000000100
+          20000000000000040000640000006400
+          00000000000000000000FFFFFF000000
+          00000000000000000000000000000000
+          0000000000000000002A000000330000
+          002A0000000000000000000000000000
+          00000000000000000000FFFFFF000000
+          00000000000000000000000000000000
+          00000000002DA17344DDA77745FFA173
+          44DD0000002D00000000000000000000
+          00000000000000000000FFFFFF000000
+          00000000000000000000000000000000
+          002DA17342E9C5A37EFFFBF4E7FFC5A3
+          7EFFA17342E90000002D000000000000
+          00000000000000000000FFFFFF000000
+          000000000000000000000000002DA173
+          42E8C4A47FFFF6EDDFFFC19E79FFF6ED
+          DFFFC4A47FFFA17342E80000002D0000
+          00000000000000000000FFFFFF000000
+          0000000000000000002DA17342E8C5A5
+          81FFF8F1E6FFB4895DFFA3723EFFB489
+          5DFFF8F1E6FFC5A581FFA17342E80000
+          002D0000000000000000FFFFFF000000
+          00000000002DA17342E8C7A684FFFAF4
+          EAFFB3895CFFA2703CFFA3713DFFA270
+          3CFFB3895CFFFAF4EAFFC7A684FFA173
+          42E80000002D00000000FFFFFF000000
+          0026A17241E9C6A784FFFCF7EFFFB38A
+          5FFFB89168FFFAF2E4FFF8EFE0FFFBF3
+          E6FFB99269FFB38B5FFFFCF7EFFFC6A7
+          84FFA17241E90000002AFFFFFF009D70
+          42CCC8A887FFFDF9F2FFB58C60FFA676
+          43FFA57542FFB89066FFFDF8EFFFA26F
+          3AFFA77745FFA67644FFB58C60FFFDF9
+          F2FFC8A887FFA07343DDFFFFFF00A675
+          43FFFFFFFFFFC4A481FFA3723EFFA878
+          47FFA67542FFB99167FFFFFFFEFFA472
+          3EFFA97A4AFFA97A49FFA4723EFFC4A4
+          81FFFFFFFFFFA67543FFFFFFFF00A777
+          46ACC9A989FFFFFFFCFFB48D62FFA574
+          42FFBE9A74FFFFFFFFFFFFFFFFFFA574
+          41FFA97A49FFA77744FFB58D63FFFFFF
+          FCFFC9A989FFA77746C1FFFFFF000000
+          0000A67542A7C9AA8BFFFFFFFFFFB68C
+          62FFA3723DFFA2703BFFA2703BFFA676
+          43FFA67643FFB78D63FFFFFFFFFFC9AA
+          8BFFA67542A700000000FFFFFF000000
+          000000000000A67542A7CAAB8CFFFFFF
+          FFFFB58C61FFBA946BFFFFFFFEFFA371
+          3DFFB68E63FFFFFFFFFFCAAB8CFFA675
+          42A70000000000000000FFFFFF000000
+          00000000000000000000A67542A7CAAC
+          8EFFFFFFFFFFB38A5FFFA06C36FFB48B
+          60FFFFFFFFFFCAAC8EFFA67542A70000
+          00000000000000000000FFFFFF000000
+          0000000000000000000000000000A575
+          42A7CBAD8EFFFFFFFFFFC6A886FFFFFF
+          FFFFCBAD8FFFA57542A7000000000000
+          00000000000000000000FFFFFF000000
+          00000000000000000000000000000000
+          0000A57542A7CBAE91FFFFFFFFFFCBAE
+          91FFA57542A700000000000000000000
+          00000000000000000000FFFFFF000000
+          00000000000000000000000000000000
+          000000000000A77745ACA67541FFA777
+          45AC0000000000000000000000000000
+          00000000000000000000
+        }
+        Layout = blGlyphTop
+        OnClick = SpeedButton_MetaTagFormatsInfoClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Bevel5: TBevel
+        Left = 24
+        Height = 9
+        Top = 96
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object Label2: TLabel
+        Left = 24
+        Height = 15
+        Top = 179
+        Width = 44
+        Caption = 'Preview:'
+        ParentColor = False
+      end
+      object CheckBox_MetaTagSupport: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 24
+        Width = 108
+        Caption = 'MetaTag support'
+        TabOrder = 0
+      end
+      object Edit_MetaTagDateTimeFormat: TEdit
+        Left = 24
+        Height = 25
+        Top = 144
+        Width = 264
+        Anchors = [akTop, akLeft, akRight]
+        Font.Height = 243
+        MaxLength = 100
+        ParentFont = False
+        TabOrder = 1
+        OnKeyDown = DateTimeFormatKeyDown
+        OnKeyUp = Edit_MetaTagDateTimeFormatKeyUp
+      end
+      object Edit_MetaTagDateTimeFormatTest: TEdit
+        Left = 24
+        Height = 25
+        Top = 200
+        Width = 264
+        Anchors = [akTop, akLeft, akRight]
+        Color = clBtnFace
+        Font.Height = 243
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 2
+        OnKeyDown = DateTimeFormatKeyDown
+      end
+      object StaticText1: TStaticText
+        Left = 24
+        Height = 48
+        Top = 48
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Note: Disabling MetaTag support will increase performance when processing large amount of files.'
+        TabOrder = 3
+      end
+    end
+    object TabSheet_Misc: TTabSheet
+      Caption = 'Misc.'
+      ClientHeight = 332
+      ClientWidth = 416
+      ImageIndex = 2
+      object Label_DragFilesText: TLabel
+        Left = 24
+        Height = 15
+        Top = 136
+        Width = 196
+        Caption = 'Change text of "Drag your files here":'
+        ParentColor = False
+      end
+      object Bevel4: TBevel
+        Left = 24
+        Height = 9
+        Top = 104
+        Width = 367
+        Anchors = [akTop, akLeft, akRight]
+        Shape = bsBottomLine
+      end
+      object Label_AddRulesText: TLabel
+        Left = 24
+        Height = 15
+        Top = 192
+        Width = 215
+        Caption = 'Change text of "Click here to add a rule":'
+        ParentColor = False
+      end
+      object CheckBox_RegisterPresetExtension: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 24
+        Width = 186
+        Caption = 'Register preset extension (*.rnp)'
+        TabOrder = 0
+      end
+      object CheckBox_AddToFolderContextMenu: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 48
+        Width = 170
+        Caption = 'Add to folders context menu'
+        TabOrder = 1
+      end
+      object Edit_DragFilesText: TEdit
+        Left = 24
+        Height = 25
+        Top = 157
+        Width = 360
+        Anchors = [akTop, akLeft, akRight]
+        Font.Height = 243
+        ParentFont = False
+        TabOrder = 3
+      end
+      object Edit_AddRulesText: TEdit
+        Left = 24
+        Height = 25
+        Top = 213
+        Width = 360
+        Anchors = [akTop, akLeft, akRight]
+        Font.Height = 243
+        ParentFont = False
+        TabOrder = 4
+      end
+      object CheckBox_AddToSendToContextMenu: TCheckBox
+        Left = 24
+        Height = 19
+        Top = 72
+        Width = 186
+        Caption = 'Add to "Send To" context menu'
+        TabOrder = 2
+      end
+    end
+  end
+end

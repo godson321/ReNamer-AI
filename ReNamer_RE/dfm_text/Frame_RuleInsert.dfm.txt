@@ -1,0 +1,223 @@
+object Frame_RuleInsert: TFrame_RuleInsert
+  Left = 0
+  Height = 263
+  Top = 0
+  Width = 400
+  ClientHeight = 263
+  ClientWidth = 400
+  TabOrder = 0
+  DesignLeft = 394
+  DesignTop = 270
+  object Label_InsertWhere: TLabel
+    Left = 16
+    Height = 15
+    Top = 106
+    Width = 37
+    Caption = 'Where:'
+    ParentColor = False
+  end
+  object Label_InsertWhat: TLabel
+    Left = 16
+    Height = 15
+    Top = 27
+    Width = 32
+    Caption = 'Insert:'
+    ParentColor = False
+  end
+  object CheckBox_InsertSkipExtension: TCheckBox
+    Left = 80
+    Height = 19
+    Top = 228
+    Width = 94
+    Caption = 'Skip extension'
+    Checked = True
+    State = cbChecked
+    TabOrder = 8
+  end
+  object Edit_Insert: TEdit
+    Left = 80
+    Height = 25
+    Top = 24
+    Width = 289
+    Anchors = [akTop, akLeft, akRight]
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 0
+    OnKeyDown = Edit_InsertKeyDown
+  end
+  object RadioButton_InsertPrefix: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 80
+    Width = 48
+    Caption = 'Prefix'
+    Checked = True
+    TabOrder = 2
+    TabStop = True
+  end
+  object RadioButton_InsertSuffix: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 104
+    Width = 48
+    Caption = 'Suffix'
+    TabOrder = 3
+  end
+  object SpinEdit_InsertPosition: TSpinEdit
+    Left = 208
+    Height = 23
+    Top = 126
+    Width = 57
+    MaxValue = 260
+    MinValue = 1
+    OnChange = SpinEdit_InsertPositionChange
+    OnKeyDown = SpinEditKeyDown
+    TabOrder = 9
+    Value = 1
+  end
+  object RadioButton_InsertPosition: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 128
+    Width = 64
+    Caption = 'Position:'
+    TabOrder = 4
+  end
+  object RadioButton_InsertAfterText: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 152
+    Width = 70
+    Caption = 'After text:'
+    TabOrder = 5
+  end
+  object Edit_InsertAfterText: TEdit
+    Left = 208
+    Height = 25
+    Top = 150
+    Width = 137
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 11
+    OnChange = Edit_InsertAfterTextChange
+  end
+  object RadioButton_InsertBeforeText: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 176
+    Width = 78
+    Caption = 'Before text:'
+    TabOrder = 6
+  end
+  object Edit_InsertBeforeText: TEdit
+    Left = 208
+    Height = 25
+    Top = 174
+    Width = 137
+    Font.Height = 243
+    ParentFont = False
+    TabOrder = 12
+    OnChange = Edit_InsertBeforeTextChange
+  end
+  object CheckBox_InsertRight: TCheckBox
+    Left = 272
+    Height = 19
+    Top = 128
+    Width = 84
+    Caption = 'Right-to-left'
+    TabOrder = 10
+    OnClick = CheckBox_InsertRightClick
+  end
+  object RadioButton_ReplaceCurrentName: TRadioButton
+    Left = 80
+    Height = 19
+    Top = 200
+    Width = 133
+    Caption = 'Replace current name'
+    TabOrder = 7
+  end
+  object BitBtn_InsertMetaTag: TBitBtn
+    Left = 80
+    Height = 26
+    Hint = 'Insert Meta Tag (Ctrl+Ins)'
+    Top = 49
+    Width = 127
+    AutoSize = True
+    Caption = 'Insert Meta Tag'
+    Glyph.Data = 
+    {
+      36040000424D36040000000000003600
+      00002800000010000000100000000100
+      20000000000000040000640000006400
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      00000000001E00000033000000330000
+      00330000001E00000000000000300000
+      003300000033000000330000002B0000
+      00000000000000000027000000330000
+      0033007C3FA9008C4BFF008B4AFF008C
+      4CFF007E45AC0000001E3F84CDF24897
+      D8FF4A9CDAFF4897D8FF3E81C8DD0000
+      0000000000003C7DC4CE4E99E3FF1F90
+      89FF009856FF00BB85FF77E0C6FF00BB
+      86FF00995CFF007E45AC3E82CDFF7CF6
+      FFFF79F1FFFF7CF5FFFF3D80CCFF0000
+      0033000000334997DAFF84F9FFFF0086
+      38FF00C089FF00BC83FFFFFFFFFF00BC
+      83FF00C18DFF008C4CFF3D81CCFF83F2
+      FFFF55DAFFFF6BE5FFFF4E98D8FF4F9C
+      DAFF4F9BDAFF5BAEE5FF8BF4FFFF0083
+      36FF75E6CBFFFFFFFFFFFFFFFFFFFFFF
+      FFFF77E7CEFF008B49FF3D82CDFF8DF6
+      FFFF76E6FFFF58D9FFFF7BE8FFFF7CE9
+      FFFF7CE9FFFF7DE8FFFF6CE2FFFF0082
+      34FF00CA93FF00C88FFFFFFFFFFF00C9
+      90FF00CD99FF008C4BFF3F86CFEA4C96
+      D8FF5EADE2FF93EEFFFF45CEFFFF49CF
+      FFFF49D0FFFF4AD0FFFF4DD2FFFF3FB3
+      95FF009D58FF00D29AFF75EED3FF00D4
+      9DFF00A365FF008E4C97000000000000
+      0000519BDAFF9EEFFFFF3ECAFFFF43CB
+      FFFF45CCFFFF44CCFFFF43CCFFFF68DB
+      FFFF3FB396FF008336FF008538FF008A
+      3CFF018D52A200000000000000270000
+      0033529BDAFFA7F0FFFF36C6FFFF3CC8
+      FFFF3EC8FFFF3DC8FFFF39C7FFFF61D6
+      FFFFA4EDFFFF83CAFCFFB4FDFFFF4584
+      DBFF00000000000000003A7EC3CE4F96
+      D8FF68ADE2FFB0EFFFFF2DC0FFFF34C2
+      FFFF36C3FFFF34C2FFFF2DC0FFFFB3F2
+      FFFF3F84CEFF3C82CFD2468DD4FF4188
+      D2D600000000000000003A83CDFFB6F6
+      FFFFB1EEFFFF50CBFFFF20BAFFFF27BC
+      FFFF27BCFFFF24BBFFFF1DBAFFFFB9F3
+      FFFF3980CCFF00000000000000000000
+      000000000000000000003A83CDFFBFF6
+      FFFFB9F0FFFFBCF0FFFFC1F1FFFF56CB
+      FFFF56CBFFFFC2F1FFFFC0F2FFFFC2F6
+      FFFF3A82CDFF00000000000000000000
+      000000000000000000003D86CFB05297
+      D8FF589BDAFF589BDAFF5698D8FFB3E3
+      FCFFBCE9FFFF5698D8FF5A9CDAFF5498
+      D8FF3D86CFB000000000000000000000
+      00000000000000000000000000000000
+      000000000000000000002E70B2AA90C6
+      EFFFAFDDFAFF327AC4DB000000000000
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      000000000000000000013882CDFFDAF8
+      FFFFDAF8FFFF3882CDFF000000000000
+      00000000000000000000000000000000
+      00000000000000000000000000000000
+      0000000000004189D1033C86CFEE5698
+      D8FF5698D8FF3D86CFED4189D1010000
+      00000000000000000000000000000000
+      00000000000000000000
+    }
+    OnClick = BitBtn_InsertMetaTagClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+end

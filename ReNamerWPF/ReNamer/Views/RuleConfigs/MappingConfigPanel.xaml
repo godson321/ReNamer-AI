@@ -1,0 +1,26 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.MappingConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="440" MinHeight="280">
+    <DockPanel Margin="8">
+        <!-- Top options -->
+        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <Button x:Name="btnTable" Content="{DynamicResource RuleCfg_Mapping_Table}" Width="80" Margin="0,0,8,0" Style="{DynamicResource SecondaryButtonStyle}" Click="BtnTable_Click"/>
+            <CheckBox x:Name="chkAllowReuse" Content="{DynamicResource RuleCfg_Mapping_AllowReuse}" VerticalContentAlignment="Center" Margin="8,0"/>
+            <CheckBox x:Name="chkPartialMatch" Content="{DynamicResource RuleCfg_Mapping_PartialMatch}" VerticalContentAlignment="Center" Margin="8,0"/>
+            <CheckBox x:Name="chkInverse" Content="{DynamicResource RuleCfg_Mapping_Inverse}" VerticalContentAlignment="Center" Margin="8,0"/>
+        </WrapPanel>
+        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Config_CaseSensitive}" VerticalContentAlignment="Center" Margin="8,0"/>
+            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" VerticalContentAlignment="Center" Margin="8,0"/>
+        </WrapPanel>
+        <!-- DataGrid for mappings -->
+        <DataGrid x:Name="dgMappings" AutoGenerateColumns="False" CanUserAddRows="True"
+                  CanUserDeleteRows="True" HeadersVisibility="Column" GridLinesVisibility="All" HorizontalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_Match}" Binding="{Binding Match}" Width="*"/>
+                <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_NewName}" Binding="{Binding NewName}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

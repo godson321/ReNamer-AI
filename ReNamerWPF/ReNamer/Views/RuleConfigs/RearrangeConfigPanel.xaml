@@ -1,0 +1,38 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.RearrangeConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="440" MinHeight="280">
+    <StackPanel Margin="16,8">
+        <!-- Split mode -->
+        <DockPanel Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource RuleCfg_Rearrange_SplitUsing}" VerticalAlignment="Center" Width="80" Style="{DynamicResource FormLabelStyle}" TextAlignment="Right"/>
+            <StackPanel>
+                <RadioButton x:Name="rbDelimiters" Content="{DynamicResource RuleCfg_Rearrange_Delimiters}" GroupName="Split" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                <RadioButton x:Name="rbPositions" Content="{DynamicResource RuleCfg_Rearrange_Positions}" GroupName="Split" Margin="0,2" VerticalContentAlignment="Center"/>
+                <RadioButton x:Name="rbExact" Content="{DynamicResource RuleCfg_Rearrange_ExactPattern}" GroupName="Split" Margin="0,2" VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </DockPanel>
+        <!-- Delimiters -->
+        <TextBox x:Name="txtDelimiters" Margin="0,0,0,8"/>
+        <!-- New pattern -->
+        <DockPanel Margin="0,0,0,4">
+            <TextBlock Text="{DynamicResource RuleCfg_Rearrange_NewPattern}" VerticalAlignment="Center" Width="80" Style="{DynamicResource FormLabelStyle}" TextAlignment="Right"/>
+            <TextBox x:Name="txtNewPattern"/>
+        </DockPanel>
+        <!-- Hint -->
+        <TextBlock TextWrapping="Wrap" Foreground="Gray" FontSize="11" Margin="0,4,0,8"
+                   Text="{DynamicResource RuleCfg_Rearrange_Hint}" Style="{DynamicResource DialogHintText}"/>
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal" Margin="0,4,0,8" HorizontalAlignment="Left">
+            <Button x:Name="btnDelimSeparator" Content="{DynamicResource RuleCfg_Rearrange_Separator}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
+                    Padding="8,3" Margin="0,0,8,0" ToolTip="Insert separator into Delimiters" Click="BtnDelimSeparator_Click"/>
+            <Button x:Name="btnPatternMetaTag" Content="{DynamicResource RuleCfg_Rearrange_MetaTag}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
+                    Padding="8,3" ToolTip="Insert Meta Tag into New Pattern" Click="BtnPatternMetaTag_Click"/>
+        </StackPanel>
+        <!-- Options -->
+        <StackPanel Orientation="Horizontal">
+            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,0,24,0" VerticalContentAlignment="Center"/>
+            <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Config_RightToLeft}" VerticalContentAlignment="Center"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
