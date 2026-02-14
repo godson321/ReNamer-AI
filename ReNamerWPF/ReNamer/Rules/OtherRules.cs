@@ -201,6 +201,7 @@ public enum RemoveOccurrence { All, First, Last }
 // ═══════════════════════════════════════════════════════════════
 public class CaseRule : RuleBase
 {
+    // 旧版模式（保留兼容）
     public CaseType CaseType { get; set; } = CaseType.Capitalize;
     public bool SkipExtension { get; set; } = true;
     public bool PreserveCase { get; set; } = false;
@@ -209,33 +210,108 @@ public class CaseRule : RuleBase
     public bool ExtensionAlwaysLower { get; set; } = false;
     public bool ExtensionAlwaysUpper { get; set; } = false;
 
+    // 新版三段式模式
+    public bool UseSegmentedMode { get; set; } = false;
+    public FirstLetterMode FirstLetterMode { get; set; } = FirstLetterMode.Keep;
+    public RemainingLettersMode RemainingLettersMode { get; set; } = RemainingLettersMode.Keep;
+    public ExtensionLetterMode ExtensionLetterMode { get; set; } = ExtensionLetterMode.Keep;
+
+    // 拼音相关（新旧模式共用）
+    public int PinyinChineseIndex { get; set; } = 1;
+    public bool PinyinUpperCase { get; set; } = true;
+    public PinyinInsertPosition PinyinInsertPosition { get; set; } = PinyinInsertPosition.Prefix; // 旧模式：前/后缀
+    public PinyinFirstLetterAction PinyinFirstLetterAction { get; set; } = PinyinFirstLetterAction.InsertPrefix; // 新模式：插入/替换
+
     public override string RuleName => "Case";
-    public override string Description => CaseType switch
-    {
-        CaseType.Capitalize => "Capitalize Every Word",
-        CaseType.Lower => "lowercase",
-        CaseType.Upper => "UPPERCASE",
-        CaseType.Invert => "iNVERT cASE",
-        CaseType.FirstLetter => "First letter capital",
-        CaseType.Sentence => "Sentence case",
-        CaseType.None => "(none of the above)",
-        _ => "Case"
-    };
+    public override string Description => UseSegmentedMode
+        ? $"Segmented: First={FirstLetterMode}, Rest={RemainingLettersMode}, Ext={ExtensionLetterMode}"
+        : CaseType switch
+        {
+            CaseType.Capitalize => "Capitalize Every Word",
+            CaseType.Lower => "lowercase",
+            CaseType.Upper => "UPPERCASE",
+            CaseType.Invert => "iNVERT cASE",
+            CaseType.FirstLetter => "First letter capital",
+            CaseType.Sentence => "Sentence case",
+            CaseType.None => "(none of the above)",
+            CaseType.PinyinFirstLetter => $"Pinyin first letter (#{PinyinChineseIndex})",
+            _ => "Case"
+        };
 
     public override string Execute(string fileName, RenFile file)
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension);
-        var result = ApplyCase(baseName);
 
+        if (UseSegmentedMode)
+        {
+            var segmentedResult = ApplySegmentedCase(baseName);
+            if (PreserveCase)
+                segmentedResult = ApplyPreserve(baseName, segmentedResult);
+            if (ForceCase && !string.IsNullOrEmpty(ForceCaseText))
+                segmentedResult = ApplyForce(segmentedResult);
+
+            ext = ApplySegmentedExtensionCase(ext);
+            return segmentedResult + ext;
+        }
+
+        // 旧模式兼容
+        var legacyResult = ApplyCase(baseName);
         if (PreserveCase && CaseType != CaseType.None)
-            result = ApplyPreserve(baseName, result);
+            legacyResult = ApplyPreserve(baseName, legacyResult);
         if (ForceCase && !string.IsNullOrEmpty(ForceCaseText))
-            result = ApplyForce(result);
+            legacyResult = ApplyForce(legacyResult);
 
         if (ExtensionAlwaysLower) ext = ext.ToLowerInvariant();
         else if (ExtensionAlwaysUpper) ext = ext.ToUpperInvariant();
-        return result + ext;
+        return legacyResult + ext;
     }
+
+    private string ApplySegmentedCase(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        return FirstLetterMode switch
+        {
+            FirstLetterMode.Keep => input[0] + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.Upper => char.ToUpper(input[0]) + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.Lower => char.ToLower(input[0]) + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.PinyinFirstLetter => ApplyPinyinFirstLetter(input),
+            _ => input[0] + ApplyRemainingLetters(input[1..])
+        };
+    }
+
+    private string ApplyPinyinFirstLetter(string input)
+    {
+        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(input, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        if (string.IsNullOrEmpty(letter))
+            letter = PinyinUpperCase ? input[0].ToString().ToUpperInvariant() : input[0].ToString().ToLowerInvariant();
+
+        return PinyinFirstLetterAction switch
+        {
+            PinyinFirstLetterAction.InsertPrefix => letter + ApplyRemainingLetters(input),
+            PinyinFirstLetterAction.ReplaceFirstCharacter => letter + ApplyRemainingLetters(input.Length > 1 ? input[1..] : ""),
+            _ => letter + ApplyRemainingLetters(input)
+        };
+    }
+
+    private string ApplyRemainingLetters(string input) => RemainingLettersMode switch
+    {
+        RemainingLettersMode.Keep => input,
+        RemainingLettersMode.Upper => input.ToUpperInvariant(),
+        RemainingLettersMode.Lower => input.ToLowerInvariant(),
+        RemainingLettersMode.CapitalizeWords => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input.ToLower()),
+        RemainingLettersMode.Invert => new string(input.Select(c => char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)).ToArray()),
+        _ => input
+    };
+
+    private string ApplySegmentedExtensionCase(string ext) => ExtensionLetterMode switch
+    {
+        ExtensionLetterMode.Keep => ext,
+        ExtensionLetterMode.Lower => ext.ToLowerInvariant(),
+        ExtensionLetterMode.Upper => ext.ToUpperInvariant(),
+        _ => ext
+    };
 
     private string ApplyCase(string s) => CaseType switch
     {
@@ -245,8 +321,17 @@ public class CaseRule : RuleBase
         CaseType.Invert => new string(s.Select(c => char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)).ToArray()),
         CaseType.FirstLetter => s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : s,
         CaseType.Sentence => s.Length > 0 ? char.ToUpper(s[0]) + s[1..].ToLower() : s,
+        CaseType.PinyinFirstLetter => ApplyLegacyPinyinCase(s),
         _ => s
     };
+
+    private string ApplyLegacyPinyinCase(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return s;
+        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(s, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        if (string.IsNullOrEmpty(letter)) return s;
+        return PinyinInsertPosition == PinyinInsertPosition.Suffix ? s + letter : letter + s;
+    }
 
     private static string ApplyPreserve(string orig, string transformed)
     {
@@ -276,7 +361,13 @@ public class CaseRule : RuleBase
     }
 }
 
-public enum CaseType { Capitalize, Lower, Upper, Invert, FirstLetter, Sentence, None }
+public enum CaseType { Capitalize, Lower, Upper, Invert, FirstLetter, Sentence, None, PinyinFirstLetter }
+
+public enum PinyinInsertPosition { Prefix, Suffix }
+public enum FirstLetterMode { Keep, Upper, Lower, PinyinFirstLetter }
+public enum RemainingLettersMode { Keep, Upper, Lower, CapitalizeWords, Invert }
+public enum ExtensionLetterMode { Keep, Lower, Upper }
+public enum PinyinFirstLetterAction { InsertPrefix, ReplaceFirstCharacter }
 
 // ═══════════════════════════════════════════════════════════════
 // SerializeRule - 完整实现 Repeat/Reset/NumberingSystem

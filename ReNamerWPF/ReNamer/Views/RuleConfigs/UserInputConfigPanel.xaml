@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="440" MinHeight="280">
+             MinWidth="440" MinHeight="280"
+             Background="{DynamicResource CardBrush}">
     <DockPanel Margin="16,12">
         <!-- Top label -->
         <TextBlock DockPanel.Dock="Top" Text="{DynamicResource RuleCfg_UserInput_Instruction}" Margin="0,0,0,4" Style="{DynamicResource DialogLabelText}"/>

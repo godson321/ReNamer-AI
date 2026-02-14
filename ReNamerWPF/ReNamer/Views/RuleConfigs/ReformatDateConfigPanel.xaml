@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="440" MinHeight="280">
+             MinWidth="440" MinHeight="280"
+             Background="{DynamicResource CardBrush}">
     <StackPanel Margin="16,12">
         <!-- Source format -->
         <TextBlock Text="{DynamicResource RuleCfg_ReformatDate_FindFormats}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>

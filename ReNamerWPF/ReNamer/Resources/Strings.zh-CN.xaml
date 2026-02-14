@@ -286,6 +286,29 @@
     <sys:String x:Key="Case_ForceCaseHint">提示: 用逗号分隔的片段将保持输入时的大小写，例如: CD,DVD,DJ</sys:String>
     <sys:String x:Key="Case_ExtAlwaysLower">扩展名始终小写</sys:String>
     <sys:String x:Key="Case_ExtAlwaysUpper">扩展名始终大写</sys:String>
+    <sys:String x:Key="Case_Composite_Title">名称构成（首字母 + 其他字母 + 扩展名）</sys:String>
+    <sys:String x:Key="Case_Composite_FirstLetter">首字母</sys:String>
+    <sys:String x:Key="Case_Composite_RemainingLetters">其他字母</sys:String>
+    <sys:String x:Key="Case_Composite_Extension">扩展名</sys:String>
+    <sys:String x:Key="Case_Composite_Keep">不改变</sys:String>
+    <sys:String x:Key="Case_Composite_Upper">大写</sys:String>
+    <sys:String x:Key="Case_Composite_Lower">小写</sys:String>
+    <sys:String x:Key="Case_Composite_AllUpper">全部大写</sys:String>
+    <sys:String x:Key="Case_Composite_AllLower">全部小写</sys:String>
+    <sys:String x:Key="Case_Composite_CapitalizeWords">每个单词首字母大写</sys:String>
+    <sys:String x:Key="Case_Composite_Invert">反转大小写</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinFirst">中文拼音首字母</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinIndex">第几个中文字：</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinInsert">插入</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinReplace">替换</sys:String>
+    <sys:String x:Key="Case_PinyinFirstLetter">中文拼音首字母</sys:String>
+    <sys:String x:Key="Case_PinyinOptions">拼音首字母设置</sys:String>
+    <sys:String x:Key="Case_PinyinChineseIndex">第几个中文字：</sys:String>
+    <sys:String x:Key="Case_PinyinUpperCase">大写</sys:String>
+    <sys:String x:Key="Case_PinyinInsertPosition">插入位置：</sys:String>
+    <sys:String x:Key="Case_PinyinPrefix">前缀</sys:String>
+    <sys:String x:Key="Case_PinyinSuffix">后缀</sys:String>
+    <sys:String x:Key="Case_PinyinHint">提示：例如 [我是漫画].rar，设置第1个中文 → W[我是漫画].rar</sys:String>
 
     <!-- 序列化规则 -->
     <sys:String x:Key="Serialize_IndexStarts">起始索引:</sys:String>

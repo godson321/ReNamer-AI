@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="440" MinHeight="280">
+             MinWidth="440" MinHeight="280"
+             Background="{DynamicResource CardBrush}">
     <Grid Margin="16,12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

@@ -286,6 +286,29 @@
     <sys:String x:Key="Case_ForceCaseHint">Hint: fragments separated with comma will be put in the same case as they are typed in this text box, for example: CD,DVD,DJ</sys:String>
     <sys:String x:Key="Case_ExtAlwaysLower">Extension always lower case</sys:String>
     <sys:String x:Key="Case_ExtAlwaysUpper">Extension always upper case</sys:String>
+    <sys:String x:Key="Case_Composite_Title">Name composition (first letter + remaining letters + extension)</sys:String>
+    <sys:String x:Key="Case_Composite_FirstLetter">First letter</sys:String>
+    <sys:String x:Key="Case_Composite_RemainingLetters">Remaining letters</sys:String>
+    <sys:String x:Key="Case_Composite_Extension">Extension</sys:String>
+    <sys:String x:Key="Case_Composite_Keep">Keep as is</sys:String>
+    <sys:String x:Key="Case_Composite_Upper">Upper</sys:String>
+    <sys:String x:Key="Case_Composite_Lower">Lower</sys:String>
+    <sys:String x:Key="Case_Composite_AllUpper">ALL UPPER</sys:String>
+    <sys:String x:Key="Case_Composite_AllLower">all lower</sys:String>
+    <sys:String x:Key="Case_Composite_CapitalizeWords">Capitalize Every Word</sys:String>
+    <sys:String x:Key="Case_Composite_Invert">Invert Case</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinFirst">Chinese pinyin first letter</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinIndex">Chinese char #:</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinInsert">Insert</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinReplace">Replace</sys:String>
+    <sys:String x:Key="Case_PinyinFirstLetter">Chinese Pinyin first letter</sys:String>
+    <sys:String x:Key="Case_PinyinOptions">Pinyin First Letter Settings</sys:String>
+    <sys:String x:Key="Case_PinyinChineseIndex">Chinese char #:</sys:String>
+    <sys:String x:Key="Case_PinyinUpperCase">Uppercase</sys:String>
+    <sys:String x:Key="Case_PinyinInsertPosition">Insert at:</sys:String>
+    <sys:String x:Key="Case_PinyinPrefix">Prefix</sys:String>
+    <sys:String x:Key="Case_PinyinSuffix">Suffix</sys:String>
+    <sys:String x:Key="Case_PinyinHint">Hint: e.g. [我是漫画].rar with #1 → W[我是漫画].rar</sys:String>
 
     <!-- Serialize Rule -->
     <sys:String x:Key="Serialize_IndexStarts">Index starts:</sys:String>
