@@ -4,7 +4,7 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <StackPanel Margin="16,12">
+    <StackPanel>
         <!-- Character types -->
         <GroupBox Header="{DynamicResource RuleCfg_Strip_Section_Characters}" Margin="0,0,0,8">
             <Grid Margin="8,6">

@@ -5,7 +5,7 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <StackPanel Margin="16,12">
+    <StackPanel>
         <!-- Length -->
         <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>

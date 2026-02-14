@@ -4,7 +4,7 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <DockPanel Margin="16,12">
+    <DockPanel>
         <!-- Top label -->
         <TextBlock DockPanel.Dock="Top" Text="{DynamicResource RuleCfg_UserInput_Instruction}" Margin="0,0,0,4" Style="{DynamicResource DialogLabelText}"/>
         <!-- Bottom options -->

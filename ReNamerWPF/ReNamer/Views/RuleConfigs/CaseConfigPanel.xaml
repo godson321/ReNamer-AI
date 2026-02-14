@@ -5,7 +5,7 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="500" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <Grid Margin="16,12">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
