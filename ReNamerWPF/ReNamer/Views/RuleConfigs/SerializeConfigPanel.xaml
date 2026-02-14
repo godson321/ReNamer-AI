@@ -3,100 +3,81 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="440" MinHeight="280"
+             MinWidth="440" MinHeight="260"
              Background="{DynamicResource CardBrush}">
-    <Grid Margin="16,12">
+    <Grid Margin="16,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="12"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!-- Left: Numbering settings -->
-        <StackPanel HorizontalAlignment="Stretch">
-            <Grid Margin="0,4">
+        <GroupBox Header="{DynamicResource RuleCfg_Section_NumberingParameters}" Grid.Column="0">
+            <Grid Margin="8,6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="118"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{DynamicResource Serialize_IndexStarts}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <controls:NumericUpDown x:Name="nudIndex" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1"
-                                        HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="0" Text="{DynamicResource Serialize_IndexStarts}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudIndex" Grid.Row="0" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="2" Text="{DynamicResource Serialize_Repeat}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudRepeat" Grid.Row="2" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="4" Text="{DynamicResource Serialize_Step}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudStep" Grid.Row="4" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+
+                <CheckBox x:Name="chkPadToLength" Grid.Row="6" Grid.ColumnSpan="2" Content="{DynamicResource Serialize_PadZeros}" VerticalContentAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudPadLength" Grid.Row="6" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
+
+                <TextBlock Grid.Row="8" Text="{DynamicResource Serialize_NumberingSystem}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="cmbNumberingSystem" Grid.Row="8" Grid.Column="1" MinWidth="170" HorizontalAlignment="Stretch"/>
+                <TextBlock Grid.Row="10" Text="{DynamicResource Serialize_CustomSymbols}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <TextBox x:Name="txtCustomSymbols" Grid.Row="10" Grid.Column="1"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_SerializeCustomSymbols}"/>
             </Grid>
-            <Grid Margin="0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{DynamicResource Serialize_Repeat}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <controls:NumericUpDown x:Name="nudRepeat" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
-                                        HorizontalAlignment="Left"/>
-            </Grid>
-            <Grid Margin="0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{DynamicResource Serialize_Step}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <controls:NumericUpDown x:Name="nudStep" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
-                                        HorizontalAlignment="Left"/>
-            </Grid>
-            <Grid Margin="0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="80"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox x:Name="chkResetEvery" Content="{DynamicResource Serialize_ResetEvery}" VerticalContentAlignment="Center"/>
-                <controls:NumericUpDown x:Name="nudResetEvery" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1"
-                                        HorizontalAlignment="Left"/>
-            </Grid>
-            <CheckBox x:Name="chkResetIfFolder" Content="{DynamicResource Serialize_ResetIfFolder}" Margin="0,4"/>
-            <CheckBox x:Name="chkResetIfFileName" Content="{DynamicResource Serialize_ResetIfFileName}" Margin="0,4"/>
-            <Grid Margin="0,8,0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="80"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox x:Name="chkPadToLength" Content="{DynamicResource Serialize_PadZeros}" VerticalContentAlignment="Center"/>
-                <controls:NumericUpDown x:Name="nudPadLength" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1"
-                                        HorizontalAlignment="Left"/>
-            </Grid>
-            <Grid Margin="0,4,0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{DynamicResource Serialize_NumberingSystem}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <ComboBox x:Name="cmbNumberingSystem" Grid.Column="1"/>
-            </Grid>
-        </StackPanel>
-        <!-- Right: Insert position + symbols -->
-        <StackPanel Grid.Column="2" HorizontalAlignment="Stretch">
-            <GroupBox Header="{DynamicResource Serialize_InsertWhere}" Margin="0,0,0,8" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8">
-                    <RadioButton x:Name="rbPrefix" Content="{DynamicResource Serialize_Prefix}" GroupName="Position" IsChecked="True" Margin="0,2"/>
-                    <RadioButton x:Name="rbSuffix" Content="{DynamicResource Serialize_Suffix}" GroupName="Position" Margin="0,2"/>
+        </GroupBox>
+        <StackPanel Grid.Column="2">
+            <GroupBox Header="{DynamicResource Serialize_InsertWhere}" Margin="0,0,0,8">
+                <StackPanel Margin="8,6">
+                    <RadioButton x:Name="rbPrefix" Content="{DynamicResource Serialize_Prefix}" GroupName="Position" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbSuffix" Content="{DynamicResource Serialize_Suffix}" GroupName="Position" Margin="0,2" VerticalContentAlignment="Center"/>
                     <Grid Margin="0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbPosition" Content="{DynamicResource Serialize_Position}" GroupName="Position" VerticalContentAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="nudPositionValue" Grid.Column="1" Width="60" MinValue="1" MaxValue="999999" Value="1"
-                                                HorizontalAlignment="Left"/>
+                        <controls:NumericUpDown x:Name="nudPositionValue" Grid.Column="1" Width="60" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
                     </Grid>
-                    <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Serialize_ReplaceCurrentName}" GroupName="Position" Margin="0,2"/>
-                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,8,0,0"/>
+                    <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Serialize_ReplaceCurrentName}" GroupName="Position" Margin="0,2" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
-            <Grid Margin="0,4,0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{DynamicResource Serialize_CustomSymbols}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <TextBox x:Name="txtCustomSymbols" Grid.Column="1"
-                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_SerializeCustomSymbols}"/>
-            </Grid>
+            <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
+                <StackPanel Margin="8,6">
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="chkResetEvery" Content="{DynamicResource Serialize_ResetEvery}" VerticalContentAlignment="Center"/>
+                        <controls:NumericUpDown x:Name="nudResetEvery" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                    </Grid>
+                    <CheckBox x:Name="chkResetIfFolder" Content="{DynamicResource Serialize_ResetIfFolder}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkResetIfFileName" Content="{DynamicResource Serialize_ResetIfFileName}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,4,0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </Grid>
 </UserControl>
