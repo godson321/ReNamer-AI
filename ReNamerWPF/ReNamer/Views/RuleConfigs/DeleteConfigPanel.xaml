@@ -6,7 +6,7 @@
              MinWidth="440" MinHeight="280">
     <StackPanel Margin="16,12">
         <!-- From / Until groups -->
-        <Grid Margin="0,0,0,12">
+        <Grid Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="12"/>
@@ -14,32 +14,49 @@
             </Grid.ColumnDefinitions>
             <!-- From group -->
             <GroupBox Header="{DynamicResource Delete_From}" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8">
-                    <DockPanel Margin="0,4">
+                <StackPanel Margin="8,6">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+
+                        </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbFromPosition" Content="{DynamicResource Delete_Position}" GroupName="From" IsChecked="True" VerticalContentAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="nudFromPosition" Width="60" MinValue="1" MaxValue="999999" Value="1"
-                                                HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <DockPanel Margin="0,4">
+                        <controls:NumericUpDown x:Name="nudFromPosition" Grid.Column="1" MinWidth="100" MinValue="1" MaxValue="999999" Value="1"
+                                                HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbFromDelimiter" Content="{DynamicResource Delete_Delimiter}" GroupName="From" VerticalContentAlignment="Center"/>
-                        <TextBox x:Name="txtFromDelimiter" Width="60" HorizontalAlignment="Right"
+                        <TextBox x:Name="txtFromDelimiter" Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                  helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_DeleteFromDelimiter}"/>
-                    </DockPanel>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
             <!-- Until group -->
             <GroupBox Grid.Column="2" Header="{DynamicResource Delete_Until}" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8">
-                    <DockPanel Margin="0,4">
+                <StackPanel Margin="8,6">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbUntilCount" Content="{DynamicResource Delete_Count}" GroupName="Until" IsChecked="True" VerticalContentAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="nudUntilCount" Width="60" MinValue="1" MaxValue="999999" Value="1"
-                                                HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <DockPanel Margin="0,4">
+                        <controls:NumericUpDown x:Name="nudUntilCount" Grid.Column="1"  MinWidth="100"  MinValue="1" MaxValue="999999" Value="1"
+                                                HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbUntilDelimiter" Content="{DynamicResource Delete_Delimiter}" GroupName="Until" VerticalContentAlignment="Center"/>
-                        <TextBox x:Name="txtUntilDelimiter" Width="60" HorizontalAlignment="Right"
+                        <TextBox x:Name="txtUntilDelimiter" Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                  helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_DeleteUntilDelimiter}"/>
-                    </DockPanel>
+                    </Grid>
                     <RadioButton x:Name="rbUntilEnd" Content="{DynamicResource Delete_TillEnd}" GroupName="Until" Margin="0,4" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
@@ -48,13 +65,14 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <CheckBox x:Name="chkDeleteCurrentName" Content="{DynamicResource Delete_CurrentName}" Margin="0,2" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Delete_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
             </StackPanel>
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="2">
                 <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Delete_RightToLeft}" Margin="0,2" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkLeaveDelimiter" Content="{DynamicResource Delete_LeaveDelimiter}" Margin="0,2" VerticalContentAlignment="Center"/>
             </StackPanel>

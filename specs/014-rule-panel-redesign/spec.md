@@ -128,6 +128,7 @@
 
 - **标签-内容双列对齐（Label-Field Two-Column Alignment）**：配置项统一使用“标签列 + 内容列”的双列网格布局。
 - **固定标签列宽（Fixed Label Column Width）**：标签列使用统一固定宽度（简单面板 80px，复杂面板 100px）。
+- **同类输入列宽一致（Uniform Input Column Width）**：同一面板中语义相同的“右侧输入列”必须使用一致列宽（例如 Delete 面板 From/Until 的数字与分隔符输入列），禁止出现历史遗留的混用宽度（如 68 与 120 并存）。
 - **标签文本右对齐（Right-Aligned Label Text）**：标签文本在标签列内右对齐，确保与内容列形成稳定视觉锚点。
 - **内容列左对齐（Left-Aligned Content Column）**：输入框、选项组、按钮等控件在内容列左对齐起排。
 - **同级行骨架一致（Uniform Row Frame）**：同一面板内同级“标签-内容”行（如 Insert 与 Where）必须复用相同列骨架（列数/列宽/左边距一致），禁止通过额外 Margin 或字体加粗制造视觉偏移。
@@ -139,6 +140,7 @@
 
 - **FR-001**: 所有面板外边距 MUST 统一为 `Margin="16,12"`
 - **FR-002**: 所有标签列宽 MUST 统一为 80px（简单面板）或 100px（复杂面板如 Serialize），每个面板内部 MUST 保持一列宽度一致；标题/标签文本 MUST 右对齐；面板布局 MUST 遵循“标签-内容双列对齐”术语约定；同一面板内同级标签行 MUST 使用相同列骨架（列数/列宽/左边距一致）
+- **FR-002A**: 同一面板内同类输入控件（NumericUpDown/TextBox）所在输入列 MUST 使用一致列宽；若该面板已定义标准输入列宽（如 Delete 为 120），则 MUST 全部遵循，不允许局部保留旧宽度。
 - **FR-003**: 控件行间距 MUST 统一为 8px（相邻控件）和 16px（分组之间）；输入文本内容 MUST 左对齐；单行输入控件内容 MUST 垂直居中；多行/富文本编辑控件内容 MUST 顶部左对齐
 - **FR-004**: 所有用户可见文本 MUST 使用 `{DynamicResource ...}` 实现本地化，不允许硬编码字符串
 - **FR-005**: 所有颜色值 MUST 使用主题 Brush（如 `TextSecondaryBrush`、`SurfaceBrush`），不允许硬编码颜色
@@ -152,6 +154,7 @@
 - **FR-010 (Replace)**: Find / Replace 输入框尾部按钮 MUST 使用统一的单图标按钮样式（禁止使用 `|` 或空白字符作为按钮可见内容），并通过 Tooltip 提供语义提示；Occurrences 和 Flags MUST 有分组标题
 - **FR-011 (Insert)**: MetaTag 按钮 MUST 紧贴输入框右侧；Where 区域 MUST 使用 Grid 统一对齐；`Insert` 与 `Where` 标签 MUST 使用相同标签样式（非粗体）并共用同列骨架
 - **FR-012 (Delete)**: "Delete current name" MUST 有视觉提示表明其为特殊模式（勾选后禁用 From/Until）
+- **FR-012A (Delete)**: `From` 与 `Until` 两组内部“右侧输入列”宽度 MUST 完全一致，且数字输入与分隔符输入 MUST 共用同一列宽基线。
 - **FR-013 (Serialize)**: 左列 MUST 分为"编号参数"、"重置条件"、"格式选项"三个带标题的区域
 - **FR-014 (Extension)**: 两个功能块（New Extension / Remove Duplicate）MUST 有视觉分隔
 - **FR-015 (Case)**: 右侧 ForceCase MUST 用 GroupBox 或 section header 包裹；Extension 选项 MUST 独立分组

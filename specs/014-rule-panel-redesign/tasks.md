@@ -27,7 +27,7 @@
 **⚠️ CRITICAL**: 本阶段未完成前，不进入任何用户故事实施
 
 - [X] T006 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 根容器基线（优先 `Margin="16,12"`，保留必要 MinWidth）
-- [ ] T007 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 标签列宽与对齐策略（简单面板 80，复杂面板 100；标题右对齐、文本左对齐、多行编辑区内容顶部左对齐；同级标签行必须复用同列骨架，字段标签不得非规范加粗）
+- [ ] T007 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 标签列宽与对齐策略（简单面板 80，复杂面板 100；标题右对齐、文本左对齐、多行编辑区内容顶部左对齐；同级标签行必须复用同列骨架，字段标签不得非规范加粗；同类输入列宽必须一致，不允许 68/120 等历史混用）
 - [ ] T008 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 行间距策略（8）和分组间距策略（16）
 - [ ] T009 在 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 将 Hint 文本样式统一到 `DialogHintText`
 - [X] T010 在 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs` 去除硬编码菜单文案并改为资源读取
@@ -43,7 +43,7 @@
 ### Implementation for User Story 1（按面板顺序逐个拆）
 - [X] T011 [US1] 统一 Replace 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReplaceConfigPanel.xaml`
 - [X] T012 [US1] 统一 Insert 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
-- [ ] T013 [US1] 统一 Delete 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`
+- [X] T013 [US1] 统一 Delete 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`
 - [ ] T014 [US1] 统一 Case 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [ ] T015 [US1] 统一 Serialize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
 - [ ] T016 [US1] 统一 Extension 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
@@ -161,7 +161,7 @@
 ## Phase 9: Polish & Cross-Cutting
 **Purpose**: 统一收口、回归验证与交付检查
 
-- [ ] T073 执行静态扫描（硬编码文本/硬编码颜色/空 TextBlock/输入框尾部按钮文本符号/同级标签行骨架一致性/字段标签非规范加粗）并修复问题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [ ] T073 执行静态扫描（硬编码文本/硬编码颜色/空 TextBlock/输入框尾部按钮文本符号/同级标签行骨架一致性/字段标签非规范加粗/同类输入列宽一致性）并修复问题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 - [ ] T074 运行构建验证 `dotnet build ReNamerWPF/ReNamer.sln`
 - [ ] T075 运行回归测试 `dotnet test ReNamerWPF/ReNamer.sln`
 - [ ] T076 依据 `specs/014-rule-panel-redesign/quickstart.md` 完成亮暗主题 + 中英文 + 窄窗手动验收
@@ -242,3 +242,4 @@
 - 若同一文件在多个故事中反复修改，优先合并同一面板的任务提交，减少冲突
 - 输入框尾部功能按钮（如分隔符/MetaTag）统一采用单图标按钮，不使用 `|` 或空白字符作为可见内容，并保留 Tooltip 语义提示
 - 同一面板内同级标签行（如 Insert/Where）必须复用同列骨架，禁止通过额外 Margin 或字体加粗修“视觉对齐”；未满足该项不得勾选对应面板任务完成
+- 同一面板内同类输入控件（NumericUpDown/TextBox）右侧输入列宽必须一致（例如 Delete 的 From/Until），禁止保留历史混用宽度；未满足该项不得勾选对应面板任务完成
