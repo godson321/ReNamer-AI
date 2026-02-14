@@ -81,6 +81,9 @@ public enum InsertPositionType { Prefix, Suffix, Position, AfterText, BeforeText
 // ═══════════════════════════════════════════════════════════════
 public class DeleteRule : RuleBase
 {
+    public DeleteMode Mode { get; set; } = DeleteMode.PositionDelete;
+
+    // Position delete mode
     public DeleteFromType FromType { get; set; } = DeleteFromType.Position;
     public int FromPosition { get; set; } = 1;
     public string FromDelimiter { get; set; } = "";
@@ -91,12 +94,52 @@ public class DeleteRule : RuleBase
     public bool RightToLeft { get; set; } = false;
     public bool SkipExtension { get; set; } = true;
     public bool LeaveDelimiter { get; set; } = false;
+    // Character remove mode (merged from Strip)
+    public bool StripEnglishLetters { get; set; } = false;
+    public bool StripDigits { get; set; } = false;
+    public bool StripSymbols { get; set; } = false;
+    public bool StripBrackets { get; set; } = false;
+    public bool StripUserDefined { get; set; } = false;
+    public string UserDefinedChars { get; set; } = "";
+    public bool StripUnicodeRange { get; set; } = false;
+    public string UnicodeRange { get; set; } = "10000-10FFFF";
+    public StripWhere Where { get; set; } = StripWhere.Everywhere;
+    public bool StripAllExceptSelected { get; set; } = false;
+    public bool CaseSensitive { get; set; } = false;
+    // Text remove mode (merged from legacy RemoveRule)
+    public string RemovePattern { get; set; } = "";
+    public RemoveOccurrence RemoveOccurrence { get; set; } = RemoveOccurrence.All;
+    public bool RemoveCaseSensitive { get; set; } = false;
+    public bool RemoveWholeWordsOnly { get; set; } = false;
+    public bool RemoveUseWildcards { get; set; } = false;
+    public bool TextFirstInCombined { get; set; } = false;
+
+    private static readonly string EnglishLetters = "abcdefghijklmnopqrstuvwxyz";
+    private static readonly string Digits = "1234567890";
+    private static readonly string Symbols = "!\"#$%&'*+,-./:;=?@\\^_`|~";
+    private static readonly string Brackets = "(){}[]<>";
 
     public override string RuleName => "Delete";
-    public override string Description => DeleteCurrentName
-        ? "Delete current name" : $"Delete from {FromType} until {UntilType}";
+    public override string Description => Mode switch
+    {
+        DeleteMode.Combined => TextFirstInCombined ? "Delete (text then position)" : "Delete (position then text)",
+        DeleteMode.CharacterRemove => "Remove selected text/characters",
+        DeleteMode.TextRemove => string.IsNullOrEmpty(RemovePattern) ? "Remove selected text/characters" : $"Remove \"{RemovePattern}\"",
+        _ => DeleteCurrentName ? "Delete current name" : $"Delete from {FromType} until {UntilType}"
+    };
 
     public override string Execute(string fileName, RenFile file)
+    {
+        return Mode switch
+        {
+            DeleteMode.CharacterRemove => ExecuteTextRemove(fileName, file),
+            DeleteMode.TextRemove => ExecuteTextRemove(fileName, file),
+            DeleteMode.Combined => ExecuteCombined(fileName, file),
+            _ => ExecutePositionDelete(fileName)
+        };
+    }
+
+    private string ExecutePositionDelete(string fileName)
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension);
         if (baseName.Length == 0) return fileName;
@@ -138,12 +181,130 @@ public class DeleteRule : RuleBase
         if (RightToLeft) result = Reverse(result);
         return result + ext;
     }
+    private string ExecuteCharacterRemove(string fileName)
+    {
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        if (baseName.Length == 0) return fileName;
+
+        var stripChars = BuildStripSet();
+        if (Where == StripWhere.Everywhere)
+        {
+            baseName = StripChars(baseName, stripChars);
+        }
+        else if (Where == StripWhere.Leading)
+        {
+            int i = 0;
+            while (i < baseName.Length && ShouldStrip(baseName[i], stripChars))
+                i++;
+            baseName = baseName[i..];
+        }
+        else
+        {
+            int i = baseName.Length - 1;
+            while (i >= 0 && ShouldStrip(baseName[i], stripChars))
+                i--;
+            baseName = baseName[..(i + 1)];
+        }
+
+        return baseName + ext;
+    }
+    private string ExecuteTextRemove(string fileName, RenFile file)
+    {
+        var result = fileName;
+        if (!string.IsNullOrEmpty(RemovePattern))
+        {
+            var removeRule = new RemoveRule
+            {
+                Pattern = RemovePattern,
+                Occurrence = RemoveOccurrence,
+                CaseSensitive = RemoveCaseSensitive,
+                WholeWordsOnly = RemoveWholeWordsOnly,
+                SkipExtension = SkipExtension,
+                UseWildcards = RemoveUseWildcards
+            };
+            result = removeRule.Execute(result, file);
+        }
+
+        if (HasStripSelection())
+            result = ExecuteCharacterRemove(result);
+
+        return result;
+    }
+
+    private string ExecuteCombined(string fileName, RenFile file)
+    {
+        if (TextFirstInCombined)
+            return ExecutePositionDelete(ExecuteTextRemove(fileName, file));
+        return ExecuteTextRemove(ExecutePositionDelete(fileName), file);
+    }
+
+    private bool HasStripSelection()
+    {
+        return StripEnglishLetters || StripDigits || StripSymbols || StripBrackets ||
+               (StripUserDefined && !string.IsNullOrEmpty(UserDefinedChars)) || StripUnicodeRange;
+    }
+
+    private HashSet<char> BuildStripSet()
+    {
+        var set = new HashSet<char>();
+        if (StripEnglishLetters)
+        {
+            foreach (var c in EnglishLetters)
+            {
+                set.Add(c);
+                if (!CaseSensitive) set.Add(char.ToUpper(c));
+            }
+        }
+        if (StripDigits) foreach (var c in Digits) set.Add(c);
+        if (StripSymbols) foreach (var c in Symbols) set.Add(c);
+        if (StripBrackets) foreach (var c in Brackets) set.Add(c);
+        if (StripUserDefined)
+        {
+            foreach (var c in UserDefinedChars)
+            {
+                set.Add(c);
+                if (!CaseSensitive)
+                {
+                    set.Add(char.ToLower(c));
+                    set.Add(char.ToUpper(c));
+                }
+            }
+        }
+        return set;
+    }
+
+    private bool ShouldStrip(char c, HashSet<char> stripChars)
+    {
+        bool inSet = stripChars.Contains(c);
+        if (StripUnicodeRange && IsInUnicodeRange(c)) inSet = true;
+        return StripAllExceptSelected ? !inSet : inSet;
+    }
+
+    private string StripChars(string input, HashSet<char> stripChars)
+    {
+        var sb = new StringBuilder();
+        foreach (var c in input)
+            if (!ShouldStrip(c, stripChars)) sb.Append(c);
+        return sb.ToString();
+    }
+
+    private bool IsInUnicodeRange(char c)
+    {
+        if (string.IsNullOrEmpty(UnicodeRange)) return false;
+        var parts = UnicodeRange.Split('-');
+        if (parts.Length != 2) return false;
+        if (int.TryParse(parts[0], NumberStyles.HexNumber, null, out int lo) &&
+            int.TryParse(parts[1], NumberStyles.HexNumber, null, out int hi))
+            return c >= lo && c <= hi;
+        return false;
+    }
 
     private static string Reverse(string s)
     {
         var a = s.ToCharArray(); Array.Reverse(a); return new string(a);
     }
 }
+public enum DeleteMode { PositionDelete, CharacterRemove, TextRemove, Combined }
 
 public enum DeleteFromType { Position, Delimiter }
 public enum DeleteUntilType { Count, Delimiter, TillEnd }

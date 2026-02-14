@@ -44,7 +44,14 @@ public static class PresetService
             {
                 rule.IsEnabled = pr.IsEnabled;
                 if (pr.Properties != null)
-                    ApplyProperties(rule, pr.Properties);
+                {
+                    if (pr.TypeName == "StripRule" && rule is DeleteRule deleteRule)
+                        ApplyLegacyStripProperties(deleteRule, pr.Properties);
+                    else if (pr.TypeName == "RemoveRule" && rule is DeleteRule deleteRuleFromRemove)
+                        ApplyLegacyRemoveProperties(deleteRuleFromRemove, pr.Properties);
+                    else
+                        ApplyProperties(rule, pr.Properties);
+                }
                 rules.Add(rule);
             }
         }
@@ -84,7 +91,73 @@ public static class PresetService
 
     private static IRule? CreateRuleByName(string typeName)
     {
+        if (typeName == "StripRule" || typeName == "RemoveRule")
+            return new DeleteRule();
         return RuleFactory.CreateByTypeName(typeName);
+    }
+
+    private static void ApplyLegacyStripProperties(DeleteRule rule, Dictionary<string, JsonElement> props)
+    {
+        rule.Mode = DeleteMode.CharacterRemove;
+        rule.StripEnglishLetters = GetBool(props, "stripEnglishLetters");
+        rule.StripDigits = GetBool(props, "stripDigits");
+        rule.StripSymbols = GetBool(props, "stripSymbols");
+        rule.StripBrackets = GetBool(props, "stripBrackets");
+        rule.StripUserDefined = GetBool(props, "stripUserDefined");
+        rule.UserDefinedChars = GetString(props, "userDefinedChars", "");
+        rule.StripUnicodeRange = GetBool(props, "stripUnicodeRange");
+        rule.UnicodeRange = GetString(props, "unicodeRange", "10000-10FFFF");
+        rule.Where = GetEnum(props, "where", StripWhere.Everywhere);
+        rule.StripAllExceptSelected = GetBool(props, "stripAllExceptSelected");
+        rule.CaseSensitive = GetBool(props, "caseSensitive");
+        rule.SkipExtension = GetBool(props, "skipExtension", true);
+    }
+
+    private static void ApplyLegacyRemoveProperties(DeleteRule rule, Dictionary<string, JsonElement> props)
+    {
+        rule.Mode = DeleteMode.TextRemove;
+        rule.RemovePattern = GetString(props, "pattern", "");
+        rule.RemoveOccurrence = GetEnum(props, "occurrence", RemoveOccurrence.All);
+        rule.RemoveCaseSensitive = GetBool(props, "caseSensitive");
+        rule.RemoveWholeWordsOnly = GetBool(props, "wholeWordsOnly");
+        rule.RemoveUseWildcards = GetBool(props, "useWildcards");
+        rule.SkipExtension = GetBool(props, "skipExtension", true);
+    }
+
+    private static bool GetBool(Dictionary<string, JsonElement> props, string key, bool defaultValue = false)
+    {
+        if (!props.TryGetValue(key, out var value)) return defaultValue;
+        return value.ValueKind switch
+        {
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            _ => defaultValue
+        };
+    }
+
+    private static string GetString(Dictionary<string, JsonElement> props, string key, string defaultValue)
+    {
+        if (!props.TryGetValue(key, out var value)) return defaultValue;
+        return value.ValueKind == JsonValueKind.String ? (value.GetString() ?? defaultValue) : defaultValue;
+    }
+
+    private static TEnum GetEnum<TEnum>(Dictionary<string, JsonElement> props, string key, TEnum defaultValue)
+        where TEnum : struct, Enum
+    {
+        if (!props.TryGetValue(key, out var value)) return defaultValue;
+        try
+        {
+            if (value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var i))
+                return (TEnum)Enum.ToObject(typeof(TEnum), i);
+            if (value.ValueKind == JsonValueKind.String)
+            {
+                var s = value.GetString();
+                if (!string.IsNullOrWhiteSpace(s) && Enum.TryParse<TEnum>(s, ignoreCase: true, out var e))
+                    return e;
+            }
+        }
+        catch { }
+        return defaultValue;
     }
 
     private class PresetData

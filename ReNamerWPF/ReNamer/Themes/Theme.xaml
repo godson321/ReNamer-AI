@@ -237,9 +237,10 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{StaticResource CardBrush}"/>
-                        <TextBlock Grid.Row="0" Text="{TemplateBinding Header}"
-                                   FontWeight="SemiBold" Margin="10,6,10,4"
-                                   Foreground="{StaticResource TextBrush}"/>
+                        <ContentPresenter Grid.Row="0"
+                                          ContentSource="Header"
+                                          Margin="10,6,10,4"
+                                          RecognizesAccessKey="True"/>
                         <ContentPresenter Grid.Row="1" Margin="{TemplateBinding Padding}"/>
                     </Grid>
                 </ControlTemplate>

@@ -723,9 +723,15 @@ public partial class MainWindow : Window
     {
         if (lvRules.SelectedItem is IRule rule)
         {
+            var oldIndex = Rules.IndexOf(rule);
             var dialog = new AddRuleDialog(rule);
             if (dialog.ShowDialog() == true)
             {
+                if (dialog.SelectedRule != null && !ReferenceEquals(dialog.SelectedRule, rule) && oldIndex >= 0)
+                {
+                    Rules[oldIndex] = dialog.SelectedRule;
+                    lvRules.SelectedIndex = oldIndex;
+                }
                 lvRules.Items.Refresh();
                 AutoPreviewIfEnabled(sender, e);
             }
@@ -744,7 +750,7 @@ public partial class MainWindow : Window
             if (dialog.ShowDialog() == true)
             {
                 var idx = Rules.IndexOf(rule);
-                Rules.Insert(idx + 1, clonedRule);
+                Rules.Insert(idx + 1, dialog.SelectedRule ?? clonedRule);
                 AutoPreviewIfEnabled(sender, e);
             }
         }
@@ -1873,7 +1879,8 @@ public partial class MainWindow : Window
         {
             foreach (var f in selected) Files.Remove(f);
         }
-        else
+
+        if (_appSettings.RememberWindowPosition && _appSettings.IsMaximized)
         {
             MessageBox.Show("Failed to move one or more files to Recycle Bin.", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
@@ -2229,43 +2236,28 @@ public partial class MainWindow : Window
 
     private void RestoreWindowState()
     {
-        if (!_appSettings.RememberWindowPosition) return;
-
-        if (!double.IsNaN(_appSettings.WindowLeft) && !double.IsNaN(_appSettings.WindowTop))
+        if (_appSettings.RememberWindowPosition)
         {
-            Left = _appSettings.WindowLeft;
-            Top = _appSettings.WindowTop;
+            if (!double.IsNaN(_appSettings.WindowWidth) && _appSettings.WindowWidth > 0)
+                Width = _appSettings.WindowWidth;
+            if (!double.IsNaN(_appSettings.WindowHeight) && _appSettings.WindowHeight > 0)
+                Height = _appSettings.WindowHeight;
         }
-        if (!double.IsNaN(_appSettings.WindowWidth) && _appSettings.WindowWidth > 0)
-            Width = _appSettings.WindowWidth;
-        if (!double.IsNaN(_appSettings.WindowHeight) && _appSettings.WindowHeight > 0)
-            Height = _appSettings.WindowHeight;
 
-        if (_appSettings.IsMaximized)
+        if (_appSettings.RememberWindowPosition && _appSettings.IsMaximized)
         {
             WindowState = WindowState.Maximized;
         }
         else
         {
-            // Ensure the window is visible on the current virtual screen
             var screenLeft = SystemParameters.VirtualScreenLeft;
             var screenTop = SystemParameters.VirtualScreenTop;
-            var screenRight = screenLeft + SystemParameters.VirtualScreenWidth;
-            var screenBottom = screenTop + SystemParameters.VirtualScreenHeight;
-
             var currentWidth = Width;
             var currentHeight = Height;
             if (double.IsNaN(currentWidth) || currentWidth <= 0) currentWidth = 900;
             if (double.IsNaN(currentHeight) || currentHeight <= 0) currentHeight = 600;
-
-            const double minVisible = 60;
-            if (Left + minVisible > screenRight || Left + currentWidth < screenLeft + minVisible)
-                Left = screenLeft + (SystemParameters.VirtualScreenWidth - currentWidth) / 2;
-            if (Top + minVisible > screenBottom || Top + currentHeight < screenTop + minVisible)
-                Top = screenTop + (SystemParameters.VirtualScreenHeight - currentHeight) / 2;
-
-            if (Left < screenLeft) Left = screenLeft;
-            if (Top < screenTop) Top = screenTop;
+            Left = screenLeft + (SystemParameters.VirtualScreenWidth - currentWidth) / 2;
+            Top = screenTop + (SystemParameters.VirtualScreenHeight - currentHeight) / 2;
         }
 
         // Restore splitter position

@@ -22,8 +22,8 @@ public partial class AddRuleDialog : Window
     // 规则类型列表
     private static readonly List<string> RuleTypes = new()
     {
-        "Replace", "Insert", "Delete", "Remove", "Case", "Serialize",
-        "Padding", "Strip", "CleanUp", "Transliterate", "RegEx", 
+        "Replace", "Insert", "Delete", "Case", "Serialize",
+        "Padding", "CleanUp", "Transliterate", "RegEx", 
         "Rearrange", "ReformatDate", "Randomize", "PascalScript", "UserInput", "Mapping"
     };
 
@@ -37,7 +37,6 @@ public partial class AddRuleDialog : Window
         ["Case"] = (Geometry)Application.Current.FindResource("Icon_Case"),
         ["Serialize"] = (Geometry)Application.Current.FindResource("Icon_Serialize"),
         ["Padding"] = (Geometry)Application.Current.FindResource("Icon_Padding"),
-        ["Strip"] = (Geometry)Application.Current.FindResource("Icon_Strip"),
         ["CleanUp"] = (Geometry)Application.Current.FindResource("Icon_CleanUp"),
         ["Transliterate"] = (Geometry)Application.Current.FindResource("Icon_Transliterate"),
         ["RegEx"] = (Geometry)Application.Current.FindResource("Icon_RegEx"),
@@ -70,12 +69,15 @@ public partial class AddRuleDialog : Window
     public AddRuleDialog(IRule ruleToEdit) : this()
     {
         _isEditMode = true;
-        _currentRule = ruleToEdit;
+        var editableRule = ruleToEdit is RemoveRule legacyRemove
+            ? ConvertLegacyRemoveToDelete(legacyRemove)
+            : ruleToEdit;
+        _currentRule = editableRule;
         Title = LanguageService.GetString("Dialog_EditRule");
         btnAddRule.Content = LanguageService.GetString("Dialog_OK");
         
         // 定位到对应规则类型
-        var typeKey = GetRuleTypeKey(ruleToEdit);
+        var typeKey = GetRuleTypeKey(editableRule);
         for (int i = 0; i < lbRules.Items.Count; i++)
         {
             if (lbRules.Items[i] is RuleInfo info && info.TypeKey == typeKey)
@@ -89,7 +91,7 @@ public partial class AddRuleDialog : Window
         lbRules.IsEnabled = false;
         
         // 加载当前规则的配置到面板
-        LoadConfigPanel(ruleToEdit);
+        LoadConfigPanel(editableRule);
     }
     
     private void LoadRules()
@@ -197,12 +199,10 @@ public partial class AddRuleDialog : Window
             "Replace" => new ReplaceRule(),
             "Insert" => new InsertRule(),
             "Delete" => new DeleteRule(),
-            "Remove" => new RemoveRule(),
             "Case" => new CaseRule(),
             "Serialize" => new SerializeRule(),
             "RegEx" => new RegexRule(),
             "Padding" => new PaddingRule(),
-            "Strip" => new StripRule(),
             "CleanUp" => new CleanUpRule(),
             "Transliterate" => new TransliterateRule(),
             "Rearrange" => new RearrangeRule(),
@@ -222,12 +222,10 @@ public partial class AddRuleDialog : Window
             ReplaceRule r => new ReplaceConfigPanel(r),
             InsertRule r => new InsertConfigPanel(r),
             DeleteRule r => new DeleteConfigPanel(r),
-            RemoveRule r => new RemoveConfigPanel(r),
             CaseRule r => new CaseConfigPanel(r),
             SerializeRule r => new SerializeConfigPanel(r),
             RegexRule r => new RegexConfigPanel(r),
             PaddingRule r => new PaddingConfigPanel(r),
-            StripRule r => new StripConfigPanel(r),
             CleanUpRule r => new CleanUpConfigPanel(r),
             TransliterateRule r => new TransliterateConfigPanel(r),
             RearrangeRule r => new RearrangeConfigPanel(r),
@@ -247,12 +245,11 @@ public partial class AddRuleDialog : Window
             ReplaceRule => "Replace",
             InsertRule => "Insert",
             DeleteRule => "Delete",
-            RemoveRule => "Remove",
+            RemoveRule => "Delete",
             CaseRule => "Case",
             SerializeRule => "Serialize",
             RegexRule => "RegEx",
             PaddingRule => "Padding",
-            StripRule => "Strip",
             CleanUpRule => "CleanUp",
             TransliterateRule => "Transliterate",
             RearrangeRule => "Rearrange",
@@ -261,6 +258,21 @@ public partial class AddRuleDialog : Window
             UserInputRule => "UserInput",
             MappingRule => "Mapping",
             _ => ""
+        };
+    }
+
+    private static DeleteRule ConvertLegacyRemoveToDelete(RemoveRule source)
+    {
+        return new DeleteRule
+        {
+            Mode = DeleteMode.TextRemove,
+            RemovePattern = source.Pattern,
+            RemoveOccurrence = source.Occurrence,
+            RemoveCaseSensitive = source.CaseSensitive,
+            RemoveWholeWordsOnly = source.WholeWordsOnly,
+            RemoveUseWildcards = source.UseWildcards,
+            SkipExtension = source.SkipExtension,
+            IsEnabled = source.IsEnabled
         };
     }
 
