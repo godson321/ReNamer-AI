@@ -130,6 +130,7 @@
 - **固定标签列宽（Fixed Label Column Width）**：标签列使用统一固定宽度（简单面板 80px，复杂面板 100px）。
 - **标签文本右对齐（Right-Aligned Label Text）**：标签文本在标签列内右对齐，确保与内容列形成稳定视觉锚点。
 - **内容列左对齐（Left-Aligned Content Column）**：输入框、选项组、按钮等控件在内容列左对齐起排。
+- **同级行骨架一致（Uniform Row Frame）**：同一面板内同级“标签-内容”行（如 Insert 与 Where）必须复用相同列骨架（列数/列宽/左边距一致），禁止通过额外 Margin 或字体加粗制造视觉偏移。
 - **单行控件垂直居中（Single-line Controls Vertically Centered）**：单行输入与选择控件在行内垂直居中。
 - **多行编辑区顶部左对齐（Multiline Editor Top-Left Aligned）**：多行文本/脚本编辑控件内容起点为顶部左侧。
 - **弹窗默认屏幕居中（Dialog Startup: CenterScreen）**：弹出窗口首次打开默认位于屏幕中央。
@@ -137,7 +138,7 @@
 #### 通用规范（适用于全部 17 个面板）
 
 - **FR-001**: 所有面板外边距 MUST 统一为 `Margin="16,12"`
-- **FR-002**: 所有标签列宽 MUST 统一为 80px（简单面板）或 100px（复杂面板如 Serialize），每个面板内部 MUST 保持一列宽度一致；标题/标签文本 MUST 右对齐；面板布局 MUST 遵循“标签-内容双列对齐”术语约定
+- **FR-002**: 所有标签列宽 MUST 统一为 80px（简单面板）或 100px（复杂面板如 Serialize），每个面板内部 MUST 保持一列宽度一致；标题/标签文本 MUST 右对齐；面板布局 MUST 遵循“标签-内容双列对齐”术语约定；同一面板内同级标签行 MUST 使用相同列骨架（列数/列宽/左边距一致）
 - **FR-003**: 控件行间距 MUST 统一为 8px（相邻控件）和 16px（分组之间）；输入文本内容 MUST 左对齐；单行输入控件内容 MUST 垂直居中；多行/富文本编辑控件内容 MUST 顶部左对齐
 - **FR-004**: 所有用户可见文本 MUST 使用 `{DynamicResource ...}` 实现本地化，不允许硬编码字符串
 - **FR-005**: 所有颜色值 MUST 使用主题 Brush（如 `TextSecondaryBrush`、`SurfaceBrush`），不允许硬编码颜色
@@ -149,7 +150,7 @@
 #### 逐面板要求
 
 - **FR-010 (Replace)**: Find / Replace 输入框尾部按钮 MUST 使用统一的单图标按钮样式（禁止使用 `|` 或空白字符作为按钮可见内容），并通过 Tooltip 提供语义提示；Occurrences 和 Flags MUST 有分组标题
-- **FR-011 (Insert)**: MetaTag 按钮 MUST 紧贴输入框右侧；Where 区域 MUST 使用 Grid 统一对齐
+- **FR-011 (Insert)**: MetaTag 按钮 MUST 紧贴输入框右侧；Where 区域 MUST 使用 Grid 统一对齐；`Insert` 与 `Where` 标签 MUST 使用相同标签样式（非粗体）并共用同列骨架
 - **FR-012 (Delete)**: "Delete current name" MUST 有视觉提示表明其为特殊模式（勾选后禁用 From/Until）
 - **FR-013 (Serialize)**: 左列 MUST 分为"编号参数"、"重置条件"、"格式选项"三个带标题的区域
 - **FR-014 (Extension)**: 两个功能块（New Extension / Remove Duplicate）MUST 有视觉分隔
@@ -185,3 +186,4 @@
 - **SC-006**: 所有面板编译通过，现有 139 个单元测试全部通过（无回归）
 - **SC-007**: 每个面板的功能区域通过 section header 或 GroupBox 分组，用户能在 3 秒内定位目标设置
 - **SC-008**: 所有弹出窗口首次打开时位于屏幕中央，无需手动调整位置
+- **SC-009**: 同级标签行（如 Insert/Where）在同一面板内无可见水平错位，且字段标签无非规范加粗（标题除外）

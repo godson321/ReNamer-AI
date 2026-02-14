@@ -238,6 +238,7 @@
     <sys:String x:Key="Replace_Find">Find:</sys:String>
     <sys:String x:Key="Replace_Replace">Replace:</sys:String>
     <sys:String x:Key="Replace_Occurrences">Occurrences:</sys:String>
+    <sys:String x:Key="Replace_Flags">Flags:</sys:String>
     <sys:String x:Key="Replace_All">All</sys:String>
     <sys:String x:Key="Replace_First">First</sys:String>
     <sys:String x:Key="Replace_Last">Last</sys:String>
@@ -617,6 +618,8 @@
     <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: Use $1..$N to reference delimited parts in the new pattern, $-1..$-N to reference from the end, $0 for the original name.</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Separator">| Separator</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 Meta Tag</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">Insert separator into Delimiters</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_MetaTagTip">Insert Meta Tag into New Pattern</sys:String>
 
     <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">Find date/time formats:</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">Convert to date/time format:</sys:String>
@@ -707,4 +710,32 @@
     <sys:String x:Key="RuleCfg_DateFormat_Second">Second (00-59)</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_AmPm">AM/PM</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_ReferenceOnline">DateTime Format Reference (online)...</sys:String>
+    <sys:String x:Key="RuleCfg_Section_Options">Options</sys:String>
+    <sys:String x:Key="RuleCfg_Section_NumberingParameters">Numbering Parameters</sys:String>
+    <sys:String x:Key="RuleCfg_Section_ResetConditions">Reset Conditions</sys:String>
+    <sys:String x:Key="RuleCfg_Section_FormatOptions">Format Options</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceFind">Enter text to find</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceReplace">Enter replacement text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertText">Enter text to insert</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertAfterText">Insert after this text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertBeforeText">Insert before this text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteFromDelimiter">Start delimiter</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteUntilDelimiter">End delimiter</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_CaseForceCase">e.g. HDTV</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_SerializeCustomSymbols">Custom symbols for numbering</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_Extension">e.g. .txt</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUserDefined">Characters to strip</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">e.g. 10000-10FFFF</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">Enter regex expression</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">Enter replacement pattern</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">e.g. ._-</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">e.g. $2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">Enter text to remove</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">e.g. ABC123</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_PaddingChars">e.g. 0_</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_TransliterateAlphabet">e.g. ä=ae|ö=oe|ü=ue</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateSource">e.g. yyyy-MM-dd</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateTarget">e.g. dd.MM.yyyy</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_UserInput">One filename per line</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// Write script here</sys:String>
 </ResourceDictionary>

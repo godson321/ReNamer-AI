@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
+             xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280">
-    <StackPanel Margin="16,8">
+    <StackPanel Margin="16,12">
         <!-- Length -->
         <DockPanel Margin="0,0,0,8">
             <TextBlock Text="{DynamicResource RuleCfg_Randomize_Length}" VerticalAlignment="Center" Style="{DynamicResource FormLabelStyle}" Width="80" TextAlignment="Right"/>
@@ -23,7 +24,8 @@
                     <CheckBox x:Name="chkDigits" Content="{DynamicResource RuleCfg_Randomize_Digits}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
                     <CheckBox x:Name="chkLetters" Content="{DynamicResource RuleCfg_Randomize_Letters}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
                     <CheckBox x:Name="chkUserDefined" Content="{DynamicResource RuleCfg_Randomize_UserDefined}" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="txtUserDefined" Margin="0,4,0,0" VerticalAlignment="Center"/>
+                    <TextBox x:Name="txtUserDefined" Margin="0,4,0,0" VerticalAlignment="Center"
+                             helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RandomizeUserDefined}"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="{DynamicResource RuleCfg_Randomize_InsertWhere}" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch">

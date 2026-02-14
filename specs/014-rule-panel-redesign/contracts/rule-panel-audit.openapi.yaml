@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: Rule Panel UI Conformance Audit API
+  version: 0.1.0
+  description: >
+    Internal contract artifact for validating rule config panel redesign acceptance
+    against FR-001~FR-026 and SC-001~SC-007.
+servers:
+  - url: http://localhost:17800
+paths:
+  /audits/rule-panels:
+    post:
+      summary: Run conformance audit for rule panels
+      operationId: runRulePanelAudit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditRunRequest'
+      responses:
+        '200':
+          description: Audit completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditBatchResult'
+  /audits/rule-panels/{panelId}:
+    get:
+      summary: Get latest audit result for one panel
+      operationId: getPanelAuditResult
+      parameters:
+        - name: panelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PanelId'
+      responses:
+        '200':
+          description: Latest result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PanelAuditResult'
+        '404':
+          description: No result found
+components:
+  schemas:
+    PanelId:
+      type: string
+      enum:
+        - replace
+        - insert
+        - delete
+        - remove
+        - case
+        - serialize
+        - regex
+        - extension
+        - padding
+        - strip
+        - cleanup
+        - transliterate
+        - rearrange
+        - reformat-date
+        - randomize
+        - pascal-script
+        - user-input
+        - mapping
+    Theme:
+      type: string
+      enum: [Light, Dark]
+    Locale:
+      type: string
+      enum: [zh-CN, en-US]
+    AuditRunRequest:
+      type: object
+      required: [themes, locales]
+      properties:
+        panelIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/PanelId'
+          description: Omit to audit all panels.
+        themes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Theme'
+        locales:
+          type: array
+          items:
+            $ref: '#/components/schemas/Locale'
+        includeVisualChecks:
+          type: boolean
+          default: true
+    AuditBatchResult:
+      type: object
+      required: [runId, summary, results]
+      properties:
+        runId:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        summary:
+          $ref: '#/components/schemas/AuditSummary'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PanelAuditResult'
+    AuditSummary:
+      type: object
+      required:
+        - totalPanels
+        - passedPanels
+        - failedPanels
+        - hardcodedTextTotal
+        - hardcodedColorTotal
+        - emptyTextBlockTotal
+      properties:
+        totalPanels:
+          type: integer
+          minimum: 1
+        passedPanels:
+          type: integer
+          minimum: 0
+        failedPanels:
+          type: integer
+          minimum: 0
+        hardcodedTextTotal:
+          type: integer
+          minimum: 0
+        hardcodedColorTotal:
+          type: integer
+          minimum: 0
+        emptyTextBlockTotal:
+          type: integer
+          minimum: 0
+    PanelAuditResult:
+      type: object
+      required:
+        - panelId
+        - status
+        - hardcodedTextCount
+        - hardcodedColorCount
+        - emptyTextBlockCount
+        - placeholderCoverage
+        - sectionCoverage
+      properties:
+        panelId:
+          $ref: '#/components/schemas/PanelId'
+        status:
+          type: string
+          enum: [Pass, Fail]
+        hardcodedTextCount:
+          type: integer
+          minimum: 0
+        hardcodedColorCount:
+          type: integer
+          minimum: 0
+        emptyTextBlockCount:
+          type: integer
+          minimum: 0
+        placeholderCoverage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+        sectionCoverage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+        findings:
+          type: array
+          items:
+            type: string

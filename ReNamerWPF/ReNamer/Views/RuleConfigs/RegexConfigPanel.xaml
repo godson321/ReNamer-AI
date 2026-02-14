@@ -1,6 +1,7 @@
 <UserControl x:Class="ReNamer.Views.RuleConfigs.RegexConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280">
     <StackPanel Margin="16,12">
         <!-- Expression: Using unified Grid layout -->
@@ -10,7 +11,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{DynamicResource Regex_Expression}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtExpression" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtExpression" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexExpression}"/>
         </Grid>
         <!-- Replace -->
         <Grid Margin="0,0,0,4">
@@ -19,9 +21,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{DynamicResource Regex_Replace}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtReplace" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtReplace" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexReplace}"/>
         </Grid>
-        <TextBlock Text="{DynamicResource Regex_Hint}" Margin="88,0,0,8" Opacity="0.7" FontSize="11"/>
+        <TextBlock Text="{DynamicResource Regex_Hint}" Margin="88,0,0,8" Style="{DynamicResource DialogHintText}"/>
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" Margin="88,0,0,4" HorizontalAlignment="Left">
             <Button x:Name="btnInsertExpr" Content="{DynamicResource Regex_InsertExpression}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"

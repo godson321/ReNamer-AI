@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
+             xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280">
-    <Grid Margin="16,8">
+    <Grid Margin="16,12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="12"/>
@@ -92,7 +93,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{DynamicResource Serialize_CustomSymbols}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0"/>
-                <TextBox x:Name="txtCustomSymbols" Grid.Column="1"/>
+                <TextBox x:Name="txtCustomSymbols" Grid.Column="1"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_SerializeCustomSymbols}"/>
             </Grid>
         </StackPanel>
     </Grid>

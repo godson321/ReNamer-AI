@@ -238,6 +238,7 @@
     <sys:String x:Key="Replace_Find">查找:</sys:String>
     <sys:String x:Key="Replace_Replace">替换:</sys:String>
     <sys:String x:Key="Replace_Occurrences">替换次数:</sys:String>
+    <sys:String x:Key="Replace_Flags">选项:</sys:String>
     <sys:String x:Key="Replace_All">全部</sys:String>
     <sys:String x:Key="Replace_First">第一个</sys:String>
     <sys:String x:Key="Replace_Last">最后一个</sys:String>
@@ -628,6 +629,8 @@
     <sys:String x:Key="RuleCfg_Rearrange_Hint">提示：使用 $1..$N 引用分隔后的部分，$-1..$-N 从末尾引用，$0 表示原始名称。</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Separator">| 分隔符</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 元标签</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">向“分隔符”输入框插入分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_MetaTagTip">向“新模式”输入框插入元标签</sys:String>
 
     <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">查找日期/时间格式：</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">转换为日期/时间格式：</sys:String>
@@ -718,4 +721,32 @@
     <sys:String x:Key="RuleCfg_DateFormat_Second">秒（00-59）</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_AmPm">上午/下午</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_ReferenceOnline">DateTime 格式参考（在线）...</sys:String>
+    <sys:String x:Key="RuleCfg_Section_Options">选项</sys:String>
+    <sys:String x:Key="RuleCfg_Section_NumberingParameters">编号参数</sys:String>
+    <sys:String x:Key="RuleCfg_Section_ResetConditions">重置条件</sys:String>
+    <sys:String x:Key="RuleCfg_Section_FormatOptions">格式选项</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceFind">输入要查找的文本</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceReplace">输入替换文本</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertText">输入要插入的文本</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertAfterText">在该文本之后插入</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertBeforeText">在该文本之前插入</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteFromDelimiter">起始分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteUntilDelimiter">结束分隔符</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_CaseForceCase">例如：HDTV</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_SerializeCustomSymbols">自定义编号符号</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_Extension">例如：.txt</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUserDefined">要剥离的字符</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">例如：10000-10FFFF</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">输入正则表达式</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">输入替换模式</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">例如：._-</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">例如：$2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">输入要移除的文本</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">例如：ABC123</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_PaddingChars">例如：0_</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_TransliterateAlphabet">例如：ä=ae|ö=oe|ü=ue</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateSource">例如：yyyy-MM-dd</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateTarget">例如：dd.MM.yyyy</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_UserInput">每行输入一个文件名</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// 在此输入脚本</sys:String>
 </ResourceDictionary>

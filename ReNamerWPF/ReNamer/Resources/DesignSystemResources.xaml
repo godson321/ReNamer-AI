@@ -41,6 +41,7 @@
     <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}"/>
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
     <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
+    <SolidColorBrush x:Key="ReadOnlyTextBoxBrush" Color="{Binding Path=Color, Source={DynamicResource SurfaceBrush}}"/>
     
     <SolidColorBrush x:Key="SemanticSuccessBrush" Color="{StaticResource SemanticSuccessColor}"/>
     <SolidColorBrush x:Key="SemanticWarningBrush" Color="{StaticResource SemanticWarningColor}"/>
@@ -236,6 +237,15 @@
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
         <Setter Property="Opacity" Value="0.75"/>
         <Setter Property="FontSize" Value="11"/>
+    </Style>
+    <Style x:Key="SectionHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource DialogSectionHeaderText}">
+        <Setter Property="Margin" Value="0,8,0,4"/>
+    </Style>
+    <Style x:Key="LightGroupBoxStyle" TargetType="GroupBox">
+        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
     </Style>
 
     <!-- ========================================

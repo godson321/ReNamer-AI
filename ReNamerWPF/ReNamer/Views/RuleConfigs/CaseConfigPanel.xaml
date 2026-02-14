@@ -1,8 +1,9 @@
 <UserControl x:Class="ReNamer.Views.RuleConfigs.CaseConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280">
-    <Grid Margin="16,8">
+    <Grid Margin="16,12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="12"/>
@@ -39,10 +40,11 @@
             <CheckBox x:Name="chkForceCase" Content="{DynamicResource Case_ForceCase}" Margin="0,4" Grid.ColumnSpan="2" VerticalContentAlignment="Center"/>
 
             <TextBlock Text="" Grid.Row="1" Style="{StaticResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtForceCase" Grid.Row="1" Grid.Column="1" Margin="8,4,0,4" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtForceCase" Grid.Row="1" Grid.Column="1" Margin="8,4,0,4" VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_CaseForceCase}"/>
 
             <TextBlock Text="" Grid.Row="2" Grid.Column="0"/>
-            <TextBlock Text="{DynamicResource Case_ForceCaseHint}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" Margin="8,0,0,4" Opacity="0.7" FontSize="11"/>
+            <TextBlock Text="{DynamicResource Case_ForceCaseHint}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" Margin="8,0,0,4" Style="{DynamicResource DialogHintText}"/>
 
             <CheckBox x:Name="chkExtAlwaysLower" Content="{DynamicResource Case_ExtAlwaysLower}" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,8,0,2" VerticalContentAlignment="Center"/>
             <CheckBox x:Name="chkExtAlwaysUpper" Content="{DynamicResource Case_ExtAlwaysUpper}" Grid.Row="4" Grid.ColumnSpan="2" Margin="0,2" VerticalContentAlignment="Center"/>
