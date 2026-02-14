@@ -5,10 +5,27 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <StackPanel>
+    <Grid Margin="16,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <!-- Source format -->
-        <TextBlock Text="{DynamicResource RuleCfg_ReformatDate_FindFormats}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-        <ComboBox x:Name="cboSourceFormat" IsEditable="True" Margin="0,0,0,8" HorizontalAlignment="Stretch"
+        <TextBlock Grid.Row="0" Text="{DynamicResource RuleCfg_ReformatDate_FindFormats}" Width="140" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cboSourceFormat" Grid.Row="0" Grid.Column="1" IsEditable="True" HorizontalAlignment="Stretch"
                   helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateSource}">
             <ComboBoxItem Content="yyyy-MM-dd"/>
             <ComboBoxItem Content="dd.MM.yyyy"/>
@@ -18,8 +35,8 @@
             <ComboBoxItem Content="yyyy-MM-dd HH:mm:ss"/>
         </ComboBox>
         <!-- Target format -->
-        <TextBlock Text="{DynamicResource RuleCfg_ReformatDate_ConvertTo}" Margin="0,0,0,4" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-        <ComboBox x:Name="cboTargetFormat" IsEditable="True" Margin="0,0,0,8" HorizontalAlignment="Stretch"
+        <TextBlock Grid.Row="2" Text="{DynamicResource RuleCfg_ReformatDate_ConvertTo}" Width="140" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cboTargetFormat" Grid.Row="2" Grid.Column="1" IsEditable="True" HorizontalAlignment="Stretch"
                   helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateTarget}">
             <ComboBoxItem Content="yyyy-MM-dd"/>
             <ComboBoxItem Content="dd.MM.yyyy"/>
@@ -29,24 +46,44 @@
             <ComboBoxItem Content="yyyy-MM-dd HH:mm:ss"/>
         </ComboBox>
         <!-- Options -->
-        <CheckBox x:Name="chkWholeWords" Content="{DynamicResource RuleCfg_ReformatDate_WholeWords}" IsChecked="True" Margin="0,4" VerticalContentAlignment="Center"/>
-        <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,4" VerticalContentAlignment="Center"/>
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
+            <CheckBox x:Name="chkWholeWords" Content="{DynamicResource RuleCfg_ReformatDate_WholeWords}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+        </StackPanel>
         <!-- Custom months -->
-        <DockPanel Margin="0,8,0,4">
-            <CheckBox x:Name="chkCustomShortMonths" Content="{DynamicResource RuleCfg_ReformatDate_CustomShortMonths}" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="cboCustomShortMonths" IsEditable="True" HorizontalAlignment="Right" Width="176"/>
-        </DockPanel>
-        <DockPanel Margin="0,4">
-            <CheckBox x:Name="chkCustomLongMonths" Content="{DynamicResource RuleCfg_ReformatDate_CustomLongMonths}" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="cboCustomLongMonths" IsEditable="True" HorizontalAlignment="Right" Width="176"/>
-        </DockPanel>
+        <Grid Grid.Row="6" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="220"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="chkCustomShortMonths" Grid.Row="0" Content="{DynamicResource RuleCfg_ReformatDate_CustomShortMonths}" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="cboCustomShortMonths" Grid.Row="0" Grid.Column="2" Width="220" IsEditable="True" HorizontalAlignment="Left"
+                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateShortMonths}"/>
+            <CheckBox x:Name="chkCustomLongMonths" Grid.Row="2" Content="{DynamicResource RuleCfg_ReformatDate_CustomLongMonths}" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="cboCustomLongMonths" Grid.Row="2" Grid.Column="2" Width="220" IsEditable="True" HorizontalAlignment="Left"
+                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateLongMonths}"/>
+        </Grid>
         <!-- Help button -->
-        <Button x:Name="btnHelp" Content="{DynamicResource RuleCfg_ReformatDate_FormatHelp}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
-                HorizontalAlignment="Left" Padding="8,3" Margin="0,8,0,0" Click="BtnHelp_Click"/>
+        <Button x:Name="btnHelp" Grid.Row="8" Grid.ColumnSpan="2" Content="{DynamicResource RuleCfg_ReformatDate_FormatHelp}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
+                HorizontalAlignment="Left" Padding="8,3" Click="BtnHelp_Click"/>
         <!-- Adjust time -->
-        <DockPanel Margin="0,8,0,0">
-            <CheckBox x:Name="chkAdjustTime" Content="{DynamicResource RuleCfg_ReformatDate_AdjustBy}" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="cboTimePart" Width="100" HorizontalAlignment="Right">
+        <Grid Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="chkAdjustTime" Grid.Column="0" Content="{DynamicResource RuleCfg_ReformatDate_AdjustBy}" VerticalContentAlignment="Center"/>
+            <controls:NumericUpDown x:Name="nudAdjustBy" Grid.Column="2" Width="64" MinValue="-1000000" MaxValue="1000000" HorizontalAlignment="Left"/>
+            <ComboBox x:Name="cboTimePart" Grid.Column="4" Width="120" HorizontalAlignment="Left">
                 <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitHours}" IsSelected="True"/>
                 <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitMinutes}"/>
                 <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitSeconds}"/>
@@ -54,8 +91,6 @@
                 <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitMonths}"/>
                 <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitYears}"/>
             </ComboBox>
-            <controls:NumericUpDown x:Name="nudAdjustBy" Width="60" MinValue="-1000000" MaxValue="1000000"
-                                    HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        </DockPanel>
-    </StackPanel>
+        </Grid>
+    </Grid>
 </UserControl>

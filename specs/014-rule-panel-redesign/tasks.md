@@ -55,7 +55,7 @@
 - [ ] T022 [US1] 统一 Randomize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
 - [ ] T023 [US1] 统一 Padding 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
 - [X] T024 [US1] 统一 Transliterate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
-- [ ] T025 [US1] 统一 ReformatDate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
+- [X] T025 [US1] 统一 ReformatDate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
 - [ ] T026 [US1] 统一 UserInput 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
 - [ ] T027 [US1] 统一 Mapping 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
 - [ ] T028 [US1] 统一 PascalScript 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PascalScriptConfigPanel.xaml`

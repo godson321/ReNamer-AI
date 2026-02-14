@@ -11,13 +11,13 @@
             <StackPanel Margin="8">
                 <Grid Margin="0,4">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
                     <CheckBox x:Name="chkAddZeroPadding" Content="{DynamicResource RuleCfg_Padding_AddZeroPadding}" VerticalContentAlignment="Center"/>
                     <controls:NumericUpDown x:Name="nudZeroPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
-                                            VerticalAlignment="Center"/>
+                                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Grid>
                 <CheckBox x:Name="chkRemoveZeroPadding" Content="{DynamicResource RuleCfg_Padding_RemoveZeroPadding}" Margin="0,4" VerticalContentAlignment="Center"/>
             </StackPanel>
@@ -27,13 +27,13 @@
             <StackPanel Margin="8">
                 <Grid Margin="0,4">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
                     <CheckBox x:Name="chkAddTextPadding" Content="{DynamicResource RuleCfg_Padding_AddTextPadding}" VerticalContentAlignment="Center"/>
                     <controls:NumericUpDown x:Name="nudTextPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
-                                            VerticalAlignment="Center"/>
+                                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Grid>
                 <Grid Margin="0,4">
                     <Grid.ColumnDefinitions>

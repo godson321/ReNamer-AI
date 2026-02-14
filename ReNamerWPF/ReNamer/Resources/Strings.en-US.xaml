@@ -830,6 +830,8 @@
     <sys:String x:Key="RuleCfg_Placeholder_TransliterateAlphabet">e.g. ä=ae|ö=oe|ü=ue</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateSource">e.g. yyyy-MM-dd</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateTarget">e.g. dd.MM.yyyy</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateShortMonths">e.g. Jan|Feb|Mar|...</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateLongMonths">e.g. January|February|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_UserInput">One filename per line</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// Write script here</sys:String>
 </ResourceDictionary>

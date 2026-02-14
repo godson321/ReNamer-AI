@@ -841,6 +841,8 @@
     <sys:String x:Key="RuleCfg_Placeholder_TransliterateAlphabet">例如：ä=ae|ö=oe|ü=ue</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateSource">例如：yyyy-MM-dd</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateTarget">例如：dd.MM.yyyy</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateShortMonths">例如：1月|2月|3月|...</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateLongMonths">例如：一月|二月|三月|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_UserInput">每行输入一个文件名</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// 在此输入脚本</sys:String>
 </ResourceDictionary>
