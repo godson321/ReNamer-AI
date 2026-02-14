@@ -67,7 +67,7 @@ public class PaddingRule : RuleBase
 public enum PaddingPosition { Left, Right }
 
 // ═══════════════════════════════════════════════════════════════
-// StripRule - 剥离指定类型的字符
+// StripRule - 移除指定类型的字符
 // ═══════════════════════════════════════════════════════════════
 public class StripRule : RuleBase
 {

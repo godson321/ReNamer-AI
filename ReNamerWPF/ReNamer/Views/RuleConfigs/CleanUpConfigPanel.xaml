@@ -7,39 +7,49 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16,12">
         <StackPanel>
             <!-- Strip brackets -->
-            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_StripBrackets}" Margin="0,0,0,4" HorizontalAlignment="Stretch">
-                <WrapPanel Margin="8,4">
-                    <CheckBox x:Name="chkRound" Content="(...)" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkSquare" Content="[...]" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkCurly" Content="{}{...}" Margin="0,0,16,0"/>
+            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_StripBrackets}" Margin="0,0,0,8">
+                <WrapPanel Margin="8,6">
+                    <CheckBox x:Name="chkRound" Content="(...)" Margin="0,0,16,0" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSquare" Content="[...]" Margin="0,0,16,0" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkCurly" Content="{}{...}" Margin="0,0,16,0" VerticalContentAlignment="Center"/>
                 </WrapPanel>
             </GroupBox>
             <!-- Replace with spaces -->
-            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_ReplaceCharsWithSpaces}" Margin="0,0,0,4" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8,4">
+            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_ReplaceCharsWithSpaces}" Margin="0,0,0,8">
+                <StackPanel Margin="8,6">
                     <WrapPanel>
-                        <CheckBox x:Name="chkDot" Content="{DynamicResource RuleCfg_CleanUp_Dot}" Margin="0,0,12,4"/>
-                        <CheckBox x:Name="chkComma" Content="{DynamicResource RuleCfg_CleanUp_Comma}" Margin="0,0,12,4"/>
-                        <CheckBox x:Name="chkUnderscore" Content="_" Margin="0,0,12,4"/>
-                        <CheckBox x:Name="chkPlus" Content="+" Margin="0,0,12,4"/>
-                        <CheckBox x:Name="chkHyphen" Content="-" Margin="0,0,12,4"/>
-                        <CheckBox x:Name="chkWeb" Content="%20" Margin="0,0,12,4"/>
+                        <CheckBox x:Name="chkDot" Content="{DynamicResource RuleCfg_CleanUp_Dot}" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkComma" Content="{DynamicResource RuleCfg_CleanUp_Comma}" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkUnderscore" Content="_" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkPlus" Content="+" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkHyphen" Content="-" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkWeb" Content="%20" Margin="0,0,12,4" VerticalContentAlignment="Center"/>
                     </WrapPanel>
-                    <CheckBox x:Name="chkSkipVersions" Content="{DynamicResource RuleCfg_CleanUp_SkipVersions}" Margin="0,4"/>
+                    <CheckBox x:Name="chkSkipVersions" Content="{DynamicResource RuleCfg_CleanUp_SkipVersions}" Margin="0,4,0,0" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
-            <!-- Space handling -->
-            <CheckBox x:Name="chkFixSpaces" Content="{DynamicResource RuleCfg_CleanUp_FixSpaces}"
-                      IsChecked="True" Margin="8,3"/>
-            <CheckBox x:Name="chkNormalizeSpaces" Content="{DynamicResource RuleCfg_CleanUp_NormalizeSpaces}"
-                      IsChecked="True" Margin="8,3"/>
-            <!-- Unicode -->
-            <CheckBox x:Name="chkStripEmoji" Content="{DynamicResource RuleCfg_CleanUp_StripEmoji}" Margin="8,3"/>
-            <CheckBox x:Name="chkStripMarks" Content="{DynamicResource RuleCfg_CleanUp_StripMarks}" Margin="8,3"/>
-            <!-- Other -->
-            <CheckBox x:Name="chkCamelCase" Content="{DynamicResource RuleCfg_CleanUp_CamelCase}" Margin="8,3"/>
-            <CheckBox x:Name="chkSharePoint" Content="{DynamicResource RuleCfg_CleanUp_SharePoint}" Margin="8,3"/>
-            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="8,3"/>
+            <!-- Space handling group -->
+            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_Section_Spacing}" Margin="0,0,0,8">
+                <StackPanel Margin="8,6">
+                    <CheckBox x:Name="chkFixSpaces" Content="{DynamicResource RuleCfg_CleanUp_FixSpaces}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkNormalizeSpaces" Content="{DynamicResource RuleCfg_CleanUp_NormalizeSpaces}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+            <!-- Unicode group -->
+            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_Section_Unicode}" Margin="0,0,0,8">
+                <StackPanel Margin="8,6">
+                    <CheckBox x:Name="chkStripEmoji" Content="{DynamicResource RuleCfg_CleanUp_StripEmoji}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkStripMarks" Content="{DynamicResource RuleCfg_CleanUp_StripMarks}" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+            <!-- Other group -->
+            <GroupBox Header="{DynamicResource RuleCfg_CleanUp_Section_Other}" Margin="0,0,0,0">
+                <StackPanel Margin="8,6">
+                    <CheckBox x:Name="chkCamelCase" Content="{DynamicResource RuleCfg_CleanUp_CamelCase}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSharePoint" Content="{DynamicResource RuleCfg_CleanUp_SharePoint}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

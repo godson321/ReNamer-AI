@@ -69,7 +69,7 @@
     <Geometry x:Key="Icon_Extension">M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z</Geometry>
     <!-- Padding: 填充 -->
     <Geometry x:Key="Icon_Padding">M4,4H20V20H4V4M6,6V18H18V6H6Z</Geometry>
-    <!-- Strip: 剥离 -->
+    <!-- Strip: 移除 -->
     <Geometry x:Key="Icon_Strip">M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M7,12L12,7L17,12L12,17L7,12Z</Geometry>
     <!-- CleanUp: 清理 -->
     <Geometry x:Key="Icon_CleanUp">M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V4H14V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z</Geometry>

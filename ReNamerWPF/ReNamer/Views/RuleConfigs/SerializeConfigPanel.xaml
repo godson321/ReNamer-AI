@@ -31,11 +31,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Text="{DynamicResource Serialize_IndexStarts}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                <controls:NumericUpDown x:Name="nudIndex" Grid.Row="0" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                <controls:NumericUpDown x:Name="nudIndex" Grid.Row="0" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="2" Text="{DynamicResource Serialize_Repeat}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                <controls:NumericUpDown x:Name="nudRepeat" Grid.Row="2" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                <controls:NumericUpDown x:Name="nudRepeat" Grid.Row="2" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="4" Text="{DynamicResource Serialize_Step}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                <controls:NumericUpDown x:Name="nudStep" Grid.Row="4" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                <controls:NumericUpDown x:Name="nudStep" Grid.Row="4" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
 
                 <CheckBox x:Name="chkPadToLength" Grid.Row="6" Grid.ColumnSpan="2" Content="{DynamicResource Serialize_PadZeros}" VerticalContentAlignment="Center"/>
                 <controls:NumericUpDown x:Name="nudPadLength" Grid.Row="6" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
@@ -55,10 +55,10 @@
                     <Grid Margin="0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="80"/>
                         </Grid.ColumnDefinitions>
                         <RadioButton x:Name="rbPosition" Content="{DynamicResource Serialize_Position}" GroupName="Position" VerticalContentAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="nudPositionValue" Grid.Column="1" Width="60" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
+                        <controls:NumericUpDown x:Name="nudPositionValue" Grid.Column="1" Width="80" MinValue="1" MaxValue="999999" Value="1" HorizontalAlignment="Left"/>
                     </Grid>
                     <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Serialize_ReplaceCurrentName}" GroupName="Position" Margin="0,2" VerticalContentAlignment="Center"/>
                 </StackPanel>

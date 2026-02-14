@@ -169,7 +169,7 @@
     <sys:String x:Key="Rule_Extension">Extension</sys:String>
     <sys:String x:Key="Rule_RegEx">RegEx</sys:String>
     <sys:String x:Key="Rule_Padding">Padding</sys:String>
-    <sys:String x:Key="Rule_Strip">Strip</sys:String>
+    <sys:String x:Key="Rule_Strip">Remove</sys:String>
     <sys:String x:Key="Rule_CleanUp">CleanUp</sys:String>
     <sys:String x:Key="Rule_Transliterate">Transliterate</sys:String>
     <sys:String x:Key="Rule_Rearrange">Rearrange</sys:String>
@@ -332,6 +332,8 @@
     <sys:String x:Key="Serialize_CustomSymbols">Custom numbering symbols:</sys:String>
 
     <!-- Extension Rule -->
+    <sys:String x:Key="Extension_Section_NewExtension">New Extension</sys:String>
+    <sys:String x:Key="Extension_Section_RemoveDuplicate">Remove Duplicate</sys:String>
     <sys:String x:Key="Extension_NewExtension">New file extension (without the dot):</sys:String>
     <sys:String x:Key="Extension_AppendToOriginal">Append to the original filename</sys:String>
     <sys:String x:Key="Extension_DetectBinSign">Detect using "binary signature"</sys:String>
@@ -603,6 +605,9 @@
     <sys:String x:Key="RuleCfg_CleanUp_StripMarks">Strip unicode marks (combining, diacritics, accents)</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_CamelCase">Insert a space in front of capitalized letters (e.g. CamelCase)</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_SharePoint">Prepare for SharePoint (always inc. extension)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Spacing">Space Handling</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Unicode">Unicode</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Other">Other</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_AllowReuse">Allow reuse</sys:String>
@@ -668,6 +673,8 @@
     <sys:String x:Key="RuleCfg_Strip_Leading">Leading</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Trailing">Trailing</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">Strip all characters except selected</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Characters">Characters to Strip</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Where">Where</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">Alphabet</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction:</sys:String>

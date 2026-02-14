@@ -46,9 +46,9 @@
 - [X] T013 [US1] 统一 Delete 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`
 - [X] T014 [US1] 统一 Case 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [X] T015 [US1] 统一 Serialize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
-- [ ] T016 [US1] 统一 Extension 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
-- [ ] T017 [US1] 统一 CleanUp 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
-- [ ] T018 [US1] 统一 Strip 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
+- [X] T016 [US1] 统一 Extension 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
+- [X] T017 [US1] 统一 CleanUp 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
+- [X] T018 [US1] 统一 Strip 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
 - [ ] T019 [US1] 统一 Regex 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
 - [ ] T020 [US1] 统一 Rearrange 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
 - [ ] T021 [US1] 统一 Remove 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RemoveConfigPanel.xaml`
@@ -97,9 +97,9 @@
 
 ### Implementation for User Story 3（按重点面板逐个拆）
 - [X] T046 [US3] 为 Replace 的 Occurrences/Flags 添加分组标题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReplaceConfigPanel.xaml`
-- [X] T047 [US3] 为 Serialize 左列拆分“编号参数/重置条件/格式选项”于 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
-- [ ] T048 [US3] 为 Extension 的 New Extension / Remove Duplicate 区域建立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
-- [ ] T049 [US3] 为 CleanUp 的散装 CheckBox 重组为“空格处理/Unicode/其他”于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
+- [X] T047 [US3] 为 Serialize 左列拆分"编号参数/重置条件/格式选项"于 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
+- [X] T048 [US3] 为 Extension 的 New Extension / Remove Duplicate 区域建立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
+- [X] T049 [US3] 为 CleanUp 的散装 CheckBox 重组为"空格处理/Unicode/其他"于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
 - [ ] T050 [US3] 为 Case 的 ForceCase 与 Extension 选项建立独立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [ ] T051 [US3] 为 Transliterate 右侧拆分“方向/说明/选项”分区于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
 - [ ] T052 [US3] 为 UserInput 选项区重构为清晰分组布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
@@ -145,7 +145,7 @@
 **Independent Test**: 搜索 `Text=""` 为 0；关键行在窄窗和拉伸场景表现稳定
 
 ### Implementation for User Story 6（按面板逐个拆）
-- [ ] T065 [US6] 移除 Extension 面板空 TextBlock 占位并改为 Grid/Margin 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
+- [X] T065 [US6] 移除 Extension 面板空 TextBlock 占位并改为 Grid/Margin 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
 - [X] T066 [US6] 移除 Case 面板右侧空 TextBlock 占位并重构对齐于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [X] T067 [US6] 将 Insert 的 AfterText/BeforeText 从 DockPanel 改为 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
 - [ ] T068 [US6] 将 Rearrange 的关键输入行从 DockPanel 改为 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`

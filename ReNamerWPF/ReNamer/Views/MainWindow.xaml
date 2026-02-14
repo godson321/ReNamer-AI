@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="{DynamicResource AppTitle}" 
         Width="600" Height="720" MinWidth="600" MinHeight="500"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="CanResize"
         Background="Transparent"

@@ -63,17 +63,16 @@
             </GroupBox>
         </Grid>
         <!-- Options row -->
-        <Grid>
+        <Grid Margin="16,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <CheckBox x:Name="chkDeleteCurrentName" Content="{DynamicResource Delete_CurrentName}" Margin="0,2" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Delete_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
             </StackPanel>
-            <StackPanel Grid.Column="2">
+            <StackPanel Grid.Column="1">
                 <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Delete_RightToLeft}" Margin="0,2" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkLeaveDelimiter" Content="{DynamicResource Delete_LeaveDelimiter}" Margin="0,2" VerticalContentAlignment="Center"/>
             </StackPanel>

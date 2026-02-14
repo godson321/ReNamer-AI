@@ -5,8 +5,8 @@
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
     <StackPanel Margin="16,12">
-        <!-- Expression: Using unified Grid layout -->
-        <Grid Margin="0,0,0,6">
+        <!-- Expression -->
+        <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
@@ -16,7 +16,7 @@
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexExpression}"/>
         </Grid>
         <!-- Replace -->
-        <Grid Margin="0,0,0,4">
+        <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
@@ -27,18 +27,18 @@
         </Grid>
         <TextBlock Text="{DynamicResource Regex_Hint}" Margin="88,0,0,8" Style="{DynamicResource DialogHintText}"/>
         <!-- Buttons -->
-        <StackPanel Orientation="Horizontal" Margin="88,0,0,4" HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" Margin="88,0,0,16" HorizontalAlignment="Left">
             <Button x:Name="btnInsertExpr" Content="{DynamicResource Regex_InsertExpression}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
                     Padding="8,3" Margin="0,0,8,0" Click="BtnInsertExpr_Click"/>
             <Button x:Name="btnHelp" Content="{DynamicResource Regex_Help}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
                     Padding="8,3" Click="BtnHelp_Click"/>
         </StackPanel>
         <!-- Options -->
-        <DockPanel Margin="0,4">
-            <StackPanel>
+        <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
+            <StackPanel Margin="8,6">
                 <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Regex_CaseSensitive}" Margin="0,2" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Regex_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
             </StackPanel>
-        </DockPanel>
+        </GroupBox>
     </StackPanel>
 </UserControl>

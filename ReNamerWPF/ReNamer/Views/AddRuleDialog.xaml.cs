@@ -22,7 +22,7 @@ public partial class AddRuleDialog : Window
     // 规则类型列表
     private static readonly List<string> RuleTypes = new()
     {
-        "Replace", "Insert", "Delete", "Remove", "Case", "Serialize", "Extension",
+        "Replace", "Insert", "Delete", "Remove", "Case", "Serialize",
         "Padding", "Strip", "CleanUp", "Transliterate", "RegEx", 
         "Rearrange", "ReformatDate", "Randomize", "PascalScript", "UserInput", "Mapping"
     };
@@ -36,7 +36,6 @@ public partial class AddRuleDialog : Window
         ["Remove"] = (Geometry)Application.Current.FindResource("Icon_RemoveItem"),
         ["Case"] = (Geometry)Application.Current.FindResource("Icon_Case"),
         ["Serialize"] = (Geometry)Application.Current.FindResource("Icon_Serialize"),
-        ["Extension"] = (Geometry)Application.Current.FindResource("Icon_Extension"),
         ["Padding"] = (Geometry)Application.Current.FindResource("Icon_Padding"),
         ["Strip"] = (Geometry)Application.Current.FindResource("Icon_Strip"),
         ["CleanUp"] = (Geometry)Application.Current.FindResource("Icon_CleanUp"),
@@ -201,7 +200,6 @@ public partial class AddRuleDialog : Window
             "Remove" => new RemoveRule(),
             "Case" => new CaseRule(),
             "Serialize" => new SerializeRule(),
-            "Extension" => new ExtensionRule(),
             "RegEx" => new RegexRule(),
             "Padding" => new PaddingRule(),
             "Strip" => new StripRule(),
@@ -227,7 +225,6 @@ public partial class AddRuleDialog : Window
             RemoveRule r => new RemoveConfigPanel(r),
             CaseRule r => new CaseConfigPanel(r),
             SerializeRule r => new SerializeConfigPanel(r),
-            ExtensionRule r => new ExtensionConfigPanel(r),
             RegexRule r => new RegexConfigPanel(r),
             PaddingRule r => new PaddingConfigPanel(r),
             StripRule r => new StripConfigPanel(r),
@@ -253,7 +250,6 @@ public partial class AddRuleDialog : Window
             RemoveRule => "Remove",
             CaseRule => "Case",
             SerializeRule => "Serialize",
-            ExtensionRule => "Extension",
             RegexRule => "RegEx",
             PaddingRule => "Padding",
             StripRule => "Strip",

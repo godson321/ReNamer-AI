@@ -169,7 +169,7 @@
     <sys:String x:Key="Rule_Extension">扩展名</sys:String>
     <sys:String x:Key="Rule_RegEx">正则表达式</sys:String>
     <sys:String x:Key="Rule_Padding">填充</sys:String>
-    <sys:String x:Key="Rule_Strip">剥离</sys:String>
+    <sys:String x:Key="Rule_Strip">移除</sys:String>
     <sys:String x:Key="Rule_CleanUp">清理</sys:String>
     <sys:String x:Key="Rule_Transliterate">音译</sys:String>
     <sys:String x:Key="Rule_Rearrange">重排</sys:String>
@@ -332,6 +332,8 @@
     <sys:String x:Key="Serialize_CustomSymbols">自定义编号符号:</sys:String>
 
     <!-- 扩展名规则 -->
+    <sys:String x:Key="Extension_Section_NewExtension">新扩展名</sys:String>
+    <sys:String x:Key="Extension_Section_RemoveDuplicate">移除重复</sys:String>
     <sys:String x:Key="Extension_NewExtension">新扩展名（不含点）:</sys:String>
     <sys:String x:Key="Extension_AppendToOriginal">附加到原文件名</sys:String>
     <sys:String x:Key="Extension_DetectBinSign">使用“二进制签名”检测</sys:String>
@@ -603,6 +605,9 @@
     <sys:String x:Key="RuleCfg_CleanUp_StripMarks">移除 Unicode 组合标记（变音符、重音等）</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_CamelCase">在大写字母前插入空格（如 CamelCase）</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_SharePoint">为 SharePoint 准备（始终包含扩展名）</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Spacing">空格处理</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Unicode">Unicode</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Other">其他</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">表格</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_AllowReuse">允许复用</sys:String>
@@ -620,7 +625,7 @@
     <sys:String x:Key="RuleCfg_Padding_TextPadding">文本填充</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_CharactersToUse">使用的字符：</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_InsertWhere">插入位置：</sys:String>
-    <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">剥离括号内容：</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">移除括号内容：</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">替换以下字符为空格：</sys:String>
     <sys:String x:Key="RuleCfg_PascalScript_Basic">基础: Result := Name;</sys:String>
     <sys:String x:Key="RuleCfg_PascalScript_Counter">计数: Result := Name + '_' + Counter;</sys:String>
@@ -679,6 +684,8 @@
     <sys:String x:Key="RuleCfg_Strip_Leading">开头</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Trailing">结尾</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">移除除所选外的所有字符</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Characters">要移除的字符</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Where">位置</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">字母表</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Direction">方向：</sys:String>
@@ -758,7 +765,7 @@
     <sys:String x:Key="RuleCfg_Placeholder_CaseForceCase">例如：HDTV</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_SerializeCustomSymbols">自定义编号符号</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_Extension">例如：.txt</sys:String>
-    <sys:String x:Key="RuleCfg_Placeholder_StripUserDefined">要剥离的字符</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUserDefined">要移除的字符</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">例如：10000-10FFFF</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">输入正则表达式</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">输入替换模式</sys:String>
