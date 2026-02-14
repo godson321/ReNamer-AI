@@ -14,7 +14,7 @@
             <Grid Margin="8,6">
                 <TextBox x:Name="txtAlphabet" AcceptsReturn="True" TextWrapping="NoWrap"
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                         MinHeight="200" VerticalAlignment="Stretch" FontFamily="Consolas"
+                         MinHeight="200" VerticalAlignment="Stretch" VerticalContentAlignment="Top" Padding="8,6,8,6" FontFamily="Consolas"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_TransliterateAlphabet}"/>
             </Grid>
         </GroupBox>

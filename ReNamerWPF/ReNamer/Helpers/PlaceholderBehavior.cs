@@ -217,12 +217,13 @@ public static class PlaceholderBehavior
         public PlaceholderAdorner(UIElement adornedElement, string placeholder) : base(adornedElement)
         {
             IsHitTestVisible = false;
+            var isMultilineTextBox = adornedElement is TextBox { AcceptsReturn: true };
 
             _placeholderText = new TextBlock
             {
                 Text = placeholder,
-                Margin = new Thickness(8, 0, 8, 0),
-                VerticalAlignment = VerticalAlignment.Center,
+                Margin = isMultilineTextBox ? new Thickness(8, 6, 8, 0) : new Thickness(8, 0, 8, 0),
+                VerticalAlignment = isMultilineTextBox ? VerticalAlignment.Top : VerticalAlignment.Center,
                 Opacity = 0.75,
                 Foreground = (Brush?)Application.Current?.TryFindResource("TextSecondaryBrush") ?? Brushes.Gray
             };

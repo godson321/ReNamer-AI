@@ -38,6 +38,7 @@
 
         <TextBox x:Name="txtScript" AcceptsReturn="True" TextWrapping="NoWrap"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 VerticalContentAlignment="Top" Padding="8,6,8,6"
                  FontFamily="Consolas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                  helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_PascalScript}"/>
     </DockPanel>
