@@ -34,6 +34,7 @@ public class IndexConverter : IValueConverter
         }
         return "";
     }
+
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
@@ -246,7 +247,7 @@ public partial class MainWindow : Window
         CmdRulesMarkAll = CreateAction(_ => RulesMarkAll_Click(this, new RoutedEventArgs()), _ => HasRules);
         CmdRulesUnmarkAll = CreateAction(_ => RulesUnmarkAll_Click(this, new RoutedEventArgs()), _ => HasRules);
 
-        CmdFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()), _ => HasFiles);
+        CmdFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()));
         CmdOptions = CreateAction(_ => Options_Click(this, new RoutedEventArgs()));
         CmdExport = CreateAction(_ => Export_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdAnalyze = CreateAction(_ => Analyze_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
@@ -447,59 +448,6 @@ public partial class MainWindow : Window
         return false;
     }
 
-    private void Window_KeyDown(object sender, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.F3:
-                if (TryExecute(CmdAddFiles)) e.Handled = true; break;
-            case Key.F4:
-                if (TryExecute(CmdAddFolders)) e.Handled = true; break;
-            case Key.F5:
-                if (TryExecute(CmdPreview)) e.Handled = true; break;
-            case Key.F6:
-                if (TryExecute(CmdRename)) e.Handled = true; break;
-            case Key.F1 when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdAbout)) e.Handled = true; break;
-            case Key.F1:
-                if (TryExecute(CmdHelpOnline)) e.Handled = true; break;
-            case Key.N when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdNewProject)) e.Handled = true; break;
-            case Key.Z when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdUndoRename)) e.Handled = true; break;
-            case Key.S when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdSavePresetAs)) e.Handled = true; break;
-            case Key.S when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdSavePreset)) e.Handled = true; break;
-            case Key.F when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdFilters)) e.Handled = true; break;
-            // Options shortcuts (Shift+Key)
-            case Key.S when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdAutosizeColumns)) e.Handled = true; break;
-            case Key.V when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdValidate)) e.Handled = true; break;
-            case Key.F when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdFixConflicts)) e.Handled = true; break;
-            case Key.A when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdAnalyzeSampleText)) e.Handled = true; break;
-            case Key.C when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdApplyRulesToClipboard)) e.Handled = true; break;
-            case Key.I when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdCountFiles)) e.Handled = true; break;
-            case Key.R when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdSortForFolders)) e.Handled = true; break;
-            // File menu shortcuts
-            case Key.N when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdNewInstance)) e.Handled = true; break;
-            case Key.V when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdPasteFiles)) e.Handled = true; break;
-            case Key.F8:
-                if (TryExecute(CmdSettings)) e.Handled = true; break;
-            case Key.P when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdManagePresets)) e.Handled = true; break;
-        }
-    }
-
     private void BeginProgress(string label)
     {
         tbStatusProgress.Text = label;
@@ -583,30 +531,39 @@ public partial class MainWindow : Window
     {
         var existing = new HashSet<string>(Files.Select(f => f.FullPath), StringComparer.OrdinalIgnoreCase);
         var added = new List<RenFile>();
+        int skippedCount = 0;
+
         foreach (var path in paths)
         {
-            if (File.Exists(path) && !existing.Contains(path))
+            if (string.IsNullOrWhiteSpace(path))
+                continue;
+
+            try
             {
-                var rf = new RenFile(path);
-                Files.Add(rf);
-                added.Add(rf);
-                existing.Add(path);
-            }
-            else if (Directory.Exists(path))
-            {
-                var files = recursive
-                    ? Directory.GetFiles(path, "*", SearchOption.AllDirectories)
-                    : Directory.GetFiles(path);
-                foreach (var file in files)
+                if (File.Exists(path) && !existing.Contains(path))
                 {
-                    if (!existing.Contains(file))
-                    {
-                        var rf = new RenFile(file);
-                        Files.Add(rf);
-                        added.Add(rf);
-                        existing.Add(file);
-                    }
+                    var rf = new RenFile(path);
+                    Files.Add(rf);
+                    added.Add(rf);
+                    existing.Add(path);
                 }
+                else if (Directory.Exists(path))
+                {
+                    AddDirectoryEntries(path, recursive, existing, added, ref skippedCount);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                skippedCount++;
+            }
+            catch (IOException)
+            {
+                skippedCount++;
+            }
+            catch (Exception ex)
+            {
+                skippedCount++;
+                Debug.WriteLine($"AddFilePaths skipped '{path}': {ex.Message}");
             }
         }
 
@@ -614,6 +571,152 @@ public partial class MainWindow : Window
         {
             ApplyFiltersToFiles(added);
         }
+
+        if (added.Count > 0 && _appSettings.PreviewOnFileAdd)
+        {
+            TryExecute(CmdPreview);
+        }
+
+        if (skippedCount > 0)
+        {
+            tbStatusInfo.Text = $"Skipped {skippedCount} path(s) due to access restrictions.";
+        }
+    }
+
+    private void AddDirectoryEntries(string rootPath, bool recursive, HashSet<string> existing, List<RenFile> added, ref int skippedCount)
+    {
+        var allowSubfolders = recursive && _appSettings.FolderIncludeSubfolders;
+        var searchOption = allowSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+        if (_appSettings.FolderIncludeFolderNames)
+        {
+            List<string> dirs;
+            if (allowSubfolders)
+            {
+                dirs = SafeEnumerateDirectories(rootPath, searchOption, ref skippedCount).ToList();
+                if (!_appSettings.FolderIgnoreRootFolder)
+                    dirs.Insert(0, rootPath);
+            }
+            else
+            {
+                dirs = _appSettings.FolderIgnoreRootFolder ? [] : [rootPath];
+            }
+
+            foreach (var dir in dirs)
+            {
+                if (!PassesFolderImportSettings(dir, isFolder: true))
+                    continue;
+                if (existing.Contains(dir))
+                    continue;
+
+                var rf = new RenFile(dir);
+                Files.Add(rf);
+                added.Add(rf);
+                existing.Add(dir);
+            }
+        }
+
+        if (_appSettings.FolderIncludeAllFiles)
+        {
+            foreach (var file in SafeEnumerateFiles(rootPath, searchOption, ref skippedCount))
+            {
+                if (!PassesFolderImportSettings(file, isFolder: false))
+                    continue;
+                if (existing.Contains(file))
+                    continue;
+
+                var rf = new RenFile(file);
+                Files.Add(rf);
+                added.Add(rf);
+                existing.Add(file);
+            }
+        }
+    }
+
+    private static IEnumerable<string> SafeEnumerateDirectories(string path, SearchOption searchOption, ref int skippedCount)
+    {
+        try
+        {
+            return Directory.EnumerateDirectories(path, "*", searchOption).ToList();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            skippedCount++;
+            return Enumerable.Empty<string>();
+        }
+        catch (IOException)
+        {
+            skippedCount++;
+            return Enumerable.Empty<string>();
+        }
+    }
+
+    private static IEnumerable<string> SafeEnumerateFiles(string path, SearchOption searchOption, ref int skippedCount)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(path, "*", searchOption).ToList();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            skippedCount++;
+            return Enumerable.Empty<string>();
+        }
+        catch (IOException)
+        {
+            skippedCount++;
+            return Enumerable.Empty<string>();
+        }
+    }
+
+    private bool PassesFolderImportSettings(string fullPath, bool isFolder)
+    {
+        if (!PassesFolderImportAttributes(fullPath))
+            return false;
+        return PassesFolderImportMasks(fullPath, isFolder);
+    }
+
+    private bool PassesFolderImportAttributes(string fullPath)
+    {
+        try
+        {
+            var attrs = File.GetAttributes(fullPath);
+            if (!_appSettings.FolderIncludeHiddenFiles && attrs.HasFlag(FileAttributes.Hidden))
+                return false;
+            if (!_appSettings.FolderIncludeSystemFiles && attrs.HasFlag(FileAttributes.System))
+                return false;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool PassesFolderImportMasks(string fullPath, bool isFolder)
+    {
+        var target = _appSettings.FolderMaskFileNameOnly ? Path.GetFileName(fullPath) : fullPath;
+        if (string.IsNullOrEmpty(target))
+            return false;
+
+        var includeMasks = (_appSettings.FolderIncludeMask ?? string.Empty)
+            .Split(';')
+            .Select(x => x.Trim())
+            .Where(x => x.Length > 0)
+            .ToArray();
+        var excludeMasks = (_appSettings.FolderExcludeMask ?? string.Empty)
+            .Split(';')
+            .Select(x => x.Trim())
+            .Where(x => x.Length > 0)
+            .ToArray();
+
+        if (includeMasks.Length > 0 && !includeMasks.Any(mask => MatchWildcard(target, mask, false)))
+            return false;
+
+        if (excludeMasks.Any(mask => MatchWildcard(target, mask, false)))
+            return false;
+
+        return true;
     }
 
     private void ApplyFiltersToFiles(IEnumerable<RenFile> files)
@@ -861,35 +964,6 @@ public partial class MainWindow : Window
         return (element as ListViewItem)?.DataContext as IRule;
     }
 
-    private void Rules_KeyDown(object sender, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.Insert when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdRuleDuplicate)) e.Handled = true; break;
-            case Key.Insert:
-                if (TryExecute(CmdAddRule)) e.Handled = true; break;
-            case Key.Delete when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdRuleRemoveAll)) e.Handled = true; break;
-            case Key.Delete:
-                if (TryExecute(CmdRemoveRule)) e.Handled = true; break;
-            case Key.Enter when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdRuleComment)) e.Handled = true; break;
-            case Key.Enter:
-                if (TryExecute(CmdRuleEdit)) e.Handled = true; break;
-            case Key.Up when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdMoveRuleUp)) e.Handled = true; break;
-            case Key.Down when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdMoveRuleDown)) e.Handled = true; break;
-            case Key.A when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdRulesSelectAll)) e.Handled = true; break;
-            case Key.M when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdRulesMarkAll)) e.Handled = true; break;
-            case Key.U when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdRulesUnmarkAll)) e.Handled = true; break;
-        }
-    }
-
     private void RuleCheckBox_Click(object sender, RoutedEventArgs e) => AutoPreviewIfEnabled(sender, e);
     private void RulesSelectAll_Click(object sender, RoutedEventArgs e) => lvRules.SelectAll();
 
@@ -913,43 +987,121 @@ public partial class MainWindow : Window
             TryExecute(CmdPreview);
     }
 
+    private void ApplyHighlightChangesState(RenFile file)
+    {
+        if (file.IsRenamed || file.State == "×")
+            return;
+
+        file.State = file.HasChanged && _appSettings.HighlightChanges ? "→" : "";
+    }
+
+    private void ApplyHighlightChangesState(IEnumerable<RenFile> files)
+    {
+        foreach (var file in files)
+            ApplyHighlightChangesState(file);
+    }
+
     #endregion
 
     #region Core Operations
 
+    private bool EnsureRulesReadyForExecution()
+    {
+        var blocking = Rules
+            .OfType<JavaScriptRule>()
+            .FirstOrDefault(r => r.IsEnabled && (r.IsScriptLoading || !r.IsScriptReady));
+
+        if (blocking == null)
+            return true;
+
+        if (blocking.IsScriptLoading)
+        {
+            MessageBox.Show(
+                $"脚本“{blocking.ScriptDisplayName}”仍在后台加载，请稍后再执行。",
+                "JavaScript",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return false;
+        }
+
+        var reason = string.IsNullOrWhiteSpace(blocking.ScriptLoadError)
+            ? "未选择可用脚本。"
+            : blocking.ScriptLoadError;
+
+        MessageBox.Show(
+            $"脚本“{blocking.ScriptDisplayName}”不可执行：{reason}",
+            "JavaScript",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+        return false;
+    }
+
     private void Preview_Click(object sender, RoutedEventArgs e)
     {
+        if (!EnsureRulesReadyForExecution())
+            return;
         BeginProgress(LanguageService.GetString("Status_Previewing"));
         _renameService.Preview(Files.Where(f => f.IsMarked), Rules,
             (cur, total) => UpdateProgress(LanguageService.GetString("Status_Previewing"), cur, total));
         foreach (var f in Files.Where(f => !f.IsMarked)) f.NewName = f.OriginalName;
-        foreach (var f in Files.Where(f => !f.IsRenamed))
-            f.State = f.HasChanged ? "→" : "";
+        ApplyHighlightChangesState(Files.Where(f => !f.IsRenamed));
         lvFiles.Items.Refresh();
         EndProgress();
         UpdateStatusBar();
+
+        if (_appSettings.AutoValidate)
+        {
+            var errors = ValidateMarkedFiles();
+            tbStatusInfo.Text = errors.Count == 0
+                ? "Auto validation passed."
+                : $"Auto validation found {errors.Count} issue(s). Run Validate to view details.";
+        }
     }
 
     private void Rename_Click(object sender, RoutedEventArgs e)
     {
+        if (!EnsureRulesReadyForExecution())
+            return;
         Preview_Click(sender, e);
 
         var toRename = Files.Count(f => f.IsMarked && f.HasChanged && !f.IsRenamed);
         if (toRename == 0) return;
 
-        var confirmMsg = LanguageService.GetString("Msg_ConfirmRename", toRename);
-        if (MessageBox.Show(confirmMsg, LanguageService.GetString("Menu_Rename"),
-            MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+        if (_appSettings.AutoValidate)
         {
-            BeginProgress(LanguageService.GetString("Status_Renaming"));
-            var (success, failed) = _renameService.Rename(Files.Where(f => f.IsMarked),
-                (cur, total) => UpdateProgress(LanguageService.GetString("Status_Renaming"), cur, total));
-            lvFiles.Items.Refresh();
-            UpdateStatusBar();
-            MessageBox.Show(LanguageService.GetString("Msg_RenameResult", success, failed),
-                LanguageService.GetString("Msg_RenameComplete"), MessageBoxButton.OK, MessageBoxImage.Information);
-            EndProgress();
+            var validationErrors = ValidateMarkedFiles();
+            if (validationErrors.Count > 0)
+            {
+                var warningMessage = $"{BuildValidationIssueMessage(validationErrors)}\n\nContinue renaming anyway?";
+                var continueRename = MessageBox.Show(warningMessage, "Validation Issues",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
+                if (!continueRename)
+                {
+                    tbStatusInfo.Text = "Rename cancelled due to validation issues.";
+                    return;
+                }
+            }
         }
+
+        var shouldProceed = true;
+        if (_appSettings.ConfirmRename)
+        {
+            var confirmMsg = LanguageService.GetString("Msg_ConfirmRename", toRename);
+            shouldProceed = MessageBox.Show(confirmMsg, LanguageService.GetString("Menu_Rename"),
+                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+        }
+
+        if (!shouldProceed)
+            return;
+
+        BeginProgress(LanguageService.GetString("Status_Renaming"));
+        var (success, failed) = _renameService.Rename(Files.Where(f => f.IsMarked),
+            (cur, total) => UpdateProgress(LanguageService.GetString("Status_Renaming"), cur, total));
+        lvFiles.Items.Refresh();
+        UpdateStatusBar();
+        MessageBox.Show(LanguageService.GetString("Msg_RenameResult", success, failed),
+            LanguageService.GetString("Msg_RenameComplete"), MessageBoxButton.OK, MessageBoxImage.Information);
+        EndProgress();
     }
 
     private void UndoRename_Click(object sender, RoutedEventArgs e)
@@ -961,62 +1113,36 @@ public partial class MainWindow : Window
 
     private void Validate_Click(object sender, RoutedEventArgs e)
     {
-        var errors = _renameService.ValidateNewNames(Files);
-        MessageBox.Show(errors.Count == 0 ? "All new names are valid." : string.Join("\n", errors),
+        var errors = ValidateMarkedFiles();
+        MessageBox.Show(BuildValidationIssueMessage(errors),
             errors.Count == 0 ? "Validation" : "Validation Issues",
             MessageBoxButton.OK, errors.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+    }
+
+    private List<string> ValidateMarkedFiles()
+    {
+        return _renameService.ValidateNewNames(
+            Files.Where(f => f.IsMarked),
+            _appSettings.WarnInvalidChars,
+            _appSettings.WarnLongPaths);
+    }
+
+    private static string BuildValidationIssueMessage(IReadOnlyList<string> errors, int maxLines = 10)
+    {
+        if (errors.Count == 0)
+            return "All new names are valid.";
+
+        var lines = errors.Take(maxLines).ToList();
+        var message = string.Join("\n", lines);
+        if (errors.Count > maxLines)
+            message += $"\n... and {errors.Count - maxLines} more.";
+
+        return message;
     }
 
     #endregion
 
     #region File List Features
-
-    private void Files_KeyDown(object sender, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.Delete when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdClearAll)) e.Handled = true; break;
-            case Key.Delete:
-                if (TryExecute(CmdRemoveSelectedFiles)) e.Handled = true; break;
-            case Key.A when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdFilesSelectAll)) e.Handled = true; break;
-            case Key.I when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdInvertSelection)) e.Handled = true; break;
-            case Key.D when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdClearNotChanged)) e.Handled = true; break;
-            case Key.Up when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdMoveFileUp)) e.Handled = true; break;
-            case Key.Down when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdMoveFileDown)) e.Handled = true; break;
-            case Key.F2:
-                if (TryExecute(CmdEditNewName)) e.Handled = true; break;
-            case Key.M when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdMarkSelected)) e.Handled = true; break;
-            case Key.U when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdUnmarkSelected)) e.Handled = true; break;
-            case Key.Insert:
-                if (TryExecute(CmdInvertMarking)) e.Handled = true; break;
-            case Key.Enter when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdOpenFolder)) e.Handled = true; break;
-            case Key.Enter when Keyboard.Modifiers == ModifierKeys.Shift:
-                if (TryExecute(CmdOpenWithNotepad)) e.Handled = true; break;
-            case Key.Enter when Keyboard.Modifiers == ModifierKeys.Alt:
-                if (TryExecute(CmdFileProperties)) e.Handled = true; break;
-            case Key.Enter:
-                if (TryExecute(CmdOpenFile)) e.Handled = true; break;
-            case Key.L when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdSelectByNameLength)) e.Handled = true; break;
-            case Key.E when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdSelectByExtension)) e.Handled = true; break;
-            case Key.M when Keyboard.Modifiers == ModifierKeys.Control:
-                if (TryExecute(CmdSelectByMask)) e.Handled = true; break;
-            case Key.X when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdCutFiles)) e.Handled = true; break;
-            case Key.C when Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift):
-                if (TryExecute(CmdCopyFiles)) e.Handled = true; break;
-        }
-    }
 
     private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateStatusBar();
     private void FileCheckBox_Click(object sender, RoutedEventArgs e) => UpdateStatusBar();
@@ -1040,14 +1166,30 @@ public partial class MainWindow : Window
 
     private void Files_DragOver(object sender, DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(typeof(RenFile))
-            ? DragDropEffects.Move
-            : DragDropEffects.None;
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            e.Effects = DragDropEffects.Copy;
+        }
+        else if (e.Data.GetDataPresent(typeof(RenFile)))
+        {
+            e.Effects = DragDropEffects.Move;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
         e.Handled = true;
     }
 
     private void Files_Drop(object sender, DragEventArgs e)
     {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
+            AddFilePaths(paths, recursive: true);
+            return;
+        }
+
         if (!e.Data.GetDataPresent(typeof(RenFile))) return;
         var dragged = e.Data.GetData(typeof(RenFile)) as RenFile;
         if (dragged == null) return;
@@ -1203,7 +1345,7 @@ public partial class MainWindow : Window
             if (dlg.ShowDialog() == true)
             {
                 file.NewName = tb.Text;
-                file.State = file.HasChanged ? "→" : "";
+                ApplyHighlightChangesState(file);
                 lvFiles.Items.Refresh();
             }
         }
@@ -1335,25 +1477,29 @@ public partial class MainWindow : Window
                 LanguageService.SwitchToEnglish();
             else
                 LanguageService.SwitchToChinese();
+
+            ApplyHighlightChangesState(Files);
+            lvFiles.Items.Refresh();
         }
     }
 
     private void Options_Click(object sender, RoutedEventArgs e)
     {
         var menu = new ContextMenu { DataContext = this };
-        var items = new (string header, string gesture, UiAction action)[]
+        var items = new (string key, UiAction action)[]
         {
-            ("Autosize Columns", "Shift+S", CmdAutosizeColumns),
-            ("Validate New Names", "Shift+V", CmdValidate),
-            ("Fix Conflicting New Names", "Shift+F", CmdFixConflicts),
-            ("Analyze Sample Text...", "Shift+A", CmdAnalyzeSampleText),
-            ("Apply Rules to Clipboard", "Shift+C", CmdApplyRulesToClipboard),
-            ("Count Files", "Shift+I", CmdCountFiles),
-            ("Sort for Folders", "Shift+R", CmdSortForFolders),
+            ("Options_AutosizeColumns", CmdAutosizeColumns),
+            ("Options_ValidateNewNames", CmdValidate),
+            ("Options_FixConflictingNewNames", CmdFixConflicts),
+            ("Options_AnalyzeSampleText", CmdAnalyzeSampleText),
+            ("Options_ApplyRulesToClipboard", CmdApplyRulesToClipboard),
+            ("Options_CountFiles", CmdCountFiles),
+            ("Options_SortForFolders", CmdSortForFolders),
         };
-        foreach (var (header, gesture, action) in items)
+        foreach (var (key, action) in items)
         {
-            var mi = new MenuItem { Header = header, InputGestureText = gesture, Command = action };
+            var header = LanguageService.GetString(key);
+            var mi = new MenuItem { Header = header, Command = action };
             menu.Items.Add(mi);
         }
         menu.PlacementTarget = sender as UIElement;
@@ -1390,7 +1536,7 @@ public partial class MainWindow : Window
                 var ext = Path.GetExtension(file.NewName);
                 var name = Path.GetFileNameWithoutExtension(file.NewName);
                 file.NewName = $"{name} ({++i}){ext}";
-                file.State = "→";
+                ApplyHighlightChangesState(file);
                 fixed_++;
             }
         }
@@ -1562,7 +1708,7 @@ public partial class MainWindow : Window
             if (!string.IsNullOrEmpty(names[i]))
             {
                 Files[i].NewName = names[i];
-                Files[i].State = Files[i].HasChanged ? "→" : "";
+                ApplyHighlightChangesState(Files[i]);
             }
         }
         lvFiles.Items.Refresh();
@@ -1612,7 +1758,7 @@ public partial class MainWindow : Window
             file.NewName = preview.Contains('\\') || preview.Contains('/')
                 ? Path.GetFileName(preview)
                 : preview;
-            file.State = file.HasChanged ? "→" : "";
+            ApplyHighlightChangesState(file);
             updated++;
         }
         lvFiles.Items.Refresh();
@@ -1875,12 +2021,13 @@ public partial class MainWindow : Window
             MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
         var paths = selected.Select(f => f.FullPath).ToArray();
-        if (SendToRecycleBin(paths))
+        var deleted = SendToRecycleBin(paths);
+        if (deleted)
         {
-            foreach (var f in selected) Files.Remove(f);
+            foreach (var f in selected)
+                Files.Remove(f);
         }
-
-        if (_appSettings.RememberWindowPosition && _appSettings.IsMaximized)
+        else
         {
             MessageBox.Show("Failed to move one or more files to Recycle Bin.", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
@@ -2001,7 +2148,7 @@ public partial class MainWindow : Window
 
     // Clear extensions
     private void ClearValid_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.State == "✓" || f.State == "→").ToList()) Files.Remove(f); }
+    { foreach (var f in Files.Where(f => f.State == "✓" || f.HasChanged).ToList()) Files.Remove(f); }
 
     private void ClearInvalid_Click(object sender, RoutedEventArgs e)
     { foreach (var f in Files.Where(f => f.State == "×" || !string.IsNullOrEmpty(f.Error)).ToList()) Files.Remove(f); }
@@ -2250,14 +2397,32 @@ public partial class MainWindow : Window
         }
         else
         {
-            var screenLeft = SystemParameters.VirtualScreenLeft;
-            var screenTop = SystemParameters.VirtualScreenTop;
             var currentWidth = Width;
             var currentHeight = Height;
             if (double.IsNaN(currentWidth) || currentWidth <= 0) currentWidth = 900;
             if (double.IsNaN(currentHeight) || currentHeight <= 0) currentHeight = 600;
-            Left = screenLeft + (SystemParameters.VirtualScreenWidth - currentWidth) / 2;
-            Top = screenTop + (SystemParameters.VirtualScreenHeight - currentHeight) / 2;
+
+            var restoredSavedPosition = false;
+            if (_appSettings.RememberWindowPosition
+                && !double.IsNaN(_appSettings.WindowLeft)
+                && !double.IsNaN(_appSettings.WindowTop))
+            {
+                var savedBounds = new Rect(_appSettings.WindowLeft, _appSettings.WindowTop, currentWidth, currentHeight);
+                if (IsWindowRectVisible(savedBounds))
+                {
+                    Left = _appSettings.WindowLeft;
+                    Top = _appSettings.WindowTop;
+                    restoredSavedPosition = true;
+                }
+            }
+
+            if (!restoredSavedPosition)
+            {
+                var screenLeft = SystemParameters.VirtualScreenLeft;
+                var screenTop = SystemParameters.VirtualScreenTop;
+                Left = screenLeft + (SystemParameters.VirtualScreenWidth - currentWidth) / 2;
+                Top = screenTop + (SystemParameters.VirtualScreenHeight - currentHeight) / 2;
+            }
         }
 
         // Restore splitter position
@@ -2266,6 +2431,24 @@ public partial class MainWindow : Window
             mainGrid.RowDefinitions[0].Height = new GridLength(_appSettings.SplitterPosition);
 
         RestoreColumnState();
+    }
+
+    private static bool IsWindowRectVisible(Rect rect)
+    {
+        if (rect.Width <= 0 || rect.Height <= 0)
+            return false;
+
+        var virtualBounds = new Rect(
+            SystemParameters.VirtualScreenLeft,
+            SystemParameters.VirtualScreenTop,
+            SystemParameters.VirtualScreenWidth,
+            SystemParameters.VirtualScreenHeight);
+
+        if (!virtualBounds.IntersectsWith(rect))
+            return false;
+
+        var intersection = Rect.Intersect(virtualBounds, rect);
+        return intersection.Width >= 100 && intersection.Height >= 80;
     }
 
     private void EnsureWindowVisible()

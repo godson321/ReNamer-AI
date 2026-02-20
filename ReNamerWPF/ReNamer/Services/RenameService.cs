@@ -106,14 +106,19 @@ public class RenameService
     }
 
     /// <summary>
-    /// 验证新文件名（检测冲突）
+    /// 验证新文件名（检测冲突/非法字符/长路径）
     /// </summary>
-    public List<string> ValidateNewNames(IEnumerable<RenFile> files)
+    public List<string> ValidateNewNames(
+        IEnumerable<RenFile> files,
+        bool warnInvalidChars = true,
+        bool warnLongPaths = true,
+        int longPathThreshold = 260)
     {
         var errors = new List<string>();
+        var fileList = files.Where(f => !f.IsRenamed).ToList();
         var newNames = new Dictionary<string, List<RenFile>>();
 
-        foreach (var file in files)
+        foreach (var file in fileList)
         {
             var key = Path.Combine(file.FolderPath, file.NewName).ToLowerInvariant();
             
@@ -129,13 +134,27 @@ public class RenameService
             errors.Add($"Duplicate name: {kvp.Value[0].NewName} ({kvp.Value.Count} files)");
         }
 
-        // 检查非法字符
-        var invalidChars = Path.GetInvalidFileNameChars();
-        foreach (var file in files)
+        if (warnInvalidChars)
         {
-            if (file.NewName.IndexOfAny(invalidChars) >= 0)
+            var invalidChars = Path.GetInvalidFileNameChars();
+            foreach (var file in fileList.Where(f => f.HasChanged))
             {
-                errors.Add($"Invalid characters in: {file.NewName}");
+                if (file.NewName.IndexOfAny(invalidChars) >= 0)
+                {
+                    errors.Add($"Invalid characters in: {file.NewName}");
+                }
+            }
+        }
+
+        if (warnLongPaths)
+        {
+            foreach (var file in fileList.Where(f => f.HasChanged))
+            {
+                var targetPath = Path.Combine(file.FolderPath, file.NewName);
+                if (targetPath.Length > longPathThreshold)
+                {
+                    errors.Add($"Long path warning ({targetPath.Length}): {targetPath}");
+                }
             }
         }
 
