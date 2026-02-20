@@ -62,6 +62,7 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _renameCts;
     private int _renameRequestVersion;
     private const int AutoPreviewDebounceMilliseconds = 200;
+    private bool _isHighContrastMode;
     private readonly Dictionary<string, double> _defaultColumnWidths = new(StringComparer.OrdinalIgnoreCase);
     private static readonly string UndoLogsDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -171,6 +172,12 @@ public partial class MainWindow : Window
 
         _renameService = new RenameService();
         _appSettings = AppSettings.Load();
+        if (!string.IsNullOrWhiteSpace(AppSettings.LastLoadError))
+        {
+            var loadErrorMessage = $"Settings could not be loaded. Defaults are being used. ({AppSettings.LastLoadError})";
+            tbStatusInfo.Text = loadErrorMessage;
+            MessageBox.Show(loadErrorMessage, "Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
         RuleHelpers.ResolveMetaTagsEnabled = _appSettings.ResolveMetaTags;
         ThemeService.ApplyTheme(_appSettings.Theme);
 
@@ -186,6 +193,8 @@ public partial class MainWindow : Window
         LanguageService.LanguageChanged += OnLanguageChanged;
         UpdateLanguageMenuChecks();
         InitActions();
+        SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
+        ApplyHighContrastMode(SystemParameters.HighContrast);
 
         // Hide extra columns by default (indices 8+: Folder, NewPath, SizeKB, SizeMB, etc.)
         Loaded += (_, _) =>
@@ -198,6 +207,58 @@ public partial class MainWindow : Window
             PopulatePresetMenu();
             PopulateLanguageMenu();
         };
+    }
+
+    private static void LogException(string context, Exception ex)
+    {
+        Debug.WriteLine($"[MainWindow] {context}: {ex}");
+    }
+
+    private void ShowBackgroundOperationError(string userMessage, bool showDialog)
+    {
+        tbStatusInfo.Text = userMessage;
+        if (showDialog)
+            MessageBox.Show(userMessage, "ReNamer", MessageBoxButton.OK, MessageBoxImage.Warning);
+    }
+
+    private bool SaveSettingsWithFeedback(string context, bool showDialog)
+    {
+        if (_appSettings.Save())
+            return true;
+
+        var detail = string.IsNullOrWhiteSpace(_appSettings.LastSaveError)
+            ? "Unknown error."
+            : _appSettings.LastSaveError;
+        var userMessage = $"Settings could not be saved ({context}): {detail}";
+        ShowBackgroundOperationError(userMessage, showDialog);
+        return false;
+    }
+
+    private void SystemParameters_StaticPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SystemParameters.HighContrast))
+            ApplyHighContrastMode(SystemParameters.HighContrast);
+    }
+
+    private void ApplyHighContrastMode(bool enabled)
+    {
+        if (_isHighContrastMode == enabled)
+            return;
+
+        _isHighContrastMode = enabled;
+        if (enabled)
+        {
+            WindowRootBorder.BorderBrush = SystemColors.WindowTextBrush;
+            TitleBarBorder.Background = SystemColors.WindowBrush;
+            TitleBarText.Foreground = SystemColors.WindowTextBrush;
+            TitleBarIcon.Fill = SystemColors.WindowTextBrush;
+            return;
+        }
+
+        WindowRootBorder.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
+        TitleBarBorder.SetResourceReference(Border.BackgroundProperty, "PrimaryBrush");
+        TitleBarText.Foreground = Brushes.White;
+        TitleBarIcon.Fill = Brushes.White;
     }
 
     private void Rules_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -407,6 +468,26 @@ public partial class MainWindow : Window
         return col.Header?.ToString() ?? string.Empty;
     }
 
+    private static double GetPersistedWidth(DataGridColumn col)
+    {
+        var width = col.Width.DisplayValue;
+        if (double.IsNaN(width) || width <= 0)
+            width = col.ActualWidth;
+
+        return (double.IsNaN(width) || width <= 0) ? 0 : width;
+    }
+
+    private void UpdateColumnWidthCache(DataGridColumn col)
+    {
+        var key = GetColumnKey(col);
+        if (string.IsNullOrWhiteSpace(key))
+            return;
+
+        var width = GetPersistedWidth(col);
+        if (width > 0)
+            _appSettings.ColumnWidths[key] = width;
+    }
+
     private void CaptureDefaultColumnWidths()
     {
         _defaultColumnWidths.Clear();
@@ -477,7 +558,10 @@ public partial class MainWindow : Window
                     char.ConvertFromUtf32(offset + region[1] - 'A'));
             }
         }
-        catch { /* ignore */ }
+        catch (Exception ex)
+        {
+            LogException("GetFlagEmoji", ex);
+        }
         return "🏳️";
     }
 
@@ -652,7 +736,7 @@ public partial class MainWindow : Window
         if (!_appSettings.ApplyFirstFolderImportDefaultsIfNeeded())
             return;
 
-        _appSettings.Save();
+        SaveSettingsWithFeedback("folder import defaults", showDialog: false);
     }
 
     private void AddDirectoryEntries(string rootPath, bool recursive, HashSet<string> existing, List<RenFile> added, ref int skippedCount)
@@ -759,8 +843,9 @@ public partial class MainWindow : Window
                 return false;
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            LogException($"PassesFolderImportAttributes({fullPath})", ex);
             return false;
         }
     }
@@ -837,7 +922,11 @@ public partial class MainWindow : Window
                 if (_appSettings.FilterAttrHidden && !attrs.HasFlag(FileAttributes.Hidden)) pass = false;
                 if (_appSettings.FilterAttrSystem && !attrs.HasFlag(FileAttributes.System)) pass = false;
             }
-            catch { pass = false; }
+            catch (Exception ex)
+            {
+                LogException($"PassesFilters({file.FullPath})", ex);
+                pass = false;
+            }
         }
 
         return pass;
@@ -939,7 +1028,11 @@ public partial class MainWindow : Window
             var rules = PresetService.LoadFromJson(json);
             return rules.FirstOrDefault();
         }
-        catch { return null; }
+        catch (Exception ex)
+        {
+            LogException("CloneRule", ex);
+            return null;
+        }
     }
 
     private void RemoveRule_Click(object sender, RoutedEventArgs e)
@@ -1294,7 +1387,7 @@ public partial class MainWindow : Window
             int renameProgressStep = Math.Max(1, renameTargets.Count / 100);
             int lastRenameProgress = 0;
 
-            var (success, failed) = await Task.Run(
+            var (success, failed, canceled) = await Task.Run(
                 () => _renameService.Rename(
                     renameTargets,
                     (cur, total) =>
@@ -1305,11 +1398,18 @@ public partial class MainWindow : Window
                         lastRenameProgress = cur;
                         progress.Report((cur, total));
                     },
-                    _appSettings.ConflictResolution),
+                    _appSettings.ConflictResolution,
+                    token),
                 token);
 
             if (token.IsCancellationRequested || !IsLatestRenameRequest(version))
                 return;
+
+            if (canceled)
+            {
+                tbStatusInfo.Text = "Rename cancelled.";
+                return;
+            }
 
             var renamedFiles = renameTargets.Where(f => f.IsRenamed).ToList();
             string? undoLogPath = null;
@@ -1665,7 +1765,11 @@ public partial class MainWindow : Window
             var exe = Process.GetCurrentProcess().MainModule?.FileName;
             if (exe != null) Process.Start(new ProcessStartInfo(exe) { UseShellExecute = true });
         }
-        catch { /* ignore */ }
+        catch (Exception ex)
+        {
+            LogException("NewInstance_Click", ex);
+            ShowBackgroundOperationError($"Failed to launch a new instance: {ex.Message}", showDialog: true);
+        }
     }
 
     private void NewInstance_MenuClick(object sender, RoutedEventArgs e) => NewInstance_Click();
@@ -1703,7 +1807,7 @@ public partial class MainWindow : Window
                 Rules.Clear();
                 foreach (var rule in loadedRules) Rules.Add(rule);
                 _appSettings.LastPresetPath = dialog.FileName;
-                _appSettings.Save();
+                SaveSettingsWithFeedback("load preset", showDialog: false);
             }
             catch (Exception ex)
             {
@@ -1744,7 +1848,7 @@ public partial class MainWindow : Window
                 var json = PresetService.SaveToJson(Rules);
                 File.WriteAllText(dialog.FileName, json);
                 _appSettings.LastPresetPath = dialog.FileName;
-                _appSettings.Save();
+                SaveSettingsWithFeedback("save preset as", showDialog: true);
             }
             catch (Exception ex)
             {
@@ -1771,7 +1875,7 @@ public partial class MainWindow : Window
         var dlg = new SettingsDialog(_appSettings, tab) { Owner = this };
         if (dlg.ShowDialog() == true)
         {
-            _appSettings.Save();
+            SaveSettingsWithFeedback("settings dialog", showDialog: true);
             RuleHelpers.ResolveMetaTagsEnabled = _appSettings.ResolveMetaTags;
             // Apply language if changed
             if (_appSettings.Language == "en-US")
@@ -1950,7 +2054,23 @@ public partial class MainWindow : Window
                 var targetCol = (DataGridColumn)menuItem.Tag;
                 targetCol.Visibility = menuItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
                 if (targetCol.Visibility == Visibility.Visible && targetCol.Width.DisplayValue <= 0)
-                    targetCol.Width = new DataGridLength(120);
+                {
+                    var targetKey = GetColumnKey(targetCol);
+                    if (!string.IsNullOrWhiteSpace(targetKey)
+                        && _appSettings.ColumnWidths.TryGetValue(targetKey, out var persistedWidth)
+                        && persistedWidth > 0)
+                    {
+                        targetCol.Width = new DataGridLength(persistedWidth);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(targetKey)
+                             && _defaultColumnWidths.TryGetValue(targetKey, out var defaultWidth)
+                             && defaultWidth > 0)
+                    {
+                        targetCol.Width = new DataGridLength(defaultWidth);
+                    }
+                }
+
+                UpdateColumnWidthCache(targetCol);
             };
             menu.Items.Add(mi);
         }
@@ -1984,10 +2104,8 @@ public partial class MainWindow : Window
             {
                 col.Width = new DataGridLength(width);
             }
-            else if (col.Visibility == Visibility.Visible)
-            {
-                col.Width = new DataGridLength(120);
-            }
+
+            UpdateColumnWidthCache(col);
         }
     }
 
@@ -2011,6 +2129,7 @@ public partial class MainWindow : Window
             targetWidth = fallback;
 
         col.Width = new DataGridLength(Math.Ceiling(targetWidth) + 2);
+        UpdateColumnWidthCache(col);
     }
 
     private void About_Click(object sender, RoutedEventArgs e)
@@ -2047,8 +2166,15 @@ public partial class MainWindow : Window
 
     private static void OpenUrl(string url)
     {
-        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
-        catch { /* ignore */ }
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            LogException($"OpenUrl({url})", ex);
+            MessageBox.Show($"Cannot open link: {ex.Message}", "ReNamer", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     #endregion
@@ -2181,18 +2307,38 @@ public partial class MainWindow : Window
         if (MessageBox.Show($"Move {selected.Count} file(s) to Recycle Bin?", "Confirm",
             MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
-        var paths = selected.Select(f => f.FullPath).ToArray();
-        var deleted = SendToRecycleBin(paths);
-        if (deleted)
+        var failed = new List<string>();
+        var successCount = 0;
+
+        foreach (var file in selected)
         {
-            foreach (var f in selected)
-                Files.Remove(f);
+            if (TrySendToRecycleBin(file.FullPath, out var error))
+            {
+                Files.Remove(file);
+                successCount++;
+                continue;
+            }
+
+            failed.Add($"{file.FullPath} -> {error}");
         }
-        else
+
+        if (failed.Count == 0)
         {
-            MessageBox.Show("Failed to move one or more files to Recycle Bin.", "Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            tbStatusInfo.Text = $"Moved {successCount} file(s) to Recycle Bin.";
+            return;
         }
+
+        var maxLines = Math.Min(8, failed.Count);
+        var summaryLines = failed.Take(maxLines);
+        var suffix = failed.Count > maxLines
+            ? $"\n...and {failed.Count - maxLines} more item(s)."
+            : string.Empty;
+        MessageBox.Show(
+            "Some items could not be moved to Recycle Bin:\n" + string.Join("\n", summaryLines) + suffix,
+            "Recycle Bin",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+        tbStatusInfo.Text = $"Recycle Bin completed with errors: success {successCount}, failed {failed.Count}.";
     }
 
     // IFileOperation (modern Shell API) for Recycle Bin delete
@@ -2253,30 +2399,57 @@ public partial class MainWindow : Window
     private const uint FOS_NOERRORUI = 0x00000400;
     private const uint FOS_SILENT = 0x00000004;
 
-    private static bool SendToRecycleBin(IEnumerable<string> paths)
+    private static bool TrySendToRecycleBin(string path, out string error)
     {
+        error = string.Empty;
         IFileOperation? fileOp = null;
+        IShellItem? item = null;
         try
         {
+            if (!File.Exists(path) && !Directory.Exists(path))
+            {
+                error = "Path does not exist.";
+                return false;
+            }
+
             fileOp = (IFileOperation)new FileOperation();
             fileOp.SetOperationFlags(FOS_ALLOWUNDO | FOS_NOCONFIRMATION | FOS_NOERRORUI | FOS_SILENT);
 
-            foreach (var path in paths)
+            var iid = typeof(IShellItem).GUID;
+            int hr = SHCreateItemFromParsingName(path, IntPtr.Zero, ref iid, out item);
+            if (hr != 0 || item == null)
             {
-                var iid = typeof(IShellItem).GUID;
-                int hr = SHCreateItemFromParsingName(path, IntPtr.Zero, ref iid, out var item);
-                if (hr != 0 || item == null) return false;
-                fileOp.DeleteItem(item, IntPtr.Zero);
+                error = $"Shell create item failed (0x{hr:X8}).";
+                return false;
             }
 
+            fileOp.DeleteItem(item, IntPtr.Zero);
+
             int res = fileOp.PerformOperations();
-            if (res != 0) return false;
+            if (res != 0)
+            {
+                error = $"Recycle Bin operation failed (0x{res:X8}).";
+                return false;
+            }
             fileOp.GetAnyOperationsAborted(out bool aborted);
-            return !aborted;
+            if (aborted)
+            {
+                error = "Operation was canceled by system.";
+                return false;
+            }
+
+            return true;
         }
-        catch { return false; }
+        catch (Exception ex)
+        {
+            LogException($"TrySendToRecycleBin({path})", ex);
+            error = ex.Message;
+            return false;
+        }
         finally
         {
+            if (item != null)
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(item);
             if (fileOp != null)
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(fileOp);
         }
@@ -2415,7 +2588,7 @@ public partial class MainWindow : Window
                         Rules.Clear();
                         foreach (var rule in loadedRules) Rules.Add(rule);
                         _appSettings.LastPresetPath = path;
-                        _appSettings.Save();
+                        SaveSettingsWithFeedback("quick load preset", showDialog: false);
                     }
                     catch (Exception ex)
                     {
@@ -2426,7 +2599,11 @@ public partial class MainWindow : Window
                 menuLoadPreset.Items.Add(mi);
             }
         }
-        catch { /* ignore */ }
+        catch (Exception ex)
+        {
+            LogException("PopulatePresetMenu", ex);
+            ShowBackgroundOperationError($"Preset list could not be loaded: {ex.Message}", showDialog: false);
+        }
     }
 
     private void ManagePresets_Click(object sender, RoutedEventArgs e)
@@ -2626,24 +2803,25 @@ public partial class MainWindow : Window
 
     private void SaveWindowState()
     {
-        if (!_appSettings.RememberWindowPosition) return;
-
-        _appSettings.IsMaximized = WindowState == WindowState.Maximized;
-        if (WindowState == WindowState.Normal)
+        if (_appSettings.RememberWindowPosition)
         {
-            _appSettings.WindowLeft = Left;
-            _appSettings.WindowTop = Top;
-            _appSettings.WindowWidth = Width;
-            _appSettings.WindowHeight = Height;
+            _appSettings.IsMaximized = WindowState == WindowState.Maximized;
+            if (WindowState == WindowState.Normal)
+            {
+                _appSettings.WindowLeft = Left;
+                _appSettings.WindowTop = Top;
+                _appSettings.WindowWidth = Width;
+                _appSettings.WindowHeight = Height;
+            }
+
+            // Save splitter position
+            var mainGrid = Content is Border border ? FindMainContentGrid(border) : null;
+            if (mainGrid != null && mainGrid.RowDefinitions.Count > 0)
+                _appSettings.SplitterPosition = mainGrid.RowDefinitions[0].Height.Value;
         }
 
-        // Save splitter position
-        var mainGrid = Content is Border border ? FindMainContentGrid(border) : null;
-        if (mainGrid != null && mainGrid.RowDefinitions.Count > 0)
-            _appSettings.SplitterPosition = mainGrid.RowDefinitions[0].Height.Value;
-
         SaveColumnState();
-        _appSettings.Save();
+        SaveSettingsWithFeedback("window state", showDialog: false);
     }
 
     private void SaveColumnState()
@@ -2657,11 +2835,9 @@ public partial class MainWindow : Window
             if (string.IsNullOrEmpty(key))
                 continue;
 
-            var width = col.ActualWidth;
-            if (width <= 0)
-                width = col.Width.DisplayValue;
-
-            _appSettings.ColumnWidths[key] = width;
+            var width = GetPersistedWidth(col);
+            if (width > 0)
+                _appSettings.ColumnWidths[key] = width;
             if (col.Visibility == Visibility.Visible)
                 _appSettings.VisibleColumns.Add(key);
         }
@@ -2686,7 +2862,10 @@ public partial class MainWindow : Window
                 var isVisible = _appSettings.VisibleColumns.Contains(key);
                 col.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (isVisible && (!_appSettings.ColumnWidths.TryGetValue(key, out var persistedWidth) || persistedWidth <= 0))
-                    col.Width = new DataGridLength(120);
+                {
+                    if (_defaultColumnWidths.TryGetValue(key, out var defaultWidth) && defaultWidth > 0)
+                        col.Width = new DataGridLength(defaultWidth);
+                }
             }
         }
     }
@@ -2707,6 +2886,7 @@ public partial class MainWindow : Window
         Rules.CollectionChanged -= Rules_CollectionChanged;
         foreach (var rule in Rules)
             rule.PropertyChanged -= Rule_PropertyChanged;
+        SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
 
         CancelPendingPreview();
         CancelPendingRename();
@@ -2717,33 +2897,73 @@ public partial class MainWindow : Window
 
     #region Modern Window Controls
 
+    private void ShowSystemMenuFrom(Point relativePoint)
+    {
+        var screenPoint = PointToScreen(relativePoint);
+        SystemCommands.ShowSystemMenu(this, screenPoint);
+    }
+
     private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (e.ChangedButton != MouseButton.Left)
+            return;
+
         if (e.ClickCount == 2)
         {
-            MaximizeButton_Click(sender, e);
+            if (ResizeMode != ResizeMode.NoResize)
+            {
+                if (WindowState == WindowState.Maximized)
+                    SystemCommands.RestoreWindow(this);
+                else
+                    SystemCommands.MaximizeWindow(this);
+            }
+            return;
         }
-        else
+
+        if (WindowState == WindowState.Maximized)
         {
-            this.DragMove();
+            var mousePos = e.GetPosition(this);
+            var horizontalPercent = ActualWidth > 0 ? mousePos.X / ActualWidth : 0.5;
+
+            SystemCommands.RestoreWindow(this);
+            Left = PointToScreen(mousePos).X - (Width * horizontalPercent);
+            Top = Math.Max(SystemParameters.VirtualScreenTop, PointToScreen(mousePos).Y - (TitleBarBorder.ActualHeight / 2));
         }
+
+        DragMove();
+    }
+
+    private void TitleBar_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        ShowSystemMenuFrom(e.GetPosition(this));
+        e.Handled = true;
+    }
+
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.SystemKey != Key.Space || (Keyboard.Modifiers & ModifierKeys.Alt) == 0)
+            return;
+
+        ShowSystemMenuFrom(new Point(0, TitleBarBorder.ActualHeight));
+        e.Handled = true;
     }
 
     private void MinimizeButton_Click(object sender, RoutedEventArgs e)
     {
-        this.WindowState = WindowState.Minimized;
+        SystemCommands.MinimizeWindow(this);
     }
 
     private void MaximizeButton_Click(object sender, RoutedEventArgs e)
     {
-        this.WindowState = this.WindowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
+        if (WindowState == WindowState.Maximized)
+            SystemCommands.RestoreWindow(this);
+        else
+            SystemCommands.MaximizeWindow(this);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        SystemCommands.CloseWindow(this);
     }
 
     #endregion

@@ -78,13 +78,15 @@ public class RenameService
     /// <summary>
     /// 执行重命名
     /// </summary>
-    public (int success, int failed) Rename(
+    public (int success, int failed, bool canceled) Rename(
         IEnumerable<RenFile> files,
         System.Action<int, int>? progress = null,
-        int conflictResolution = 0)
+        int conflictResolution = 0,
+        CancellationToken cancellationToken = default)
     {
         int success = 0;
         int failed = 0;
+        bool canceled = false;
         var fileList = files.ToList();
         var reservedTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var mode = conflictResolution is 1 or 2 ? conflictResolution : 0;
@@ -93,6 +95,12 @@ public class RenameService
 
         foreach (var file in fileList)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                canceled = true;
+                break;
+            }
+
             if (file.IsMarked && file.HasChanged && !file.IsRenamed)
             {
                 var targetPath = Path.Combine(file.FolderPath, file.NewName);
@@ -148,7 +156,10 @@ public class RenameService
             progress?.Invoke(index, total);
         }
 
-        return (success, failed);
+        if (canceled)
+            return (success, failed, true);
+
+        return (success, failed, false);
     }
 
     private static string ResolveNameWithSuffix(RenFile file, ISet<string> reservedTargets)

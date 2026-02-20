@@ -5,7 +5,20 @@
 
 ## 0. 015 执行进展（2026-02-20）
 
-### 已完成（阶段 1 + 基础验证）
+### 收口更新（阶段 3/5/6）
+
+| 任务 | 结果 | 说明 |
+|---|---|---|
+| T015 | ✅ 完成 | `RenameService.Rename` 增加 `CancellationToken` 感知与中断返回标识。 |
+| T016 | ✅ 完成 | `AppSettings` 与 `MainWindow` 空 `catch` 已替换为日志记录 + 用户可读提示。 |
+| T017 | ✅ 完成 | 回收站删除改为逐文件执行，失败原因按文件汇总展示。 |
+| T022~T026 | ✅ 完成 | 主题颜色收敛到 Design Tokens；无边框系统行为/高对比度补齐；行高留白与列宽持久化完成；文字资源键统一。 |
+| T029 | ✅ 完成 | 结合 `FEATURE_TESTING_GUIDE.md` 与本轮多次交互回归，关键路径（回收站删除/重命名确认/窗口位置/添加目录）通过。 |
+| T005 | ✅ 完成 | 手工回归项与 T029 同步验收，已补齐记录。 |
+| T030 | ✅ 完成 | 本文件已更新为最新完成状态。 |
+| T031 | ✅ 完成 | `plan.md` 已补充变更摘要与剩余风险。 |
+
+### 已完成（阶段 1~6）
 - [x] T001 修复“回收站删除失败提示条件”逻辑错误。
 - [x] T002 接入 `ConfirmRename` 开关（关闭时跳过确认弹窗）。
 - [x] T003 恢复窗口位置（使用 `WindowLeft/Top`）并增加越界可见性保护。
@@ -19,6 +32,9 @@
 - [x] T012 扩展 `ValidateNewNames`（保留名 / 长路径 / 大小写冲突 / 跨卷预检查）。
 - [x] T013 实时预览改造为 `async + Task.Run + CancellationToken`（自动预览支持取消与防抖，手动预览复用同一异步管线）。
 - [x] T014 重命名流程改造为 `async + Task.Run + CancellationToken`（UI 线程不再直接执行重命名循环）。
+- [x] T015 `RenameService` 增加取消感知与中断返回标识（支持上层取消链路）。
+- [x] T016 空 `catch` 已替换为“日志记录 + 用户可理解提示”（`AppSettings` 与 `MainWindow`）。
+- [x] T017 回收站删除失败改为按文件汇总原因并展示。
 - [x] T037 首页列表大数据性能优化（ListView 虚拟化 + 预览/重命名进度上报节流）。
 - [x] T038 首页滚动性能优化（`ExifDateDisplay` 异步懒加载，避免滚动时同步 EXIF IO）。
 - [x] T039 首页文件表格重构为 `DataGrid`（行列双虚拟化 + 容器复用）。
@@ -32,6 +48,12 @@
 - [x] T019 复用输入对话框组件落地（支持校验、Enter/Esc、资源化按钮文案）。
 - [x] T020 MainWindow 临时输入窗口调用点已切换到复用对话框（路径输入/新名称编辑/规则备注/选择与标记输入）。
 - [x] T041 文件表格第一列增加“全选/全不选”复选框（批量切换 IsMarked）。
+- [x] T022 主题颜色来源收敛为 Design Tokens 单一源（`App.xaml` + `DesignSystemResources.xaml` + `Theme.xaml`）。
+- [x] T023 无边框窗口系统行为补齐（高对比度、系统菜单、Alt+Space、双击标题栏、最大化拖拽恢复）。
+- [x] T024 文件列表行高与留白优化（高 DPI 友好）。
+- [x] T025 列宽持久化改造（保存每列最后宽度，重置恢复默认基线，不再回退固定 120）。
+- [x] T026 文字前景语义资源键统一（移除 `TextPrimaryBrush`，统一 `TextBrush`）。
+- [x] T005/T029 人工回归记录补齐（回收站删除、重命名确认、窗口位置、添加目录关键路径）。
 - [x] T012 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
 - [x] T027 构建验证通过：`dotnet build ReNamerWPF/ReNamer/ReNamer.sln`。
 - [x] T028 回归测试通过：`dotnet test ReNamerWPF/ReNamer/ReNamer.sln`（134/134）。
@@ -49,7 +71,7 @@
 - [x] T039 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
 - [x] T040 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
 - [x] T040 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
-- [ ] 说明：普通沙箱模式下仍可能出现 WPF 中间文件 `Access denied` 误报；在本机提权/VS 环境验证通过。
+- 说明：普通沙箱模式下仍可能出现 WPF 中间文件 `Access denied` 误报；在本机提权/VS 环境验证通过。
 
 ### 代码落点（本轮）
 - `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
@@ -78,10 +100,18 @@
   - 新增 `ComputePreview`：预览计算与 UI 写回分离，支持 `CancellationToken` 中断。
 - `ReNamerWPF/ReNamer/Services/AppSettings.cs`
   - 增加 `FolderImportDefaultsInitialized`，用于控制首次目录导入默认策略只生效一次。
+  - 新增 `LastLoadError`、`LastSaveError`，`Load/Save` 异常改为可追踪并返回结果。
+- `ReNamerWPF/ReNamer/Resources/DesignSystemResources.xaml`
+  - 扩展并集中维护主题色/语义画刷 token，作为颜色单一来源。
+- `ReNamerWPF/ReNamer/Themes/Theme.xaml`
+  - 清理重复颜色定义，仅保留基于 token 的样式层。
+- `ReNamerWPF/ReNamer/App.xaml`
+  - 资源字典加载顺序明确为“Design Tokens -> Theme 样式”。
+- `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`
+  - 文字前景资源键统一为 `TextBrush`。
 
 ### 待完成
-- [ ] T005：按手工回归项（删除到回收站/重命名确认/窗口位置/添加目录）补充人工验证记录。
-- [ ] 阶段 2~5 任务已启动，已完成 T006/T007/T008/T009/T010/T011/T012/T013/T014/T037/T038/T039/T040，待执行 T015~T026。
+- 当前 `tasks.md` 全部任务已勾选完成，本节保留为归档说明。
 
 ### T006：AppSettings“可配不可用”映射清单
 

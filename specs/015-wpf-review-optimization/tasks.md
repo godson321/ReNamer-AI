@@ -15,7 +15,7 @@
 - [x] T002 [US1] 在重命名流程接入 `ConfirmRename` 开关（关闭时跳过确认弹窗）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
 - [x] T003 [US1] 恢复窗口位置（使用 `WindowLeft/Top`）并增加越界保护于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
 - [x] T004 [US1] 为“添加目录”总入口增加异常隔离与受限目录容错于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
-- [ ] T005 [US1] 手工回归验证（删除到回收站/重命名确认/窗口位置/添加目录）并记录结果于 `specs/015-wpf-review-optimization/review-result.md`
+- [x] T005 [US1] 手工回归验证（删除到回收站/重命名确认/窗口位置/添加目录）并记录结果于 `specs/015-wpf-review-optimization/review-result.md`
 
 **检查点**：P0/P1 问题可复现项全部关闭，主流程无明显行为回归。
 
@@ -39,9 +39,9 @@
 
 - [x] T013 [US3] 将“实时预览计算”改为 `async + Task.Run + CancellationToken`（替代手动预览流程）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
 - [x] T014 [US3] 将“重命名”流程改为 `async + Task.Run + CancellationToken` 于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
-- [ ] T015 [US3] 在 `RenameService` 增加取消感知与中断返回于 `ReNamerWPF/ReNamer/Services/RenameService.cs`
-- [ ] T016 [US3] 替换空 `catch`：统一记录日志并输出用户可理解提示于 `ReNamerWPF/ReNamer/Services/AppSettings.cs` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
-- [ ] T017 [US3] 回收站删除失败改为按文件汇总原因并展示于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
+- [x] T015 [US3] 在 `RenameService` 增加取消感知与中断返回于 `ReNamerWPF/ReNamer/Services/RenameService.cs`
+- [x] T016 [US3] 替换空 `catch`：统一记录日志并输出用户可理解提示于 `ReNamerWPF/ReNamer/Services/AppSettings.cs` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
+- [x] T017 [US3] 回收站删除失败改为按文件汇总原因并展示于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
 - [x] T037 [US3] 首页列表大数据性能优化：启用 ListView 虚拟化并将预览/重命名进度上报改为节流更新于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
 - [x] T038 [US3] 降低滚动 IO 抖动：`ExifDateDisplay` 改为异步懒加载，避免滚动阶段同步读取 EXIF 元数据于 `ReNamerWPF/ReNamer/Models/RenFile.cs`
 - [x] T039 [US3] 首页文件表格重构为 `DataGrid`（行列虚拟化 + 可回收容器），并同步迁移排序、列显示菜单、列宽持久化逻辑于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
@@ -69,11 +69,11 @@
 
 ## 阶段 5：视觉一致性与主题治理
 
-- [ ] T022 [US5] 收敛主题颜色来源（Design Tokens 单一源）于 `ReNamerWPF/ReNamer/App.xaml`、`ReNamerWPF/ReNamer/Resources/DesignSystemResources.xaml`、`ReNamerWPF/ReNamer/Themes/Theme.xaml`
-- [ ] T023 [US5] 补齐无边框窗口的系统行为细节（高对比度/系统菜单/边缘交互）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
-- [ ] T024 [US5] 调整文件列表行高与留白（高 DPI 友好）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml`
-- [ ] T025 [US5] 列宽持久化改造（保存每列最后宽度，避免重置 120）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs` 与 `ReNamerWPF/ReNamer/Services/AppSettings.cs`
-- [ ] T026 [US5] 统一文字前景语义资源键（`TextPrimaryBrush`/`TextBrush`）于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml` 与主题资源文件
+- [x] T022 [US5] 收敛主题颜色来源（Design Tokens 单一源）于 `ReNamerWPF/ReNamer/App.xaml`、`ReNamerWPF/ReNamer/Resources/DesignSystemResources.xaml`、`ReNamerWPF/ReNamer/Themes/Theme.xaml`
+- [x] T023 [US5] 补齐无边框窗口的系统行为细节（高对比度/系统菜单/边缘交互）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml` 与 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
+- [x] T024 [US5] 调整文件列表行高与留白（高 DPI 友好）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml`
+- [x] T025 [US5] 列宽持久化改造（保存每列最后宽度，避免重置 120）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs` 与 `ReNamerWPF/ReNamer/Services/AppSettings.cs`
+- [x] T026 [US5] 统一文字前景语义资源键（`TextPrimaryBrush`/`TextBrush`）于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml` 与主题资源文件
 - [x] T040 [US5] 首页文件表格企业级视觉改造（DataGrid 统一头部/行/单元格样式，强化层级与选中态）于 `ReNamerWPF/ReNamer/Views/MainWindow.xaml`
 
 **检查点**：视觉风格一致、主题语义统一、列表可读性提升。
@@ -84,9 +84,9 @@
 
 - [x] T027 运行构建验证：`dotnet build ReNamerWPF/ReNamer/ReNamer.sln`
 - [x] T028 运行回归测试：`dotnet test ReNamerWPF/ReNamer/ReNamer.sln`
-- [ ] T029 按 `ReNamerWPF/FEATURE_TESTING_GUIDE.md` 执行人工回归并记录差异
-- [ ] T030 更新评审结果与完成状态于 `specs/015-wpf-review-optimization/review-result.md`
-- [ ] T031 输出变更摘要与剩余风险清单于 `specs/015-wpf-review-optimization/plan.md`
+- [x] T029 按 `ReNamerWPF/FEATURE_TESTING_GUIDE.md` 执行人工回归并记录差异
+- [x] T030 更新评审结果与完成状态于 `specs/015-wpf-review-optimization/review-result.md`
+- [x] T031 输出变更摘要与剩余风险清单于 `specs/015-wpf-review-optimization/plan.md`
 
 ---
 

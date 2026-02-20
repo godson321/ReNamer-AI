@@ -6,9 +6,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- 设计系统 -->
+                <!-- 设计令牌（颜色单一源） -->
                 <ResourceDictionary Source="Resources/DesignSystemResources.xaml"/>
-                <!-- 全局主题 -->
+                <!-- 全局控件样式（基于设计令牌） -->
                 <ResourceDictionary Source="Themes/Theme.xaml"/>
                 <!-- 矢量图标 -->
                 <ResourceDictionary Source="Resources/Icons/IconResources.xaml"/>
