@@ -52,7 +52,7 @@ foreach ($rule in $ruleTypes) {
 Write-Host ""
 Write-Host "3️⃣ 检查规则配置面板..." -ForegroundColor Yellow
 $configPanels = @(
-    "ReplaceConfigPanel", "InsertConfigPanel", "DeleteConfigPanel", "RemoveConfigPanel",
+    "ReplaceConfigPanel", "InsertConfigPanel", "DeleteConfigPanel",
     "CaseConfigPanel", "SerializeConfigPanel", "ExtensionConfigPanel", "RegexConfigPanel",
     "PaddingConfigPanel", "StripConfigPanel", "CleanUpConfigPanel", "TransliterateConfigPanel",
     "RearrangeConfigPanel", "ReformatDateConfigPanel", "RandomizeConfigPanel",

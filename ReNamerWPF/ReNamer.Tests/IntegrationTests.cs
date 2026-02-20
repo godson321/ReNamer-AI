@@ -71,17 +71,17 @@ public class RuleChainTests
     }
 
     [Fact]
-    public void Chain_Regex_Then_Extension()
+    public void Chain_Regex_Then_Insert()
     {
         var file = MakeFile("document (1).txt");
         var regex = new RegexRule { Expression = @"\s*\(\d+\)", ReplaceText = "" };
-        var ext = new ExtensionRule { NewExtension = "pdf" };
+        var insert = new InsertRule { InsertText = "_done", InsertPosition = InsertPositionType.Suffix };
 
         string name = file.OriginalName;
         name = regex.Execute(name, file);
-        name = ext.Execute(name, file);
+        name = insert.Execute(name, file);
 
-        Assert.Equal("document.pdf", name);
+        Assert.Equal("document_done.txt", name);
     }
 
     [Fact]

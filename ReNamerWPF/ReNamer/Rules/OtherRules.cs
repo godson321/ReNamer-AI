@@ -81,6 +81,9 @@ public enum InsertPositionType { Prefix, Suffix, Position, AfterText, BeforeText
 // ═══════════════════════════════════════════════════════════════
 public class DeleteRule : RuleBase
 {
+    public DeleteMode Mode { get; set; } = DeleteMode.PositionDelete;
+
+    // Position delete mode
     public DeleteFromType FromType { get; set; } = DeleteFromType.Position;
     public int FromPosition { get; set; } = 1;
     public string FromDelimiter { get; set; } = "";
@@ -91,12 +94,52 @@ public class DeleteRule : RuleBase
     public bool RightToLeft { get; set; } = false;
     public bool SkipExtension { get; set; } = true;
     public bool LeaveDelimiter { get; set; } = false;
+    // Character remove mode (merged from Strip)
+    public bool StripEnglishLetters { get; set; } = false;
+    public bool StripDigits { get; set; } = false;
+    public bool StripSymbols { get; set; } = false;
+    public bool StripBrackets { get; set; } = false;
+    public bool StripUserDefined { get; set; } = false;
+    public string UserDefinedChars { get; set; } = "";
+    public bool StripUnicodeRange { get; set; } = false;
+    public string UnicodeRange { get; set; } = "10000-10FFFF";
+    public StripWhere Where { get; set; } = StripWhere.Everywhere;
+    public bool StripAllExceptSelected { get; set; } = false;
+    public bool CaseSensitive { get; set; } = false;
+    // Text remove mode (merged from legacy RemoveRule)
+    public string RemovePattern { get; set; } = "";
+    public RemoveOccurrence RemoveOccurrence { get; set; } = RemoveOccurrence.All;
+    public bool RemoveCaseSensitive { get; set; } = false;
+    public bool RemoveWholeWordsOnly { get; set; } = false;
+    public bool RemoveUseWildcards { get; set; } = false;
+    public bool TextFirstInCombined { get; set; } = false;
+
+    private static readonly string EnglishLetters = "abcdefghijklmnopqrstuvwxyz";
+    private static readonly string Digits = "1234567890";
+    private static readonly string Symbols = "!\"#$%&'*+,-./:;=?@\\^_`|~";
+    private static readonly string Brackets = "(){}[]<>";
 
     public override string RuleName => "Delete";
-    public override string Description => DeleteCurrentName
-        ? "Delete current name" : $"Delete from {FromType} until {UntilType}";
+    public override string Description => Mode switch
+    {
+        DeleteMode.Combined => TextFirstInCombined ? "Delete (text then position)" : "Delete (position then text)",
+        DeleteMode.CharacterRemove => "Remove selected text/characters",
+        DeleteMode.TextRemove => string.IsNullOrEmpty(RemovePattern) ? "Remove selected text/characters" : $"Remove \"{RemovePattern}\"",
+        _ => DeleteCurrentName ? "Delete current name" : $"Delete from {FromType} until {UntilType}"
+    };
 
     public override string Execute(string fileName, RenFile file)
+    {
+        return Mode switch
+        {
+            DeleteMode.CharacterRemove => ExecuteTextRemove(fileName, file),
+            DeleteMode.TextRemove => ExecuteTextRemove(fileName, file),
+            DeleteMode.Combined => ExecuteCombined(fileName, file),
+            _ => ExecutePositionDelete(fileName)
+        };
+    }
+
+    private string ExecutePositionDelete(string fileName)
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension);
         if (baseName.Length == 0) return fileName;
@@ -138,12 +181,130 @@ public class DeleteRule : RuleBase
         if (RightToLeft) result = Reverse(result);
         return result + ext;
     }
+    private string ExecuteCharacterRemove(string fileName)
+    {
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        if (baseName.Length == 0) return fileName;
+
+        var stripChars = BuildStripSet();
+        if (Where == StripWhere.Everywhere)
+        {
+            baseName = StripChars(baseName, stripChars);
+        }
+        else if (Where == StripWhere.Leading)
+        {
+            int i = 0;
+            while (i < baseName.Length && ShouldStrip(baseName[i], stripChars))
+                i++;
+            baseName = baseName[i..];
+        }
+        else
+        {
+            int i = baseName.Length - 1;
+            while (i >= 0 && ShouldStrip(baseName[i], stripChars))
+                i--;
+            baseName = baseName[..(i + 1)];
+        }
+
+        return baseName + ext;
+    }
+    private string ExecuteTextRemove(string fileName, RenFile file)
+    {
+        var result = fileName;
+        if (!string.IsNullOrEmpty(RemovePattern))
+        {
+            var removeRule = new RemoveRule
+            {
+                Pattern = RemovePattern,
+                Occurrence = RemoveOccurrence,
+                CaseSensitive = RemoveCaseSensitive,
+                WholeWordsOnly = RemoveWholeWordsOnly,
+                SkipExtension = SkipExtension,
+                UseWildcards = RemoveUseWildcards
+            };
+            result = removeRule.Execute(result, file);
+        }
+
+        if (HasStripSelection())
+            result = ExecuteCharacterRemove(result);
+
+        return result;
+    }
+
+    private string ExecuteCombined(string fileName, RenFile file)
+    {
+        if (TextFirstInCombined)
+            return ExecutePositionDelete(ExecuteTextRemove(fileName, file));
+        return ExecuteTextRemove(ExecutePositionDelete(fileName), file);
+    }
+
+    private bool HasStripSelection()
+    {
+        return StripEnglishLetters || StripDigits || StripSymbols || StripBrackets ||
+               (StripUserDefined && !string.IsNullOrEmpty(UserDefinedChars)) || StripUnicodeRange;
+    }
+
+    private HashSet<char> BuildStripSet()
+    {
+        var set = new HashSet<char>();
+        if (StripEnglishLetters)
+        {
+            foreach (var c in EnglishLetters)
+            {
+                set.Add(c);
+                if (!CaseSensitive) set.Add(char.ToUpper(c));
+            }
+        }
+        if (StripDigits) foreach (var c in Digits) set.Add(c);
+        if (StripSymbols) foreach (var c in Symbols) set.Add(c);
+        if (StripBrackets) foreach (var c in Brackets) set.Add(c);
+        if (StripUserDefined)
+        {
+            foreach (var c in UserDefinedChars)
+            {
+                set.Add(c);
+                if (!CaseSensitive)
+                {
+                    set.Add(char.ToLower(c));
+                    set.Add(char.ToUpper(c));
+                }
+            }
+        }
+        return set;
+    }
+
+    private bool ShouldStrip(char c, HashSet<char> stripChars)
+    {
+        bool inSet = stripChars.Contains(c);
+        if (StripUnicodeRange && IsInUnicodeRange(c)) inSet = true;
+        return StripAllExceptSelected ? !inSet : inSet;
+    }
+
+    private string StripChars(string input, HashSet<char> stripChars)
+    {
+        var sb = new StringBuilder();
+        foreach (var c in input)
+            if (!ShouldStrip(c, stripChars)) sb.Append(c);
+        return sb.ToString();
+    }
+
+    private bool IsInUnicodeRange(char c)
+    {
+        if (string.IsNullOrEmpty(UnicodeRange)) return false;
+        var parts = UnicodeRange.Split('-');
+        if (parts.Length != 2) return false;
+        if (int.TryParse(parts[0], NumberStyles.HexNumber, null, out int lo) &&
+            int.TryParse(parts[1], NumberStyles.HexNumber, null, out int hi))
+            return c >= lo && c <= hi;
+        return false;
+    }
 
     private static string Reverse(string s)
     {
         var a = s.ToCharArray(); Array.Reverse(a); return new string(a);
     }
 }
+public enum DeleteMode { PositionDelete, CharacterRemove, TextRemove, Combined }
 
 public enum DeleteFromType { Position, Delimiter }
 public enum DeleteUntilType { Count, Delimiter, TillEnd }
@@ -201,6 +362,7 @@ public enum RemoveOccurrence { All, First, Last }
 // ═══════════════════════════════════════════════════════════════
 public class CaseRule : RuleBase
 {
+    // 旧版模式（保留兼容）
     public CaseType CaseType { get; set; } = CaseType.Capitalize;
     public bool SkipExtension { get; set; } = true;
     public bool PreserveCase { get; set; } = false;
@@ -209,33 +371,108 @@ public class CaseRule : RuleBase
     public bool ExtensionAlwaysLower { get; set; } = false;
     public bool ExtensionAlwaysUpper { get; set; } = false;
 
+    // 新版三段式模式
+    public bool UseSegmentedMode { get; set; } = false;
+    public FirstLetterMode FirstLetterMode { get; set; } = FirstLetterMode.Keep;
+    public RemainingLettersMode RemainingLettersMode { get; set; } = RemainingLettersMode.Keep;
+    public ExtensionLetterMode ExtensionLetterMode { get; set; } = ExtensionLetterMode.Keep;
+
+    // 拼音相关（新旧模式共用）
+    public int PinyinChineseIndex { get; set; } = 1;
+    public bool PinyinUpperCase { get; set; } = true;
+    public PinyinInsertPosition PinyinInsertPosition { get; set; } = PinyinInsertPosition.Prefix; // 旧模式：前/后缀
+    public PinyinFirstLetterAction PinyinFirstLetterAction { get; set; } = PinyinFirstLetterAction.InsertPrefix; // 新模式：插入/替换
+
     public override string RuleName => "Case";
-    public override string Description => CaseType switch
-    {
-        CaseType.Capitalize => "Capitalize Every Word",
-        CaseType.Lower => "lowercase",
-        CaseType.Upper => "UPPERCASE",
-        CaseType.Invert => "iNVERT cASE",
-        CaseType.FirstLetter => "First letter capital",
-        CaseType.Sentence => "Sentence case",
-        CaseType.None => "(none of the above)",
-        _ => "Case"
-    };
+    public override string Description => UseSegmentedMode
+        ? $"Segmented: First={FirstLetterMode}, Rest={RemainingLettersMode}, Ext={ExtensionLetterMode}"
+        : CaseType switch
+        {
+            CaseType.Capitalize => "Capitalize Every Word",
+            CaseType.Lower => "lowercase",
+            CaseType.Upper => "UPPERCASE",
+            CaseType.Invert => "iNVERT cASE",
+            CaseType.FirstLetter => "First letter capital",
+            CaseType.Sentence => "Sentence case",
+            CaseType.None => "(none of the above)",
+            CaseType.PinyinFirstLetter => $"Pinyin first letter (#{PinyinChineseIndex})",
+            _ => "Case"
+        };
 
     public override string Execute(string fileName, RenFile file)
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension);
-        var result = ApplyCase(baseName);
 
+        if (UseSegmentedMode)
+        {
+            var segmentedResult = ApplySegmentedCase(baseName);
+            if (PreserveCase)
+                segmentedResult = ApplyPreserve(baseName, segmentedResult);
+            if (ForceCase && !string.IsNullOrEmpty(ForceCaseText))
+                segmentedResult = ApplyForce(segmentedResult);
+
+            ext = ApplySegmentedExtensionCase(ext);
+            return segmentedResult + ext;
+        }
+
+        // 旧模式兼容
+        var legacyResult = ApplyCase(baseName);
         if (PreserveCase && CaseType != CaseType.None)
-            result = ApplyPreserve(baseName, result);
+            legacyResult = ApplyPreserve(baseName, legacyResult);
         if (ForceCase && !string.IsNullOrEmpty(ForceCaseText))
-            result = ApplyForce(result);
+            legacyResult = ApplyForce(legacyResult);
 
         if (ExtensionAlwaysLower) ext = ext.ToLowerInvariant();
         else if (ExtensionAlwaysUpper) ext = ext.ToUpperInvariant();
-        return result + ext;
+        return legacyResult + ext;
     }
+
+    private string ApplySegmentedCase(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        return FirstLetterMode switch
+        {
+            FirstLetterMode.Keep => input[0] + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.Upper => char.ToUpper(input[0]) + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.Lower => char.ToLower(input[0]) + ApplyRemainingLetters(input[1..]),
+            FirstLetterMode.PinyinFirstLetter => ApplyPinyinFirstLetter(input),
+            _ => input[0] + ApplyRemainingLetters(input[1..])
+        };
+    }
+
+    private string ApplyPinyinFirstLetter(string input)
+    {
+        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(input, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        if (string.IsNullOrEmpty(letter))
+            letter = PinyinUpperCase ? input[0].ToString().ToUpperInvariant() : input[0].ToString().ToLowerInvariant();
+
+        return PinyinFirstLetterAction switch
+        {
+            PinyinFirstLetterAction.InsertPrefix => letter + ApplyRemainingLetters(input),
+            PinyinFirstLetterAction.ReplaceFirstCharacter => letter + ApplyRemainingLetters(input.Length > 1 ? input[1..] : ""),
+            _ => letter + ApplyRemainingLetters(input)
+        };
+    }
+
+    private string ApplyRemainingLetters(string input) => RemainingLettersMode switch
+    {
+        RemainingLettersMode.Keep => input,
+        RemainingLettersMode.Upper => input.ToUpperInvariant(),
+        RemainingLettersMode.Lower => input.ToLowerInvariant(),
+        RemainingLettersMode.CapitalizeWords => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input.ToLower()),
+        RemainingLettersMode.Invert => new string(input.Select(c => char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)).ToArray()),
+        _ => input
+    };
+
+    private string ApplySegmentedExtensionCase(string ext) => ExtensionLetterMode switch
+    {
+        ExtensionLetterMode.Keep => ext,
+        ExtensionLetterMode.Lower => ext.ToLowerInvariant(),
+        ExtensionLetterMode.Upper => ext.ToUpperInvariant(),
+        _ => ext
+    };
 
     private string ApplyCase(string s) => CaseType switch
     {
@@ -245,8 +482,17 @@ public class CaseRule : RuleBase
         CaseType.Invert => new string(s.Select(c => char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)).ToArray()),
         CaseType.FirstLetter => s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : s,
         CaseType.Sentence => s.Length > 0 ? char.ToUpper(s[0]) + s[1..].ToLower() : s,
+        CaseType.PinyinFirstLetter => ApplyLegacyPinyinCase(s),
         _ => s
     };
+
+    private string ApplyLegacyPinyinCase(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return s;
+        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(s, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        if (string.IsNullOrEmpty(letter)) return s;
+        return PinyinInsertPosition == PinyinInsertPosition.Suffix ? s + letter : letter + s;
+    }
 
     private static string ApplyPreserve(string orig, string transformed)
     {
@@ -276,7 +522,13 @@ public class CaseRule : RuleBase
     }
 }
 
-public enum CaseType { Capitalize, Lower, Upper, Invert, FirstLetter, Sentence, None }
+public enum CaseType { Capitalize, Lower, Upper, Invert, FirstLetter, Sentence, None, PinyinFirstLetter }
+
+public enum PinyinInsertPosition { Prefix, Suffix }
+public enum FirstLetterMode { Keep, Upper, Lower, PinyinFirstLetter }
+public enum RemainingLettersMode { Keep, Upper, Lower, CapitalizeWords, Invert }
+public enum ExtensionLetterMode { Keep, Lower, Upper }
+public enum PinyinFirstLetterAction { InsertPrefix, ReplaceFirstCharacter }
 
 // ═══════════════════════════════════════════════════════════════
 // SerializeRule - 完整实现 Repeat/Reset/NumberingSystem
@@ -380,79 +632,6 @@ public class SerializeRule : RuleBase, IStatefulRule
 }
 
 public enum SerializePosition { Prefix, Suffix, Position, ReplaceCurrentName }
-
-// ═══════════════════════════════════════════════════════════════
-// ExtensionRule - 完整实现 RemoveDuplicate/DetectBinSign
-// ═══════════════════════════════════════════════════════════════
-public class ExtensionRule : RuleBase
-{
-    public bool NewExtensionEnabled { get; set; } = true;
-    public string NewExtension { get; set; } = "";
-    public bool AppendToOriginal { get; set; } = false;
-    public bool DetectBinarySignature { get; set; } = false;
-    public bool RemoveDuplicateExtensions { get; set; } = false;
-    public bool CaseSensitive { get; set; } = false;
-    public ExtensionAction Action { get; set; } = ExtensionAction.Replace;
-
-    private static readonly Dictionary<string, string> Signatures = new()
-    {
-        {"89504E47",".png"},{"FFD8FF",".jpg"},{"47494638",".gif"},{"25504446",".pdf"},
-        {"504B0304",".zip"},{"52617221",".rar"},{"D0CF11E0",".doc"},{"424D",".bmp"},
-        {"49443303",".mp3"},{"1F8B08",".gz"},
-    };
-
-    public override string RuleName => "Extension";
-    public override string Description => NewExtensionEnabled ? $"Change extension to \"{NewExtension}\"" : "Extension rule";
-
-    public override string Execute(string fileName, RenFile file)
-    {
-        string result = fileName;
-        if (DetectBinarySignature && File.Exists(file.FullPath))
-        {
-            var det = DetectSig(file.FullPath);
-            if (det != null) return Path.GetFileNameWithoutExtension(result) + det;
-        }
-        if (NewExtensionEnabled)
-        {
-            var bn = Path.GetFileNameWithoutExtension(result);
-            var ext = NewExtension.StartsWith('.') ? NewExtension : "." + NewExtension;
-            result = AppendToOriginal ? result + ext : bn + ext;
-        }
-        if (RemoveDuplicateExtensions) result = RemoveDupExts(result);
-        return result;
-    }
-
-    private string RemoveDupExts(string fn)
-    {
-        var exts = new List<string>(); string rem = fn;
-        while (true)
-        {
-            var e = Path.GetExtension(rem);
-            if (string.IsNullOrEmpty(e)) break;
-            exts.Insert(0, e); rem = rem[..^e.Length];
-        }
-        var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-        var uniq = new List<string>();
-        foreach (var e in exts) { if (!uniq.Any(u => string.Equals(u, e, cmp))) uniq.Add(e); }
-        return rem + string.Concat(uniq);
-    }
-
-    private static string? DetectSig(string path)
-    {
-        try
-        {
-            var buf = new byte[8];
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            int n = fs.Read(buf, 0, 8); if (n < 2) return null;
-            var hex = BitConverter.ToString(buf, 0, n).Replace("-", "");
-            foreach (var s in Signatures) { if (hex.StartsWith(s.Key, StringComparison.OrdinalIgnoreCase)) return s.Value; }
-        }
-        catch { }
-        return null;
-    }
-}
-
-public enum ExtensionAction { Replace, Add, Remove, Lower, Upper }
 
 // ═══════════════════════════════════════════════════════════════
 // RegexRule

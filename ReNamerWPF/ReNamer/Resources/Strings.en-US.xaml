@@ -169,13 +169,13 @@
     <sys:String x:Key="Rule_Extension">Extension</sys:String>
     <sys:String x:Key="Rule_RegEx">RegEx</sys:String>
     <sys:String x:Key="Rule_Padding">Padding</sys:String>
-    <sys:String x:Key="Rule_Strip">Strip</sys:String>
+    <sys:String x:Key="Rule_Strip">Remove</sys:String>
     <sys:String x:Key="Rule_CleanUp">CleanUp</sys:String>
     <sys:String x:Key="Rule_Transliterate">Transliterate</sys:String>
     <sys:String x:Key="Rule_Rearrange">Rearrange</sys:String>
     <sys:String x:Key="Rule_ReformatDate">Reformat Date</sys:String>
     <sys:String x:Key="Rule_Randomize">Randomize</sys:String>
-    <sys:String x:Key="Rule_PascalScript">PascalScript</sys:String>
+    <sys:String x:Key="Rule_JavaScript">JavaScript</sys:String>
     <sys:String x:Key="Rule_UserInput">User Input</sys:String>
     <sys:String x:Key="Rule_Mapping">Mapping</sys:String>
     
@@ -222,6 +222,20 @@
     <sys:String x:Key="Dialog_Close">Close</sys:String>
     <sys:String x:Key="Dialog_Apply">Apply</sys:String>
     <sys:String x:Key="Dialog_Configuration">Configuration:</sys:String>
+    <sys:String x:Key="Dialog_AddPathsTitle">Add Paths</sys:String>
+    <sys:String x:Key="Dialog_AddPathsPrompt">Enter file/folder paths (one per line):</sys:String>
+    <sys:String x:Key="Dialog_EditNewNameTitle">Edit New Name</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentTitle">Rule Comment</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentPrompt">Comment for rule \"{0}\":</sys:String>
+    <sys:String x:Key="Dialog_InputRequired">Please enter a value.</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskTitle">Mark by Mask</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskPrompt">Enter wildcard pattern:</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthTitle">Select by Name Length</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthPrompt">Enter max name length:</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionTitle">Select by Extension</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionPrompt">Enter extension (e.g. .txt):</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskTitle">Select by Mask</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskPrompt">Enter wildcard pattern:</sys:String>
     
     <!-- Insert Rule -->
     <sys:String x:Key="Insert_Label">Insert:</sys:String>
@@ -238,6 +252,7 @@
     <sys:String x:Key="Replace_Find">Find:</sys:String>
     <sys:String x:Key="Replace_Replace">Replace:</sys:String>
     <sys:String x:Key="Replace_Occurrences">Occurrences:</sys:String>
+    <sys:String x:Key="Replace_Flags">Flags:</sys:String>
     <sys:String x:Key="Replace_All">All</sys:String>
     <sys:String x:Key="Replace_First">First</sys:String>
     <sys:String x:Key="Replace_Last">Last</sys:String>
@@ -257,6 +272,69 @@
     <sys:String x:Key="Delete_RightToLeft">Right-to-left</sys:String>
     <sys:String x:Key="Delete_SkipExtension">Skip extension</sys:String>
     <sys:String x:Key="Delete_LeaveDelimiter">Do not remove delimiters</sys:String>
+    <sys:String x:Key="Delete_Mode">Delete mode:</sys:String>
+    <sys:String x:Key="Delete_Mode_Position">Position delete</sys:String>
+    <sys:String x:Key="Delete_Mode_Characters">Character delete</sys:String>
+    <sys:String x:Key="Delete_Mode_Text">Text delete</sys:String>
+    <sys:String x:Key="Delete_Position_NoColon">Position</sys:String>
+    <sys:String x:Key="Delete_Delimiter_NoColon">Delimiter</sys:String>
+    <sys:String x:Key="Delete_Count_NoColon">Count</sys:String>
+    <sys:String x:Key="Delete_From_NoColon">From</sys:String>
+    <sys:String x:Key="Delete_Until_NoColon">To</sys:String>
+    <sys:String x:Key="Delete_Type">Type:</sys:String>
+    <sys:String x:Key="Delete_Options">Options</sys:String>
+    <sys:String x:Key="Delete_RemovePattern">Remove Text</sys:String>
+    <sys:String x:Key="Delete_MatchOptions">Match Options</sys:String>
+    <sys:String x:Key="Delete_TextWhere">Where to Delete</sys:String>
+    <sys:String x:Key="Delete_Enabled">Enabled</sys:String>
+    <sys:String x:Key="Delete_MatchMode_NoColon">Match mode</sys:String>
+    <sys:String x:Key="Delete_Occurrences_NoColon">Occurrences</sys:String>
+    <sys:String x:Key="Delete_TextWhere_NoColon">Where</sys:String>
+    <sys:String x:Key="Delete_TextPreset_English">English</sys:String>
+    <sys:String x:Key="Delete_TextPreset_Digits">Digits</sys:String>
+    <sys:String x:Key="Delete_TextPreset_Symbols">Symbols</sys:String>
+    <sys:String x:Key="Delete_TextPreset_Brackets">Brackets</sys:String>
+    <sys:String x:Key="Delete_TextPreset_EnglishTip">Remove a-z and A-Z</sys:String>
+    <sys:String x:Key="Delete_TextPreset_DigitsTip">Remove 0-9</sys:String>
+    <sys:String x:Key="Delete_TextPreset_SymbolsTip">Remove common symbols like !@#$%^&amp;*</sys:String>
+    <sys:String x:Key="Delete_TextPreset_BracketsTip">Remove () [] {} &lt;&gt;</sys:String>
+    <sys:String x:Key="Delete_TextPreset_Hint">Checked presets are removed as character sets</sys:String>
+    <sys:String x:Key="Delete_TextPreset_Button">Presets</sys:String>
+    <sys:String x:Key="Delete_TextPreset_MenuTitle">Character presets</sys:String>
+    <sys:String x:Key="Delete_Workflow_Step1">1. Enter text to remove (or pick presets via the right button)</sys:String>
+    <sys:String x:Key="Delete_Workflow_Step1_Hint">The gear button includes: English / Digits / Symbols / Brackets / Custom / Wildcards</sys:String>
+    <sys:String x:Key="Delete_Workflow_Step2">2. Configure matching rules</sys:String>
+    <sys:String x:Key="Delete_Workflow_Step3">3. Optional: character-set additions and final options</sys:String>
+    <sys:String x:Key="Delete_RemovePattern_Placeholder">Enter text or wildcard pattern to remove</sys:String>
+    <sys:String x:Key="Delete_RemovePattern_Tooltip">Plain text, wildcard, and whole-word modes all use this input</sys:String>
+    <sys:String x:Key="Delete_RemovePattern_Hint">When “Wildcards” is selected, type the wildcard pattern in the box above (e.g. *.tmp)</sys:String>
+    <sys:String x:Key="Delete_CustomChars">Custom character set</sys:String>
+    <sys:String x:Key="Delete_CustomChars_Placeholder">e.g. ABC123 (remove by character)</sys:String>
+    <sys:String x:Key="Delete_CustomChars_Tooltip">Enter characters to remove. Each character is matched individually. E.g. "abc" removes all a, b, c separately</sys:String>
+    <sys:String x:Key="Delete_UnicodeRange">Unicode range</sys:String>
+    <sys:String x:Key="Delete_UnicodeRange_Tip">Remove characters by Unicode code point range. E.g. 4E00-9FFF removes all Chinese characters</sys:String>
+    <sys:String x:Key="Delete_Where_Everywhere_Tip">Remove matching characters anywhere in the filename</sys:String>
+    <sys:String x:Key="Delete_Where_Leading_Tip">Only remove consecutive matching characters at the beginning. E.g. "___abc" with _ removed becomes "abc"</sys:String>
+    <sys:String x:Key="Delete_Where_Trailing_Tip">Only remove consecutive matching characters at the end. E.g. "abc___" with _ removed becomes "abc"</sys:String>
+    <sys:String x:Key="Delete_AllExcept_Tip">Invert: Keep specified characters and remove everything else. E.g. specify "0-9" with this checked keeps only digits</sys:String>
+    <sys:String x:Key="Delete_CharSetMode">By character</sys:String>
+    <sys:String x:Key="Delete_CharSetMode_Tip">When checked, removes each character individually. E.g. "abc" removes all a, b, c separately; unchecked removes the whole "abc" string</sys:String>
+    <sys:String x:Key="Delete_Mode_Combined">Combined delete</sys:String>
+    <sys:String x:Key="Delete_EnablePosition">Enable position delete</sys:String>
+    <sys:String x:Key="Delete_EnableText">Enable text delete</sys:String>
+    <sys:String x:Key="Delete_MatchMode">Match mode</sys:String>
+    <sys:String x:Key="Delete_Match_Plain">Plain text</sys:String>
+    <sys:String x:Key="Delete_Match_Plain_Tip">Match text exactly as entered. E.g. "abc" removes all occurrences of "abc"</sys:String>
+    <sys:String x:Key="Delete_Match_Wildcards">Wildcards</sys:String>
+    <sys:String x:Key="Delete_Match_Wildcards_Tip">Use wildcards: ? matches single char, * matches any chars. E.g. "*.tmp" matches anything ending with .tmp</sys:String>
+    <sys:String x:Key="Delete_Match_WholeWords">Whole words</sys:String>
+    <sys:String x:Key="Delete_Match_WholeWords_Tip">Match complete words only. E.g. "the" won't match "the" in "there"</sys:String>
+    <sys:String x:Key="Delete_SubMode_TextPattern">Text pattern delete</sys:String>
+    <sys:String x:Key="Delete_SubMode_CharSet">Character set delete</sys:String>
+    <sys:String x:Key="Delete_Advanced">Advanced</sys:String>
+    <sys:String x:Key="Delete_CombinationOrder">Combination order:</sys:String>
+    <sys:String x:Key="Delete_Order_PositionThenText">Position then text</sys:String>
+    <sys:String x:Key="Delete_Order_TextThenPosition">Text then position</sys:String>
     
     <!-- Remove Rule -->
     <sys:String x:Key="Remove_Label">Remove:</sys:String>
@@ -285,6 +363,29 @@
     <sys:String x:Key="Case_ForceCaseHint">Hint: fragments separated with comma will be put in the same case as they are typed in this text box, for example: CD,DVD,DJ</sys:String>
     <sys:String x:Key="Case_ExtAlwaysLower">Extension always lower case</sys:String>
     <sys:String x:Key="Case_ExtAlwaysUpper">Extension always upper case</sys:String>
+    <sys:String x:Key="Case_Composite_Title">Name composition (first letter + remaining letters + extension)</sys:String>
+    <sys:String x:Key="Case_Composite_FirstLetter">First letter</sys:String>
+    <sys:String x:Key="Case_Composite_RemainingLetters">Remaining letters</sys:String>
+    <sys:String x:Key="Case_Composite_Extension">Extension</sys:String>
+    <sys:String x:Key="Case_Composite_Keep">Keep as is</sys:String>
+    <sys:String x:Key="Case_Composite_Upper">Upper</sys:String>
+    <sys:String x:Key="Case_Composite_Lower">Lower</sys:String>
+    <sys:String x:Key="Case_Composite_AllUpper">ALL UPPER</sys:String>
+    <sys:String x:Key="Case_Composite_AllLower">all lower</sys:String>
+    <sys:String x:Key="Case_Composite_CapitalizeWords">Capitalize Every Word</sys:String>
+    <sys:String x:Key="Case_Composite_Invert">Invert Case</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinFirst">Chinese pinyin first letter</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinIndex">Chinese char #:</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinInsert">Insert</sys:String>
+    <sys:String x:Key="Case_Composite_PinyinReplace">Replace</sys:String>
+    <sys:String x:Key="Case_PinyinFirstLetter">Chinese Pinyin first letter</sys:String>
+    <sys:String x:Key="Case_PinyinOptions">Pinyin First Letter Settings</sys:String>
+    <sys:String x:Key="Case_PinyinChineseIndex">Chinese char #:</sys:String>
+    <sys:String x:Key="Case_PinyinUpperCase">Uppercase</sys:String>
+    <sys:String x:Key="Case_PinyinInsertPosition">Insert at:</sys:String>
+    <sys:String x:Key="Case_PinyinPrefix">Prefix</sys:String>
+    <sys:String x:Key="Case_PinyinSuffix">Suffix</sys:String>
+    <sys:String x:Key="Case_PinyinHint">Hint: e.g. [我是漫画].rar with #1 → W[我是漫画].rar</sys:String>
 
     <!-- Serialize Rule -->
     <sys:String x:Key="Serialize_IndexStarts">Index starts:</sys:String>
@@ -308,6 +409,8 @@
     <sys:String x:Key="Serialize_CustomSymbols">Custom numbering symbols:</sys:String>
 
     <!-- Extension Rule -->
+    <sys:String x:Key="Extension_Section_NewExtension">New Extension</sys:String>
+    <sys:String x:Key="Extension_Section_RemoveDuplicate">Remove Duplicate</sys:String>
     <sys:String x:Key="Extension_NewExtension">New file extension (without the dot):</sys:String>
     <sys:String x:Key="Extension_AppendToOriginal">Append to the original filename</sys:String>
     <sys:String x:Key="Extension_DetectBinSign">Detect using "binary signature"</sys:String>
@@ -335,11 +438,13 @@
     <sys:String x:Key="Status_Ready">Ready</sys:String>
     <sys:String x:Key="Status_Previewing">Previewing...</sys:String>
     <sys:String x:Key="Status_Renaming">Renaming...</sys:String>
-    <sys:String x:Key="Status_FilesSummary">Files: 0 | Marked: 0 | Selected: 0</sys:String>
+    <sys:String x:Key="Status_FilesSummary">Files: {0} | Marked: {1} | Selected: {2}</sys:String>
 
     <!-- Dialogs -->
     <sys:String x:Key="Dialog_Settings">Settings</sys:String>
     <sys:String x:Key="Dialog_Filters">Filters</sys:String>
+    <sys:String x:Key="Dialog_FilterSettings">Filter Settings</sys:String>
+    <sys:String x:Key="Dialog_Save">Save</sys:String>
     <sys:String x:Key="Dialog_ClearAll">Clear All</sys:String>
     <sys:String x:Key="Dialog_RuleDescription">Description</sys:String>
 
@@ -407,11 +512,33 @@
     <sys:String x:Key="Filters_ReadOnly">Read-only</sys:String>
     <sys:String x:Key="Filters_Hidden">Hidden</sys:String>
     <sys:String x:Key="Filters_System">System</sys:String>
+    <sys:String x:Key="Filter_FolderDefaults">Default attributes for adding folders:</sys:String>
+    <sys:String x:Key="Filter_IncludeAllFiles">Include all files under directory</sys:String>
+    <sys:String x:Key="Filter_IncludeFolderNames">Include folder names</sys:String>
+    <sys:String x:Key="Filter_IncludeSubfolders">Include subfolders</sys:String>
+    <sys:String x:Key="Filter_IncludeHiddenFiles">Include hidden files</sys:String>
+    <sys:String x:Key="Filter_IncludeSystemFiles">Include system files</sys:String>
+    <sys:String x:Key="Filter_IgnoreRootFolder">Ignore root folder when including folder names</sys:String>
+    <sys:String x:Key="Filter_Masks">Masks:</sys:String>
+    <sys:String x:Key="Filter_IncludeLabel">Include:</sys:String>
+    <sys:String x:Key="Filter_ExcludeLabel">Exclude:</sys:String>
+    <sys:String x:Key="Filter_FileNameOnly">Apply to file name only, not full path.</sys:String>
+    <sys:String x:Key="Filter_Tips">Tip: separate multiple masks with ';'.</sys:String>
+    <sys:String x:Key="Filter_SaveAsDefault">Save as default for future use</sys:String>
+    <sys:String x:Key="Options_AutosizeColumns">Autosize Columns</sys:String>
+    <sys:String x:Key="Options_ValidateNewNames">Validate New Names</sys:String>
+    <sys:String x:Key="Options_FixConflictingNewNames">Fix Conflicting New Names</sys:String>
+    <sys:String x:Key="Options_AnalyzeSampleText">Analyze Sample Text...</sys:String>
+    <sys:String x:Key="Options_ApplyRulesToClipboard">Apply Rules to Clipboard</sys:String>
+    <sys:String x:Key="Options_CountFiles">Count Files</sys:String>
+    <sys:String x:Key="Options_SortForFolders">Sort for Folders</sys:String>
+    <sys:String x:Key="ColumnsMenu_ResetColumnWidths">Reset Column Widths</sys:String>
+    <sys:String x:Key="ColumnsMenu_CancelSorting">Cancel Sorting</sys:String>
 
     <!-- Rule Config Shared -->
     <sys:String x:Key="Config_RightToLeft">Right-to-left</sys:String>
     <sys:String x:Key="RuleCfg_SeparateItems">Separate multiple items</sys:String>
-    <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag (Ctrl+Ins)</sys:String>
+    <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag</sys:String>
 
     <!-- CleanUp -->
     <sys:String x:Key="CleanUp_Dot">Dot (.)</sys:String>
@@ -439,12 +566,46 @@
     <sys:String x:Key="Padding_Left">Left</sys:String>
     <sys:String x:Key="Padding_Right">Right</sys:String>
 
-    <!-- PascalScript -->
-    <sys:String x:Key="PascalScript_Scripts">Scripts</sys:String>
-    <sys:String x:Key="PascalScript_EnableMetaTags">Enable meta tags</sys:String>
-    <sys:String x:Key="PascalScript_CounterStart">Counter start:</sys:String>
-    <sys:String x:Key="PascalScript_Step">Step:</sys:String>
-    <sys:String x:Key="PascalScript_Digits">Digits:</sys:String>
+    <!-- JavaScript -->
+    <sys:String x:Key="JavaScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="JavaScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="JavaScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="JavaScript_Step">Step:</sys:String>
+    <sys:String x:Key="JavaScript_Digits">Digits:</sys:String>
+    <sys:String x:Key="JavaScript_Validate">Validate</sys:String>
+    <sys:String x:Key="JavaScript_GoTo">Go To</sys:String>
+    <sys:String x:Key="JavaScript_Help">Help</sys:String>
+    <sys:String x:Key="JavaScript_GoToLine">Go to line:</sys:String>
+    <sys:String x:Key="JavaScript_ValidationSuccess">✓ Script is valid</sys:String>
+    <sys:String x:Key="JavaScript_ValidationError">Script error at line {0}: {1}</sys:String>
+    <sys:String x:Key="JavaScript_HelpTitle">JavaScript Help</sys:String>
+    <sys:String x:Key="JavaScript_LoadScriptsFolder">Load from Scripts folder...</sys:String>
+    <sys:String x:Key="JavaScript_BrowseScript">Browse script...</sys:String>
+    <sys:String x:Key="JavaScript_SaveScript">Save script...</sys:String>
+    <sys:String x:Key="JavaScript_FileFilter">JavaScript Files (*.js)|*.js|All Files (*.*)|*.*</sys:String>
+    <sys:String x:Key="JavaScript_HelpContent">Available Variables:
+• Name - File name (without extension)
+• Ext - File extension
+• FullName - Full file name (with extension)
+• Path - Full file path
+• FolderPath - Folder path
+• Folder - Folder name
+• Counter - Auto-increment counter
+• Size, SizeKB, SizeMB - File size
+• Created, Modified - Date strings
+• ExifDate - EXIF date (if available)
+
+Helper Functions:
+• UpperCase(str) - Convert to uppercase
+• LowerCase(str) - Convert to lowercase
+• Trim(str) - Remove leading/trailing spaces
+• Replace(str, find, replace) - Replace text
+• LeftStr(str, n) - Get left n characters
+• RightStr(str, n) - Get right n characters
+• MidStr(str, start, len) - Get substring
+
+Example:
+Result = Name.toUpperCase() + '_' + Counter;</sys:String>
 
     <!-- Randomize -->
     <sys:String x:Key="Randomize_Length">Length of random sequence:</sys:String>
@@ -579,6 +740,9 @@
     <sys:String x:Key="RuleCfg_CleanUp_StripMarks">Strip unicode marks (combining, diacritics, accents)</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_CamelCase">Insert a space in front of capitalized letters (e.g. CamelCase)</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_SharePoint">Prepare for SharePoint (always inc. extension)</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Spacing">Space Handling</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Unicode">Unicode</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Section_Other">Other</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_AllowReuse">Allow reuse</sys:String>
@@ -593,11 +757,14 @@
     <sys:String x:Key="RuleCfg_Padding_Left">Left</sys:String>
     <sys:String x:Key="RuleCfg_Padding_Right">Right</sys:String>
 
-    <sys:String x:Key="RuleCfg_PascalScript_Scripts">Scripts</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_EnableMetaTags">Enable meta tags</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_CounterStart">Counter start:</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Step">Step:</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Digits">Digits:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Basic">Basic: Result = Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Counter">Counter: Result = Name + '_' + Counter;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Folder">Folder: Result = Folder + '_' + Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Step">Step:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Digits">Digits:</sys:String>
 
     <sys:String x:Key="RuleCfg_Randomize_Length">Length of random sequence:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Unique">Unique if possible</sys:String>
@@ -614,9 +781,11 @@
     <sys:String x:Key="RuleCfg_Rearrange_Positions">Positions</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">Exact pattern of delimiters</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_NewPattern">New pattern:</sys:String>
-    <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: Use $1..$N to reference delimited parts in the new pattern, $-1..$-N to reference from the end, $0 for the original name.</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_Hint">Hint: $1..$N references parts 1..N, $-1..$-N references from the end, $0 is the original name. Example: Artist - Song with delimiter “ - ” and pattern “$2 - $1” → Song - Artist.</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Separator">| Separator</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTag">📎 Meta Tag</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">Insert separator into Delimiters</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_MetaTagTip">Insert Meta Tag into New Pattern</sys:String>
 
     <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">Find date/time formats:</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">Convert to date/time format:</sys:String>
@@ -642,6 +811,8 @@
     <sys:String x:Key="RuleCfg_Strip_Leading">Leading</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Trailing">Trailing</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">Strip all characters except selected</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Characters">Characters to Strip</sys:String>
+    <sys:String x:Key="RuleCfg_Strip_Section_Where">Where</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">Alphabet</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction:</sys:String>
@@ -707,4 +878,35 @@
     <sys:String x:Key="RuleCfg_DateFormat_Second">Second (00-59)</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_AmPm">AM/PM</sys:String>
     <sys:String x:Key="RuleCfg_DateFormat_ReferenceOnline">DateTime Format Reference (online)...</sys:String>
+    <sys:String x:Key="RuleCfg_Section_Options">Options</sys:String>
+    <sys:String x:Key="RuleCfg_Section_NumberingParameters">Numbering Parameters</sys:String>
+    <sys:String x:Key="RuleCfg_Section_ResetConditions">Reset Conditions</sys:String>
+    <sys:String x:Key="RuleCfg_Section_FormatOptions">Format Options</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceFind">Enter text to find</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReplaceReplace">Enter replacement text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertText">Enter text to insert</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertAfterText">Insert after this text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_InsertBeforeText">Insert before this text</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteFromDelimiter">Start delimiter</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_DeleteUntilDelimiter">End delimiter</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_CaseForceCase">e.g. HDTV</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_SerializeCustomSymbols">Custom symbols for numbering</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_Extension">e.g. .txt</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUserDefined">Characters to strip</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_StripUnicodeRange">e.g. 10000-10FFFF</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexExpression">Enter regex expression</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">Enter replacement pattern</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">e.g. .|_|-</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">e.g. $2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint">Delimiters: enter one or more delimiters; use “|” to separate multiple (e.g. .|_|-). If there is no “|”, the whole input is treated as one delimiter (e.g. “ - ”). Positions: enter 3,6 to split after the 3rd/6th character. Exact pattern: treat the input as a single full delimiter string.</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">Enter text to remove</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">e.g. ABC123</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_PaddingChars">e.g. 0_</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_TransliterateAlphabet">e.g. ä=ae|ö=oe|ü=ue</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateSource">e.g. yyyy-MM-dd</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateTarget">e.g. dd.MM.yyyy</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateShortMonths">e.g. Jan|Feb|Mar|...</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_ReformatDateLongMonths">e.g. January|February|...</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_UserInput">One filename per line</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_JavaScript">// Write JavaScript here</sys:String>
 </ResourceDictionary>

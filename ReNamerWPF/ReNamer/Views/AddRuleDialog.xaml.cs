@@ -22,9 +22,9 @@ public partial class AddRuleDialog : Window
     // 规则类型列表
     private static readonly List<string> RuleTypes = new()
     {
-        "Replace", "Insert", "Delete", "Remove", "Case", "Serialize", "Extension",
-        "Padding", "Strip", "CleanUp", "Transliterate", "RegEx", 
-        "Rearrange", "ReformatDate", "Randomize", "PascalScript", "UserInput", "Mapping"
+        "Replace", "Insert", "Delete", "Case", "Serialize",
+        "Padding", "CleanUp", "Transliterate", "RegEx", 
+        "Rearrange", "ReformatDate", "Randomize", "JavaScript", "UserInput", "Mapping"
     };
 
     // 规则类型图标映射
@@ -36,16 +36,14 @@ public partial class AddRuleDialog : Window
         ["Remove"] = (Geometry)Application.Current.FindResource("Icon_RemoveItem"),
         ["Case"] = (Geometry)Application.Current.FindResource("Icon_Case"),
         ["Serialize"] = (Geometry)Application.Current.FindResource("Icon_Serialize"),
-        ["Extension"] = (Geometry)Application.Current.FindResource("Icon_Extension"),
         ["Padding"] = (Geometry)Application.Current.FindResource("Icon_Padding"),
-        ["Strip"] = (Geometry)Application.Current.FindResource("Icon_Strip"),
         ["CleanUp"] = (Geometry)Application.Current.FindResource("Icon_CleanUp"),
         ["Transliterate"] = (Geometry)Application.Current.FindResource("Icon_Transliterate"),
         ["RegEx"] = (Geometry)Application.Current.FindResource("Icon_RegEx"),
         ["Rearrange"] = (Geometry)Application.Current.FindResource("Icon_Rearrange"),
         ["ReformatDate"] = (Geometry)Application.Current.FindResource("Icon_ReformatDate"),
         ["Randomize"] = (Geometry)Application.Current.FindResource("Icon_Randomize"),
-        ["PascalScript"] = (Geometry)Application.Current.FindResource("Icon_PascalScript"),
+        ["JavaScript"] = (Geometry)Application.Current.FindResource("Icon_JavaScript"),
         ["UserInput"] = (Geometry)Application.Current.FindResource("Icon_UserInput"),
         ["Mapping"] = (Geometry)Application.Current.FindResource("Icon_Mapping")
     };
@@ -64,6 +62,17 @@ public partial class AddRuleDialog : Window
         if (lbRules.Items.Count > 0)
             lbRules.SelectedIndex = 0;
     }
+
+    public void ConfirmCurrentRule()
+    {
+        if (_currentRule == null) return;
+
+        // 应用配置
+        _currentPanel?.ApplyConfig();
+        SelectedRule = _currentRule;
+        DialogResult = true;
+        Close();
+    }
     
     /// <summary>
     /// 编辑规则模式：左侧高亮对应规则，右侧显示配置
@@ -71,12 +80,15 @@ public partial class AddRuleDialog : Window
     public AddRuleDialog(IRule ruleToEdit) : this()
     {
         _isEditMode = true;
-        _currentRule = ruleToEdit;
+        var editableRule = ruleToEdit is RemoveRule legacyRemove
+            ? ConvertLegacyRemoveToDelete(legacyRemove)
+            : ruleToEdit;
+        _currentRule = editableRule;
         Title = LanguageService.GetString("Dialog_EditRule");
         btnAddRule.Content = LanguageService.GetString("Dialog_OK");
         
         // 定位到对应规则类型
-        var typeKey = GetRuleTypeKey(ruleToEdit);
+        var typeKey = GetRuleTypeKey(editableRule);
         for (int i = 0; i < lbRules.Items.Count; i++)
         {
             if (lbRules.Items[i] is RuleInfo info && info.TypeKey == typeKey)
@@ -90,7 +102,7 @@ public partial class AddRuleDialog : Window
         lbRules.IsEnabled = false;
         
         // 加载当前规则的配置到面板
-        LoadConfigPanel(ruleToEdit);
+        LoadConfigPanel(editableRule);
     }
     
     private void LoadRules()
@@ -145,13 +157,7 @@ public partial class AddRuleDialog : Window
 
     private void AddRule_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentRule == null) return;
-        
-        // 应用配置
-        _currentPanel?.ApplyConfig();
-        SelectedRule = _currentRule;
-        DialogResult = true;
-        Close();
+        ConfirmCurrentRule();
     }
 
     private void Close_Click(object sender, RoutedEventArgs e)
@@ -198,19 +204,16 @@ public partial class AddRuleDialog : Window
             "Replace" => new ReplaceRule(),
             "Insert" => new InsertRule(),
             "Delete" => new DeleteRule(),
-            "Remove" => new RemoveRule(),
             "Case" => new CaseRule(),
             "Serialize" => new SerializeRule(),
-            "Extension" => new ExtensionRule(),
             "RegEx" => new RegexRule(),
             "Padding" => new PaddingRule(),
-            "Strip" => new StripRule(),
             "CleanUp" => new CleanUpRule(),
             "Transliterate" => new TransliterateRule(),
             "Rearrange" => new RearrangeRule(),
             "ReformatDate" => new ReformatDateRule(),
             "Randomize" => new RandomizeRule(),
-            "PascalScript" => new PascalScriptRule(),
+            "JavaScript" => new JavaScriptRule(),
             "UserInput" => new UserInputRule(),
             "Mapping" => new MappingRule(),
             _ => null
@@ -224,19 +227,16 @@ public partial class AddRuleDialog : Window
             ReplaceRule r => new ReplaceConfigPanel(r),
             InsertRule r => new InsertConfigPanel(r),
             DeleteRule r => new DeleteConfigPanel(r),
-            RemoveRule r => new RemoveConfigPanel(r),
             CaseRule r => new CaseConfigPanel(r),
             SerializeRule r => new SerializeConfigPanel(r),
-            ExtensionRule r => new ExtensionConfigPanel(r),
             RegexRule r => new RegexConfigPanel(r),
             PaddingRule r => new PaddingConfigPanel(r),
-            StripRule r => new StripConfigPanel(r),
             CleanUpRule r => new CleanUpConfigPanel(r),
             TransliterateRule r => new TransliterateConfigPanel(r),
             RearrangeRule r => new RearrangeConfigPanel(r),
             ReformatDateRule r => new ReformatDateConfigPanel(r),
             RandomizeRule r => new RandomizeConfigPanel(r),
-            PascalScriptRule r => new PascalScriptConfigPanel(r),
+            JavaScriptRule r => new JavaScriptConfigPanel(r),
             UserInputRule r => new UserInputConfigPanel(r),
             MappingRule r => new MappingConfigPanel(r),
             _ => null
@@ -250,21 +250,35 @@ public partial class AddRuleDialog : Window
             ReplaceRule => "Replace",
             InsertRule => "Insert",
             DeleteRule => "Delete",
-            RemoveRule => "Remove",
+            RemoveRule => "Delete",
             CaseRule => "Case",
             SerializeRule => "Serialize",
-            ExtensionRule => "Extension",
             RegexRule => "RegEx",
             PaddingRule => "Padding",
-            StripRule => "Strip",
             CleanUpRule => "CleanUp",
             TransliterateRule => "Transliterate",
             RearrangeRule => "Rearrange",
             ReformatDateRule => "ReformatDate",
             RandomizeRule => "Randomize",
+            JavaScriptRule => "JavaScript",
             UserInputRule => "UserInput",
             MappingRule => "Mapping",
             _ => ""
+        };
+    }
+
+    private static DeleteRule ConvertLegacyRemoveToDelete(RemoveRule source)
+    {
+        return new DeleteRule
+        {
+            Mode = DeleteMode.TextRemove,
+            RemovePattern = source.Pattern,
+            RemoveOccurrence = source.Occurrence,
+            RemoveCaseSensitive = source.CaseSensitive,
+            RemoveWholeWordsOnly = source.WholeWordsOnly,
+            RemoveUseWildcards = source.UseWildcards,
+            SkipExtension = source.SkipExtension,
+            IsEnabled = source.IsEnabled
         };
     }
 

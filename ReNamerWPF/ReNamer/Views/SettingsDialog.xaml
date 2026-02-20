@@ -1,9 +1,9 @@
 <Window x:Class="ReNamer.Views.SettingsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{DynamicResource Dialog_Settings}" Width="500" Height="420"
-        WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="True" ResizeMode="NoResize"
+        Title="{DynamicResource Dialog_Settings}" Width="760" Height="620" MinWidth="680" MinHeight="540"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True" ResizeMode="CanResize"
         Background="{DynamicResource BackgroundBrush}">
 
     <Grid Margin="12">

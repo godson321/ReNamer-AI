@@ -167,7 +167,8 @@
 007f8ca6 | %dx%d colormapped Targa image
 007f8cc4 |                                                   2Color map file is invalid or of unsupported format
 007f8d2a |                              4Output file format cannot handle %d colormap entries
-007f8d7d |                            ungetc failed
+007f8d7d |                            
+ungetc failed
 007f8da7 |                                                                   :Unrecognized input file format --- perhaps you need -targa
 007f8e3b | Unsupported output file format
 007f9ba0 | Window
@@ -247,7 +248,8 @@
 0089153a | ShortInt
 008915f8 | 	
 AnsiString
-00891621 | UnicodeString
+00891621 | 
+UnicodeString
 00891695 | System
 00891724 | System
 00891732 | IUnknown
@@ -320,7 +322,8 @@ AnsiString
 00894e5c | TApplication.EnableIdleHandler
 00894e88 | TApplication.QueueAsyncCall already shut down
 00894ec4 | HINT: TApplication.FreeComponent Data<>0 ignored
-008952f3 | 4VertScrollBar
+008952f3 | 4
+VertScrollBar
 0089530a | TCustomForm
 0089544a | TFrame
 00895803 | 0
@@ -351,7 +354,8 @@ TForm_Main
 0089780d | Action_ToggleViewModeExecute
 0089782c | 
 FormCreate
-00897839 | FormDestroyFormDropFiles
+00897839 | FormDestroy
+FormDropFiles
 00897854 | 
 FormResize
 00897861 | ListView_RulesItemChecked
@@ -376,7 +380,8 @@ FormResize
 00897a9d | MI_BrowsePresetsClick
 00897ab5 | MI_FilePropertiesClick
 00897ae5 | MI_OpenFileClick
-00897af9 | MI_RuleCommentClickPM_FilesPopup
+00897af9 | MI_RuleCommentClick
+PM_FilesPopup
 00897b1d | MenuItem_ClearValidClick
 00897b39 | MenuItem_ClearInvalidClick
 00897b75 | MenuItem_InvertSelectionClick
@@ -401,7 +406,8 @@ FormResize
 00897dad | MenuItem_RemoveAllRulesClick
 00897dcd | PM_FilesColumnsPopup
 00897de5 | Splitter_MiddleMoved
-00897dfc | PM_RulesPopup
+00897dfc | 
+PM_RulesPopup
 00897e29 | MI_CopyFilesToClipboardClick
 00897e65 | ListView_RulesDragDrop
 00897e7d | ListView_RulesDragOver
@@ -449,7 +455,8 @@ FormResize
 00898489 | Action_ManagePresetsExecute)Action_CountMarkedAndSelectedFilesExecute
 008984d0 |  MI_ExportColumnsToClipboardClick
 008984f5 | MI_RulesToClipboardClick
-00898510 | MI_ForumClick
+00898510 | 
+MI_ForumClick
 00898521 | MI_HelpClick
 00898541 | MI_CopyrightsClick
 00898555 | MI_QuickGuideClick
@@ -560,12 +567,14 @@ FormCreate
 0089b5c4 | mailto:support@den4b.com?subject=ReNamer
 0089b61c | http://www.den4b.com/
 0089b65f | 	AboutForm
-0089bb88 | TForm_Analyze
+0089bb88 | 
+TForm_Analyze
 0089bb9d | FormActivate
 0089bbad | FormDeactivate
 0089bbbc | 
 FormCreate
-0089bbc8 | FormDropFiles
+0089bbc8 | 
+FormDropFiles
 0089bbd9 | FormShow
 0089bbe5 | FormHide
 0089bbf1 | FormKeyPress
@@ -587,8 +596,10 @@ Memo_KeyUp
 FormCreate
 0089c429 | TreeViewExpanding
 0089c43d | TreeViewDeletion
-0089c450 | TreeViewClick
-0089c460 | TreeViewKeyUp
+0089c450 | 
+TreeViewClick
+0089c460 | 
+TreeViewKeyUp
 0089c471 | FormShow
 0089c47d | BitBtn_CancelClick
 0089c491 | BitBtn_OkClick
@@ -600,7 +611,8 @@ FormCreate
 0089c535 | CheckBox_ShowHiddenClick
 0089c551 | CheckBox_ShowSystemClick
 0089c58d | SB_GoToFolderClick
-0089c7b0 | SB_GoToFolder
+0089c7b0 | 
+SB_GoToFolder
 0089c852 | TForm_Browse
 0089c898 | 
 BrowseForm
@@ -612,7 +624,8 @@ BrowseForm
 FormCreate
 0089ce49 | FormKeyPress
 0089ce59 | FormShow
-0089ce65 | LB_PresetsClickLE_NameChange
+0089ce65 | LB_PresetsClick
+LE_NameChange
 0089ce85 | FormHide
 0089cf27 | CB_PresetSaveFilters
 0089cf5d | PresetSaveForm
@@ -623,7 +636,8 @@ FormCreate
 FormCreate
 0089d4e5 | FormKeyPress
 0089d4f5 | FormShow
-0089d5d9 | Panel_Buttons
+0089d5d9 | 
+Panel_Buttons
 0089d60b | AddPathsForm
 0089db2d | TForm_PresetsManager
 0089db49 | FormShow
@@ -645,10 +659,12 @@ FormCreate
 0089de2c |  (F4)
 0089de40 |  (Del)
 0089de79 | PresetsManagerForm
-0089e3ac | TForm_AddRule
+0089e3ac | 
+TForm_AddRule
 0089e3c0 | 
 FormCreate
-0089e3cc | FormDropFiles
+0089e3cc | 
+FormDropFiles
 0089e3dd | ListBox_RulesClick
 0089e3fd | FormShow
 0089e409 | ListBox_RulesDblClick
@@ -715,7 +731,8 @@ FormCreate
 008a1438 | FolderWarningForm
 008a195d | TForm_Register
 008a1971 | BB_RegisterClick
-008a1984 | FormDropFiles
+008a1984 | 
+FormDropFiles
 008a1995 | FormShow
 008a19a1 | Memo_CodeKeyUp
 008a1a1f | 	BB_Cancel
@@ -734,7 +751,8 @@ FormCreate
 008a21b0 | http://www.den4b.com/compare/renamer
 008a2202 | TForm_TermsOfUse
 008a2255 | TermsOfUseForm
-008a22fc | TRegistration
+008a22fc | 
+TRegistration
 008a231c | UREGISTRATION
 008a2338 | Registration has been successful!
 008a2368 | uregistration.s_registration_ok
@@ -783,8 +801,10 @@ FormCreate
 008a2ad4 | Failed to read registration file.
 008a2b04 | uregistration.s_registration_file_read_failed
 008a2b98 | YYYY-MM-DD
-008a2ba9 | TRegistration
-008a2c01 | uRegistration
+008a2ba9 | 
+TRegistration
+008a2c01 | 
+uRegistration
 008a2c88 | 
 TLanguages
 008a2d0d | TFirstFileSearcher
@@ -804,7 +824,9 @@ TLanguages
 008a2fa8 | Original (English)
 008a2fc8 | Autodetect
 008a2fe0 | How to translate?
-008a3078 | TLanguageInfo
+008a3078 | 
+
+TLanguageInfo
 008a30c2 | TOnLanguageSelected
 008a30ea | LangCode
 AnsiString
@@ -924,7 +946,8 @@ uLanguages
 008a3fd0 | PresetsManagerForm
 008a3fea | TFilterSettings
 008a4091 | TAppCommunicator
-008a4144 | TPascalScript
+008a4144 | 
+TPascalScript
 008a41c1 | EPascalScriptError
 008a41e4 | UPASCALSCRIPT
 008a4214 | upascalscript.spsline
@@ -950,11 +973,15 @@ uLanguages
 008a4534 | SYSTEM
 008a4578 | [%s %d] %s: %s
 008a4594 | [%s %d] %s
-008a45a1 | TPascalScript
-008a45e9 | uPascalScript
-008a461e | uPascalScript
+008a45a1 | 
+TPascalScript
+008a45e9 | 
+uPascalScript
+008a461e | 
+uPascalScript
 008a4845 | EStreamError
-008a48c0 | EFCreateError
+008a48c0 | 
+EFCreateError
 008a4a2c | 
 EReadError
 008a4b1d | EClassNotFound
@@ -980,10 +1007,13 @@ TComponent
 008a5aa1 | TStringList
 008a5b51 | TProxyStream
 008a5bfd | TOwnerStream
-008a5ca8 | THandleStream
-008a5eb0 | TMemoryStream
+008a5ca8 | 
+THandleStream
+008a5eb0 | 
+TMemoryStream
 008a5f65 | TBytesStream
-008a6018 | TStringStream
+008a6018 | 
+TStringStream
 008a61a5 | TAbstractObjectReader
 008a636d | TAbstractObjectWriter
 008a6695 | TBasicAction
@@ -996,7 +1026,8 @@ TComponent
 008a6c69 | TResolveReferenceVisitor
 008a6d78 | 	TIntConst
 008a6df1 | TInitHandler
-008a6e6c | TPosComponent
+008a6e6c | 
+TPosComponent
 008a6e9c | Symbol
 008a6eb0 | String
 008a6ec4 | Integer
@@ -1115,14 +1146,16 @@ EUnderflow
 008a8941 | EExternalException
 008a8a3d | EOutOfMemory
 008a8ab9 | EInvalidCast
-008a8b34 | EVariantError
+008a8b34 | 
+EVariantError
 008a8bb1 | EAccessViolation
 008a8c30 | 	EBusError
 008a8ca8 | 
 EPrivilege
 008a8d21 | EStackOverflow
 008a8d9c | 	EControlC
-008a8e14 | EConvertError
+008a8e14 | 
+EConvertError
 008a8e91 | EAbort
 008a8f05 | EAbstractError
 008a8f81 | EAssertionFailed
@@ -1139,9 +1172,12 @@ EPrivilege
 008a94e5 | EArgumentException
 008a9565 | EArgumentOutOfRangeException
 008a96a8 | 	TEncoding
-008a975c | TMBCSEncoding
-008a9814 | TUTF7Encoding
-008a98cc | TUTF8Encoding
+008a975c | 
+TMBCSEncoding
+008a9814 | 
+TUTF7Encoding
+008a98cc | 
+TUTF8Encoding
 008a997d | TUnicodeEncoding
 008a9a31 | TBigEndianUnicodeEncoding
 008a9afc | $TMultiReadExclusiveWriteSynchronizer
@@ -1317,7 +1353,9 @@ EInvalidOp
 008abc7c | TypInfo
 008abcbb | TypInfo
 008abcea | TypInfo
-008abcf8 | TElementAlias
+008abcf8 | 
+
+TElementAlias
 008abd5a | TEnumeratedAliases
 008abdba | TypInfo
 008abf61 | TCustomApplication
@@ -1654,7 +1692,8 @@ EInvalidOp
 008af5e4 | application/lcl.customdata
 008af622 | TTranslateString
 008af701 | LCLType
-008af730 | 	TRGBAQuad
+008af730 | 
+	TRGBAQuad
 008af7da | LCLType
 008af88e | LCLType
 008af8d3 | LCLType
@@ -1758,7 +1797,8 @@ EInvalidOp
 008b0878 | opera
 008b088c | iexplore
 008b089c | MICROSOFTEDGE
-008b09d0 | TLCLComponent
+008b09d0 | 
+TLCLComponent
 008b0ae9 | TLCLReferenceComponent
 008b0b14 | WARNING: 
 008b0b2c | .Destroy with LCLRefCount>0. Hint: Maybe the component is processing an event?
@@ -1778,7 +1818,8 @@ TWidgetSet
 008b12ec | TWidgetSet.InitializeCriticalSection Not implemented yet
 008b1334 | TWidgetSet.LeaveCriticalSection Not implemented yet
 008b1368 | WinControl
-008b138e | InterfaceBase
+008b138e | 
+InterfaceBase
 008b1411 | TLResourceList
 008b14bd | TLazarusResourceStream
 008b162d | TLRSObjectReader
@@ -1809,7 +1850,8 @@ LResources
 LResources
 008b1cf9 | TCanvas
 008b1e91 | TRasterImage
-008b2030 | TCustomBitmap
+008b2030 | 
+TCustomBitmap
 008b21e9 | TBitmap
 008b2549 | TIcon
 008b26f9 | TPortableNetworkGraphic
@@ -1830,8 +1872,10 @@ TJpegImage
 008b364d | TSharedImage
 008b36e1 | TSharedRasterImage
 008b3931 | TFPImageBitmap
-008b39c8 | TSharedBitmap
-008b3a5c | TSharedPixmap
+008b39c8 | 
+TSharedBitmap
+008b3a5c | 
+TSharedPixmap
 008b3af1 | TSharedPortableNetworkGraphic
 008b3b95 | TSharedPortableAnyMapGraphic
 008b3c24 | 
@@ -1846,10 +1890,12 @@ TIconImage
 008b4551 | TSharedTiffImage
 008b4708 | 
 TTiffImage
-008b4a40 | TBitmapCanvas
+008b4a40 | 
+TBitmapCanvas
 008b4ad1 | TPicFileFormatsList
 008b4b65 | TPicClipboardFormats
-008b4c1c | THeaderStream
+008b4c1c | 
+THeaderStream
 008b4cbc | ANSI_CHARSET
 008b4cd8 | DEFAULT_CHARSET
 008b4cf4 | SYMBOL_CHARSET
@@ -1992,7 +2038,8 @@ TTiffImage
 OnChanging
 008b641d | Graphics
 008b6449 | Graphics
-008b6459 | TCustomBitmap
+008b6459 | 
+TCustomBitmap
 008b649a | Graphics
 008b64c3 | Graphics
 008b64ec | Graphics
@@ -2024,7 +2071,9 @@ OnChanging
 008b6a01 | Graphics
 008b6a27 | Graphics
 008b6a50 | Graphics
-008b6a60 | TIconDirEntry
+008b6a60 | 
+
+TIconDirEntry
 008b6a9b | Graphics
 008b6abb | Graphics
 008b6ade | Graphics
@@ -2072,8 +2121,10 @@ TPopupMenu
 008b7861 | TOwnerDrawState
 008b7892 | TMenuMeasureItemEvent
 008b78f8 | LongInt
-008b7c8b | 0OnMeasureItem
-008b7dd6 | 0OnMeasureItem
+008b7c8b | 0
+OnMeasureItem
+008b7dd6 | 0
+OnMeasureItem
 008b7df1 | 	TMenuItem
 008b7e3f | Menus
 008b7e52 | TMenuChangeEvent
@@ -2090,8 +2141,10 @@ TPopupMenu
 008b83a9 | TCustomActionList
 008b84bd | TContainedAction
 008b85d1 | TActionList
-008b871c | TShortCutList
-008b883c | TCustomAction
+008b871c | 
+TShortCutList
+008b883c | 
+TCustomAction
 008b895d | TAction
 008b8a68 | TCustomActionList.AddAction already added
 008b8ab6 | ActnList
@@ -2105,7 +2158,8 @@ TPopupMenu
 008b8d09 | 
 THintEvent
 008b8d46 | Boolean
-008b8d61 | TCustomAction
+008b8d61 | 
+TCustomAction
 008b8dba | ActnList
 008b9080 | ActnList
 008b910c | 
@@ -2330,7 +2384,8 @@ TImageList
 008bdf54 | TAnchorSide.CheckSidePosition invalid Side
 008bdf82 | TControl
 008be007 | Controls
-008be0b5 | Controls
+008be0b5 | Controls
+
 008be294 | HelpContext
 008be2c0 | Controls
 008be33d | Controls
@@ -2340,7 +2395,8 @@ TImageList
 008be4fc | Controls
 008be556 | Controls
 008be583 | Controls
-008be598 | 	THintInfo
+008be598 | 
+	THintInfo
 008be673 | Controls
 008be6ad | Controls
 008be6c1 | 	TKeyEvent
@@ -2385,7 +2441,8 @@ TImageList
 008beca2 | TStartDragEvent
 008beccd | TObject	
 008bece2 | TDragObject
-008bed01 | TEndDragEvent
+008bed01 | 
+TEndDragEvent
 008bed3c | TObject
 008bed48 | LongInt
 008bed54 | LongInt
@@ -2468,7 +2525,8 @@ TImageList
 008c076c | TCustomImageList
 008c078b | LongInt
 008c07b1 | LongInt
-008c07d8 | 	TEntryKey
+008c07d8 | 
+	TEntryKey
 008c080a | TEntry
 008c0843 | ImgList
 008c0852 | TResolution
@@ -2577,7 +2635,8 @@ TImageList
 008c227e | IntegerList
 008c22b3 | IntegerList
 008c22e1 | IntegerList
-008c2387 | LazMethodList
+008c2387 | 
+LazMethodList
 008c24ac | 
 TLazLogger
 008c2531 | TLazLoggerLogGroupList
@@ -2587,9 +2646,12 @@ TLazLogger
 008c274c | Duplicate LogGroup 
 008c2774 | ?unknown variant?
 008c278a | TLazLoggerLogGroup
-008c27d6 | LazLoggerBase
-008c2812 | LazLoggerBase
-008c2846 | LazLoggerBase
+008c27d6 | 
+LazLoggerBase
+008c2812 | 
+LazLoggerBase
+008c2846 | 
+LazLoggerBase
 008c286c | RawImage_IsMasked - Invalid MaskSize
 008c28a0 | ToDo: ExtractRawImageRect DestLineStartPosition.Bit>0
 008c296b | bvSpace	GraphType
@@ -2953,7 +3015,8 @@ TLazLogger
 008c6c5b | Translations
 008c6c8a | TPOFile
 008c6cd4 | Translations
-008c6d50 | EScannerError
+008c6d50 | 
+EScannerError
 008c6dcd | TJSONScanner
 008c6dfc | Whitespace
 008c6e14 | String
@@ -3024,14 +3087,17 @@ TJSONArray
 008c8830 | Object
 008c88c1 | 	TJSONData
 008c8a2a | TJSONString
-008c8cb0 | TFileIterator
-008c8d38 | TFileSearcher
+008c8cb0 | 
+TFileIterator
+008c8d38 | 
+TFileSearcher
 008c8dc1 | TCopyDirTree
 008c8ea4 | Unable to open file "%s"
 008c8ecc | Unable to create file "%s"
 008c8ef4 | Unable to write to file "%s"
 008c8f30 | The file searcher is already searching!
-008c8f59 | TFileIterator
+008c8f59 | 
+TFileIterator
 008c8faa | FileUtil
 008c8fd2 | FileUtil
 008c9012 | TCopyDirTree
@@ -3147,8 +3213,10 @@ jsonreader
 008caca3 | Variants
 008cacd2 | Variants
 008cad05 | Variants
-008cad19 | tdynarrayiter
-008cadd0 | TFPObjectList
+008cad19 | 
+tdynarrayiter
+008cadd0 | 
+TFPObjectList
 008cae5d | TObjectList
 008caee8 | 
 TClassList
@@ -3255,19 +3323,27 @@ TFPPalette
 008d2d54 | cocoa
 008d2d68 | customdrawn (alpha)
 008d2e16 | LCLPlatformDef
-008d2f34 | TLazIntfImage
+008d2f34 | 
+TLazIntfImage
 008d2fed | TLazIntfImageMask
 008d309d | TLazAVLPalette
 008d3118 | 
 TArrayNode
-008d32a0 | TLazReaderXPM
-008d3354 | TLazWriterXPM
-008d33f4 | TLazReaderDIB
-008d34c0 | TLazReaderBMP
-008d3550 | TLazWriterBMP
+008d32a0 | 
+TLazReaderXPM
+008d3354 | 
+TLazWriterXPM
+008d33f4 | 
+TLazReaderDIB
+008d34c0 | 
+TLazReaderBMP
+008d3550 | 
+TLazWriterBMP
 008d361d | TLazReaderIconDIB
-008d36d0 | TLazReaderPNG
-008d37b0 | TLazWriterPNG
+008d36d0 | 
+TLazReaderPNG
+008d37b0 | 
+TLazWriterPNG
 008d3871 | TLazReaderTiff
 008d3925 | TLazWriterTiff
 008d39e1 | TLazReaderIcnsPart
@@ -3338,7 +3414,8 @@ TArrayNode
 008d4522 | IntfGraphics
 008d4552 | IntfGraphics
 008d457b | IntfGraphics
-008d4591 | TLazReaderDIB
+008d4591 | 
+TLazReaderDIB
 008d45da | IntfGraphics
 008d460a | IntfGraphics
 008d463a | IntfGraphics
@@ -3388,7 +3465,8 @@ TColorRGBA
 008d4f28 | Portable Network Graphics
 008d4f60 | 
 FPWritePNG
-008d4ff8 | TFPReaderTiff
+008d4ff8 | 
+TFPReaderTiff
 008d5018 |  at position 
 008d5034 |  (TiffPosition=
 008d5060 | Samples=
@@ -3494,7 +3572,8 @@ FPReadTiff
 008d6099 | 
 FPReadTiff
 008d6119 | TTiffWriterEntry
-008d6228 | TFPWriterTiff
+008d6228 | 
+TFPWriterTiff
 008d6248 | deflateInit failed
 008d6268 | deflate failed
 008d6284 | deflate compression failed, because not enough space
@@ -3614,19 +3693,22 @@ Ezliberror
 008d7695 | TFPCanvasException
 008d7855 | TFPCustomCanvas
 008d7911 | TFPCanvasHelper
-008d79d8 | TFPCustomFont
+008d79d8 | 
+TFPCustomFont
 008d7aad | TFPCustomPen
 008d7b71 | TFPCustomBrush
 008d7bf9 | TFPCustomInterpolation
 008d7c8d | TFPBaseInterpolation
 008d7d21 | TMitchelInterpolation
-008d7e30 | TFPRectRegion
+008d7e30 | 
+TFPRectRegion
 008d7f15 | TFPCustomDrawFont
 008d7fe1 | TFPEmptyFont
 008d80c5 | TFPCustomDrawPen
 008d819d | TFPEmptyPen
 008d826d | TFPCustomDrawBrush
-008d8334 | TFPEmptyBrush
+008d8334 | 
+TFPEmptyBrush
 008d8358 | may not
 008d839c | TFPBase2Interpolation.Execute inconsistency
 008d8414 | Could not create a %s.
@@ -3635,7 +3717,8 @@ Ezliberror
 008d848f | FPCanvas
 008d84bc | FPCanvas
 008d84ec | FPCanvas
-008d8501 | TFPCustomFont
+008d8501 | 
+TFPCustomFont
 008d854a | FPCanvas
 008d85bf | FPCanvas
 008d8680 | FPCanvas
@@ -3683,12 +3766,14 @@ FPWritePNM
 FPWritePNM
 008d9030 | 
 FPWritePNM
-008d90c4 | TFPReaderJPEG
+008d90c4 | 
+TFPReaderJPEG
 008d90e4 | JPEG error
 008d9128 | JPEG Graphics
 008d9151 | 
 FPReadJPEG
-008d91dc | TFPWriterJPEG
+008d91dc | 
+TFPWriterJPEG
 008d91fc | JPEG error
 008d922c | JPEG graphics
 008d925a | FPWriteJPEG
@@ -3716,7 +3801,8 @@ FPReadJPEG
 008d9a99 | ESyncObjectException
 008d9b25 | TSynchroObject
 008d9ba9 | TCriticalSection
-008d9c30 | THandleObject
+008d9c30 | 
+THandleObject
 008d9cb5 | TEventObject
 008d9cd4 | SYNCOBJS
 008d9cec | Failed to create OS basic event with name "%s"
@@ -3799,7 +3885,8 @@ FPPixlCanv
 008dbb58 | 
 AttachMenu
 008dbb65 | CreateHandle
-008dbb74 | DestroyHandle
+008dbb74 | 
+DestroyHandle
 008dbb84 | 
 SetCaption
 008dbb91 | SetShortCut
@@ -3817,8 +3904,10 @@ SetVisible
 008dbf85 | TWSDragImageListResolution
 008dbfa0 | 	BeginDrag
 008dbfad | DragMove
-008dbfb9 | EndDragHideDragImage
-008dbfd0 | ShowDragImage
+008dbfb9 | EndDrag
+HideDragImage
+008dbfd0 | 
+ShowDragImage
 008dc099 | TWSLazAccessibleObject
 008dc134 | 
 TWSControl
@@ -3827,9 +3916,11 @@ AddControl
 008dc14d | GetConstraints
 008dc17d | ConstraintHeight
 008dc191 | GetCanvasScaleFactor
-008dc2d8 | TWSWinControl
+008dc2d8 | 
+TWSWinControl
 008dc2e9 | CanFocus
-008dc2f5 | GetClientBoundsGetClientRect
+008dc2f5 | GetClientBounds
+GetClientRect
 008dc315 | GetPreferredSize
 008dc329 | GetDefaultClientRect
 008dc341 | GetDesignInteractive
@@ -3845,7 +3936,8 @@ GetTextLen
 008dc3f5 | SetShape
 008dc40d | ConstraintsChange
 008dc421 | CreateHandle
-008dc430 | DestroyHandle
+008dc430 | 
+DestroyHandle
 008dc441 | DefaultWndHandler
 008dc454 | 
 Invalidate
@@ -3863,11 +3955,13 @@ WSControls
 008dc774 | 
 WSControls
 008dc881 | TWSScrollingWinControl
-008dca08 | TWSCustomForm
+008dca08 | 
+TWSCustomForm
 008dca18 | 
 CloseModal
 008dca25 | SetAllowDropFiles
-008dca38 | SetAlphaBlend
+008dca38 | 
+SetAlphaBlend
 008dca49 | SetBorderIcons
 008dca59 | SetFormBorderStyle
 008dca6d | SetFormStyle
@@ -3881,8 +3975,10 @@ CloseModal
 008dcb2d | GetMDIChildren
 008dcb45 | Previous
 008dcb59 | ArrangeIcons
-008dcb68 | MDIChildCount
-008dcd88 | TWSHintWindow
+008dcb68 | 
+MDIChildCount
+008dcd88 | 
+TWSHintWindow
 008dcdc3 | WSForms
 008dcdea | WSForms
 008dce12 | WSForms
@@ -4049,7 +4145,8 @@ CloseModal
 008de740 | DwmSetIconicLivePreviewBitmap
 008de760 | DwmInvalidateIconicBitmaps
 008de7e9 | TButtonGlyph
-008decd4 | TCustomBitBtn
+008decd4 | 
+TCustomBitBtn
 008df285 | TSpeedButtonActionLink
 008df62d | TCustomSpeedButton
 008dfa01 | TSpeedButton
@@ -4078,14 +4175,16 @@ CloseModal
 008e07f7 | Buttons
 008e0821 | Buttons9
 008e10c1 | Buttons
-008e11e4 | TCommonDialog
+008e11e4 | 
+TCommonDialog
 008e1325 | TFileDialog
 008e1479 | TOpenDialog
 008e15cd | TSaveDialog
 008e1721 | TSelectDirectoryDialog
 008e1855 | TColorDialog
 008e1d7d | TCustomCopyToClipboardDialog
-008e22b4 | TPromptDialog
+008e22b4 | 
+TPromptDialog
 008e27dd | TQuestionDlg
 008e280c | dialog_warning
 008e2828 | dialog_error
@@ -4096,7 +4195,8 @@ CloseModal
 008e28d4 | Property streamed in older Lazarus revision
 008e290c | Width
 008e2920 | Height
-008e2981 | TCommonDialog
+008e2981 | 
+TCommonDialog
 008e2a81 | Title
 008e2a92 | TFileDialog
 008e2dda | Dialogs
@@ -4105,7 +4205,8 @@ CloseModal
 008e2ef0 | Dialogs
 008e2f23 | Dialogs
 008e2fe9 | Dialogs
-008e3011 | TPromptDialog
+008e3011 | 
+TPromptDialog
 008e305a | Dialogs
 008e306a | TQuestionDlg
 008e30b1 | Dialogs
@@ -4126,7 +4227,8 @@ TScrollBar
 008e767d | TStaticText
 008e7b29 | TButtonControl
 008e7c31 | TButtonActionLink
-008e80e0 | TCustomButton
+008e80e0 | 
+TCustomButton
 008e85ad | TButton
 008e8a61 | TCustomCheckBox
 008e8f28 | 	TCheckBox
@@ -4212,7 +4314,8 @@ OnDockDrop
 008f11fc | 
 TStatusBar
 008f12ad | TStatusPanel
-008f1364 | TStatusPanels
+008f1364 | 
+TStatusPanels
 008f1821 | TCustomPage
 008f1d45 | TCustomTabControl
 008f1e99 | TNBBasePages
@@ -4529,8 +4632,10 @@ OnDockDrop
 00901cb9 | SetStyle
 00901cdd | GetItems
 00901ce8 | 	FreeItems
-00901cfc | GetItemHeight
-00901d0c | SetItemHeight
+00901cfc | 
+GetItemHeight
+00901d0c | 
+SetItemHeight
 00901f0d | TWSCustomListBox
 00901f20 | 	DragStart
 00901f2d | GetIndexAtXY
@@ -4547,7 +4652,8 @@ SelectItem
 00901ff9 | SetSelectionMode
 0090200d | SetStyle
 00902018 | 	SetSorted
-00902224 | TWSCustomEdit
+00902224 | 
+TWSCustomEdit
 00902234 | 
 GetCanUndo
 00902259 | GetSelLength
@@ -4559,12 +4665,14 @@ GetCanUndo
 00902308 | 
 SetSelText
 0090232d | Paste
-00902554 | TWSCustomMemo
+00902554 | 
+TWSCustomMemo
 00902564 | 
 AppendText
 00902570 | 
 GetStrings
-0090257d | FreeStringsSetScrollbars
+0090257d | FreeStrings
+SetScrollbars
 009025a5 | SetWantReturns
 009025b5 | SetWordWrap
 SetSelText
@@ -4575,7 +4683,8 @@ SetSelText
 009029b8 | 
 SetDefault
 00902af1 | TWSCustomCheckBox
-00902b04 | RetrieveState
+00902b04 | 
+RetrieveState
 00902b21 | SetState
 00902b2d | SetAlignment
 00902c6d | TWSToggleBox
@@ -4636,7 +4745,8 @@ SetSpacing
 00904276 | ButtonPanel
 009042ca | ButtonPanel
 00904319 | ButtonPanel
-00904369 | ButtonPanel
+00904369 | ButtonPanel
+
 0090452e | OnClick
 0090455f | ButtonPanel
 00904589 | ButtonPanel%
@@ -4679,7 +4789,9 @@ OnDockDrop
 0090a3f8 | TaskDialogIndirect
 0090a40c | comctl32.dll
 0090a422 | TTaskDialog
-0090a4a8 | TTaskDialogEx
+0090a4a8 | 
+
+TTaskDialogEx
 0090a5e5 | TDialogImageList
 0090a60c | dialog_warning
 0090a628 | dialog_error
@@ -4699,11 +4811,15 @@ OnDockDrop
 WSExtCtrls
 0090a9d1 | CreateHandle
 0090a9e0 | 	ShowModal
-0090a9ec | DestroyHandle
+0090a9ec | 
+DestroyHandle
 0090a9fd | QueryWSEventCapabilities
-0090aab8 | TWSFileDialog
-0090ab44 | TWSOpenDialog
-0090abd0 | TWSSaveDialog
+0090aab8 | 
+TWSFileDialog
+0090ab44 | 
+TWSOpenDialog
+0090abd0 | 
+TWSSaveDialog
 0090ac5d | TWSSelectDirectoryDialog
 0090acf5 | TWSColorDialog
 0090ad14 | VCL compatibility property
@@ -4718,7 +4834,8 @@ WSExtCtrls
 0090b359 | Toolwin
 0090b3bc | Toolwin
 0090b3e0 | Toolwin
-0090b4ec | TWSCustomPage
+0090b4ec | 
+TWSCustomPage
 0090b4fd | UpdateProperties
 0090b671 | MovePage
 0090b67c | 
@@ -4731,7 +4848,8 @@ GetTabRect
 SetTabSize
 0090b6f5 | SetImageList
 0090b705 | SetPageIndex
-0090b714 | SetTabCaption
+0090b714 | 
+SetTabCaption
 0090b725 | SetTabPosition
 0090b735 | ShowTabs
 0090b741 | UpdateProperties
@@ -4759,7 +4877,8 @@ ItemDelete
 0090bc81 | ItemMove
 0090bc8d | ItemGetChecked
 0090bcad | ItemGetState
-0090bcbc | ItemGetStates
+0090bcbc | 
+ItemGetStates
 0090bccc | 
 ItemInsert
 0090bcd9 | ItemSetChecked
@@ -4770,7 +4889,8 @@ ItemInsert
 0090bd44 | 
 ItemUpdate
 0090bd51 | BeginUpdate	EndUpdate
-0090bd69 | GetBoundingRectGetDropTarget
+0090bd69 | GetBoundingRect
+GetDropTarget
 0090bd88 | 
 GetFocused
 0090bd95 | GetHitTestInfoAt
@@ -4779,7 +4899,8 @@ GetFocused
 0090bdd1 | GetSelection
 0090bde0 | 
 GetTopItem
-0090bdec | GetViewOrigin
+0090bdec | 
+GetViewOrigin
 0090bdfd | GetVisibleRowCount
 0090be11 | GetNextItem	SelectAll
 0090be28 | 
@@ -4789,11 +4910,15 @@ SetAllocBy
 0090be61 | SetHoverTime
 0090be71 | SetIconArrangement
 0090be85 | SetImageList
-0090be94 | SetItemsCount
+0090be94 | 
+SetItemsCount
 0090bea5 | SetOwnerData
-0090beb5 | SetPropertySetProperties
-0090bed0 | SetScrollBars
-0090bee1 | SetSortSetViewOrigin
+0090beb5 | SetProperty
+SetProperties
+0090bed0 | 
+SetScrollBars
+0090bee1 | SetSort
+SetViewOrigin
 0090bef9 | SetViewStyle
 0090bf25 | GetFirstSelected
 0090bf39 | InitMultiSelList
@@ -4818,7 +4943,8 @@ WSComCtrls
 WSComCtrls
 0090c4e9 | TWSCustomFloatSpinEdit
 0090c501 | GetValue
-0090c50c | UpdateControl
+0090c50c | 
+UpdateControl
 0090c51d | SetEditorEnabled
 0090c55c | VCL compatibility property
 0090c584 | MaxLength
@@ -4832,8 +4958,10 @@ WSComCtrls
 0090c6b2 | TWin32WindowInfo
 0090c78d | TWin32WSDragImageListResolution	BeginDrag
 0090c7b9 | DragMove
-0090c7c5 | EndDragHideDragImage
-0090c7dc | ShowDragImage
+0090c7c5 | EndDrag
+HideDragImage
+0090c7dc | 
+ShowDragImage
 0090c9a9 | TWin32WSWinControl
 0090c9bc | 
 AddControl
@@ -4845,7 +4973,8 @@ AddControl
 0090ca35 | SetShape
 0090ca41 | ConstraintsChange
 0090ca55 | CreateHandle
-0090ca64 | DestroyHandle
+0090ca64 | 
+DestroyHandle
 0090ca74 | 
 Invalidate
 0090ca89 | ShowHide
@@ -4885,7 +5014,8 @@ SetSpacing
 0090d0d0 | 
 AttachMenu
 0090d0dd | CreateHandle
-0090d0ec | DestroyHandle
+0090d0ec | 
+DestroyHandle
 0090d0fc | 
 SetCaption
 0090d109 | SetCheck
@@ -4928,8 +5058,10 @@ SetCaption
 0090da55 | SetMaxLength
 0090da65 | SetStyle
 0090da89 | GetItems
-0090da9c | GetItemHeight
-0090daac | SetItemHeight
+0090da9c | 
+GetItemHeight
+0090daac | 
+SetItemHeight
 0090dcd5 | TWin32WSCustomListBox
 0090dcf9 | CreateHandle
 0090dd08 | 	DragStart
@@ -4968,7 +5100,8 @@ SetSelText
 AppendText
 0090e3e9 | GetCaretPos
 GetStrings
-0090e401 | SetCaretPosSetScrollbars
+0090e401 | SetCaretPos
+SetScrollbars
 0090e429 | ScrollBy
 0090e434 | 
 SetSelText
@@ -4988,7 +5121,8 @@ SetDefault
 0090ea0d | CreateHandle
 0090ea1d | GetDoubleBuffered
 0090ea31 | GetPreferredSize
-0090ea44 | RetrieveState
+0090ea44 | 
+RetrieveState
 0090ea6d | SetState
 0090ea79 | SetAlignment
 0090ebd9 | TWin32WSToggleBox
@@ -5027,15 +5161,18 @@ SetDefault
 0090f346 | Win32WSStdCtrls
 0090f3d9 | TWin32WSCommonDialog
 0090f3f1 | CreateHandle
-0090f400 | DestroyHandle
+0090f400 | 
+DestroyHandle
 0090f4a1 | TWin32WSOpenDialog
 0090f4b5 | CreateHandle
-0090f4c4 | DestroyHandle
+0090f4c4 | 
+DestroyHandle
 0090f4d4 | 	ShowModal
 0090f4e1 | QueryWSEventCapabilities
 0090f59d | TWin32WSSaveDialog
 0090f5b1 | CreateHandle
-0090f5c0 | DestroyHandle
+0090f5c0 | 
+DestroyHandle
 0090f5d0 | 	ShowModal
 0090f5dd | QueryWSEventCapabilities
 0090f699 | TWin32WSSelectDirectoryDialog
@@ -5043,7 +5180,8 @@ SetDefault
 0090f6c9 | QueryWSEventCapabilities
 0090f789 | CreateHandle
 0090f798 | 	ShowModal
-0090f7a4 | DestroyHandle
+0090f7a4 | 
+DestroyHandle
 0090f7b5 | QueryWSEventCapabilities
 0090f861 | TFileDialogEvents
 0090f8f4 | All files
@@ -5104,7 +5242,8 @@ SetDefault
 0090ff98 | window
 0090ffb4 | comctl32.dll
 0090ffca | TThemePPIDataEntry
-0090fff9 | TThemePPIDatad
+0090fff9 | 
+TThemePPIDatad
 00910018 | Win32Themes
 0091002a | TWin32ThemeServices
 00910080 | Win32Themes
@@ -5138,7 +5277,8 @@ SetDefault
 00911f75 | TVirtualGrid
 00912019 | TGridColumnTitle
 009120d9 | TGridColumns
-00912158 | TGridScroller
+00912158 | 
+TGridScroller
 009127d5 | TCustomDrawGrid
 00912e65 | TCustomStringGrid
 009134f9 | TStringGrid
@@ -5388,10 +5528,12 @@ AnsiString
 00915e71 | Grids
 00915e99 | Grids
 00915ec2 | Grids
-00915ed1 | TGetEditEvent
+00915ed1 | 
+TGetEditEvent
 00915efb | TObject
 00915f0a | LongInt
-00915f51 | TSetEditEvent
+00915f51 | 
+TSetEditEvent
 00915f7b | TObject
 00915f8a | LongInt
 00915fd2 | TGetCheckboxStateEvent
@@ -5649,8 +5791,10 @@ ShellCtrls
 0091a355 | EInvalidCodePoint
 0091a869 | TCustomMaskEdit
 0091a8ec | The (hexadecimal) sequence %s is not a valid UTF8 codepoint.
-0091a938 | MaskEdit Internal ErrorRange check error trying to access FMask[%d]. Index should be between 1 and %d
-0091a9ac | MaskEdit Internal Error. Found uninitialized MaskType "Char_Invalid" at index %d
+0091a938 | MaskEdit Internal Error
+Range check error trying to access FMask[%d]. Index should be between 1 and %d
+0091a9ac | MaskEdit Internal Error.
+ Found uninitialized MaskType "Char_Invalid" at index %d
 0091aa54 | Illegal value in EditMask: sets can only contain ASCII characters.
 0091aaa4 | Illegal value for EditMask: you can not have two consecutive "-"'s in a set
 0091ab00 | Illegal value for EditMask: a set can not be empty.
@@ -5693,14 +5837,16 @@ WriteFlags
 0091c049 | EDOMWrongDocument
 0091c0c9 | EDOMNotFound
 0091c145 | EDOMNotSupported
-0091c1c4 | EDOMNamespace
+0091c1c4 | 
+EDOMNamespace
 0091c2a1 | TDOMNode_WithChildren
 0091c385 | TDOMCharacterData
 0091c475 | TXMLDocument
 0091c629 | TDOMNotation
 0091c704 | 
 TDOMEntity
-0091c788 | TAttributeMap
+0091c788 | 
+TAttributeMap
 0091c7a8 | http://www.w3.org/XML/1998/namespace
 0091c7dc | http://www.w3.org/2000/xmlns/
 0091c81c | Node.InsertBefore
@@ -5742,7 +5888,8 @@ TDOMEntity
 0091d2fa | TDOMNotation
 0091d361 | 
 TDOMEntity
-0091d460 | EXMLReadError
+0091d460 | 
+EXMLReadError
 0091d541 | TDOMElementDef
 0091d61d | TDOMEntityEx
 0091d698 | 
@@ -5887,7 +6034,8 @@ TXMLReader
 0091f0c0 | Duplicate notation declaration: '%s'
 0091f0f4 | stream:
 0091f1ba | Laz2_XMLRead
-0091f1f1 | EXMLReadError
+0091f1f1 | 
+EXMLReadError
 0091f23a | Laz2_XMLRead
 0091f252 | TDecoder
 0091f288 | Context
@@ -5898,7 +6046,9 @@ TXMLReader
 0091f37b | Laz2_XMLRead
 0091f392 | TDOMEntityEx
 0091f3e1 | Laz2_XMLRead
-0091f3f8 | TPrefixedAttr
+0091f3f8 | 
+
+TPrefixedAttr
 0091f433 | Laz2_XMLRead
 0091f44a | TElementValidator
 0091f48b | Laz2_XMLRead
@@ -5932,30 +6082,41 @@ TXMLWriter
 0091fad4 | <!DOCTYPE 
 0091faec | PUBLIC 
 0091fb00 | SYSTEM 
-0091fb68 | xwfPreserveWhiteSpaceLaz2_XMLWrite
+0091fb68 | xwfPreserveWhiteSpace
+Laz2_XMLWrite
 0091fbb1 | 
 TXMLWriter
-0091fbfe | Laz2_XMLWrite
+0091fbfe | 
+Laz2_XMLWrite
 0091fc1a | EXMLWriteError
-0091fc62 | Laz2_XMLWrite
-0091fc94 | Laz2_XMLWrite
+0091fc62 | 
+Laz2_XMLWrite
+0091fc94 | 
+Laz2_XMLWrite
 0091fd10 | 
 THashTable
-0091fd88 | TDblHashArray
+0091fd88 | 
+TDblHashArray
 0091fe05 | TBinding
 0091fe7c | 
 TNSSupport
 0091fe98 | http://www.w3.org/XML/1998/namespace
-0091fed0 | 	THashItem
-0091ff16 | Laz2_XMLUtils
-0091ff49 | Laz2_XMLUtils
+0091fed0 | 
+	THashItem
+0091ff16 | 
+Laz2_XMLUtils
+0091ff49 | 
+Laz2_XMLUtils
 0091ff62 | TBinding
-0091ffa4 | Laz2_XMLUtils
+0091ffa4 | 
+Laz2_XMLUtils
 0091ffe1 | 
 TNSSupport
-0092002e | Laz2_XMLUtils
+0092002e | 
+Laz2_XMLUtils
 00920120 | file:
-009202a0 | TWSCustomGrid
+009202a0 | 
+TWSCustomGrid
 009202b1 | SendCharToEditor
 009202c5 | InvalidateStartY
 009202d8 | 
@@ -5963,11 +6124,13 @@ Invalidate
 0092034a | WSGrids
 00920455 | TWin32WSCustomPage
 00920469 | CreateHandle
-00920478 | DestroyHandle
+00920478 | 
+DestroyHandle
 00920489 | UpdateProperties
 00920601 | TWin32WSCustomTabControl
 0092061d | CreateHandle
-0092062c | AddAllNBPages
+0092062c | 
+AddAllNBPages
 0092063d | AdjustSizeTabControlPages
 00920661 | MovePage
 0092066d | RemoveAllNBPages
@@ -6012,7 +6175,8 @@ ItemDelete
 00920cf5 | ItemMove
 00920d01 | ItemGetChecked
 00920d21 | ItemGetState
-00920d30 | ItemGetStates
+00920d30 | 
+ItemGetStates
 00920d40 | 
 ItemInsert
 00920d4d | ItemSetChecked
@@ -6022,7 +6186,8 @@ ItemInsert
 00920dad | ItemShow
 00920db9 | CreateHandle
 00920dc9 | BeginUpdate	EndUpdate
-00920de1 | GetBoundingRectGetDropTarget
+00920de1 | GetBoundingRect
+GetDropTarget
 00920e00 | 
 GetFocused
 00920e0d | GetHitTestInfoAt
@@ -6031,7 +6196,8 @@ GetFocused
 00920e49 | GetSelection
 00920e58 | 
 GetTopItem
-00920e64 | GetViewOrigin
+00920e64 | 
+GetViewOrigin
 00920e75 | GetVisibleRowCount
 00920e89 | GetNextItem	SelectAll
 00920ea0 | 
@@ -6043,11 +6209,15 @@ SetAllocBy
 00920efd | SetHoverTime
 00920f0d | SetIconArrangement
 00920f21 | SetImageList
-00920f30 | SetItemsCount
+00920f30 | 
+SetItemsCount
 00920f41 | SetOwnerData
-00920f51 | SetPropertySetProperties
-00920f6c | SetScrollBars
-00920f7d | SetSortSetViewOrigin
+00920f51 | SetProperty
+SetProperties
+00920f6c | 
+SetScrollBars
+00920f7d | SetSort
+SetViewOrigin
 00920f95 | SetViewStyle
 00920fa5 | GetFirstSelected
 00920fb9 | InitMultiSelList
@@ -6134,7 +6304,8 @@ SetAllocBy
 00921f59 | CreateHandle
 00921f69 | GetDefaultDoubleBuffered
 00921f85 | SetAllowDropFiles
-00921f98 | SetAlphaBlend
+00921f98 | 
+SetAlphaBlend
 00921fa9 | SetBorderIcons
 00921fb8 | 	SetBounds
 00921fc5 | SetFormBorderStyle
@@ -6147,7 +6318,8 @@ SetAllocBy
 00922059 | GetMDIChildren
 00922071 | Previous
 00922085 | ArrangeIcons
-00922094 | MDIChildCount
+00922094 | 
+MDIChildCount
 009222ad | TWin32WSHintWindow
 009222c1 | CreateHandle
 009222d1 | ShowHide
@@ -6181,7 +6353,8 @@ SetAllocBy
 00922a21 | SetSelLength
 00922a31 | ShowHide
 00922a3d | SetEditorEnabled
-00922a50 | UpdateControl
+00922a50 | 
+UpdateControl
 00922af4 | msctls_updown32
 00922b14 | WinControl
 00922b3c | GetText
@@ -6191,7 +6364,8 @@ SetAllocBy
 00923431 | TBaseVirtualTree
 009235f9 | TCustomVirtualTreeOptions
 00923685 | TEnumFormatEtc
-0092379c | TVTDataObject
+0092379c | 
+TVTDataObject
 00923865 | TVTDragManager
 00923e39 | TVirtualTreeHintWindow
 00923ecd | TVTDragImage
@@ -6208,8 +6382,10 @@ SetAllocBy
 00925455 | TVTEdit
 00925d65 | TLazVirtualStringTree
 0092659d | TCustomVirtualDrawTree
-00926624 | StyleServices
-009266ac | TWorkerThread
+00926624 | 
+StyleServices
+009266ac | 
+TWorkerThread
 00926729 | TClipboardFormatList
 009267dd | TOLEMemoryStream
 00926800 | LAZ_VT_CHECK_LIGHT
@@ -6410,7 +6586,8 @@ SetAllocBy
 009299ca | TEnumFormatEtc
 00929a13 | laz.VirtualTrees
 00929a59 | laz.VirtualTrees
-00929a79 | TVTDataObject
+00929a79 | 
+TVTDataObject
 00929ad2 | laz.VirtualTrees
 00929aea | TVTDragManager
 00929b3b | laz.VirtualTrees
@@ -6445,13 +6622,15 @@ SetAllocBy
 0092b05d | laz.VirtualTrees
 0092b0e9 | laz.VirtualTrees
 0092b130 | TBaseVirtualTree
-0092b143 | aExportTypeTVTExportType
+0092b143 | aExportType
+TVTExportType
 0092b19a | TVTColumnExportEvent
 0092b1ca | TBaseVirtualTree
 0092b200 | TVirtualTreeColumn
 0092b22a | TVTTreeExportEvent
 0092b258 | TBaseVirtualTree
-0092b26b | aExportTypeTVTExportType
+0092b26b | aExportType
+TVTExportType
 0092b38c | VerticalIncrement
 0092b6c5 | UnfocusedSelectionBorderColor
 0092b71d | laz.VirtualTrees
@@ -6475,7 +6654,8 @@ SetAllocBy
 0092bb92 | TVTStructureChangeEvent
 0092bbc5 | TBaseVirtualTree
 0092bbdd | PVirtualNode
-0092bbec | ReasonTChangeReason
+0092bbec | Reason
+TChangeReason
 0092bc1a | TVTEditCancelEvent
 0092bc48 | TBaseVirtualTree
 0092bc62 | TColumnIndex
@@ -6530,7 +6710,8 @@ SetAllocBy
 0092c3b2 | TVTInitNodeEvent
 0092c3de | TBaseVirtualTree
 0092c3fc | PVirtualNode
-0092c461 | TVTPopupEvent
+0092c461 | 
+TVTPopupEvent
 0092c48b | TBaseVirtualTree
 0092c4a3 | PVirtualNode
 0092c4dd | Boolean	
@@ -6721,7 +6902,8 @@ SetAllocBy
 0092e414 | TCanvas
 0092e423 | PVirtualNode
 0092e451 | TRect
-0092e479 | TVTPaintEvent
+0092e479 | 
+TVTPaintEvent
 0092e4c3 | TCanvas
 0092e4e2 | TVTBackgroundPaintEvent
 0092e551 | Boolean
@@ -6785,7 +6967,8 @@ SetAllocBy
 0092eec9 | Boolean
 0092ef3e | laz.VirtualTrees
 0092ef9d | laz.VirtualTrees
-0092f0f7 | 4StringOptions
+0092f0f7 | 4
+StringOptions
 0092f112 | TCustomVirtualStringTree
 0092f175 | laz.VirtualTrees
 0092f1ac | laz.VirtualTrees
@@ -8233,7 +8416,8 @@ TOggVorbis
 00940979 | 
 TOggVorbis
 0094098e | 	OggVorbis
-009409d0 | 	VorbisTag
+009409d0 | 
+	VorbisTag
 00940a02 | FileInfo
 00940a98 | 	TFLACfile
 00940aec | TRACKNUMBER
@@ -8263,7 +8447,8 @@ TOggVorbis
 00940d48 | DESCRIPTION
 00940d60 | LOCATION
 00940d78 | CONTACT
-00940d98 | 	TMetaData
+00940d98 | 
+	TMetaData
 00940dd3 | FLACfile
 00940df3 | FLACfile
 00940e13 | FLACfile
@@ -8494,8 +8679,10 @@ fpparsettf
 00943a3d | THasherCRC32
 00943acc | 
 THasherMD5
-00943be4 | THasherSHA256
-00943c74 | THasherSHA512
+00943be4 | 
+THasherSHA256
+00943c74 | 
+THasherSHA512
 00943c94 | CRC32
 00943ccc | SHA256
 00943ce0 | SHA512
@@ -8511,7 +8698,8 @@ THasherMD5
 00944200 | The quick brown fox jumps over the lazy dog
 009442c8 | Incorrect digest size for %s
 009442f4 | Not supported hash type: %s
-00944380 | 	THashTest
+00944380 | 
+	THashTest
 009445c9 | TOutlookMsgRecipient
 00944844 | 4TFPGObjectList<uOutlookMsgFile.TOutlookMsgRecipient>
 00944900 | __recip_version1.0_
@@ -8554,7 +8742,8 @@ THasherMD5
 009451d9 | uEmailParser
 00945258 | 	EOleError
 009452d1 | EOleSysError
-0094534c | EOleException
+0094534c | 
+EOleException
 009453fc | 
 TOleStream
 0094540c | ole32.dll
@@ -8564,7 +8753,8 @@ TOleStream
 00945454 | CoReleaseServerProcess
 0094546c | CoResumeClassObjects
 00945484 | CoSuspendClassObjects
-009454f1 | EOleException
+009454f1 | 
+EOleException
 00945584 | COMCONST
 0094559c | Method '%s' is not supported by automation object
 009455dc | comconst.snomethod
@@ -8711,7 +8901,8 @@ TOleStream
 00946dfc | Subfile
 00946e24 | Custom_
 00946e38 | Photoshop 3.0
-00946e48 | 	TTagEntry
+00946e48 | 
+	TTagEntry
 00946ec1 | 	TIPTCdata
 00946fec | FamilyID
 00947004 | FamilyID
@@ -9129,21 +9320,25 @@ TOleStream
 0094b7ca | TComStructuredStorageFile
 0094b83e | uComStructuredStorage
 0094b887 | uComStructuredStorage
-0094b910 | TBEncodedData
+0094b910 | 
+TBEncodedData
 0094b99d | TBEncodedDataList
 0094ba20 | 	TBEncoded
 0094ba3c | Invalid torrent file.
-0094baa9 | TBEncodedData
+0094baa9 | 
+TBEncodedData
 0094baf2 | BEncode
 0094bb1e | BEncode
 0094bb31 | 	TBEncoded
 0094bb76 | BEncode
-0094bc98 | TStreamReader
+0094bc98 | 
+TStreamReader
 0094bcb8 | STREAMEX
 0094bcd0 | AStream
 0094bcf0 | streamex
 0094bd13 | streamex
-0094bd21 | TStreamReader
+0094bd21 | 
+TStreamReader
 0094bd6a | streamex
 0094bd8c | UTF-8
 0094bdb4 | US-ASCII
@@ -9580,7 +9775,8 @@ Masks:
 00950b34 | (EResourceLangIDChangeNotAllowedException
 00950c55 | EResourceNotFoundException
 00950d05 | TAbstractResource
-00950d84 | TResourceDesc
+00950d84 | 
+TResourceDesc
 00950e00 | 
 TResources
 00950ea1 | TGenericResource
@@ -9600,15 +9796,19 @@ TResources
 00951198 | resource
 009511cf | resource
 009511fe | resource
-00951211 | TResourceDesc
+00951211 | 
+TResourceDesc
 0095125a | resource
 0095127f | resource
 009512ad | resource
 00951365 | TCachedDataStream
 00951419 | TCachedResourceDataStream
-00951505 | resdatastream
-00951545 | resdatastream
-0095157f | resdatastream
+00951505 | 
+resdatastream
+00951545 | 
+resdatastream
+0095157f | 
+resdatastream
 00951633 | 	resmerger
 009516b1 | EResourceFactoryException
 00951738 | (EResourceClassAlreadyRegisteredException
@@ -9642,14 +9842,18 @@ resfactory
 00951ff1 | groupcursorresource
 009520bd | TGroupResource
 0095216d | TGroupCachedDataStream
-009521a2 | groupresource
-009521da | groupresource
-00952260 | TFileTreeNode
+009521a2 | 
+groupresource
+009521da | 
+groupresource
+00952260 | 
+TFileTreeNode
 00952388 | 	TFileTree
 00952401 | EFileTreeError
 00952420 | File tree scan level problem.
 0095244c | File tree entry has no children.
-00952481 | TFileTreeNode
+00952481 | 
+TFileTreeNode
 009524c9 | 	uFileTree
 00952508 | 	uFileTree
 0095252d | 	uFileTree
@@ -9663,11 +9867,15 @@ resfactory
 0095285d | uCommonSettings
 0095289e | uCommonSettings
 009528d8 | false
-00952998 | TFormLocation
+00952998 | 
+TFormLocation
 00952a15 | TFormLocationTracker
-00952a61 | TFormLocation
-00952aa9 | uFormLocation
-00952ae0 | uFormLocation
+00952a61 | 
+TFormLocation
+00952aa9 | 
+uFormLocation
+00952ae0 | 
+uFormLocation
 00952b6d | TRuleConfigInsert
 00952c34 | Where
 00952c48 | Position
@@ -9861,16 +10069,20 @@ uRuleStrip
 00955358 |  "%20"
 009553ef | uRuleCleanUp
 00955421 | uRuleCleanUp
-00955544 | TRuleTranslit
+00955544 | 
+TRuleTranslit
 00955564 | Alphabet
 0095557c | Direction
 00955594 | AdjustCase
 009555ac | SkipExtension
 009555c8 | Translit
 00955632 | TRuleConfigTranslit
-00955687 | uRuleTranslit
-009556a1 | TRuleTranslit
-009556f1 | uRuleTranslit
+00955687 | 
+uRuleTranslit
+009556a1 | 
+TRuleTranslit
+009556f1 | 
+uRuleTranslit
 00955819 | TRuleReformatDate
 0095584c | SourceFormats
 00955868 | TargetFormat
@@ -10069,12 +10281,14 @@ end.
 00959112 | TRegExpr
 009591b5 | CustomURegExpr
 009591e5 | CustomURegExpr
-00959268 | TUnicodeRange
+00959268 | 
+TUnicodeRange
 009592f5 | TUnicodeRangeList
 00959374 | .TFPGListEnumerator<uUnicodeData.TUnicodeRange>
 00959420 | *TFPGObjectList<uUnicodeData.TUnicodeRange>
 0095953d | TUnicodeData
-00959571 | TUnicodeRange
+00959571 | 
+TUnicodeRange
 0095958a | uUnicodeData
 009595c9 | uUnicodeData
 009595fe | uUnicodeData
@@ -10143,8 +10357,10 @@ end.
 0095af7d | TPSInterface
 0095aff9 | TPSPascalCompiler
 0095b0ed | TPSValue
-0095b164 | TPSParameters
-0095b1e0 | TPSAttributes
+0095b164 | 
+TPSParameters
+0095b1e0 | 
+TPSAttributes
 0095b25d | TPSAttribute
 0095b2d9 | EPSCompilerException
 0095b35d | TPSParameterDecl
@@ -10153,7 +10369,8 @@ end.
 TPSRegProc
 0095b4d5 | TPSRecordFieldTypeDef
 0095b569 | TPSVariantType
-0095b5e4 | TPSRecordType
+0095b5e4 | 
+TPSRecordType
 0095b661 | TPSClassType
 0095b6dd | TPSUndefinedClassType
 0095b761 | TPSInterfaceType
@@ -10182,10 +10399,12 @@ TPSSubItem
 0095c451 | TPSValueAllocatedStackVar
 0095c4d9 | TPSValueData
 0095c5d1 | TPSUnValueOp
-0095c64c | TPSBinValueOp
+0095c64c | 
+TPSBinValueOp
 0095c7bd | TPSValueProc
 0095c839 | TPSValueProcNo
-0095c930 | TPSValueArray
+0095c930 | 
+TPSValueArray
 0095c9ad | TPSDelphiClassItem
 0095ca2d | TPSDelphiClassItemMethod
 0095cab5 | TPSDelphiClassItemProperty
@@ -10789,7 +11008,9 @@ uPSRuntime
 009648ca | TPSCustomDebugExec
 0096491f | uPSDebugger
 00964949 | uPSDebugger
-00964960 | TPositionData
+00964960 | 
+
+TPositionData
 00964cf5 | TPSDefineState
 00964d14 | UPSPREPROCESSOR
 00964d30 | Too many nested include files while processing '%s' from '%s'
@@ -10829,7 +11050,8 @@ uPSRuntime
 00965314 | uPSPreProcessor
 0096534c | uPSPreProcessor
 00965383 | uPSPreProcessor
-00965480 | TPSStringList
+00965480 | 
+TPSStringList
 00965534 | ARRAY
 00965558 | BEGIN
 00965590 | CLASS
@@ -11425,7 +11647,8 @@ WideString
 0096eac8 | *CheckBox_CaseExtensionAlwaysLowerCaseClick
 0096eaf4 | *CheckBox_CaseExtensionAlwaysUpperCaseClick
 0096ece5 | RB_CaseSentences
-0096ed1b | RuleCaseFrame
+0096ed1b | 
+RuleCaseFrame
 0096f461 | 	GroupBox1
 0096f48f | RuleCleanUpFrame
 0096f951 | TFrame_RuleDelete
@@ -11933,7 +12156,8 @@ TSynPasSyn
 0097de24 | SynHighlighterPas
 0097de41 | 
 TSynPasSyn
-0097e214 | 0PasDocUnknown
+0097e214 | 0
+PasDocUnknown
 0097e83d | TSynBaseCompletionForm
 0097e858 | 	SDKeyDown
 0097e864 | 
@@ -11970,21 +12194,30 @@ AnsiString
 009802a1 |  TSynBaseCompletionSearchPosition
 009802e1 | LongInt
 009802fa | TSynBaseCompletionForm
-0098038a | sclpExtendUnlimitedLeftSynCompletion
-0098088a | SynCompletion
-009808ca | SynCompletion
-0098090b | SynCompletion
-0098093e | SynCompletion
-0098097c | befAbortSynCompletion
+0098038a | sclpExtendUnlimitedLeft
+SynCompletion
+0098088a | 
+SynCompletion
+009808ca | 
+SynCompletion
+0098090b | 
+SynCompletion
+0098093e | 
+SynCompletion
+0098097c | befAbort
+SynCompletion
 009809c2 | TOnBeforeExecuteEvent
 00980e0a | TSynCompletion
 00981068 | 	LazSynIme
-00981095 | LazSynIMMBase
+00981095 | 
+LazSynIMMBase
 009811a9 | LazSynWinIme
-009812b8 | LazSynImeFull
+009812b8 | 
+LazSynImeFull
 009812e8 | 	LazSynIMM
 00981311 | 	LazSynIMM
-00981390 | ESynEditError
+00981390 | 
+ESynEditError
 009813c2 | SynEditTypes
 00981434 | SynEditTypes
 009814f0 | SynEditTypes
@@ -11999,7 +12232,8 @@ AnsiString
 00981b7c | not implemented yet: searching backwards multiple lines with regular expressions
 00981bec | inconsistency
 00981c22 | TSynEditSearch
-00981c7a | SynEditSearch
+00981c7a | 
+SynEditSearch
 00981cf9 | ESynKeyError
 00981d9d | TSynEditKeyStroke
 00981e5d | TSynEditKeyStrokes
@@ -12241,7 +12475,8 @@ AnsiString
 009844eb | SynEditMouseCmds
 00984575 | TSynEditPointBase
 00984611 | TSynEditBaseCaret
-009846ac | TSynEditCaret
+009846ac | 
+TSynEditCaret
 00984729 | TSynBeforeSetSelTextList
 009847bd | TSynEditSelection
 0098483d | TSynEditScreenCaretTimer
@@ -12267,8 +12502,10 @@ AnsiString
 00984ecf | SynEditPointClasses
 00984fd5 | TSynCustomBeautifier
 009850e5 | TSynBeautifier
-00985140 | SynBeautifier
-009851c3 | sbitConvertToTabOnlySynBeautifier
+00985140 | 
+SynBeautifier
+009851c3 | sbitConvertToTabOnly
+SynBeautifier
 009852c9 | TSynEditMark
 00985345 | TSynEditMarkLine
 009853d9 | TSynEditMarkLineList
@@ -12293,8 +12530,10 @@ AnsiString
 00985994 |  from 
 009859a8 |  wanted > 
 009859c0 | Bad Next logic pos in GetNextMarkupColAfterRowCol 
-00985a12 | SynEditMarkup
-00985a49 | SynEditMarkup
+00985a12 | 
+SynEditMarkup
+00985a49 | 
+SynEditMarkup
 00985ae1 | TSynMarkupHighAllMatchList
 00985be1 | TSynEditMarkupHighlightMatches
 00985cf5 | TSynEditMarkupHighlightAllBase
@@ -12403,12 +12642,15 @@ TLineRange
 00988cbc | SynEditTextBuffer
 00988d1a | TSynEditUndoMarkModified
 00988d7d | SynEditTextBuffer
-00988eb0 | TSynEditLines
-00988f34 | TSynEditFiler
+00988eb0 | 
+TSynEditLines
+00988f34 | 
+TSynEditFiler
 00988fb5 | TSynEditFileReader
 00989039 | TSynEditFileWriter
 0098909a | SynEditLines
-009890b1 | TSynEditFiler
+009890b1 | 
+TSynEditFiler
 009890fa | SynEditLines
 0098912f | SynEditLines
 00989167 | SynEditLines
@@ -12483,12 +12725,16 @@ TLineRange
 0098b44f | LongInt
 0098b46d | TSynEditMark
 0098b49a | TSynGutterPartBase
-0098b5f2 | SynGutterBase
-0098b622 | SynGutterBase
+0098b5f2 | 
+SynGutterBase
+0098b622 | 
+SynGutterBase
 0098b63a | TSynGutterPartList
-0098b656 | SynGutterBase
+0098b656 | 
+SynGutterBase
 0098b672 | TSynRightGutterPartList
-0098b693 | SynGutterBase
+0098b693 | 
+SynGutterBase
 0098b7e1 | TSynGutterSeparator
 0098b881 | TLazSynGutterArea
 0098b92c | 
@@ -12597,7 +12843,8 @@ FrameAlpha
 0098e93c | 
 TEtoBuffer
 0098e9b5 | EheTextDrawerException
-0098ea84 | TheTextDrawer
+0098ea84 | 
+TheTextDrawer
 0098eaa4 | Assertion failed.
 0098eabc | Tgq[_|^
 0098ead0 | No Width from GetTextExtentPoint
@@ -12614,14 +12861,20 @@ TEtoBuffer
 0098ed0c | TheFontStock.CalcFontAdvance: 
 0098ed38 | SetBaseFont: 'Value' must be specified.
 0098ed6c | TheFontStock.SetStyle LCL interface lost the font
-0098edbf | SynTextDrawer
-0098edf9 | SynTextDrawer
-0098ee28 | SynTextDrawer
+0098edbf | 
+SynTextDrawer
+0098edf9 | 
+SynTextDrawer
+0098ee28 | 
+SynTextDrawer
 0098ee69 | 
 TEtoBuffer
-0098eeae | SynTextDrawer
-0098eeea | SynTextDrawer
-0098ef19 | SynTextDrawer
+0098eeae | 
+SynTextDrawer
+0098eeea | 
+SynTextDrawer
+0098ef19 | 
+SynTextDrawer
 0098f129 | TSynEditStringBidiChars
 0098f16c | SynEditTextBidiChars
 0098f231 | TSynEditMouseActionsGutterFold

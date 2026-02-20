@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,6 +12,9 @@ namespace ReNamer.Services;
 /// </summary>
 public class AppSettings
 {
+    public static string? LastLoadError { get; private set; }
+    public string? LastSaveError { get; private set; }
+
     // ─── General ───
     public bool LoadLastPreset { get; set; } = false;
     public bool RememberWindowPosition { get; set; } = true;
@@ -52,6 +56,17 @@ public class AppSettings
     public bool FilterAttrReadOnly { get; set; } = false;
     public bool FilterAttrHidden { get; set; } = false;
     public bool FilterAttrSystem { get; set; } = false;
+    public bool FolderIncludeAllFiles { get; set; } = false;
+    public bool FolderIncludeFolderNames { get; set; } = true;
+    public bool FolderIncludeSubfolders { get; set; } = false;
+    public bool FolderIncludeHiddenFiles { get; set; } = false;
+    public bool FolderIncludeSystemFiles { get; set; } = false;
+    public bool FolderIgnoreRootFolder { get; set; } = false;
+    public string FolderIncludeMask { get; set; } = "";
+    public string FolderExcludeMask { get; set; } = "";
+    public bool FolderMaskFileNameOnly { get; set; } = false;
+    public bool FolderSaveAsDefault { get; set; } = false;
+    public bool FolderImportDefaultsInitialized { get; set; } = false;
 
     // ─── Window State ───
     public double WindowLeft { get; set; } = double.NaN;
@@ -80,6 +95,7 @@ public class AppSettings
 
     public static AppSettings Load()
     {
+        LastLoadError = null;
         try
         {
             if (File.Exists(SettingsFile))
@@ -88,19 +104,58 @@ public class AppSettings
                 return JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new AppSettings();
             }
         }
-        catch { /* Return defaults on error */ }
+        catch (Exception ex)
+        {
+            LastLoadError = ex.Message;
+            Debug.WriteLine($"[AppSettings] Load failed: {ex}");
+        }
+
         return new AppSettings();
     }
 
-    public void Save()
+    public bool Save()
     {
+        LastSaveError = null;
         try
         {
             if (!Directory.Exists(SettingsDir))
                 Directory.CreateDirectory(SettingsDir);
             var json = JsonSerializer.Serialize(this, JsonOptions);
             File.WriteAllText(SettingsFile, json);
+            return true;
         }
-        catch { /* Silently fail */ }
+        catch (Exception ex)
+        {
+            LastSaveError = ex.Message;
+            Debug.WriteLine($"[AppSettings] Save failed: {ex}");
+            return false;
+        }
+    }
+
+    public bool ApplyFirstFolderImportDefaultsIfNeeded()
+    {
+        if (FolderImportDefaultsInitialized)
+            return false;
+
+        FolderImportDefaultsInitialized = true;
+
+        if (!HasCustomizedFolderImportSettings())
+            FolderIncludeAllFiles = true;
+
+        return true;
+    }
+
+    private bool HasCustomizedFolderImportSettings()
+    {
+        return FolderIncludeAllFiles
+            || !FolderIncludeFolderNames
+            || FolderIncludeSubfolders
+            || FolderIncludeHiddenFiles
+            || FolderIncludeSystemFiles
+            || FolderIgnoreRootFolder
+            || !string.IsNullOrWhiteSpace(FolderIncludeMask)
+            || !string.IsNullOrWhiteSpace(FolderExcludeMask)
+            || FolderMaskFileNameOnly
+            || FolderSaveAsDefault;
     }
 }

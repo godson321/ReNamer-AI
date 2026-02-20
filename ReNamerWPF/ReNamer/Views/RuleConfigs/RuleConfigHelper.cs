@@ -28,30 +28,30 @@ public static class RuleConfigHelper
     {
         var menu = new ContextMenu();
         // File info tags
-        AddTagGroup(menu, "File Info",
-            ("{:Name:}", "Original file name"),
-            ("{:NameNoExt:}", "Name without extension"),
-            ("{:Ext:}", "Extension"),
-            ("{:Path:}", "Full path"),
-            ("{:Folder:}", "Folder name"),
-            ("{:ParentFolder:}", "Parent folder name"));
+        AddTagGroup(menu, R("RuleCfg_MetaTag_Group_FileInfo", "File Info"),
+            ("{:Name:}", R("RuleCfg_MetaTag_Name", "Original file name")),
+            ("{:NameNoExt:}", R("RuleCfg_MetaTag_NameNoExt", "Name without extension")),
+            ("{:Ext:}", R("RuleCfg_MetaTag_Ext", "Extension")),
+            ("{:Path:}", R("RuleCfg_MetaTag_Path", "Full path")),
+            ("{:Folder:}", R("RuleCfg_MetaTag_Folder", "Folder name")),
+            ("{:ParentFolder:}", R("RuleCfg_MetaTag_ParentFolder", "Parent folder name")));
         menu.Items.Add(new Separator());
         // Size/date tags
-        AddTagGroup(menu, "Attributes",
-            ("{:Size:}", "File size (bytes)"),
-            ("{:SizeKB:}", "File size (KB)"),
-            ("{:SizeMB:}", "File size (MB)"),
-            ("{:Created:}", "Created date"),
-            ("{:Modified:}", "Modified date"),
-            ("{:Accessed:}", "Accessed date"));
+        AddTagGroup(menu, R("RuleCfg_MetaTag_Group_Attributes", "Attributes"),
+            ("{:Size:}", R("RuleCfg_MetaTag_Size", "File size (bytes)")),
+            ("{:SizeKB:}", R("RuleCfg_MetaTag_SizeKB", "File size (KB)")),
+            ("{:SizeMB:}", R("RuleCfg_MetaTag_SizeMB", "File size (MB)")),
+            ("{:Created:}", R("RuleCfg_MetaTag_Created", "Created date")),
+            ("{:Modified:}", R("RuleCfg_MetaTag_Modified", "Modified date")),
+            ("{:Accessed:}", R("RuleCfg_MetaTag_Accessed", "Accessed date")));
         menu.Items.Add(new Separator());
         // Counter/random tags
-        AddTagGroup(menu, "Dynamic",
-            ("{:Counter:}", "Auto-increment counter"),
-            ("{:Random:}", "Random characters"),
-            ("{:GUID:}", "Generate GUID"),
-            ("{:Date:}", "Current date"),
-            ("{:Time:}", "Current time"));
+        AddTagGroup(menu, R("RuleCfg_MetaTag_Group_Dynamic", "Dynamic"),
+            ("{:Counter:}", R("RuleCfg_MetaTag_Counter", "Auto-increment counter")),
+            ("{:Random:}", R("RuleCfg_MetaTag_Random", "Random characters")),
+            ("{:GUID:}", R("RuleCfg_MetaTag_Guid", "Generate GUID")),
+            ("{:Date:}", R("RuleCfg_MetaTag_Date", "Current date")),
+            ("{:Time:}", R("RuleCfg_MetaTag_Time", "Current time")));
 
         menu.PlacementTarget = placementTarget;
         menu.IsOpen = true;
@@ -77,20 +77,20 @@ public static class RuleConfigHelper
         var menu = new ContextMenu();
         var patterns = new (string pattern, string desc)[]
         {
-            (@"\d+", "One or more digits"),
-            (@"\w+", "One or more word characters"),
-            (@"[a-z]+", "Lowercase letters"),
-            (@"[A-Z]+", "Uppercase letters"),
-            (@"[a-zA-Z]+", "Any letters"),
-            (@".*", "Any characters (greedy)"),
-            (@".+?", "Any characters (lazy)"),
-            (@"\s+", "Whitespace"),
-            (@"[^.]+", "Everything except dot"),
-            (@"(\d{4})-(\d{2})-(\d{2})", "Date pattern YYYY-MM-DD"),
-            (@"^(.+?)(\s*-\s*)(.+)$", "Name - Title pattern"),
-            (@"^\d+\.\s*", "Leading number with dot"),
-            (@"\s*\(.*?\)\s*", "Text in parentheses"),
-            (@"\s*\[.*?\]\s*", "Text in brackets"),
+            (@"\d+", R("RuleCfg_RegexPattern_Digits", "One or more digits")),
+            (@"\w+", R("RuleCfg_RegexPattern_WordChars", "One or more word characters")),
+            (@"[a-z]+", R("RuleCfg_RegexPattern_Lowercase", "Lowercase letters")),
+            (@"[A-Z]+", R("RuleCfg_RegexPattern_Uppercase", "Uppercase letters")),
+            (@"[a-zA-Z]+", R("RuleCfg_RegexPattern_AnyLetters", "Any letters")),
+            (@".*", R("RuleCfg_RegexPattern_AnyGreedy", "Any characters (greedy)")),
+            (@".+?", R("RuleCfg_RegexPattern_AnyLazy", "Any characters (lazy)")),
+            (@"\s+", R("RuleCfg_RegexPattern_Whitespace", "Whitespace")),
+            (@"[^.]+", R("RuleCfg_RegexPattern_NotDot", "Everything except dot")),
+            (@"(\d{4})-(\d{2})-(\d{2})", R("RuleCfg_RegexPattern_DateYMD", "Date pattern YYYY-MM-DD")),
+            (@"^(.+?)(\s*-\s*)(.+)$", R("RuleCfg_RegexPattern_NameTitle", "Name - Title pattern")),
+            (@"^\d+\.\s*", R("RuleCfg_RegexPattern_LeadingNumber", "Leading number with dot")),
+            (@"\s*\(.*?\)\s*", R("RuleCfg_RegexPattern_ParensText", "Text in parentheses")),
+            (@"\s*\[.*?\]\s*", R("RuleCfg_RegexPattern_BracketsText", "Text in brackets")),
         };
 
         foreach (var (pattern, desc) in patterns)
@@ -111,7 +111,7 @@ public static class RuleConfigHelper
     {
         var menu = new ContextMenu();
         // Separator option
-        var sepItem = new MenuItem { Header = "Insert separator |" };
+        var sepItem = new MenuItem { Header = R("RuleCfg_DateFormat_InsertSeparator", "Insert separator |") };
         sepItem.Click += (_, _) => InsertSeparator(target);
         menu.Items.Add(sepItem);
         menu.Items.Add(new Separator());
@@ -119,19 +119,19 @@ public static class RuleConfigHelper
         // Format specifiers
         var formats = new (string fmt, string desc)[]
         {
-            ("yyyy", "Year (4 digits)"),
-            ("yy", "Year (2 digits)"),
-            ("MM", "Month (01-12)"),
-            ("MMM", "Month abbreviation"),
-            ("MMMM", "Month full name"),
-            ("dd", "Day (01-31)"),
-            ("ddd", "Day abbreviation"),
-            ("dddd", "Day full name"),
-            ("HH", "Hour 24h (00-23)"),
-            ("hh", "Hour 12h (01-12)"),
-            ("mm", "Minute (00-59)"),
-            ("ss", "Second (00-59)"),
-            ("tt", "AM/PM"),
+            ("yyyy", R("RuleCfg_DateFormat_Year4", "Year (4 digits)")),
+            ("yy", R("RuleCfg_DateFormat_Year2", "Year (2 digits)")),
+            ("MM", R("RuleCfg_DateFormat_Month2", "Month (01-12)")),
+            ("MMM", R("RuleCfg_DateFormat_MonthAbbr", "Month abbreviation")),
+            ("MMMM", R("RuleCfg_DateFormat_MonthFull", "Month full name")),
+            ("dd", R("RuleCfg_DateFormat_Day2", "Day (01-31)")),
+            ("ddd", R("RuleCfg_DateFormat_DayAbbr", "Day abbreviation")),
+            ("dddd", R("RuleCfg_DateFormat_DayFull", "Day full name")),
+            ("HH", R("RuleCfg_DateFormat_Hour24", "Hour 24h (00-23)")),
+            ("hh", R("RuleCfg_DateFormat_Hour12", "Hour 12h (01-12)")),
+            ("mm", R("RuleCfg_DateFormat_Minute", "Minute (00-59)")),
+            ("ss", R("RuleCfg_DateFormat_Second", "Second (00-59)")),
+            ("tt", R("RuleCfg_DateFormat_AmPm", "AM/PM")),
         };
 
         foreach (var (fmt, desc) in formats)
@@ -142,7 +142,7 @@ public static class RuleConfigHelper
         }
 
         menu.Items.Add(new Separator());
-        var helpItem = new MenuItem { Header = "DateTime Format Reference (online)..." };
+        var helpItem = new MenuItem { Header = R("RuleCfg_DateFormat_ReferenceOnline", "DateTime Format Reference (online)...") };
         helpItem.Click += (_, _) => OpenUrl("https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings");
         menu.Items.Add(helpItem);
 
@@ -165,18 +165,18 @@ public static class RuleConfigHelper
     public static void ShowDateFormatHelpMenu(ComboBox target, UIElement placementTarget)
     {
         var menu = new ContextMenu();
-        var sepItem = new MenuItem { Header = "Insert separator |" };
+        var sepItem = new MenuItem { Header = R("RuleCfg_DateFormat_InsertSeparator", "Insert separator |") };
         sepItem.Click += (_, _) => InsertTextIntoComboBox(target, "|");
         menu.Items.Add(sepItem);
         menu.Items.Add(new Separator());
 
         var formats = new (string fmt, string desc)[]
         {
-            ("yyyy", "Year (4 digits)"), ("yy", "Year (2 digits)"),
-            ("MM", "Month (01-12)"), ("MMM", "Month abbreviation"), ("MMMM", "Month full name"),
-            ("dd", "Day (01-31)"), ("ddd", "Day abbreviation"), ("dddd", "Day full name"),
-            ("HH", "Hour 24h (00-23)"), ("hh", "Hour 12h (01-12)"),
-            ("mm", "Minute (00-59)"), ("ss", "Second (00-59)"), ("tt", "AM/PM"),
+            ("yyyy", R("RuleCfg_DateFormat_Year4", "Year (4 digits)")), ("yy", R("RuleCfg_DateFormat_Year2", "Year (2 digits)")),
+            ("MM", R("RuleCfg_DateFormat_Month2", "Month (01-12)")), ("MMM", R("RuleCfg_DateFormat_MonthAbbr", "Month abbreviation")), ("MMMM", R("RuleCfg_DateFormat_MonthFull", "Month full name")),
+            ("dd", R("RuleCfg_DateFormat_Day2", "Day (01-31)")), ("ddd", R("RuleCfg_DateFormat_DayAbbr", "Day abbreviation")), ("dddd", R("RuleCfg_DateFormat_DayFull", "Day full name")),
+            ("HH", R("RuleCfg_DateFormat_Hour24", "Hour 24h (00-23)")), ("hh", R("RuleCfg_DateFormat_Hour12", "Hour 12h (01-12)")),
+            ("mm", R("RuleCfg_DateFormat_Minute", "Minute (00-59)")), ("ss", R("RuleCfg_DateFormat_Second", "Second (00-59)")), ("tt", R("RuleCfg_DateFormat_AmPm", "AM/PM")),
         };
         foreach (var (fmt, desc) in formats)
         {
@@ -186,7 +186,7 @@ public static class RuleConfigHelper
         }
 
         menu.Items.Add(new Separator());
-        var helpItem = new MenuItem { Header = "DateTime Format Reference (online)..." };
+        var helpItem = new MenuItem { Header = R("RuleCfg_DateFormat_ReferenceOnline", "DateTime Format Reference (online)...") };
         helpItem.Click += (_, _) => OpenUrl("https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings");
         menu.Items.Add(helpItem);
 
@@ -209,5 +209,15 @@ public static class RuleConfigHelper
         var current = target.Text ?? "";
         target.Text = current + text;
         target.Focus();
+    }
+
+    private static string R(string key, string fallback)
+    {
+        if (Application.Current?.TryFindResource(key) is string value && !string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        return fallback;
     }
 }

@@ -1,31 +1,41 @@
 <UserControl x:Class="ReNamer.Views.RuleConfigs.ReplaceConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             MinWidth="440" MinHeight="280">
-    <StackPanel Margin="16,12">
+             xmlns:helpers="clr-namespace:ReNamer.Helpers"
+             MinWidth="440" MinHeight="280"
+             Background="{DynamicResource CardBrush}">
+    <StackPanel>
         <!-- Find: Using unified Grid layout -->
-        <Grid Margin="0,0,0,6">
+        <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="32"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{DynamicResource Replace_Find}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtFind" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"/>
-            <Button x:Name="btnFindSeparator" Grid.Column="2" Content="|" ToolTip="{DynamicResource RuleCfg_SeparateItems}"
-                    Width="28" Height="28" Margin="4,0,0,0" FontWeight="Bold" Click="BtnFindSeparator_Click"/>
+            <TextBox x:Name="txtFind" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReplaceFind}"/>
+            <Button x:Name="btnFindSeparator" Grid.Column="2" ToolTip="{DynamicResource RuleCfg_SeparateItems}"
+                    Width="28" Height="28" Margin="4,0,0,0" Click="BtnFindSeparator_Click"
+                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Path Data="{StaticResource Icon_Columns}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+            </Button>
         </Grid>
         <!-- Replace -->
-        <Grid Margin="0,0,0,10">
+        <Grid Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="32"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{DynamicResource Replace_Replace}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtReplace" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"/>
-            <Button x:Name="btnReplaceMetaTag" Grid.Column="2" Content="📎" ToolTip="{DynamicResource RuleCfg_InsertMetaTag}"
-                    Width="28" Height="28" Margin="4,0,0,0" Click="BtnReplaceMetaTag_Click"/>
+            <TextBox x:Name="txtReplace" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReplaceReplace}"/>
+            <Button x:Name="btnReplaceMetaTag" Grid.Column="2" ToolTip="{DynamicResource RuleCfg_InsertMetaTag}"
+                    Width="28" Height="28" Margin="4,0,0,0" Click="BtnReplaceMetaTag_Click"
+                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Path Data="{StaticResource Icon_Insert}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+            </Button>
         </Grid>
         <!-- Options row -->
         <Grid Margin="0,0,0,10">
@@ -34,20 +44,33 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!-- Left: Occurrences -->
-            <StackPanel HorizontalAlignment="Left">
-                <TextBlock Text="{DynamicResource Replace_Occurrences}" Margin="0,0,0,4" FontWeight="SemiBold"/>
-                <RadioButton x:Name="rbAll" Content="{DynamicResource Replace_All}" GroupName="Occurrence" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbFirst" Content="{DynamicResource Replace_First}" GroupName="Occurrence" Margin="0,2" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbLast" Content="{DynamicResource Replace_Last}" GroupName="Occurrence" Margin="0,2" VerticalContentAlignment="Center"/>
-            </StackPanel>
+            <Grid VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Replace_Occurrences}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Top"/>
+                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                    <RadioButton x:Name="rbAll" Content="{DynamicResource Replace_All}" GroupName="Occurrence" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbFirst" Content="{DynamicResource Replace_First}" GroupName="Occurrence" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbLast" Content="{DynamicResource Replace_Last}" GroupName="Occurrence" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
             <!-- Right: Flags -->
-            <StackPanel Grid.Column="1" HorizontalAlignment="Left">
-                <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Replace_CaseSensitive}" Margin="0,2" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkWholeWords" Content="{DynamicResource Replace_WholeWords}" Margin="0,2" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Replace_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-            </StackPanel>
+            <Grid Grid.Column="1" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{DynamicResource Replace_Flags}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Top"/>
+                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                    <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Replace_CaseSensitive}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkWholeWords" Content="{DynamicResource Replace_WholeWords}" Margin="0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Replace_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Grid>
         <!-- Use wildcards -->
-        <CheckBox x:Name="chkUseWildcards" Content="{DynamicResource Replace_UseWildcards}" Margin="0,4" VerticalContentAlignment="Center"/>
+        <CheckBox x:Name="chkUseWildcards" Content="{DynamicResource Replace_UseWildcards}" VerticalContentAlignment="Center"/>
     </StackPanel>
 </UserControl>
