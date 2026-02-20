@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReNamer 任务栏图标预览</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; padding: 24px; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: #f3f5f7; color: #1f2937; }
+    h1 { margin: 0 0 12px; font-size: 20px; }
+    .tip { margin: 0 0 20px; color: #4b5563; font-size: 13px; }
+    .taskbar { background: #ffffff; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px; width: fit-content; }
+    .task-item { width: 64px; height: 56px; border-radius: 10px; display: grid; place-items: center; position: relative; background: #eaf2f8; border: 1px solid #cfd8e3; }
+    .task-item::after { content: ""; position: absolute; bottom: 4px; width: 20px; height: 4px; border-radius: 6px; background: #1f8fff; }
+    .grid { margin-top: 20px; display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: 12px; }
+    .card h3 { margin: 0 0 8px; font-size: 14px; }
+    .sizes { display: flex; gap: 12px; align-items: center; }
+    .sizebox { display: grid; justify-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
+    .pick { margin-top: 10px; width: 100%; border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; border-radius: 8px; padding: 6px 8px; cursor: pointer; font-weight: 600; }
+    .active { outline: 2px solid #3b82f6; }
+    .result { margin-top: 14px; font-size: 13px; color: #0f766e; }
+    svg { shape-rendering: geometricPrecision; }
+  </style>
+</head>
+<body>
+  <h1>ReNamer 任务栏图标预览</h1>
+  <p class="tip">先看上方“任务栏模拟位”效果，再看下方 16/32 像素对比。点击“选这个”即可记录选择。</p>
+
+  <div class="taskbar">
+    <div class="task-item" id="taskbarPreview"></div>
+  </div>
+
+  <div class="grid" id="cards"></div>
+  <div class="result" id="result">当前选择：01（对应 AppTaskbarIcon_01）</div>
+
+  <script>
+    const icons = {
+      "01": `
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-label="icon-01">
+          <path fill="#006EDC" d="M2 1h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/>
+          <path fill="#fff" d="M3 6h7V4l3 3-3 3V8H3z"/>
+          <path fill="#fff" d="M13 10H6v2L3 9l3-3v2h7z"/>
+          <path fill="#6EE36A" d="M11.3 3.2h3.5v3.5h-1.2V4.4h-2.3z"/>
+        </svg>`,
+      "02": `
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-label="icon-02">
+          <path fill="#5B5BD6" d="M2 1h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/>
+          <path fill="#fff" d="M3 5h4l1 1h5v5H3z"/>
+          <path fill="#FFD84D" d="M8.2 4.1l4.2 4.2-1 1-4.2-4.2z"/>
+          <path fill="#fff" d="M6.6 9.6h5v1.2h-5z"/>
+        </svg>`,
+      "03": `
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-label="icon-03">
+          <path fill="#0F766E" d="M2 1h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/>
+          <path fill="#fff" d="M3 4h4v8H3zM9 4h4v8H9z"/>
+          <path fill="#A7F3D0" d="M4 7h7V5l2 3-2 3V9H4z"/>
+        </svg>`,
+      "04": `
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-label="icon-04">
+          <path fill="#C2410C" d="M2 1h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/>
+          <path fill="#fff" d="M3 4h10v2H3zM3 10h10v2H3z"/>
+          <path fill="#FFEDD5" d="M4 8h6V6l3 2-3 2V8H4z"/>
+        </svg>`
+    };
+
+    const taskbar = document.getElementById("taskbarPreview");
+    const cards = document.getElementById("cards");
+    const result = document.getElementById("result");
+    let selected = "01";
+
+    function renderTaskbar() {
+      taskbar.innerHTML = icons[selected];
+    }
+
+    function renderCards() {
+      cards.innerHTML = "";
+      Object.keys(icons).forEach((k) => {
+        const card = document.createElement("div");
+        card.className = "card" + (k === selected ? " active" : "");
+        card.innerHTML = `
+          <h3>方案 ${k}</h3>
+          <div class="sizes">
+            <div class="sizebox"><div style="transform:scale(1)">${icons[k]}</div><span>16x16</span></div>
+            <div class="sizebox"><div style="transform:scale(2); transform-origin:left top; width:32px; height:32px">${icons[k]}</div><span>32x32</span></div>
+          </div>
+          <button class="pick" data-key="${k}">选这个（${k}）</button>
+        `;
+        cards.appendChild(card);
+      });
+      cards.querySelectorAll(".pick").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selected = btn.dataset.key;
+          renderTaskbar();
+          renderCards();
+          result.textContent = `当前选择：${selected}（对应 AppTaskbarIcon_${selected}）`;
+        });
+      });
+    }
+
+    renderTaskbar();
+    renderCards();
+  </script>
+</body>
+</html>

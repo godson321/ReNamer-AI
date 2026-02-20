@@ -7,6 +7,7 @@
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="{DynamicResource AppTitle}" 
+        Icon="/Resources/AppIcon.ico"
         Width="600" Height="720" MinWidth="600" MinHeight="500"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -15,7 +16,6 @@
         AllowDrop="True"
         Drop="Window_Drop"
         DragOver="Window_DragOver"
-        KeyDown="Window_KeyDown"
         Closing="Window_Closing">
     <WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="40"
@@ -30,6 +30,7 @@
         <!-- 状态指示器样式 -->
         <Style x:Key="StateIndicator" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Style.Triggers>
@@ -47,8 +48,8 @@
 
         <!-- 现代化 ListView 项样式 -->
         <Style x:Key="ModernListViewItem" TargetType="ListViewItem">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="6,0"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Style.Triggers>
@@ -68,6 +69,150 @@
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="EnterpriseDataGrid" TargetType="{x:Type DataGrid}">
+            <Setter Property="RowHeight" Value="34"/>
+            <Setter Property="ColumnHeaderHeight" Value="38"/>
+            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="RowBackground" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <Style x:Key="EnterpriseDataGridColumnHeader" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <Border x:Name="HeaderBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  Margin="12,0,10,0"
+                                                  RecognizesAccessKey="True"/>
+                                <TextBlock x:Name="SortArrow"
+                                           Grid.Column="1"
+                                           Margin="6,0,12,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="10"
+                                           FontWeight="Bold"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           Visibility="Collapsed"
+                                           Text="▲"/>
+                                <Thumb x:Name="PART_RightHeaderGripper"
+                                       Grid.Column="1"
+                                       HorizontalAlignment="Right"
+                                       Width="12"
+                                       Margin="0,-1,-1,-1"
+                                       Cursor="SizeWE"
+                                       Background="Transparent">
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="{x:Type Thumb}">
+                                            <Border Background="Transparent"/>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="SortDirection" Value="Ascending">
+                                <Setter TargetName="SortArrow" Property="Text" Value="▲"/>
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="SortDirection" Value="Descending">
+                                <Setter TargetName="SortArrow" Property="Text" Value="▼"/>
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                </Trigger>
+                <Trigger Property="SortDirection" Value="Ascending">
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                </Trigger>
+                <Trigger Property="SortDirection" Value="Descending">
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="EnterpriseDataGridRow" TargetType="{x:Type DataGridRow}">
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                        <Condition Property="IsSelected" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="EnterpriseDataGridCell" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsKeyboardFocusWithin" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#FFF7D047"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </MultiTrigger>
+            </Style.Triggers>
         </Style>
 
         <!-- 工具栏按钮样式 -->
@@ -150,6 +295,12 @@
             <Setter Property="Margin" Value="4,0,0,0"/>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
+        <Style x:Key="FileToolbarButton" TargetType="Button" BasedOn="{StaticResource ToolbarActionButton}">
+            <Setter Property="Width" Value="108"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
     </Window.Resources>
 
     <Border BorderBrush="{StaticResource PrimaryBrush}"
@@ -220,33 +371,29 @@
             <!-- 菜单栏 -->
             <Menu Grid.Row="1" Background="{StaticResource SurfaceBrush}" Height="32">
                 <MenuItem Header="{DynamicResource Menu_File}">
-                    <MenuItem Header="{DynamicResource Menu_NewProject}" InputGestureText="Ctrl+N" Command="{Binding CmdNewProject}"/>
-                    <MenuItem Header="{DynamicResource Menu_NewInstance}" InputGestureText="Ctrl+Shift+N" Command="{Binding CmdNewInstance}"/>
+                    <MenuItem Header="{DynamicResource Menu_Undo}" Command="{Binding CmdUndoRename}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_Undo}" InputGestureText="Ctrl+Shift+Z" Command="{Binding CmdUndoRename}"/>
-                    <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_AddFiles}" InputGestureText="F3" Command="{Binding CmdAddFiles}"/>
-                    <MenuItem Header="{DynamicResource Menu_AddFolders}" InputGestureText="F4" Command="{Binding CmdAddFolders}"/>
+                    <MenuItem Header="{DynamicResource Menu_AddFiles}" Command="{Binding CmdAddFiles}"/>
+                    <MenuItem Header="{DynamicResource Menu_AddFolders}" Command="{Binding CmdAddFolders}"/>
                     <MenuItem Header="{DynamicResource Menu_AddPaths}" Command="{Binding CmdAddPaths}"/>
-                    <MenuItem Header="{DynamicResource Menu_PasteFiles}" InputGestureText="Ctrl+Shift+V" Command="{Binding CmdPasteFiles}"/>
-                    <MenuItem Header="{DynamicResource Menu_Preview}" InputGestureText="F5" Command="{Binding CmdPreview}"/>
-                    <MenuItem Header="{DynamicResource Menu_Rename}" InputGestureText="F6" Command="{Binding CmdRename}"/>
+                    <MenuItem Header="{DynamicResource Menu_PasteFiles}" Command="{Binding CmdPasteFiles}"/>
+                    <MenuItem Header="{DynamicResource Menu_Rename}" Command="{Binding CmdRename}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_Exit}" InputGestureText="Alt+F4" Command="{Binding CmdExit}"/>
+                    <MenuItem Header="{DynamicResource Menu_Exit}" Command="{Binding CmdExit}"/>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource Menu_Presets}">
                     <MenuItem x:Name="menuLoadPreset" Header="{DynamicResource Menu_LoadPreset}" Command="{Binding CmdLoadPreset}"/>
-                    <MenuItem Header="{DynamicResource Menu_SavePresetAs}" InputGestureText="Ctrl+S" Command="{Binding CmdSavePresetAs}"/>
-                    <MenuItem Header="{DynamicResource Menu_SavePreset}" InputGestureText="Ctrl+Shift+S" Command="{Binding CmdSavePreset}"/>
+                    <MenuItem Header="{DynamicResource Menu_SavePresetAs}" Command="{Binding CmdSavePresetAs}"/>
+                    <MenuItem Header="{DynamicResource Menu_SavePreset}" Command="{Binding CmdSavePreset}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_ManagePresets}" InputGestureText="Ctrl+P" Command="{Binding CmdManagePresets}"/>
+                    <MenuItem Header="{DynamicResource Menu_ManagePresets}" Command="{Binding CmdManagePresets}"/>
                     <MenuItem Header="{DynamicResource Menu_BrowsePresetsFolder}" Command="{Binding CmdBrowsePresets}"/>
                     <MenuItem Header="{DynamicResource Menu_ImportPreset}" Command="{Binding CmdImportPreset}"/>
                     <MenuItem Header="{DynamicResource Menu_RescanPresets}" Command="{Binding CmdRescanPresets}"/>
                     <MenuItem Header="{DynamicResource Menu_CreatePresetLinks}" Command="{Binding CmdCreatePresetLinks}"/>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource Menu_Settings}">
-                    <MenuItem Header="{DynamicResource Menu_AllSettings}" InputGestureText="F8" Command="{Binding CmdSettings}"/>
+                    <MenuItem Header="{DynamicResource Menu_AllSettings}" Command="{Binding CmdSettings}"/>
                     <Separator/>
                     <MenuItem Header="{DynamicResource Menu_Settings_General}" Command="{Binding CmdSettingsGeneral}"/>
                     <MenuItem Header="{DynamicResource Menu_Settings_Preview}" Command="{Binding CmdSettingsPreview}"/>
@@ -256,23 +403,9 @@
                     <MenuItem Header="{DynamicResource Menu_Settings_Filters}" Command="{Binding CmdSettingsFilters}"/>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource Menu_Help}">
-                    <MenuItem Header="{DynamicResource Menu_HelpOnline}" InputGestureText="F1" Command="{Binding CmdHelpOnline}"/>
-                    <MenuItem Header="{DynamicResource Menu_QuickGuide}" Command="{Binding CmdQuickGuide}"/>
-                    <MenuItem Header="{DynamicResource Menu_UserManual}" Command="{Binding CmdUserManual}"/>
-                    <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_Forum}" Command="{Binding CmdForum}"/>
-                    <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_LiteVsPro}" Command="{Binding CmdLiteVsPro}"/>
-                    <MenuItem Header="{DynamicResource Menu_Purchase}" Command="{Binding CmdPurchase}"/>
-                    <MenuItem Header="{DynamicResource Menu_Register}" Command="{Binding CmdRegister}"/>
-                    <MenuItem Header="{DynamicResource Menu_Unregister}" Command="{Binding CmdUnregister}"/>
-                    <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_VersionHistory}" Command="{Binding CmdVersionHistory}"/>
-                    <MenuItem Header="{DynamicResource Menu_Copyrights}" Command="{Binding CmdCopyrights}"/>
-                    <Separator/>
                     <MenuItem x:Name="menuLanguage" Header="{DynamicResource Menu_Language}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Menu_About}" InputGestureText="Shift+F1" Command="{Binding CmdAbout}"/>
+                    <MenuItem Header="{DynamicResource Menu_About}" Command="{Binding CmdAbout}"/>
                 </MenuItem>
             </Menu>
 
@@ -308,25 +441,13 @@
                     
 
                     <!-- 预览 -->
-                    <Button Command="{Binding CmdPreview}" Style="{StaticResource CommandBarSecondaryButton}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Icon_Preview}" Fill="{DynamicResource SemanticSuccessBrush}" 
-                                  Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Toolbar_Preview}" 
-                                       VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
-                        </StackPanel>
-                    </Button>
-
-                    
-
                     <!-- 重命名（强调按钮）-->
-                    <Button Command="{Binding CmdRename}" Style="{StaticResource CommandBarPrimaryButton}">
+                    <Button Command="{Binding CmdRename}" Style="{StaticResource CommandBarSecondaryButton}">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Icon_Rename}" Fill="White" 
+                            <Path Data="{StaticResource Icon_Rename}" Fill="{DynamicResource PrimaryBrush}" 
                                   Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
                             <TextBlock Text="{DynamicResource Toolbar_Rename}" 
-                                       VerticalAlignment="Center" Margin="8,0,0,0" 
-                                       FontSize="14" FontWeight="SemiBold"/>
+                                       VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
                         </StackPanel>
                     </Button>
                     </StackPanel>
@@ -363,7 +484,6 @@
                                         <TextBlock Text="{DynamicResource Toolbar_Remove}" Margin="6,0,0,0" FontSize="13"/>
                                     </StackPanel>
                                 </Button>
-                                <Separator Width="1" Background="{StaticResource BorderBrush}" Margin="8,4"/>
                                 <Button Command="{Binding CmdMoveRuleUp}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Up}" Fill="{StaticResource TextSecondaryBrush}" 
@@ -383,11 +503,15 @@
 
                         <!-- 规则列表 -->
                         <ListView x:Name="lvRules" SelectionMode="Extended"
-                                  MouseDoubleClick="Rules_DoubleClick" KeyDown="Rules_KeyDown"
+                                  MouseDoubleClick="Rules_DoubleClick"
                                   SelectionChanged="Rules_SelectionChanged"
                                   PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
                                   MouseMove="Rules_MouseMove" Drop="Rules_Drop" DragOver="Rules_DragOver"
                                   AllowDrop="True"
+                                  AlternationCount="2147483647"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling"
+                                  ScrollViewer.CanContentScroll="True"
                                   Background="{DynamicResource SurfaceBrush}"
                                   BorderThickness="1"
                                   BorderBrush="{DynamicResource BorderBrush}"
@@ -397,23 +521,23 @@
                             </ListView.Resources>
                             <ListView.ContextMenu>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="{DynamicResource CtxRule_Add}" InputGestureText="Ins" Command="{Binding CmdAddRule}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Add}" Command="{Binding CmdAddRule}"/>
                                     <MenuItem Header="{DynamicResource CtxRule_AddAbove}" Command="{Binding CmdRuleAddAbove}"/>
                                     <MenuItem Header="{DynamicResource CtxRule_AddBelow}" Command="{Binding CmdRuleAddBelow}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_Edit}" InputGestureText="Enter" Command="{Binding CmdRuleEdit}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_Duplicate}" InputGestureText="Shift+Ins" Command="{Binding CmdRuleDuplicate}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_Remove}" InputGestureText="Del" Command="{Binding CmdRemoveRule}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_RemoveAll}" InputGestureText="Shift+Del" Command="{Binding CmdRuleRemoveAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Edit}" Command="{Binding CmdRuleEdit}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Duplicate}" Command="{Binding CmdRuleDuplicate}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Remove}" Command="{Binding CmdRemoveRule}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_RemoveAll}" Command="{Binding CmdRuleRemoveAll}"/>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource CtxRule_MoveUp}" InputGestureText="Ctrl+Up" Command="{Binding CmdMoveRuleUp}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_MoveDown}" InputGestureText="Ctrl+Down" Command="{Binding CmdMoveRuleDown}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MoveUp}" Command="{Binding CmdMoveRuleUp}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MoveDown}" Command="{Binding CmdMoveRuleDown}"/>
                                     <Separator/>
                                     <MenuItem Header="{DynamicResource Menu_ExportClipboard}" Command="{Binding CmdRuleExport}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_Comment}" InputGestureText="Shift+Enter" Command="{Binding CmdRuleComment}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Comment}" Command="{Binding CmdRuleComment}"/>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource CtxRule_SelectAll}" InputGestureText="Ctrl+A" Command="{Binding CmdRulesSelectAll}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_MarkAll}" InputGestureText="Shift+M" Command="{Binding CmdRulesMarkAll}"/>
-                                    <MenuItem Header="{DynamicResource CtxRule_UnmarkAll}" InputGestureText="Shift+U" Command="{Binding CmdRulesUnmarkAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_SelectAll}" Command="{Binding CmdRulesSelectAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MarkAll}" Command="{Binding CmdRulesMarkAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_UnmarkAll}" Command="{Binding CmdRulesUnmarkAll}"/>
                                 </ContextMenu>
                             </ListView.ContextMenu>
                             <ListView.View>
@@ -428,7 +552,7 @@
                                     <GridViewColumn Header="#" Width="40">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Converter={StaticResource IndexConverter}}" 
+                                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}" 
                                                            HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -455,78 +579,119 @@
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
                                 MinHeight="44" Padding="10,6">
                             <StackPanel Orientation="Horizontal">
-                                <Button Command="{Binding CmdAddFiles}" Style="{StaticResource ToolbarActionButton}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Path Data="{StaticResource Icon_AddFile}" Fill="{StaticResource PrimaryBrush}" 
-                                              Width="14" Height="14" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Files}" Margin="6,0,0,0" FontSize="13"/>
-                                    </StackPanel>
-                                </Button>
-                                <Button Command="{Binding CmdFilters}" Style="{StaticResource ToolbarActionButton}">
+                                <Button Command="{Binding CmdFilters}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Filter}" Fill="{StaticResource InfoBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
                                         <TextBlock Text="{DynamicResource Toolbar_Filters}" Margin="6,0,0,0" FontSize="13"/>
                                     </StackPanel>
                                 </Button>
-                                <Button Command="{Binding CmdOptions}" Style="{StaticResource ToolbarActionButton}">
+                                <Button Command="{Binding CmdOptions}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Settings}" Fill="{StaticResource TextSecondaryBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
                                         <TextBlock Text="{DynamicResource Toolbar_Options}" Margin="6,0,0,0" FontSize="13"/>
                                     </StackPanel>
                                 </Button>
-                                <Button Command="{Binding CmdExport}" Style="{StaticResource ToolbarActionButton}">
-                                    <TextBlock Text="{DynamicResource Toolbar_Export}" FontSize="13"/>
+                                <Button Command="{Binding CmdAnalyze}" Style="{StaticResource FileToolbarButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon_Analyze}" Fill="{StaticResource PrimaryBrush}" 
+                                              Width="14" Height="14" Stretch="Uniform"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Analyze}" Margin="6,0,0,0" FontSize="13"/>
+                                    </StackPanel>
                                 </Button>
-                                <Button Command="{Binding CmdAnalyze}" Style="{StaticResource ToolbarActionButton}">
-                                    <TextBlock Text="{DynamicResource Toolbar_Analyze}" FontSize="13"/>
-                                </Button>
-                                <Button x:Name="btnColumns" Command="{Binding CmdColumns}" Style="{StaticResource ToolbarActionButton}">
-                                    <TextBlock Text="{DynamicResource Toolbar_Columns}" FontSize="13"/>
-                                </Button>
-                                <Separator Width="1" Background="{StaticResource BorderBrush}" Margin="8,4"/>
-                                <Button Command="{Binding CmdValidate}" Style="{StaticResource ToolbarActionButton}">
-                                    <TextBlock Text="{DynamicResource Toolbar_Validate}" FontSize="13"/>
+                                <Button Command="{Binding CmdValidate}" Style="{StaticResource FileToolbarButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon_Check}" Fill="{StaticResource SemanticSuccessBrush}" 
+                                              Width="14" Height="14" Stretch="Uniform"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Validate}" Margin="6,0,0,0" FontSize="13"/>
+                                    </StackPanel>
                                 </Button>
                             </StackPanel>
                         </Border>
 
                         <!-- 文件列表 -->
-                        <ListView x:Name="lvFiles" SelectionMode="Extended" AllowDrop="True"
-                                  KeyDown="Files_KeyDown" SelectionChanged="Files_SelectionChanged"
+                        <DataGrid x:Name="lvFiles" SelectionMode="Extended" SelectionUnit="FullRow" AllowDrop="True"
+                                  SelectionChanged="Files_SelectionChanged"
                                   PreviewMouseLeftButtonDown="Files_PreviewMouseLeftButtonDown"
                                   MouseMove="Files_MouseMove" Drop="Files_Drop" DragOver="Files_DragOver"
-                                  GridViewColumnHeader.Click="FilesColumnHeader_Click"
-                                  Background="{DynamicResource SurfaceBrush}"
-                                  BorderThickness="1"
-                                  BorderBrush="{DynamicResource BorderBrush}"
-                                  ItemContainerStyle="{StaticResource ModernListViewItem}">
-                            <ListView.Resources>
-                                <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource TableColumnHeader}">
+                                  Sorting="FilesColumnHeader_Click"
+                                  Style="{StaticResource EnterpriseDataGrid}"
+                                  RowStyle="{StaticResource EnterpriseDataGridRow}"
+                                  CellStyle="{StaticResource EnterpriseDataGridCell}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  HeadersVisibility="Column"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling"
+                                  ScrollViewer.CanContentScroll="True">
+                            <DataGrid.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextWrapping" Value="NoWrap"/>
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                <Style x:Key="CenteredCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                                <Style x:Key="ChangedNewNameText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding HasChanged}" Value="True"/>
+                                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style x:Key="RightAlignedCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
+                                    <Setter Property="TextAlignment" Value="Right"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                                <Style x:Key="CenteredEditingCellTextBox" TargetType="{x:Type TextBox}">
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="6,0"/>
+                                </Style>
+                                <Style x:Key="CenteredFileCheckBox" TargetType="{x:Type CheckBox}">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource EnterpriseDataGridColumnHeader}">
                                     <EventSetter Event="MouseRightButtonUp" Handler="FilesColumnHeader_RightClick"/>
                                     <EventSetter Event="MouseDoubleClick" Handler="FilesColumnHeader_DoubleClick"/>
                                 </Style>
-                            </ListView.Resources>
-                            <ListView.ContextMenu>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.InputBindings>
+                                <KeyBinding Key="Delete" Command="{Binding CmdRemoveSelectedFiles}"/>
+                            </DataGrid.InputBindings>
+                            <DataGrid.ContextMenu>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="{DynamicResource CtxFile_EditNewName}" InputGestureText="F2" Command="{Binding CmdEditNewName}"/>
+                                    <MenuItem Header="{DynamicResource CtxFile_EditNewName}" Command="{Binding CmdEditNewName}"/>
                                     <MenuItem Header="{DynamicResource Menu_AnalyzeName}" Command="{Binding CmdAnalyze}"/>
                                     <Separator/>
                                     <MenuItem Header="{DynamicResource CtxFile_Shell}">
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenFile}" InputGestureText="Enter" Command="{Binding CmdOpenFile}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenFolder}" InputGestureText="Ctrl+Enter" Command="{Binding CmdOpenFolder}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenWithNotepad}" InputGestureText="Shift+Enter" Command="{Binding CmdOpenWithNotepad}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_Properties}" InputGestureText="Alt+Enter" Command="{Binding CmdFileProperties}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_OpenFile}" Command="{Binding CmdOpenFile}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_OpenFolder}" Command="{Binding CmdOpenFolder}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_OpenWithNotepad}" Command="{Binding CmdOpenWithNotepad}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_Properties}" Command="{Binding CmdFileProperties}"/>
                                         <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_CutToClipboard}" InputGestureText="Ctrl+Shift+X" Command="{Binding CmdCutFiles}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_CopyToClipboard}" InputGestureText="Ctrl+Shift+C" Command="{Binding CmdCopyFiles}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_CutToClipboard}" Command="{Binding CmdCutFiles}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_CopyToClipboard}" Command="{Binding CmdCopyFiles}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_DeleteRecycle}" Command="{Binding CmdDeleteRecycle}"/>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource CtxFile_Mark}">
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkItem}" InputGestureText="Shift+M" Command="{Binding CmdMarkSelected}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_UnmarkItem}" InputGestureText="Shift+U" Command="{Binding CmdUnmarkSelected}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_InvertMarking}" InputGestureText="Insert" Command="{Binding CmdInvertMarking}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_MarkItem}" Command="{Binding CmdMarkSelected}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_UnmarkItem}" Command="{Binding CmdUnmarkSelected}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_InvertMarking}" Command="{Binding CmdInvertMarking}"/>
                                         <Separator/>
                                         <MenuItem Header="{DynamicResource CtxFile_MarkChangedIncCase}" Command="{Binding CmdMarkChangedIncCase}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_MarkChangedExcCase}" Command="{Binding CmdMarkChangedExcCase}"/>
@@ -534,162 +699,83 @@
                                         <MenuItem Header="{DynamicResource CtxFile_MarkOnlySelected}" Command="{Binding CmdMarkOnlySelected}"/>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource CtxFile_Clear}">
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearAll}" InputGestureText="Ctrl+Del" Command="{Binding CmdClearAll}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_ClearAll}" Command="{Binding CmdClearAll}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearRenamed}" Command="{Binding CmdClearRenamed}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearFailed}" Command="{Binding CmdClearFailed}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearValid}" Command="{Binding CmdClearValid}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearInvalid}" Command="{Binding CmdClearInvalid}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearNotChanged}" InputGestureText="Ctrl+D" Command="{Binding CmdClearNotChanged}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_ClearNotChanged}" Command="{Binding CmdClearNotChanged}"/>
                                         <Separator/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearMarked}" Command="{Binding CmdClearMarked}"/>
                                         <MenuItem Header="{DynamicResource CtxFile_ClearNotMarked}" Command="{Binding CmdClearNotMarked}"/>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource CtxFile_Select}">
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectAll}" InputGestureText="Ctrl+A" Command="{Binding CmdFilesSelectAll}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_InvertSelection}" InputGestureText="Ctrl+I" Command="{Binding CmdInvertSelection}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_SelectAll}" Command="{Binding CmdFilesSelectAll}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_InvertSelection}" Command="{Binding CmdInvertSelection}"/>
                                         <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByNameLength}" InputGestureText="Ctrl+L" Command="{Binding CmdSelectByNameLength}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByExtension}" InputGestureText="Ctrl+E" Command="{Binding CmdSelectByExtension}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByMask}" InputGestureText="Ctrl+M" Command="{Binding CmdSelectByMask}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_SelectByNameLength}" Command="{Binding CmdSelectByNameLength}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_SelectByExtension}" Command="{Binding CmdSelectByExtension}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_SelectByMask}" Command="{Binding CmdSelectByMask}"/>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource CtxFile_Move}">
-                                        <MenuItem Header="{DynamicResource CtxFile_MoveUp}" InputGestureText="Ctrl+Up" Command="{Binding CmdMoveFileUp}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MoveDown}" InputGestureText="Ctrl+Down" Command="{Binding CmdMoveFileDown}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_MoveUp}" Command="{Binding CmdMoveFileUp}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_MoveDown}" Command="{Binding CmdMoveFileDown}"/>
                                     </MenuItem>
                                     <Separator/>
                                     <MenuItem Header="{DynamicResource CtxFile_RemoveSelected}" InputGestureText="Del" Command="{Binding CmdRemoveSelectedFiles}"/>
                                 </ContextMenu>
-                            </ListView.ContextMenu>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Width="40">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Tag="IsMarked"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox IsChecked="{Binding IsMarked}" Click="FileCheckBox_Click"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="50">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_State}" Tag="State"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding State}" Style="{StaticResource StateIndicator}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_Name}" Width="220" 
-                                                    DisplayMemberBinding="{Binding OriginalName}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_NewName}" Width="220" 
-                                                    DisplayMemberBinding="{Binding NewName}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_Path}" Width="200" 
-                                                    DisplayMemberBinding="{Binding FolderPath}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_Extension}" Width="70" 
-                                                    DisplayMemberBinding="{Binding Extension}"/>
-                                    <GridViewColumn Width="90">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_Size}" Tag="SizeDisplay"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding SizeDisplay}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_Error}" Width="150"
-                                                    DisplayMemberBinding="{Binding Error}"/>
-                                    <!-- Hidden columns (toggled via Columns menu) -->
-                                    <GridViewColumn Header="{DynamicResource Column_Folder}" Width="120" 
-                                                    DisplayMemberBinding="{Binding FolderName}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_NewPath}" Width="200" 
-                                                    DisplayMemberBinding="{Binding NewPath}"/>
-                                    <GridViewColumn Width="90">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_SizeKB}" Tag="SizeKB"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding SizeKB}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="90">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_SizeMB}" Tag="SizeMB"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding SizeMB}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_Created}" Width="140" 
-                                                    DisplayMemberBinding="{Binding CreatedDisplay}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_Modified}" Width="140" 
-                                                    DisplayMemberBinding="{Binding ModifiedDisplay}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_ExifDate}" Width="140"
-                                                    DisplayMemberBinding="{Binding ExifDateDisplay}"/>
-                                    <GridViewColumn Width="80">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_NameDigits}" Tag="NameDigits"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding NameDigits}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_PathDigits}" Width="80" 
-                                                    DisplayMemberBinding="{Binding PathDigits}"/>
-                                    <GridViewColumn Width="80">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_NameLength}" Tag="NameLength"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding NameLength}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="100">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_NewNameLength}" Tag="NewNameLength"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding NewNameLength}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="80">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_PathLength}" Tag="PathLength"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding PathLength}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="100">
-                                        <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="{DynamicResource Column_NewPathLength}" Tag="NewPathLength"/>
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding NewPathLength}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_OldPath}" Width="200" 
-                                                    DisplayMemberBinding="{Binding OldPath}"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="40" SortMemberPath="IsMarked">
+                                    <DataGridTemplateColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Style="{StaticResource CenteredFileCheckBox}"
+                                                      Click="FileHeaderCheckBox_Click"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.HeaderTemplate>
+                                    <DataGridTemplateColumn.CellStyle>
+                                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource EnterpriseDataGridCell}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTemplateColumn.CellStyle>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Style="{StaticResource CenteredFileCheckBox}"
+                                                      IsChecked="{Binding IsMarked}"
+                                                      Click="FileCheckBox_Click"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="{DynamicResource Column_State}" Width="50" SortMemberPath="State">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding State}" Style="{StaticResource StateIndicator}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{DynamicResource Column_Name}" Width="220" Binding="{Binding OriginalName}" SortMemberPath="OriginalName" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NewName}" Width="220" Binding="{Binding NewName}" SortMemberPath="NewName" ElementStyle="{StaticResource ChangedNewNameText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Path}" Width="200" Binding="{Binding FolderPath}" SortMemberPath="FolderPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Extension}" Width="70" Binding="{Binding Extension}" SortMemberPath="Extension" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Size}" Width="90" Binding="{Binding SizeDisplay}" SortMemberPath="SizeDisplay" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Error}" Width="150" Binding="{Binding Error}" SortMemberPath="Error" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Folder}" Width="120" Binding="{Binding FolderName}" SortMemberPath="FolderName" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NewPath}" Width="200" Binding="{Binding NewPath}" SortMemberPath="NewPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_SizeKB}" Width="90" Binding="{Binding SizeKB}" SortMemberPath="SizeKB" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_SizeMB}" Width="90" Binding="{Binding SizeMB}" SortMemberPath="SizeMB" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Created}" Width="140" Binding="{Binding CreatedDisplay}" SortMemberPath="CreatedDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Modified}" Width="140" Binding="{Binding ModifiedDisplay}" SortMemberPath="ModifiedDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_ExifDate}" Width="140" Binding="{Binding ExifDateDisplay}" SortMemberPath="ExifDateDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NameDigits}" Width="80" Binding="{Binding NameDigits}" SortMemberPath="NameDigits" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_PathDigits}" Width="80" Binding="{Binding PathDigits}" SortMemberPath="PathDigits" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NameLength}" Width="80" Binding="{Binding NameLength}" SortMemberPath="NameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NewNameLength}" Width="100" Binding="{Binding NewNameLength}" SortMemberPath="NewNameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_PathLength}" Width="80" Binding="{Binding PathLength}" SortMemberPath="PathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_NewPathLength}" Width="100" Binding="{Binding NewPathLength}" SortMemberPath="NewPathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_OldPath}" Width="200" Binding="{Binding OldPath}" SortMemberPath="OldPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </DockPanel>
                 </Border>
             </Grid>

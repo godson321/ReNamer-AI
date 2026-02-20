@@ -24,7 +24,7 @@ public partial class AddRuleDialog : Window
     {
         "Replace", "Insert", "Delete", "Case", "Serialize",
         "Padding", "CleanUp", "Transliterate", "RegEx", 
-        "Rearrange", "ReformatDate", "Randomize", "PascalScript", "UserInput", "Mapping"
+        "Rearrange", "ReformatDate", "Randomize", "JavaScript", "UserInput", "Mapping"
     };
 
     // 规则类型图标映射
@@ -43,7 +43,7 @@ public partial class AddRuleDialog : Window
         ["Rearrange"] = (Geometry)Application.Current.FindResource("Icon_Rearrange"),
         ["ReformatDate"] = (Geometry)Application.Current.FindResource("Icon_ReformatDate"),
         ["Randomize"] = (Geometry)Application.Current.FindResource("Icon_Randomize"),
-        ["PascalScript"] = (Geometry)Application.Current.FindResource("Icon_PascalScript"),
+        ["JavaScript"] = (Geometry)Application.Current.FindResource("Icon_JavaScript"),
         ["UserInput"] = (Geometry)Application.Current.FindResource("Icon_UserInput"),
         ["Mapping"] = (Geometry)Application.Current.FindResource("Icon_Mapping")
     };
@@ -61,6 +61,17 @@ public partial class AddRuleDialog : Window
         // 默认选中第一个
         if (lbRules.Items.Count > 0)
             lbRules.SelectedIndex = 0;
+    }
+
+    public void ConfirmCurrentRule()
+    {
+        if (_currentRule == null) return;
+
+        // 应用配置
+        _currentPanel?.ApplyConfig();
+        SelectedRule = _currentRule;
+        DialogResult = true;
+        Close();
     }
     
     /// <summary>
@@ -146,13 +157,7 @@ public partial class AddRuleDialog : Window
 
     private void AddRule_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentRule == null) return;
-        
-        // 应用配置
-        _currentPanel?.ApplyConfig();
-        SelectedRule = _currentRule;
-        DialogResult = true;
-        Close();
+        ConfirmCurrentRule();
     }
 
     private void Close_Click(object sender, RoutedEventArgs e)
@@ -208,7 +213,7 @@ public partial class AddRuleDialog : Window
             "Rearrange" => new RearrangeRule(),
             "ReformatDate" => new ReformatDateRule(),
             "Randomize" => new RandomizeRule(),
-            "PascalScript" => new PascalScriptRule(),
+            "JavaScript" => new JavaScriptRule(),
             "UserInput" => new UserInputRule(),
             "Mapping" => new MappingRule(),
             _ => null
@@ -231,7 +236,7 @@ public partial class AddRuleDialog : Window
             RearrangeRule r => new RearrangeConfigPanel(r),
             ReformatDateRule r => new ReformatDateConfigPanel(r),
             RandomizeRule r => new RandomizeConfigPanel(r),
-            PascalScriptRule r => new PascalScriptConfigPanel(r),
+            JavaScriptRule r => new JavaScriptConfigPanel(r),
             UserInputRule r => new UserInputConfigPanel(r),
             MappingRule r => new MappingConfigPanel(r),
             _ => null
@@ -255,6 +260,7 @@ public partial class AddRuleDialog : Window
             RearrangeRule => "Rearrange",
             ReformatDateRule => "ReformatDate",
             RandomizeRule => "Randomize",
+            JavaScriptRule => "JavaScript",
             UserInputRule => "UserInput",
             MappingRule => "Mapping",
             _ => ""

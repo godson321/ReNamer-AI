@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace ReNamer.Models;
@@ -12,6 +16,11 @@ namespace ReNamer.Models;
 /// </summary>
 public class RenFile : INotifyPropertyChanged
 {
+    private static readonly SemaphoreSlim ExifReadGate = new(2, 2);
+    private static readonly HashSet<string> ExifSupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".jpg", ".jpeg", ".tif", ".tiff"
+    };
     private string _newName;
     private bool _isRenamed;
     private bool _isMarked = true;
@@ -20,6 +29,7 @@ public class RenFile : INotifyPropertyChanged
     private string _oldPath = "";
     private DateTime? _exifDate;
     private bool _exifLoaded;
+    private bool _exifLoading;
 
     public RenFile(string fullPath)
     {
@@ -177,6 +187,12 @@ public class RenFile : INotifyPropertyChanged
         {
             if (!_exifLoaded)
             {
+                if (!ShouldAttemptExifRead())
+                {
+                    _exifLoaded = true;
+                    return null;
+                }
+
                 _exifDate = ReadExifDate();
                 _exifLoaded = true;
             }
@@ -185,7 +201,19 @@ public class RenFile : INotifyPropertyChanged
     }
 
     /// <summary>Exif 日期显示</summary>
-    public string ExifDateDisplay => ExifDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
+    public string ExifDateDisplay
+    {
+        get
+        {
+            if (!_exifLoaded)
+            {
+                EnsureExifDateLoadedAsync();
+                return "";
+            }
+
+            return _exifDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
+        }
+    }
 
     /// <summary>新完整路径</summary>
     public string NewPath => Path.Combine(FolderPath, NewName);
@@ -341,6 +369,68 @@ public class RenFile : INotifyPropertyChanged
         }
         catch { }
         return null;
+    }
+
+    private void EnsureExifDateLoadedAsync()
+    {
+        if (_exifLoaded || _exifLoading)
+            return;
+
+        if (!ShouldAttemptExifRead())
+        {
+            _exifLoaded = true;
+            return;
+        }
+
+        _exifLoading = true;
+        _ = Task.Run(() =>
+        {
+            DateTime? exifDate = null;
+            var gateEntered = false;
+            try
+            {
+                ExifReadGate.Wait();
+                gateEntered = true;
+                exifDate = ReadExifDate();
+            }
+            catch
+            {
+                // Ignore metadata read failures for smoother list scrolling.
+            }
+            finally
+            {
+                if (gateEntered)
+                    ExifReadGate.Release();
+            }
+
+            _exifDate = exifDate;
+            _exifLoaded = true;
+            _exifLoading = false;
+
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.CheckAccess())
+            {
+                dispatcher.BeginInvoke(new Action(() => OnPropertyChanged(nameof(ExifDateDisplay))));
+            }
+            else
+            {
+                OnPropertyChanged(nameof(ExifDateDisplay));
+            }
+        });
+    }
+
+    private bool ShouldAttemptExifRead()
+    {
+        if (IsFolder)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(Extension))
+            return false;
+
+        if (!ExifSupportedExtensions.Contains(Extension))
+            return false;
+
+        return File.Exists(FullPath);
     }
 
     #endregion

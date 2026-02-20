@@ -15,6 +15,47 @@
                 <!-- 默认加载中文资源 -->
                 <ResourceDictionary Source="Resources/Strings.zh-CN.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- 任务栏图标候选：01/02/03/04 -->
+            <DrawingImage x:Key="AppTaskbarIcon_01">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#006EDC" Geometry="M2,1 H14 A2,2 0 0 1 16,3 V13 A2,2 0 0 1 14,15 H2 A2,2 0 0 1 0,13 V3 A2,2 0 0 1 2,1 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M3,6 H10 V4 L13,7 L10,10 V8 H3 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M13,10 H6 V12 L3,9 L6,6 V8 H13 Z"/>
+                        <GeometryDrawing Brush="#6EE36A" Geometry="M11.3,3.2 H14.8 V6.7 H13.6 V4.4 H11.3 Z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            <DrawingImage x:Key="AppTaskbarIcon_02">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#5B5BD6" Geometry="M2,1 H14 A2,2 0 0 1 16,3 V13 A2,2 0 0 1 14,15 H2 A2,2 0 0 1 0,13 V3 A2,2 0 0 1 2,1 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M3,5 H7 L8,6 H13 V11 H3 Z"/>
+                        <GeometryDrawing Brush="#FFD84D" Geometry="M8.2,4.1 L12.4,8.3 L11.4,9.3 L7.2,5.1 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M6.6,9.6 H11.6 V10.8 H6.6 Z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            <DrawingImage x:Key="AppTaskbarIcon_03">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#0F766E" Geometry="M2,1 H14 A2,2 0 0 1 16,3 V13 A2,2 0 0 1 14,15 H2 A2,2 0 0 1 0,13 V3 A2,2 0 0 1 2,1 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M3,4 H7 V12 H3 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M9,4 H13 V12 H9 Z"/>
+                        <GeometryDrawing Brush="#A7F3D0" Geometry="M4,7 H11 V5 L13,8 L11,11 V9 H4 Z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            <DrawingImage x:Key="AppTaskbarIcon_04">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#C2410C" Geometry="M2,1 H14 A2,2 0 0 1 16,3 V13 A2,2 0 0 1 14,15 H2 A2,2 0 0 1 0,13 V3 A2,2 0 0 1 2,1 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M3,4 H13 V6 H3 Z"/>
+                        <GeometryDrawing Brush="#FFFFFF" Geometry="M3,10 H13 V12 H3 Z"/>
+                        <GeometryDrawing Brush="#FFEDD5" Geometry="M4,8 H10 V6 L13,8 L10,10 V8 H4 Z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -52,6 +52,17 @@ public class AppSettings
     public bool FilterAttrReadOnly { get; set; } = false;
     public bool FilterAttrHidden { get; set; } = false;
     public bool FilterAttrSystem { get; set; } = false;
+    public bool FolderIncludeAllFiles { get; set; } = false;
+    public bool FolderIncludeFolderNames { get; set; } = true;
+    public bool FolderIncludeSubfolders { get; set; } = false;
+    public bool FolderIncludeHiddenFiles { get; set; } = false;
+    public bool FolderIncludeSystemFiles { get; set; } = false;
+    public bool FolderIgnoreRootFolder { get; set; } = false;
+    public string FolderIncludeMask { get; set; } = "";
+    public string FolderExcludeMask { get; set; } = "";
+    public bool FolderMaskFileNameOnly { get; set; } = false;
+    public bool FolderSaveAsDefault { get; set; } = false;
+    public bool FolderImportDefaultsInitialized { get; set; } = false;
 
     // ─── Window State ───
     public double WindowLeft { get; set; } = double.NaN;
@@ -102,5 +113,32 @@ public class AppSettings
             File.WriteAllText(SettingsFile, json);
         }
         catch { /* Silently fail */ }
+    }
+
+    public bool ApplyFirstFolderImportDefaultsIfNeeded()
+    {
+        if (FolderImportDefaultsInitialized)
+            return false;
+
+        FolderImportDefaultsInitialized = true;
+
+        if (!HasCustomizedFolderImportSettings())
+            FolderIncludeAllFiles = true;
+
+        return true;
+    }
+
+    private bool HasCustomizedFolderImportSettings()
+    {
+        return FolderIncludeAllFiles
+            || !FolderIncludeFolderNames
+            || FolderIncludeSubfolders
+            || FolderIncludeHiddenFiles
+            || FolderIncludeSystemFiles
+            || FolderIgnoreRootFolder
+            || !string.IsNullOrWhiteSpace(FolderIncludeMask)
+            || !string.IsNullOrWhiteSpace(FolderExcludeMask)
+            || FolderMaskFileNameOnly
+            || FolderSaveAsDefault;
     }
 }

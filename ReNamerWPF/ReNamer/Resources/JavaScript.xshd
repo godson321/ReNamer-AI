@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SyntaxDefinition name="JavaScript" extensions=".js" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment" foreground="#6A9955" />
+  <Color name="String" foreground="#CE9178" />
+  <Color name="Number" foreground="#B5CEA8" />
+  <Color name="Keyword" foreground="#569CD6" fontWeight="bold" />
+  <Color name="ReNamerVariable" foreground="#4EC9B0" fontWeight="bold" />
+  <Color name="ReNamerFunction" foreground="#DCDCAA" />
+  <Color name="Operator" foreground="#D4D4D4" />
+  <Color name="Punctuation" foreground="#D4D4D4" />
+
+  <RuleSet ignoreCase="false">
+    <!-- Comments -->
+    <Span color="Comment" begin="//" end="$" />
+    <Span color="Comment" multiline="true" begin="/\*" end="\*/" />
+
+    <!-- Strings -->
+    <Span color="String" begin="'" end="'" escape="\\">
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+    <Span color="String" begin="&quot;" end="&quot;" escape="\\">
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+    <Span color="String" begin="`" end="`" escape="\\">
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+
+    <!-- ReNamer Context Variables (most important - highlight prominently) -->
+    <Keywords color="ReNamerVariable">
+      <Word>Result</Word>
+      <Word>Name</Word>
+      <Word>Ext</Word>
+      <Word>FullName</Word>
+      <Word>Path</Word>
+      <Word>FolderPath</Word>
+      <Word>Folder</Word>
+      <Word>Counter</Word>
+      <Word>Size</Word>
+      <Word>SizeKB</Word>
+      <Word>SizeMB</Word>
+      <Word>Created</Word>
+      <Word>Modified</Word>
+      <Word>ExifDate</Word>
+    </Keywords>
+
+    <!-- ReNamer Helper Functions -->
+    <Keywords color="ReNamerFunction">
+      <Word>UpperCase</Word>
+      <Word>LowerCase</Word>
+      <Word>Trim</Word>
+      <Word>Replace</Word>
+      <Word>LeftStr</Word>
+      <Word>RightStr</Word>
+      <Word>MidStr</Word>
+    </Keywords>
+
+    <!-- JavaScript Keywords -->
+    <Keywords color="Keyword">
+      <Word>break</Word>
+      <Word>case</Word>
+      <Word>catch</Word>
+      <Word>class</Word>
+      <Word>const</Word>
+      <Word>continue</Word>
+      <Word>debugger</Word>
+      <Word>default</Word>
+      <Word>delete</Word>
+      <Word>do</Word>
+      <Word>else</Word>
+      <Word>export</Word>
+      <Word>extends</Word>
+      <Word>finally</Word>
+      <Word>for</Word>
+      <Word>function</Word>
+      <Word>if</Word>
+      <Word>import</Word>
+      <Word>in</Word>
+      <Word>instanceof</Word>
+      <Word>let</Word>
+      <Word>new</Word>
+      <Word>return</Word>
+      <Word>static</Word>
+      <Word>super</Word>
+      <Word>switch</Word>
+      <Word>this</Word>
+      <Word>throw</Word>
+      <Word>try</Word>
+      <Word>typeof</Word>
+      <Word>var</Word>
+      <Word>void</Word>
+      <Word>while</Word>
+      <Word>with</Word>
+      <Word>yield</Word>
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>null</Word>
+      <Word>undefined</Word>
+      <Word>NaN</Word>
+      <Word>Infinity</Word>
+    </Keywords>
+
+    <!-- Numbers -->
+    <Rule color="Number">
+      \b0[xX][0-9a-fA-F]+\b |
+      \b0[bB][01]+\b |
+      \b0[oO][0-7]+\b |
+      \b[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?\b
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

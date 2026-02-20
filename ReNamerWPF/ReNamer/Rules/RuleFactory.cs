@@ -24,7 +24,7 @@ public static class RuleFactory
         ["Rearrange"] = () => new RearrangeRule(),
         ["ReformatDate"] = () => new ReformatDateRule(),
         ["Randomize"] = () => new RandomizeRule(),
-        ["PascalScript"] = () => new PascalScriptRule(),
+        ["JavaScript"] = () => new JavaScriptRule(),
         ["UserInput"] = () => new UserInputRule(),
         ["Mapping"] = () => new MappingRule()
     };
@@ -46,7 +46,7 @@ public static class RuleFactory
         ["RearrangeRule"] = "Rearrange",
         ["ReformatDateRule"] = "ReformatDate",
         ["RandomizeRule"] = "Randomize",
-        ["PascalScriptRule"] = "PascalScript",
+        ["JavaScriptRule"] = "JavaScript",
         ["UserInputRule"] = "UserInput",
         ["MappingRule"] = "Mapping"
     };

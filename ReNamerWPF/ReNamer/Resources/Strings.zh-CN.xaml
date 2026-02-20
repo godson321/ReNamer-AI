@@ -175,7 +175,7 @@
     <sys:String x:Key="Rule_Rearrange">重排</sys:String>
     <sys:String x:Key="Rule_ReformatDate">日期格式化</sys:String>
     <sys:String x:Key="Rule_Randomize">随机化</sys:String>
-    <sys:String x:Key="Rule_PascalScript">PascalScript</sys:String>
+    <sys:String x:Key="Rule_JavaScript">JavaScript</sys:String>
     <sys:String x:Key="Rule_UserInput">用户输入</sys:String>
     <sys:String x:Key="Rule_Mapping">映射</sys:String>
     
@@ -222,6 +222,20 @@
     <sys:String x:Key="Dialog_Close">关闭</sys:String>
     <sys:String x:Key="Dialog_Apply">应用</sys:String>
     <sys:String x:Key="Dialog_Configuration">配置:</sys:String>
+    <sys:String x:Key="Dialog_AddPathsTitle">添加路径</sys:String>
+    <sys:String x:Key="Dialog_AddPathsPrompt">输入文件/文件夹路径（每行一个）：</sys:String>
+    <sys:String x:Key="Dialog_EditNewNameTitle">编辑新名称</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentTitle">规则备注</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentPrompt">规则“{0}”的备注：</sys:String>
+    <sys:String x:Key="Dialog_InputRequired">请输入内容。</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskTitle">按掩码标记</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskPrompt">输入通配符模式：</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthTitle">按名称长度选择</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthPrompt">输入最大名称长度：</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionTitle">按扩展名选择</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionPrompt">输入扩展名（例如 .txt）：</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskTitle">按掩码选择</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskPrompt">输入通配符模式：</sys:String>
     
     <!-- 插入规则 -->
     <sys:String x:Key="Insert_Label">插入:</sys:String>
@@ -424,11 +438,13 @@
     <sys:String x:Key="Status_Ready">就绪</sys:String>
     <sys:String x:Key="Status_Previewing">正在预览...</sys:String>
     <sys:String x:Key="Status_Renaming">正在重命名...</sys:String>
-    <sys:String x:Key="Status_FilesSummary">文件: 0 | 已标记: 0 | 已选择: 0</sys:String>
+    <sys:String x:Key="Status_FilesSummary">文件: {0} | 已标记: {1} | 已选择: {2}</sys:String>
 
     <!-- 对话框 -->
     <sys:String x:Key="Dialog_Settings">设置</sys:String>
     <sys:String x:Key="Dialog_Filters">过滤器</sys:String>
+    <sys:String x:Key="Dialog_FilterSettings">筛选器设置</sys:String>
+    <sys:String x:Key="Dialog_Save">保存</sys:String>
     <sys:String x:Key="Dialog_ClearAll">清除全部</sys:String>
     <sys:String x:Key="Dialog_RuleDescription">说明</sys:String>
 
@@ -496,11 +512,33 @@
     <sys:String x:Key="Filters_ReadOnly">只读</sys:String>
     <sys:String x:Key="Filters_Hidden">隐藏</sys:String>
     <sys:String x:Key="Filters_System">系统</sys:String>
+    <sys:String x:Key="Filter_FolderDefaults">添加文件夹的默认属性：</sys:String>
+    <sys:String x:Key="Filter_IncludeAllFiles">包含目录下所有文件</sys:String>
+    <sys:String x:Key="Filter_IncludeFolderNames">包含文件夹名</sys:String>
+    <sys:String x:Key="Filter_IncludeSubfolders">包含子目录</sys:String>
+    <sys:String x:Key="Filter_IncludeHiddenFiles">包含隐藏文件</sys:String>
+    <sys:String x:Key="Filter_IncludeSystemFiles">包含系统文件</sys:String>
+    <sys:String x:Key="Filter_IgnoreRootFolder">包含文件夹名时忽略根目录</sys:String>
+    <sys:String x:Key="Filter_Masks">模版：</sys:String>
+    <sys:String x:Key="Filter_IncludeLabel">包含：</sys:String>
+    <sys:String x:Key="Filter_ExcludeLabel">排除：</sys:String>
+    <sys:String x:Key="Filter_FileNameOnly">仅应用到文件名而不是完整路径名。</sys:String>
+    <sys:String x:Key="Filter_Tips">提示：多个单模版以分号\";\"间隔。</sys:String>
+    <sys:String x:Key="Filter_SaveAsDefault">保存为默认以供之后使用</sys:String>
+    <sys:String x:Key="Options_AutosizeColumns">自动调整列宽</sys:String>
+    <sys:String x:Key="Options_ValidateNewNames">校验新名称</sys:String>
+    <sys:String x:Key="Options_FixConflictingNewNames">修复冲突的新名称</sys:String>
+    <sys:String x:Key="Options_AnalyzeSampleText">分析示例文本...</sys:String>
+    <sys:String x:Key="Options_ApplyRulesToClipboard">将规则应用到剪贴板</sys:String>
+    <sys:String x:Key="Options_CountFiles">统计文件</sys:String>
+    <sys:String x:Key="Options_SortForFolders">按文件夹排序</sys:String>
+    <sys:String x:Key="ColumnsMenu_ResetColumnWidths">重置列宽度</sys:String>
+    <sys:String x:Key="ColumnsMenu_CancelSorting">取消排序</sys:String>
 
     <!-- 规则配置通用 -->
     <sys:String x:Key="Config_RightToLeft">从右到左</sys:String>
     <sys:String x:Key="RuleCfg_SeparateItems">分隔多个项</sys:String>
-    <sys:String x:Key="RuleCfg_InsertMetaTag">插入元标签（Ctrl+Ins）</sys:String>
+    <sys:String x:Key="RuleCfg_InsertMetaTag">插入元标签</sys:String>
 
     <!-- CleanUp -->
     <sys:String x:Key="CleanUp_Dot">点（.）</sys:String>
@@ -528,12 +566,46 @@
     <sys:String x:Key="Padding_Left">左</sys:String>
     <sys:String x:Key="Padding_Right">右</sys:String>
 
-    <!-- PascalScript -->
-    <sys:String x:Key="PascalScript_Scripts">脚本</sys:String>
-    <sys:String x:Key="PascalScript_EnableMetaTags">启用元标签</sys:String>
-    <sys:String x:Key="PascalScript_CounterStart">计数起始:</sys:String>
-    <sys:String x:Key="PascalScript_Step">步长:</sys:String>
-    <sys:String x:Key="PascalScript_Digits">位数:</sys:String>
+    <!-- JavaScript -->
+    <sys:String x:Key="JavaScript_Scripts">脚本</sys:String>
+    <sys:String x:Key="JavaScript_EnableMetaTags">启用元标签</sys:String>
+    <sys:String x:Key="JavaScript_CounterStart">计数起始:</sys:String>
+    <sys:String x:Key="JavaScript_Step">步长:</sys:String>
+    <sys:String x:Key="JavaScript_Digits">位数:</sys:String>
+    <sys:String x:Key="JavaScript_Validate">验证</sys:String>
+    <sys:String x:Key="JavaScript_GoTo">跳转</sys:String>
+    <sys:String x:Key="JavaScript_Help">帮助</sys:String>
+    <sys:String x:Key="JavaScript_GoToLine">跳转到行:</sys:String>
+    <sys:String x:Key="JavaScript_ValidationSuccess">✓ 脚本有效</sys:String>
+    <sys:String x:Key="JavaScript_ValidationError">脚本错误，第 {0} 行: {1}</sys:String>
+    <sys:String x:Key="JavaScript_HelpTitle">JavaScript 帮助</sys:String>
+    <sys:String x:Key="JavaScript_LoadScriptsFolder">加载 Scripts 目录...</sys:String>
+    <sys:String x:Key="JavaScript_BrowseScript">浏览脚本...</sys:String>
+    <sys:String x:Key="JavaScript_SaveScript">保存脚本...</sys:String>
+    <sys:String x:Key="JavaScript_FileFilter">JavaScript 文件 (*.js)|*.js|所有文件 (*.*)|*.*</sys:String>
+    <sys:String x:Key="JavaScript_HelpContent">可用变量:
+• Name - 文件名（不含扩展名）
+• Ext - 文件扩展名
+• FullName - 完整文件名（含扩展名）
+• Path - 完整文件路径
+• FolderPath - 文件夹路径
+• Folder - 文件夹名
+• Counter - 自增计数器
+• Size, SizeKB, SizeMB - 文件大小
+• Created, Modified - 日期字符串
+• ExifDate - EXIF 日期（如有）
+
+辅助函数:
+• UpperCase(str) - 转换为大写
+• LowerCase(str) - 转换为小写
+• Trim(str) - 去除首尾空格
+• Replace(str, find, replace) - 替换文本
+• LeftStr(str, n) - 取左边 n 个字符
+• RightStr(str, n) - 取右边 n 个字符
+• MidStr(str, start, len) - 取子字符串
+
+示例:
+Result = Name.toUpperCase() + '_' + Counter;</sys:String>
 
     <!-- Randomize -->
     <sys:String x:Key="Randomize_Length">随机序列长度:</sys:String>
@@ -690,17 +762,17 @@
     <sys:String x:Key="RuleCfg_Randomize_InsertWhere">插入位置：</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">移除括号内容：</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">替换以下字符为空格：</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Basic">基础: Result := Name;</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Counter">计数: Result := Name + '_' + Counter;</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Folder">文件夹: Result := Folder + '_' + Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Basic">基础: Result = Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Counter">计数: Result = Name + '_' + Counter;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Folder">文件夹: Result = Folder + '_' + Name;</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_Match">匹配</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_NewName">新名称</sys:String>
 
-    <sys:String x:Key="RuleCfg_PascalScript_Scripts">脚本</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_EnableMetaTags">启用元标签</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_CounterStart">计数起始：</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Step">步进：</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Digits">位数：</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Scripts">脚本</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">启用元标签</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_CounterStart">计数起始：</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Step">步进：</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Digits">位数：</sys:String>
 
     <sys:String x:Key="RuleCfg_Randomize_Length">随机序列长度：</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Unique">尽量唯一</sys:String>
@@ -844,5 +916,5 @@
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateShortMonths">例如：1月|2月|3月|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateLongMonths">例如：一月|二月|三月|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_UserInput">每行输入一个文件名</sys:String>
-    <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// 在此输入脚本</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_JavaScript">// 在此输入 JavaScript</sys:String>
 </ResourceDictionary>

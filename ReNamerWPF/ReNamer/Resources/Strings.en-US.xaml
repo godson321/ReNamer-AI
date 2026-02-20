@@ -175,7 +175,7 @@
     <sys:String x:Key="Rule_Rearrange">Rearrange</sys:String>
     <sys:String x:Key="Rule_ReformatDate">Reformat Date</sys:String>
     <sys:String x:Key="Rule_Randomize">Randomize</sys:String>
-    <sys:String x:Key="Rule_PascalScript">PascalScript</sys:String>
+    <sys:String x:Key="Rule_JavaScript">JavaScript</sys:String>
     <sys:String x:Key="Rule_UserInput">User Input</sys:String>
     <sys:String x:Key="Rule_Mapping">Mapping</sys:String>
     
@@ -222,6 +222,20 @@
     <sys:String x:Key="Dialog_Close">Close</sys:String>
     <sys:String x:Key="Dialog_Apply">Apply</sys:String>
     <sys:String x:Key="Dialog_Configuration">Configuration:</sys:String>
+    <sys:String x:Key="Dialog_AddPathsTitle">Add Paths</sys:String>
+    <sys:String x:Key="Dialog_AddPathsPrompt">Enter file/folder paths (one per line):</sys:String>
+    <sys:String x:Key="Dialog_EditNewNameTitle">Edit New Name</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentTitle">Rule Comment</sys:String>
+    <sys:String x:Key="Dialog_RuleCommentPrompt">Comment for rule \"{0}\":</sys:String>
+    <sys:String x:Key="Dialog_InputRequired">Please enter a value.</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskTitle">Mark by Mask</sys:String>
+    <sys:String x:Key="Dialog_MarkByMaskPrompt">Enter wildcard pattern:</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthTitle">Select by Name Length</sys:String>
+    <sys:String x:Key="Dialog_SelectByNameLengthPrompt">Enter max name length:</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionTitle">Select by Extension</sys:String>
+    <sys:String x:Key="Dialog_SelectByExtensionPrompt">Enter extension (e.g. .txt):</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskTitle">Select by Mask</sys:String>
+    <sys:String x:Key="Dialog_SelectByMaskPrompt">Enter wildcard pattern:</sys:String>
     
     <!-- Insert Rule -->
     <sys:String x:Key="Insert_Label">Insert:</sys:String>
@@ -424,11 +438,13 @@
     <sys:String x:Key="Status_Ready">Ready</sys:String>
     <sys:String x:Key="Status_Previewing">Previewing...</sys:String>
     <sys:String x:Key="Status_Renaming">Renaming...</sys:String>
-    <sys:String x:Key="Status_FilesSummary">Files: 0 | Marked: 0 | Selected: 0</sys:String>
+    <sys:String x:Key="Status_FilesSummary">Files: {0} | Marked: {1} | Selected: {2}</sys:String>
 
     <!-- Dialogs -->
     <sys:String x:Key="Dialog_Settings">Settings</sys:String>
     <sys:String x:Key="Dialog_Filters">Filters</sys:String>
+    <sys:String x:Key="Dialog_FilterSettings">Filter Settings</sys:String>
+    <sys:String x:Key="Dialog_Save">Save</sys:String>
     <sys:String x:Key="Dialog_ClearAll">Clear All</sys:String>
     <sys:String x:Key="Dialog_RuleDescription">Description</sys:String>
 
@@ -496,11 +512,33 @@
     <sys:String x:Key="Filters_ReadOnly">Read-only</sys:String>
     <sys:String x:Key="Filters_Hidden">Hidden</sys:String>
     <sys:String x:Key="Filters_System">System</sys:String>
+    <sys:String x:Key="Filter_FolderDefaults">Default attributes for adding folders:</sys:String>
+    <sys:String x:Key="Filter_IncludeAllFiles">Include all files under directory</sys:String>
+    <sys:String x:Key="Filter_IncludeFolderNames">Include folder names</sys:String>
+    <sys:String x:Key="Filter_IncludeSubfolders">Include subfolders</sys:String>
+    <sys:String x:Key="Filter_IncludeHiddenFiles">Include hidden files</sys:String>
+    <sys:String x:Key="Filter_IncludeSystemFiles">Include system files</sys:String>
+    <sys:String x:Key="Filter_IgnoreRootFolder">Ignore root folder when including folder names</sys:String>
+    <sys:String x:Key="Filter_Masks">Masks:</sys:String>
+    <sys:String x:Key="Filter_IncludeLabel">Include:</sys:String>
+    <sys:String x:Key="Filter_ExcludeLabel">Exclude:</sys:String>
+    <sys:String x:Key="Filter_FileNameOnly">Apply to file name only, not full path.</sys:String>
+    <sys:String x:Key="Filter_Tips">Tip: separate multiple masks with ';'.</sys:String>
+    <sys:String x:Key="Filter_SaveAsDefault">Save as default for future use</sys:String>
+    <sys:String x:Key="Options_AutosizeColumns">Autosize Columns</sys:String>
+    <sys:String x:Key="Options_ValidateNewNames">Validate New Names</sys:String>
+    <sys:String x:Key="Options_FixConflictingNewNames">Fix Conflicting New Names</sys:String>
+    <sys:String x:Key="Options_AnalyzeSampleText">Analyze Sample Text...</sys:String>
+    <sys:String x:Key="Options_ApplyRulesToClipboard">Apply Rules to Clipboard</sys:String>
+    <sys:String x:Key="Options_CountFiles">Count Files</sys:String>
+    <sys:String x:Key="Options_SortForFolders">Sort for Folders</sys:String>
+    <sys:String x:Key="ColumnsMenu_ResetColumnWidths">Reset Column Widths</sys:String>
+    <sys:String x:Key="ColumnsMenu_CancelSorting">Cancel Sorting</sys:String>
 
     <!-- Rule Config Shared -->
     <sys:String x:Key="Config_RightToLeft">Right-to-left</sys:String>
     <sys:String x:Key="RuleCfg_SeparateItems">Separate multiple items</sys:String>
-    <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag (Ctrl+Ins)</sys:String>
+    <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag</sys:String>
 
     <!-- CleanUp -->
     <sys:String x:Key="CleanUp_Dot">Dot (.)</sys:String>
@@ -528,12 +566,46 @@
     <sys:String x:Key="Padding_Left">Left</sys:String>
     <sys:String x:Key="Padding_Right">Right</sys:String>
 
-    <!-- PascalScript -->
-    <sys:String x:Key="PascalScript_Scripts">Scripts</sys:String>
-    <sys:String x:Key="PascalScript_EnableMetaTags">Enable meta tags</sys:String>
-    <sys:String x:Key="PascalScript_CounterStart">Counter start:</sys:String>
-    <sys:String x:Key="PascalScript_Step">Step:</sys:String>
-    <sys:String x:Key="PascalScript_Digits">Digits:</sys:String>
+    <!-- JavaScript -->
+    <sys:String x:Key="JavaScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="JavaScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="JavaScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="JavaScript_Step">Step:</sys:String>
+    <sys:String x:Key="JavaScript_Digits">Digits:</sys:String>
+    <sys:String x:Key="JavaScript_Validate">Validate</sys:String>
+    <sys:String x:Key="JavaScript_GoTo">Go To</sys:String>
+    <sys:String x:Key="JavaScript_Help">Help</sys:String>
+    <sys:String x:Key="JavaScript_GoToLine">Go to line:</sys:String>
+    <sys:String x:Key="JavaScript_ValidationSuccess">✓ Script is valid</sys:String>
+    <sys:String x:Key="JavaScript_ValidationError">Script error at line {0}: {1}</sys:String>
+    <sys:String x:Key="JavaScript_HelpTitle">JavaScript Help</sys:String>
+    <sys:String x:Key="JavaScript_LoadScriptsFolder">Load from Scripts folder...</sys:String>
+    <sys:String x:Key="JavaScript_BrowseScript">Browse script...</sys:String>
+    <sys:String x:Key="JavaScript_SaveScript">Save script...</sys:String>
+    <sys:String x:Key="JavaScript_FileFilter">JavaScript Files (*.js)|*.js|All Files (*.*)|*.*</sys:String>
+    <sys:String x:Key="JavaScript_HelpContent">Available Variables:
+• Name - File name (without extension)
+• Ext - File extension
+• FullName - Full file name (with extension)
+• Path - Full file path
+• FolderPath - Folder path
+• Folder - Folder name
+• Counter - Auto-increment counter
+• Size, SizeKB, SizeMB - File size
+• Created, Modified - Date strings
+• ExifDate - EXIF date (if available)
+
+Helper Functions:
+• UpperCase(str) - Convert to uppercase
+• LowerCase(str) - Convert to lowercase
+• Trim(str) - Remove leading/trailing spaces
+• Replace(str, find, replace) - Replace text
+• LeftStr(str, n) - Get left n characters
+• RightStr(str, n) - Get right n characters
+• MidStr(str, start, len) - Get substring
+
+Example:
+Result = Name.toUpperCase() + '_' + Counter;</sys:String>
 
     <!-- Randomize -->
     <sys:String x:Key="Randomize_Length">Length of random sequence:</sys:String>
@@ -685,11 +757,14 @@
     <sys:String x:Key="RuleCfg_Padding_Left">Left</sys:String>
     <sys:String x:Key="RuleCfg_Padding_Right">Right</sys:String>
 
-    <sys:String x:Key="RuleCfg_PascalScript_Scripts">Scripts</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_EnableMetaTags">Enable meta tags</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_CounterStart">Counter start:</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Step">Step:</sys:String>
-    <sys:String x:Key="RuleCfg_PascalScript_Digits">Digits:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">Enable meta tags</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Basic">Basic: Result = Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Counter">Counter: Result = Name + '_' + Counter;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Folder">Folder: Result = Folder + '_' + Name;</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_CounterStart">Counter start:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Step">Step:</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Digits">Digits:</sys:String>
 
     <sys:String x:Key="RuleCfg_Randomize_Length">Length of random sequence:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Unique">Unique if possible</sys:String>
@@ -833,5 +908,5 @@
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateShortMonths">e.g. Jan|Feb|Mar|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_ReformatDateLongMonths">e.g. January|February|...</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_UserInput">One filename per line</sys:String>
-    <sys:String x:Key="RuleCfg_Placeholder_PascalScript">// Write script here</sys:String>
+    <sys:String x:Key="RuleCfg_Placeholder_JavaScript">// Write JavaScript here</sys:String>
 </ResourceDictionary>

@@ -7,8 +7,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,13 +29,17 @@ public class IndexConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is int alternationIndex)
+            return (alternationIndex + 1).ToString(CultureInfo.InvariantCulture);
+
         if (value is ListViewItem item)
         {
             var lv = ItemsControl.ItemsControlFromItemContainer(item) as ListView;
             if (lv != null)
-                return (lv.ItemContainerGenerator.IndexFromContainer(item) + 1).ToString();
+                return (lv.ItemContainerGenerator.IndexFromContainer(item) + 1).ToString(CultureInfo.InvariantCulture);
         }
-        return "";
+
+        return string.Empty;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -43,13 +50,23 @@ public partial class MainWindow : Window
 {
     private readonly RenameService _renameService;
     private readonly AppSettings _appSettings;
-    private GridViewColumnHeader? _lastHeaderClicked;
-    private ListSortDirection _lastDirection = ListSortDirection.Ascending;
     private Point _rulesDragStartPoint;
     private IRule? _draggedRule;
     private Point _filesDragStartPoint;
     private RenFile? _draggedFile;
     private readonly List<UiAction> _actions = new();
+    private readonly object _previewSync = new();
+    private CancellationTokenSource? _previewCts;
+    private int _previewRequestVersion;
+    private readonly object _renameSync = new();
+    private CancellationTokenSource? _renameCts;
+    private int _renameRequestVersion;
+    private const int AutoPreviewDebounceMilliseconds = 200;
+    private readonly Dictionary<string, double> _defaultColumnWidths = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly string UndoLogsDir = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "ReNamer",
+        "UndoLogs");
 
     // Actions (commands)
     public UiAction CmdNewProject { get; private set; } = null!;
@@ -104,9 +121,7 @@ public partial class MainWindow : Window
     public UiAction CmdRulesUnmarkAll { get; private set; } = null!;
     public UiAction CmdFilters { get; private set; } = null!;
     public UiAction CmdOptions { get; private set; } = null!;
-    public UiAction CmdExport { get; private set; } = null!;
     public UiAction CmdAnalyze { get; private set; } = null!;
-    public UiAction CmdColumns { get; private set; } = null!;
     public UiAction CmdValidate { get; private set; } = null!;
     public UiAction CmdAutosizeColumns { get; private set; } = null!;
     public UiAction CmdFixConflicts { get; private set; } = null!;
@@ -114,17 +129,6 @@ public partial class MainWindow : Window
     public UiAction CmdApplyRulesToClipboard { get; private set; } = null!;
     public UiAction CmdCountFiles { get; private set; } = null!;
     public UiAction CmdSortForFolders { get; private set; } = null!;
-    public UiAction CmdExportNamesAndNewNames { get; private set; } = null!;
-    public UiAction CmdExportNewNames { get; private set; } = null!;
-    public UiAction CmdExportPaths { get; private set; } = null!;
-    public UiAction CmdExportAllColumns { get; private set; } = null!;
-    public UiAction CmdExportFilesAndUndo { get; private set; } = null!;
-    public UiAction CmdExportFilesAndPreview { get; private set; } = null!;
-    public UiAction CmdExportBatchFullPaths { get; private set; } = null!;
-    public UiAction CmdExportBatchNames { get; private set; } = null!;
-    public UiAction CmdImportNewNames { get; private set; } = null!;
-    public UiAction CmdImportListOfFiles { get; private set; } = null!;
-    public UiAction CmdImportFilesAndPreview { get; private set; } = null!;
     public UiAction CmdEditNewName { get; private set; } = null!;
     public UiAction CmdOpenFile { get; private set; } = null!;
     public UiAction CmdOpenFolder { get; private set; } = null!;
@@ -174,7 +178,10 @@ public partial class MainWindow : Window
         lvRules.ItemsSource = Rules;
 
         Files.CollectionChanged += (_, _) => UpdateStatusBar();
-        Rules.CollectionChanged += (_, _) => RefreshActions();
+        Rules.CollectionChanged += Rules_CollectionChanged;
+
+        foreach (var rule in Rules)
+            rule.PropertyChanged += Rule_PropertyChanged;
 
         LanguageService.LanguageChanged += OnLanguageChanged;
         UpdateLanguageMenuChecks();
@@ -185,10 +192,65 @@ public partial class MainWindow : Window
         {
             HideExtraColumns();
             RestoreWindowState();
+            // Use the "as-opened" widths as reset baseline (includes restored user layout).
+            CaptureDefaultColumnWidths();
             EnsureWindowVisible();
             PopulatePresetMenu();
             PopulateLanguageMenu();
         };
+    }
+
+    private void Rules_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (var rule in e.OldItems.OfType<IRule>())
+                rule.PropertyChanged -= Rule_PropertyChanged;
+        }
+
+        if (e.NewItems != null)
+        {
+            foreach (var rule in e.NewItems.OfType<IRule>())
+                rule.PropertyChanged += Rule_PropertyChanged;
+        }
+
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        {
+            foreach (var rule in Rules)
+            {
+                rule.PropertyChanged -= Rule_PropertyChanged;
+                rule.PropertyChanged += Rule_PropertyChanged;
+            }
+        }
+
+        RefreshActions();
+    }
+
+    private void Rule_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => Rule_PropertyChanged(sender, e));
+            return;
+        }
+
+        if (sender is not JavaScriptRule rule || !rule.IsEnabled)
+            return;
+
+        if (e.PropertyName == nameof(JavaScriptRule.IsScriptLoading) && rule.IsScriptLoading)
+        {
+            tbStatusInfo.Text = $"脚本“{rule.ScriptDisplayName}”后台加载中，完成后将自动刷新预览。";
+            return;
+        }
+
+        if (e.PropertyName == nameof(JavaScriptRule.IsScriptReady) && rule.IsScriptReady)
+        {
+            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: 0);
+            return;
+        }
+
+        if (e.PropertyName == nameof(JavaScriptRule.ScriptLoadError) && !string.IsNullOrWhiteSpace(rule.ScriptLoadError))
+            tbStatusInfo.Text = $"脚本“{rule.ScriptDisplayName}”加载失败：{rule.ScriptLoadError}";
     }
 
     private void InitActions()
@@ -249,9 +311,7 @@ public partial class MainWindow : Window
 
         CmdFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()));
         CmdOptions = CreateAction(_ => Options_Click(this, new RoutedEventArgs()));
-        CmdExport = CreateAction(_ => Export_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdAnalyze = CreateAction(_ => Analyze_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdColumns = CreateAction(_ => Columns_Click(this, new RoutedEventArgs()));
         CmdValidate = CreateAction(_ => Validate_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdAutosizeColumns = CreateAction(_ => AutosizeColumns());
         CmdFixConflicts = CreateAction(_ => FixConflictingNames(), _ => HasFiles);
@@ -259,17 +319,6 @@ public partial class MainWindow : Window
         CmdApplyRulesToClipboard = CreateAction(_ => ApplyRulesToClipboard(), _ => HasRules);
         CmdCountFiles = CreateAction(_ => CountFiles(), _ => HasFiles);
         CmdSortForFolders = CreateAction(_ => SortForFolders(), _ => HasFiles);
-        CmdExportNamesAndNewNames = CreateAction(_ => ExportToClipboard(f => $"{f.OriginalName}\t{f.NewName}"), _ => HasFiles);
-        CmdExportNewNames = CreateAction(_ => ExportToClipboard(f => f.NewName), _ => HasFiles);
-        CmdExportPaths = CreateAction(_ => ExportToClipboard(f => f.FullPath), _ => HasFiles);
-        CmdExportAllColumns = CreateAction(_ => ExportAllColumnsToClipboard(), _ => HasFiles);
-        CmdExportFilesAndUndo = CreateAction(_ => ExportFilesAndUndo(), _ => HasFiles);
-        CmdExportFilesAndPreview = CreateAction(_ => ExportFilesAndPreview(), _ => HasFiles);
-        CmdExportBatchFullPaths = CreateAction(_ => ExportAsBatch(fullPaths: true), _ => HasFiles);
-        CmdExportBatchNames = CreateAction(_ => ExportAsBatch(fullPaths: false), _ => HasFiles);
-        CmdImportNewNames = CreateAction(_ => ImportNewNamesFromClipboard(), _ => HasFiles);
-        CmdImportListOfFiles = CreateAction(_ => ImportListOfFiles());
-        CmdImportFilesAndPreview = CreateAction(_ => ImportFilesAndPreview());
 
         CmdEditNewName = CreateAction(_ => EditNewName_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
         CmdOpenFile = CreateAction(_ => OpenFile_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
@@ -336,22 +385,44 @@ public partial class MainWindow : Window
 
     private void HideExtraColumns()
     {
-        var gv = lvFiles.View as GridView;
-        if (gv == null) return;
-        foreach (var col in gv.Columns)
+        foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
             if (!DefaultVisibleColumns.Contains(key))
-                col.Width = 0;
+                col.Visibility = Visibility.Collapsed;
         }
     }
 
-    private static string GetColumnKey(GridViewColumn col)
+    private static string GetColumnKey(DataGridColumn col)
     {
-        if (col.Header is GridViewColumnHeader header && header.Tag is string tag) return tag;
-        if (col.DisplayMemberBinding is Binding binding && binding.Path != null) return binding.Path.Path;
-        if (col.Header is GridViewColumnHeader header2 && header2.Content is string s2) return s2;
-        return col.Header as string ?? "";
+        if (!string.IsNullOrWhiteSpace(col.SortMemberPath))
+            return col.SortMemberPath;
+
+        if (col.Header is string s)
+            return s;
+
+        if (col.Header is TextBlock tb && !string.IsNullOrWhiteSpace(tb.Text))
+            return tb.Text;
+
+        return col.Header?.ToString() ?? string.Empty;
+    }
+
+    private void CaptureDefaultColumnWidths()
+    {
+        _defaultColumnWidths.Clear();
+        foreach (var col in lvFiles.Columns)
+        {
+            var key = GetColumnKey(col);
+            if (string.IsNullOrEmpty(key))
+                continue;
+
+            var width = col.Width.DisplayValue;
+            if (double.IsNaN(width) || width <= 0)
+                width = col.ActualWidth;
+
+            if (width > 0)
+                _defaultColumnWidths[key] = width;
+        }
     }
 
     private void OnLanguageChanged() => UpdateLanguageMenuChecks();
@@ -420,7 +491,7 @@ public partial class MainWindow : Window
         var total = Files.Count;
         var marked = Files.Count(f => f.IsMarked);
         var selected = lvFiles.SelectedItems.Count;
-        tbStatusFiles.Text = $"Files: {total} | Marked: {marked} | Selected: {selected}";
+        tbStatusFiles.Text = LanguageService.GetString("Status_FilesSummary", total, marked, selected);
         RefreshActions();
     }
 
@@ -463,6 +534,14 @@ public partial class MainWindow : Window
         tbStatusProgress.Text = $"{label}: {percent}%";
     }
 
+    private static bool ShouldReportProgress(int current, int total, int lastReported, int reportStep)
+    {
+        if (total <= 0 || current <= lastReported)
+            return false;
+
+        return current == total || current - lastReported >= reportStep;
+    }
+
     private void EndProgress()
     {
         pbProgress.Value = 0;
@@ -494,33 +573,17 @@ public partial class MainWindow : Window
 
     private void AddPaths_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new Window
+        var dlg = new TextInputDialog(
+            LanguageService.GetString("Dialog_AddPathsTitle"),
+            LanguageService.GetString("Dialog_AddPathsPrompt"),
+            isMultiline: true)
         {
-            Title = "Add Paths",
-            Width = 520,
-            Height = 320,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
             Owner = this
         };
-        var grid = new Grid { Margin = new Thickness(12) };
-        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        var tb = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap };
-        Grid.SetRow(tb, 0);
-        var panel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 8, 0, 0) };
-        var btnOk = new Button { Content = "OK", Width = 80, IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
-        var btnCancel = new Button { Content = "Cancel", Width = 80, IsCancel = true };
-        btnOk.Click += (_, _) => dlg.DialogResult = true;
-        panel.Children.Add(btnOk);
-        panel.Children.Add(btnCancel);
-        Grid.SetRow(panel, 1);
-        grid.Children.Add(tb);
-        grid.Children.Add(panel);
-        dlg.Content = grid;
 
         if (dlg.ShowDialog() == true)
         {
-            var lines = tb.Text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+            var lines = dlg.InputText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => l.Trim())
                 .Where(l => !string.IsNullOrEmpty(l));
             AddFilePaths(lines, recursive: true);
@@ -549,6 +612,7 @@ public partial class MainWindow : Window
                 }
                 else if (Directory.Exists(path))
                 {
+                    EnsureFolderImportDefaultsForFirstUse();
                     AddDirectoryEntries(path, recursive, existing, added, ref skippedCount);
                 }
             }
@@ -581,6 +645,14 @@ public partial class MainWindow : Window
         {
             tbStatusInfo.Text = $"Skipped {skippedCount} path(s) due to access restrictions.";
         }
+    }
+
+    private void EnsureFolderImportDefaultsForFirstUse()
+    {
+        if (!_appSettings.ApplyFirstFolderImportDefaultsIfNeeded())
+            return;
+
+        _appSettings.Save();
     }
 
     private void AddDirectoryEntries(string rootPath, bool recursive, HashSet<string> existing, List<RenFile> added, ref int skippedCount)
@@ -984,7 +1056,149 @@ public partial class MainWindow : Window
     private void AutoPreviewIfEnabled(object sender, RoutedEventArgs e)
     {
         if (_appSettings.AutoPreview)
-            TryExecute(CmdPreview);
+            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
+    }
+
+    private (CancellationToken token, int version) BeginNewPreviewRequest()
+    {
+        lock (_previewSync)
+        {
+            _previewCts?.Cancel();
+            _previewCts?.Dispose();
+            _previewCts = new CancellationTokenSource();
+            _previewRequestVersion++;
+            return (_previewCts.Token, _previewRequestVersion);
+        }
+    }
+
+    private bool IsLatestPreviewRequest(int version)
+    {
+        lock (_previewSync)
+            return version == _previewRequestVersion;
+    }
+
+    private void CancelPendingPreview()
+    {
+        lock (_previewSync)
+        {
+            _previewRequestVersion++;
+            _previewCts?.Cancel();
+            _previewCts?.Dispose();
+            _previewCts = null;
+        }
+    }
+
+    private (CancellationToken token, int version) BeginNewRenameRequest()
+    {
+        lock (_renameSync)
+        {
+            _renameCts?.Cancel();
+            _renameCts?.Dispose();
+            _renameCts = new CancellationTokenSource();
+            _renameRequestVersion++;
+            return (_renameCts.Token, _renameRequestVersion);
+        }
+    }
+
+    private bool IsLatestRenameRequest(int version)
+    {
+        lock (_renameSync)
+            return version == _renameRequestVersion;
+    }
+
+    private void CancelPendingRename()
+    {
+        lock (_renameSync)
+        {
+            _renameRequestVersion++;
+            _renameCts?.Cancel();
+            _renameCts?.Dispose();
+            _renameCts = null;
+        }
+    }
+
+    private async Task<bool> ExecutePreviewAsync(bool isAutoTrigger, int debounceMilliseconds)
+    {
+        if (!EnsureRulesReadyForExecution())
+            return false;
+
+        var previewLabel = LanguageService.GetString("Status_Previewing");
+        var markedFiles = Files.Where(f => f.IsMarked).ToList();
+        var unmarkedFiles = Files.Where(f => !f.IsMarked).ToList();
+        var ruleSnapshot = Rules.ToList();
+        var (token, version) = BeginNewPreviewRequest();
+
+        try
+        {
+            if (debounceMilliseconds > 0)
+            {
+                await Task.Delay(debounceMilliseconds);
+                if (token.IsCancellationRequested || !IsLatestPreviewRequest(version))
+                    return false;
+            }
+
+            BeginProgress(previewLabel);
+            IProgress<(int current, int total)> progress = new Progress<(int current, int total)>(
+                p => UpdateProgress(previewLabel, p.current, p.total));
+            int previewProgressStep = Math.Max(1, markedFiles.Count / 100);
+            int lastPreviewProgress = 0;
+
+            var previewResults = await Task.Run(
+                () => _renameService.ComputePreview(
+                    markedFiles,
+                    ruleSnapshot,
+                    (cur, total) =>
+                    {
+                        if (!ShouldReportProgress(cur, total, lastPreviewProgress, previewProgressStep))
+                            return;
+
+                        lastPreviewProgress = cur;
+                        progress.Report((cur, total));
+                    },
+                    token));
+
+            if (token.IsCancellationRequested || !IsLatestPreviewRequest(version))
+                return false;
+
+            foreach (var result in previewResults)
+                result.file.NewName = result.newName;
+
+            foreach (var file in unmarkedFiles)
+                file.NewName = file.OriginalName;
+
+            ApplyHighlightChangesState(Files.Where(f => !f.IsRenamed));
+            lvFiles.Items.Refresh();
+            UpdateStatusBar();
+
+            if (_appSettings.AutoValidate)
+            {
+                var errors = ValidateMarkedFiles();
+                tbStatusInfo.Text = errors.Count == 0
+                    ? "Auto validation passed."
+                    : $"Auto validation found {errors.Count} issue(s). Run Validate to view details.";
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            tbStatusInfo.Text = $"Preview failed: {ex.Message}";
+            if (!isAutoTrigger)
+            {
+                MessageBox.Show(
+                    tbStatusInfo.Text,
+                    LanguageService.GetString("Menu_Preview"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+
+            return false;
+        }
+        finally
+        {
+            if (IsLatestPreviewRequest(version))
+                EndProgress();
+        }
     }
 
     private void ApplyHighlightChangesState(RenFile file)
@@ -1016,11 +1230,7 @@ public partial class MainWindow : Window
 
         if (blocking.IsScriptLoading)
         {
-            MessageBox.Show(
-                $"脚本“{blocking.ScriptDisplayName}”仍在后台加载，请稍后再执行。",
-                "JavaScript",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            tbStatusInfo.Text = $"脚本“{blocking.ScriptDisplayName}”后台加载中，加载完成后将自动刷新预览。";
             return false;
         }
 
@@ -1028,41 +1238,19 @@ public partial class MainWindow : Window
             ? "未选择可用脚本。"
             : blocking.ScriptLoadError;
 
-        MessageBox.Show(
-            $"脚本“{blocking.ScriptDisplayName}”不可执行：{reason}",
-            "JavaScript",
-            MessageBoxButton.OK,
-            MessageBoxImage.Warning);
+        tbStatusInfo.Text = $"脚本“{blocking.ScriptDisplayName}”不可执行：{reason}";
         return false;
     }
 
-    private void Preview_Click(object sender, RoutedEventArgs e)
+    private async void Preview_Click(object sender, RoutedEventArgs e)
     {
-        if (!EnsureRulesReadyForExecution())
-            return;
-        BeginProgress(LanguageService.GetString("Status_Previewing"));
-        _renameService.Preview(Files.Where(f => f.IsMarked), Rules,
-            (cur, total) => UpdateProgress(LanguageService.GetString("Status_Previewing"), cur, total));
-        foreach (var f in Files.Where(f => !f.IsMarked)) f.NewName = f.OriginalName;
-        ApplyHighlightChangesState(Files.Where(f => !f.IsRenamed));
-        lvFiles.Items.Refresh();
-        EndProgress();
-        UpdateStatusBar();
-
-        if (_appSettings.AutoValidate)
-        {
-            var errors = ValidateMarkedFiles();
-            tbStatusInfo.Text = errors.Count == 0
-                ? "Auto validation passed."
-                : $"Auto validation found {errors.Count} issue(s). Run Validate to view details.";
-        }
+        await ExecutePreviewAsync(isAutoTrigger: false, debounceMilliseconds: 0);
     }
 
-    private void Rename_Click(object sender, RoutedEventArgs e)
+    private async void Rename_Click(object sender, RoutedEventArgs e)
     {
-        if (!EnsureRulesReadyForExecution())
+        if (!await ExecutePreviewAsync(isAutoTrigger: false, debounceMilliseconds: 0))
             return;
-        Preview_Click(sender, e);
 
         var toRename = Files.Count(f => f.IsMarked && f.HasChanged && !f.IsRenamed);
         if (toRename == 0) return;
@@ -1094,14 +1282,84 @@ public partial class MainWindow : Window
         if (!shouldProceed)
             return;
 
-        BeginProgress(LanguageService.GetString("Status_Renaming"));
-        var (success, failed) = _renameService.Rename(Files.Where(f => f.IsMarked),
-            (cur, total) => UpdateProgress(LanguageService.GetString("Status_Renaming"), cur, total));
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
-        MessageBox.Show(LanguageService.GetString("Msg_RenameResult", success, failed),
-            LanguageService.GetString("Msg_RenameComplete"), MessageBoxButton.OK, MessageBoxImage.Information);
-        EndProgress();
+        var renameTargets = Files.Where(f => f.IsMarked && f.HasChanged && !f.IsRenamed).ToList();
+        var renameLabel = LanguageService.GetString("Status_Renaming");
+        var (token, version) = BeginNewRenameRequest();
+
+        try
+        {
+            BeginProgress(renameLabel);
+            IProgress<(int current, int total)> progress = new Progress<(int current, int total)>(
+                p => UpdateProgress(renameLabel, p.current, p.total));
+            int renameProgressStep = Math.Max(1, renameTargets.Count / 100);
+            int lastRenameProgress = 0;
+
+            var (success, failed) = await Task.Run(
+                () => _renameService.Rename(
+                    renameTargets,
+                    (cur, total) =>
+                    {
+                        if (!ShouldReportProgress(cur, total, lastRenameProgress, renameProgressStep))
+                            return;
+
+                        lastRenameProgress = cur;
+                        progress.Report((cur, total));
+                    },
+                    _appSettings.ConflictResolution),
+                token);
+
+            if (token.IsCancellationRequested || !IsLatestRenameRequest(version))
+                return;
+
+            var renamedFiles = renameTargets.Where(f => f.IsRenamed).ToList();
+            string? undoLogPath = null;
+            if (_appSettings.CreateUndoLog && renamedFiles.Count > 0)
+            {
+                undoLogPath = CreateUndoLogFile(renamedFiles);
+            }
+
+            if (_appSettings.AutoRemoveRenamed && renamedFiles.Count > 0)
+            {
+                foreach (var file in renamedFiles)
+                    Files.Remove(file);
+            }
+
+            lvFiles.Items.Refresh();
+            UpdateStatusBar();
+
+            var resultMessage = LanguageService.GetString("Msg_RenameResult", success, failed);
+            if (_appSettings.CreateUndoLog && renamedFiles.Count > 0)
+            {
+                resultMessage += string.IsNullOrWhiteSpace(undoLogPath)
+                    ? "\nUndo log was not created."
+                    : $"\nUndo log: {undoLogPath}";
+            }
+            if (_appSettings.AutoRemoveRenamed && renamedFiles.Count > 0)
+            {
+                resultMessage += $"\nAuto removed renamed items: {renamedFiles.Count}";
+            }
+
+            MessageBox.Show(resultMessage,
+                LanguageService.GetString("Msg_RenameComplete"), MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (OperationCanceledException)
+        {
+            tbStatusInfo.Text = "Rename cancelled.";
+        }
+        catch (Exception ex)
+        {
+            tbStatusInfo.Text = $"Rename failed: {ex.Message}";
+            MessageBox.Show(
+                tbStatusInfo.Text,
+                LanguageService.GetString("Menu_Rename"),
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            if (IsLatestRenameRequest(version))
+                EndProgress();
+        }
     }
 
     private void UndoRename_Click(object sender, RoutedEventArgs e)
@@ -1140,12 +1398,52 @@ public partial class MainWindow : Window
         return message;
     }
 
+    private static string? CreateUndoLogFile(IReadOnlyCollection<RenFile> renamedFiles)
+    {
+        try
+        {
+            if (!Directory.Exists(UndoLogsDir))
+                Directory.CreateDirectory(UndoLogsDir);
+
+            var fileName = $"undo_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+            var logPath = Path.Combine(UndoLogsDir, fileName);
+            var lines = renamedFiles.Select(file =>
+            {
+                var undoPath = string.IsNullOrEmpty(file.OldPath) ? file.FullPath : file.OldPath;
+                return $"{file.FullPath}\t{undoPath}";
+            });
+
+            File.WriteAllLines(logPath, lines);
+            return logPath;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"CreateUndoLog failed: {ex.Message}");
+            return null;
+        }
+    }
+
     #endregion
 
     #region File List Features
 
     private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateStatusBar();
-    private void FileCheckBox_Click(object sender, RoutedEventArgs e) => UpdateStatusBar();
+    private void FileCheckBox_Click(object sender, RoutedEventArgs e)
+    {
+        UpdateStatusBar();
+    }
+
+    private void FileHeaderCheckBox_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not CheckBox headerCheckBox)
+            return;
+
+        var isMarked = headerCheckBox.IsChecked == true;
+        foreach (var file in Files)
+            file.IsMarked = isMarked;
+
+        UpdateStatusBar();
+    }
 
     private void Files_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
@@ -1210,30 +1508,37 @@ public partial class MainWindow : Window
     private RenFile? GetFileAtPoint(Point point)
     {
         var element = lvFiles.InputHitTest(point) as DependencyObject;
-        while (element != null && element is not ListViewItem)
+        while (element != null && element is not DataGridRow)
             element = VisualTreeHelper.GetParent(element);
-        return (element as ListViewItem)?.DataContext as RenFile;
+
+        return (element as DataGridRow)?.DataContext as RenFile;
     }
 
-    private void FilesColumnHeader_Click(object sender, RoutedEventArgs e)
+    private void FilesColumnHeader_Click(object sender, DataGridSortingEventArgs e)
     {
-        if (e.OriginalSource is GridViewColumnHeader header && header.Column != null)
+        var sortBy = e.Column.SortMemberPath;
+        if (string.IsNullOrWhiteSpace(sortBy))
+            return;
+
+        var direction = e.Column.SortDirection == ListSortDirection.Ascending
+            ? ListSortDirection.Descending
+            : ListSortDirection.Ascending;
+
+        var view = CollectionViewSource.GetDefaultView(lvFiles.ItemsSource);
+        using (view.DeferRefresh())
         {
-            var direction = header == _lastHeaderClicked && _lastDirection == ListSortDirection.Ascending
-                ? ListSortDirection.Descending : ListSortDirection.Ascending;
-
-            // Try DisplayMemberBinding first, then fall back to Tag for DataTemplate columns
-            var binding = header.Column.DisplayMemberBinding as Binding;
-            var sortBy = binding?.Path.Path ?? header.Tag as string ?? "";
-            if (string.IsNullOrEmpty(sortBy)) return;
-
-            var view = CollectionViewSource.GetDefaultView(lvFiles.ItemsSource);
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(new SortDescription(sortBy, direction));
-            view.Refresh();
-            _lastHeaderClicked = header;
-            _lastDirection = direction;
         }
+
+        foreach (var col in lvFiles.Columns)
+        {
+            if (!ReferenceEquals(col, e.Column))
+                col.SortDirection = null;
+        }
+
+        e.Column.SortDirection = direction;
+        e.Handled = true;
     }
 
     private void MarkSelected_Click(object sender, RoutedEventArgs e)
@@ -1327,27 +1632,23 @@ public partial class MainWindow : Window
 
     private void EditNewName_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file)
+        if (lvFiles.SelectedItem is not RenFile file)
+            return;
+
+        var dlg = new TextInputDialog(
+            LanguageService.GetString("Dialog_EditNewNameTitle"),
+            LanguageService.GetString("Column_NewName"),
+            file.NewName,
+            validator: text => string.IsNullOrWhiteSpace(text) ? LanguageService.GetString("Dialog_InputRequired") : null)
         {
-            var dlg = new Window
-            {
-                Title = "Edit New Name", Width = 400, Height = 130,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this, ResizeMode = ResizeMode.NoResize
-            };
-            var sp = new StackPanel { Margin = new Thickness(12) };
-            var tb = new TextBox { Text = file.NewName, Margin = new Thickness(0, 0, 0, 8) };
-            var btn = new Button { Content = "OK", Width = 80, HorizontalAlignment = HorizontalAlignment.Right, IsDefault = true };
-            btn.Click += (_, _) => { dlg.DialogResult = true; };
-            sp.Children.Add(tb);
-            sp.Children.Add(btn);
-            dlg.Content = sp;
-            if (dlg.ShowDialog() == true)
-            {
-                file.NewName = tb.Text;
-                ApplyHighlightChangesState(file);
-                lvFiles.Items.Refresh();
-            }
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() == true)
+        {
+            file.NewName = dlg.InputText;
+            ApplyHighlightChangesState(file);
+            lvFiles.Items.Refresh();
         }
     }
 
@@ -1508,17 +1809,10 @@ public partial class MainWindow : Window
 
     private void AutosizeColumns()
     {
-        var gv = lvFiles.View as GridView;
-        if (gv == null) return;
-        foreach (var col in gv.Columns)
+        foreach (var col in lvFiles.Columns)
         {
-            if (col.Width > 0)
-                col.Width = col.ActualWidth; // 触发 auto-size
-            if (col.Width > 0)
-            {
-                col.Width = double.NaN; // auto
-                col.Width = col.ActualWidth > 0 ? col.ActualWidth : 80;
-            }
+            if (col.Visibility == Visibility.Visible)
+                AutoSizeColumn(col);
         }
     }
 
@@ -1607,165 +1901,6 @@ public partial class MainWindow : Window
         foreach (var f in sorted) Files.Add(f);
     }
 
-    private void Export_Click(object sender, RoutedEventArgs e)
-    {
-        var menu = new ContextMenu();
-        var items = new (string header, UiAction? action)[]
-        {
-            ("Export Names and New Names (Tab)", CmdExportNamesAndNewNames),
-            ("Export New Names to Clipboard", CmdExportNewNames),
-            ("Export Paths to Clipboard", CmdExportPaths),
-            ("Export All Columns to Clipboard", CmdExportAllColumns),
-            ("Export Files and Undo...", CmdExportFilesAndUndo),
-            ("Export Files and Preview...", CmdExportFilesAndPreview),
-            ("-", null),
-            ("Export as Batch File (Full Paths)...", CmdExportBatchFullPaths),
-            ("Export as Batch File (Only Names)...", CmdExportBatchNames),
-            ("-", null),
-            ("Import New Names from Clipboard", CmdImportNewNames),
-            ("Import List of Files...", CmdImportListOfFiles),
-            ("Import Files and Preview...", CmdImportFilesAndPreview),
-        };
-        foreach (var (header, action) in items)
-        {
-            if (action == null) { menu.Items.Add(new Separator()); continue; }
-            menu.Items.Add(new MenuItem { Header = header, Command = action });
-        }
-        menu.PlacementTarget = sender as UIElement;
-        menu.IsOpen = true;
-    }
-
-    private void ExportToClipboard(Func<RenFile, string> formatter)
-    {
-        var text = string.Join("\r\n", Files.Select(formatter));
-        Clipboard.SetText(text);
-        MessageBox.Show($"Exported {Files.Count} items to clipboard.", "Export");
-    }
-
-    private void ExportAllColumnsToClipboard()
-    {
-        var lines = Files.Select(f =>
-            $"{f.State}\t{f.OriginalName}\t{f.NewName}\t{f.FolderPath}\t{f.Extension}\t{f.SizeDisplay}\t{f.SizeKB}\t{f.SizeMB}\t{f.CreatedDisplay}\t{f.ModifiedDisplay}\t{f.ExifDateDisplay}\t{f.OldPath}\t{f.NameDigits}\t{f.PathDigits}\t{f.NameLength}\t{f.NewNameLength}\t{f.PathLength}\t{f.NewPathLength}");
-        var header = "State\tName\tNew Name\tPath\tExtension\tSize\tSize KB\tSize MB\tCreated\tModified\tExif Date\tOld Path\tName Digits\tPath Digits\tName Length\tNew Name Length\tPath Length\tNew Path Length";
-        Clipboard.SetText(header + "\r\n" + string.Join("\r\n", lines));
-        MessageBox.Show($"Exported {Files.Count} items to clipboard.", "Export");
-    }
-
-    private void ExportFilesAndUndo()
-    {
-        var dialog = new SaveFileDialog
-        {
-            Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*",
-            Title = "Export Files and Undo"
-        };
-        if (dialog.ShowDialog() != true) return;
-        var lines = Files.Select(f =>
-        {
-            var undoPath = string.IsNullOrEmpty(f.OldPath) ? f.FullPath : f.OldPath;
-            return $"{f.FullPath}\t{undoPath}";
-        });
-        File.WriteAllLines(dialog.FileName, lines);
-        MessageBox.Show($"Exported {Files.Count} items.", "Export");
-    }
-
-    private void ExportFilesAndPreview()
-    {
-        var dialog = new SaveFileDialog
-        {
-            Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*",
-            Title = "Export Files and Preview"
-        };
-        if (dialog.ShowDialog() != true) return;
-        var lines = Files.Select(f => $"{f.FullPath}\t{f.NewName}");
-        File.WriteAllLines(dialog.FileName, lines);
-        MessageBox.Show($"Exported {Files.Count} items.", "Export");
-    }
-
-    private void ExportAsBatch(bool fullPaths)
-    {
-        var dialog = new SaveFileDialog { Filter = "Batch Files (*.bat)|*.bat", Title = "Export as Batch File" };
-        if (dialog.ShowDialog() != true) return;
-        var lines = new List<string> { "@echo off" };
-        foreach (var f in Files.Where(f => f.HasChanged))
-        {
-            if (fullPaths)
-                lines.Add($"ren \"{f.FullPath}\" \"{f.NewName}\"");
-            else
-                lines.Add($"ren \"{f.OriginalName}\" \"{f.NewName}\"");
-        }
-        File.WriteAllLines(dialog.FileName, lines);
-        MessageBox.Show($"Exported {lines.Count - 1} rename commands.", "Export");
-    }
-
-    private void ImportNewNamesFromClipboard()
-    {
-        var text = Clipboard.GetText();
-        if (string.IsNullOrEmpty(text)) { MessageBox.Show("Clipboard is empty."); return; }
-        var names = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-        int count = Math.Min(names.Length, Files.Count);
-        for (int i = 0; i < count; i++)
-        {
-            if (!string.IsNullOrEmpty(names[i]))
-            {
-                Files[i].NewName = names[i];
-                ApplyHighlightChangesState(Files[i]);
-            }
-        }
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
-        MessageBox.Show($"Imported {count} names from clipboard.", "Import");
-    }
-
-    private void ImportListOfFiles()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Text Files (*.txt)|*.txt|M3U Playlists (*.m3u)|*.m3u|PLS Playlists (*.pls)|*.pls|All Files (*.*)|*.*",
-            Title = "Import List of Files"
-        };
-        if (dialog.ShowDialog() != true) return;
-        var paths = File.ReadAllLines(dialog.FileName)
-            .Select(l => l.Trim())
-            .Where(l => !string.IsNullOrEmpty(l) && !l.StartsWith("#") && !l.StartsWith("["));
-        AddFilePaths(paths, recursive: true);
-    }
-
-    private void ImportFilesAndPreview()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*",
-            Title = "Import Files and Preview"
-        };
-        if (dialog.ShowDialog() != true) return;
-        var lines = File.ReadAllLines(dialog.FileName);
-        int updated = 0;
-        foreach (var raw in lines)
-        {
-            var line = raw.Trim();
-            if (string.IsNullOrEmpty(line) || line.StartsWith("#") || line.StartsWith("[")) continue;
-            string[] parts;
-            if (line.Contains('\t')) parts = line.Split('\t');
-            else if (line.Contains('|')) parts = line.Split('|');
-            else continue;
-            if (parts.Length < 2) continue;
-
-            var path = parts[0].Trim();
-            var preview = parts[1].Trim();
-            var file = Files.FirstOrDefault(f => string.Equals(f.FullPath, path, StringComparison.OrdinalIgnoreCase));
-            if (file == null) continue;
-
-            file.NewName = preview.Contains('\\') || preview.Contains('/')
-                ? Path.GetFileName(preview)
-                : preview;
-            ApplyHighlightChangesState(file);
-            updated++;
-        }
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
-        MessageBox.Show($"Imported preview for {updated} items.", "Import");
-    }
-
     private void Analyze_Click(object sender, RoutedEventArgs e)
     {
         if (lvFiles.SelectedItem is RenFile file)
@@ -1777,14 +1912,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Columns_Click(object sender, RoutedEventArgs e)
-    {
-        ShowColumnsMenu(btnColumns);
-    }
-
     private void FilesColumnHeader_RightClick(object sender, MouseButtonEventArgs e)
     {
-        if (sender is GridViewColumnHeader header && header.Column != null)
+        if (sender is DataGridColumnHeader header && header.Column != null)
         {
             ShowColumnsMenu(header);
             e.Handled = true;
@@ -1793,44 +1923,51 @@ public partial class MainWindow : Window
 
     private void FilesColumnHeader_DoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (sender is GridViewColumnHeader header && header.Column != null)
-        {
-            AutoSizeColumn(header.Column);
-            e.Handled = true;
-        }
+        if (sender is not DataGridColumnHeader header || header.Column == null)
+            return;
+
+        // Match Excel behavior: auto-size only when double-clicking near the right divider.
+        var hit = e.GetPosition(header);
+        if (hit.X < header.ActualWidth - 12)
+            return;
+
+        AutoSizeColumn(header.Column);
+        e.Handled = true;
     }
 
     private void ShowColumnsMenu(UIElement placementTarget)
     {
-        var gv = lvFiles.View as GridView;
-        if (gv == null) return;
-
         var menu = new ContextMenu();
-        for (int i = 2; i < gv.Columns.Count; i++) // Skip CheckBox and State columns
+        for (int i = 2; i < lvFiles.Columns.Count; i++)
         {
-            var col = gv.Columns[i];
-            var header = (col.Header as string)
-                ?? (col.Header as GridViewColumnHeader)?.Content?.ToString()
-                ?? $"Column {i}";
-            var isVisible = col.Width > 0;
+            var col = lvFiles.Columns[i];
+            var header = col.Header?.ToString() ?? $"Column {i}";
+            var isVisible = col.Visibility == Visibility.Visible;
             var mi = new MenuItem { Header = header, IsCheckable = true, IsChecked = isVisible, Tag = col };
             mi.Click += (s, _) =>
             {
                 var menuItem = (MenuItem)s!;
-                var targetCol = (GridViewColumn)menuItem.Tag;
-                targetCol.Width = menuItem.IsChecked ? 120 : 0;
+                var targetCol = (DataGridColumn)menuItem.Tag;
+                targetCol.Visibility = menuItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+                if (targetCol.Visibility == Visibility.Visible && targetCol.Width.DisplayValue <= 0)
+                    targetCol.Width = new DataGridLength(120);
             };
             menu.Items.Add(mi);
         }
 
         menu.Items.Add(new Separator());
-        var cancelSort = new MenuItem { Header = "Cancel Sorting" };
+        var resetColumnWidths = new MenuItem { Header = LanguageService.GetString("ColumnsMenu_ResetColumnWidths") };
+        resetColumnWidths.Click += (_, _) => ResetColumnWidths();
+        menu.Items.Add(resetColumnWidths);
+
+        var cancelSort = new MenuItem { Header = LanguageService.GetString("ColumnsMenu_CancelSorting") };
         cancelSort.Click += (_, _) =>
         {
             var view = CollectionViewSource.GetDefaultView(lvFiles.ItemsSource);
             view.SortDescriptions.Clear();
             view.Refresh();
-            _lastHeaderClicked = null;
+            foreach (var col in lvFiles.Columns)
+                col.SortDirection = null;
         };
         menu.Items.Add(cancelSort);
 
@@ -1838,12 +1975,42 @@ public partial class MainWindow : Window
         menu.IsOpen = true;
     }
 
-    private void AutoSizeColumn(GridViewColumn col)
+    private void ResetColumnWidths()
     {
-        if (col.Width <= 0) return;
-        col.Width = col.ActualWidth;
-        col.Width = double.NaN;
-        col.Width = col.ActualWidth > 0 ? col.ActualWidth : 80;
+        foreach (var col in lvFiles.Columns)
+        {
+            var key = GetColumnKey(col);
+            if (!string.IsNullOrEmpty(key) && _defaultColumnWidths.TryGetValue(key, out var width) && width > 0)
+            {
+                col.Width = new DataGridLength(width);
+            }
+            else if (col.Visibility == Visibility.Visible)
+            {
+                col.Width = new DataGridLength(120);
+            }
+        }
+    }
+
+    private void AutoSizeColumn(DataGridColumn col)
+    {
+        if (col.Visibility != Visibility.Visible)
+            return;
+
+        var fallback = col.ActualWidth > 0 ? col.ActualWidth : 80;
+
+        col.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToCells);
+        lvFiles.UpdateLayout();
+        var cellsWidth = col.ActualWidth;
+
+        col.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
+        lvFiles.UpdateLayout();
+        var headerWidth = col.ActualWidth;
+
+        var targetWidth = Math.Max(cellsWidth, headerWidth);
+        if (double.IsNaN(targetWidth) || targetWidth <= 0)
+            targetWidth = fallback;
+
+        col.Width = new DataGridLength(Math.Ceiling(targetWidth) + 2);
     }
 
     private void About_Click(object sender, RoutedEventArgs e)
@@ -1919,27 +2086,21 @@ public partial class MainWindow : Window
 
     private void RuleComment_Click(object sender, RoutedEventArgs e)
     {
-        if (lvRules.SelectedItem is IRule rule && rule is RuleBase rb)
+        if (lvRules.SelectedItem is not IRule rule || rule is not RuleBase rb)
+            return;
+
+        var dlg = new TextInputDialog(
+            LanguageService.GetString("Dialog_RuleCommentTitle"),
+            LanguageService.GetString("Dialog_RuleCommentPrompt", rule.RuleName),
+            rb.Comment)
         {
-            var dlg = new Window
-            {
-                Title = "Rule Comment", Width = 400, Height = 130,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this, ResizeMode = ResizeMode.NoResize
-            };
-            var sp = new StackPanel { Margin = new Thickness(12) };
-            var tb = new TextBox { Text = rb.Comment, Margin = new Thickness(0, 0, 0, 8) };
-            var btn = new Button { Content = "OK", Width = 80, HorizontalAlignment = HorizontalAlignment.Right, IsDefault = true };
-            btn.Click += (_, _) => { dlg.DialogResult = true; };
-            sp.Children.Add(new TextBlock { Text = $"Comment for: {rule.RuleName}", Margin = new Thickness(0, 0, 0, 4) });
-            sp.Children.Add(tb);
-            sp.Children.Add(btn);
-            dlg.Content = sp;
-            if (dlg.ShowDialog() == true)
-            {
-                rb.Comment = tb.Text.Trim();
-                lvRules.Items.Refresh();
-            }
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() == true)
+        {
+            rb.Comment = dlg.InputText.Trim();
+            lvRules.Items.Refresh();
         }
     }
 
@@ -2138,7 +2299,10 @@ public partial class MainWindow : Window
 
     private void MarkByMask_Click(object sender, RoutedEventArgs e)
     {
-        var mask = PromptInput("Mark by Mask", "Enter wildcard pattern:", "*.*");
+        var mask = PromptInput(
+            LanguageService.GetString("Dialog_MarkByMaskTitle"),
+            LanguageService.GetString("Dialog_MarkByMaskPrompt"),
+            "*.*");
         if (mask == null) return;
         var regex = WildcardToRegex(mask);
         foreach (var f in Files)
@@ -2156,7 +2320,10 @@ public partial class MainWindow : Window
     // Select extensions
     private void SelectByNameLength_Click(object sender, RoutedEventArgs e)
     {
-        var input = PromptInput("Select by Name Length", "Enter max name length:", "20");
+        var input = PromptInput(
+            LanguageService.GetString("Dialog_SelectByNameLengthTitle"),
+            LanguageService.GetString("Dialog_SelectByNameLengthPrompt"),
+            "20");
         if (input == null || !int.TryParse(input, out int maxLen)) return;
         lvFiles.SelectedItems.Clear();
         foreach (var f in Files.Where(f => f.OriginalName.Length <= maxLen))
@@ -2165,7 +2332,10 @@ public partial class MainWindow : Window
 
     private void SelectByExtension_Click(object sender, RoutedEventArgs e)
     {
-        var ext = PromptInput("Select by Extension", "Enter extension (e.g. .txt):", ".txt");
+        var ext = PromptInput(
+            LanguageService.GetString("Dialog_SelectByExtensionTitle"),
+            LanguageService.GetString("Dialog_SelectByExtensionPrompt"),
+            ".txt");
         if (ext == null) return;
         lvFiles.SelectedItems.Clear();
         foreach (var f in Files.Where(f => f.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase)))
@@ -2174,7 +2344,10 @@ public partial class MainWindow : Window
 
     private void SelectByMask_Click(object sender, RoutedEventArgs e)
     {
-        var mask = PromptInput("Select by Mask", "Enter wildcard pattern:", "*.*");
+        var mask = PromptInput(
+            LanguageService.GetString("Dialog_SelectByMaskTitle"),
+            LanguageService.GetString("Dialog_SelectByMaskPrompt"),
+            "*.*");
         if (mask == null) return;
         var regex = WildcardToRegex(mask);
         lvFiles.SelectedItems.Clear();
@@ -2185,21 +2358,12 @@ public partial class MainWindow : Window
     // Helpers
     private string? PromptInput(string title, string prompt, string defaultValue)
     {
-        var dlg = new Window
+        var dlg = new TextInputDialog(title, prompt, defaultValue)
         {
-            Title = title, Width = 350, Height = 130,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this, ResizeMode = ResizeMode.NoResize
+            Owner = this
         };
-        var sp = new StackPanel { Margin = new Thickness(12) };
-        sp.Children.Add(new TextBlock { Text = prompt, Margin = new Thickness(0, 0, 0, 4) });
-        var tb = new TextBox { Text = defaultValue, Margin = new Thickness(0, 0, 0, 8) };
-        var btn = new Button { Content = "OK", Width = 80, HorizontalAlignment = HorizontalAlignment.Right, IsDefault = true };
-        btn.Click += (_, _) => { dlg.DialogResult = true; };
-        sp.Children.Add(tb);
-        sp.Children.Add(btn);
-        dlg.Content = sp;
-        return dlg.ShowDialog() == true ? tb.Text : null;
+
+        return dlg.ShowDialog() == true ? dlg.InputText : null;
     }
 
     private static System.Text.RegularExpressions.Regex WildcardToRegex(string pattern)
@@ -2484,33 +2648,46 @@ public partial class MainWindow : Window
 
     private void SaveColumnState()
     {
-        var gv = lvFiles.View as GridView;
-        if (gv == null) return;
         _appSettings.ColumnWidths.Clear();
         _appSettings.VisibleColumns.Clear();
-        foreach (var col in gv.Columns)
+
+        foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
-            if (string.IsNullOrEmpty(key)) continue;
-            _appSettings.ColumnWidths[key] = col.Width;
-            if (col.Width > 0) _appSettings.VisibleColumns.Add(key);
+            if (string.IsNullOrEmpty(key))
+                continue;
+
+            var width = col.ActualWidth;
+            if (width <= 0)
+                width = col.Width.DisplayValue;
+
+            _appSettings.ColumnWidths[key] = width;
+            if (col.Visibility == Visibility.Visible)
+                _appSettings.VisibleColumns.Add(key);
         }
     }
 
     private void RestoreColumnState()
     {
-        var gv = lvFiles.View as GridView;
-        if (gv == null) return;
-        if (_appSettings.ColumnWidths.Count == 0 && _appSettings.VisibleColumns.Count == 0) return;
+        if (_appSettings.ColumnWidths.Count == 0 && _appSettings.VisibleColumns.Count == 0)
+            return;
 
-        foreach (var col in gv.Columns)
+        foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
-            if (string.IsNullOrEmpty(key)) continue;
-            if (_appSettings.ColumnWidths.TryGetValue(key, out var width))
-                col.Width = width;
+            if (string.IsNullOrEmpty(key))
+                continue;
+
+            if (_appSettings.ColumnWidths.TryGetValue(key, out var width) && width > 0)
+                col.Width = new DataGridLength(width);
+
             if (_appSettings.VisibleColumns.Count > 0)
-                col.Width = _appSettings.VisibleColumns.Contains(key) ? Math.Max(col.Width, 80) : 0;
+            {
+                var isVisible = _appSettings.VisibleColumns.Contains(key);
+                col.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+                if (isVisible && (!_appSettings.ColumnWidths.TryGetValue(key, out var persistedWidth) || persistedWidth <= 0))
+                    col.Width = new DataGridLength(120);
+            }
         }
     }
 
@@ -2527,6 +2704,12 @@ public partial class MainWindow : Window
 
     private void Window_Closing(object sender, CancelEventArgs e)
     {
+        Rules.CollectionChanged -= Rules_CollectionChanged;
+        foreach (var rule in Rules)
+            rule.PropertyChanged -= Rule_PropertyChanged;
+
+        CancelPendingPreview();
+        CancelPendingRename();
         SaveWindowState();
     }
 

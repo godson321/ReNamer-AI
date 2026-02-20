@@ -13,21 +13,75 @@
 - [x] T006 梳理 `AppSettings` “可配不可用”项并建立映射清单。
 - [x] T007 接入 `PreviewOnFileAdd` 与 `HighlightChanges`（新增文件自动预览 + 变化高亮受配置控制）。
 - [x] T008 接入 `AutoValidate`、`WarnInvalidChars`、`WarnLongPaths`（预览自动校验 + 重命名前风险确认 + 校验开关生效）。
-- [ ] 本轮构建验证受环境文件锁影响：`obj/Debug/net8.0-windows/App.g.cs` 与 `ReNamer_MarkupCompile.cache` 访问被拒绝（待本机解锁后复验）。
+- [x] T009 接入 `AutoRemoveRenamed`、`CreateUndoLog`（重命名后自动移除成功项 + 可配置生成 Undo 日志）。
+- [x] T010 接入 `ConflictResolution`（跳过冲突 / 自动后缀 / 覆盖已存在目标）。
+- [x] T011 优化 AddFolders 默认导入策略（首次目录导入默认包含文件）。
+- [x] T012 扩展 `ValidateNewNames`（保留名 / 长路径 / 大小写冲突 / 跨卷预检查）。
+- [x] T013 实时预览改造为 `async + Task.Run + CancellationToken`（自动预览支持取消与防抖，手动预览复用同一异步管线）。
+- [x] T014 重命名流程改造为 `async + Task.Run + CancellationToken`（UI 线程不再直接执行重命名循环）。
+- [x] T037 首页列表大数据性能优化（ListView 虚拟化 + 预览/重命名进度上报节流）。
+- [x] T038 首页滚动性能优化（`ExifDateDisplay` 异步懒加载，避免滚动时同步 EXIF IO）。
+- [x] T039 首页文件表格重构为 `DataGrid`（行列双虚拟化 + 容器复用）。
+- [x] T040 首页文件表格企业级视觉改造（统一表头/行/单元格风格，增强选中与悬停层次）。
+- [x] T032 实时预览按规则顺序自动生效（规则调整后即时刷新最终结果）。
+- [x] T033 预览差异高亮：新旧文件名不一致时对“新文件名”使用差异色，一致保持默认色。
+- [x] T034 移除顶部“预览”按钮与文件菜单“预览”入口，仅保留实时预览链路。
+- [x] T035 文件表格排序方向可视化：表头显示升序/降序箭头。
+- [x] T036 文件表格增加 Delete 快捷键删除选中项，并在右键菜单显示 `Del` 提示。
+- [x] T021 状态栏文件统计文本资源化（中英文均改为格式化资源串）。
+- [x] T019 复用输入对话框组件落地（支持校验、Enter/Esc、资源化按钮文案）。
+- [x] T020 MainWindow 临时输入窗口调用点已切换到复用对话框（路径输入/新名称编辑/规则备注/选择与标记输入）。
+- [x] T041 文件表格第一列增加“全选/全不选”复选框（批量切换 IsMarked）。
+- [x] T012 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
 - [x] T027 构建验证通过：`dotnet build ReNamerWPF/ReNamer/ReNamer.sln`。
 - [x] T028 回归测试通过：`dotnet test ReNamerWPF/ReNamer/ReNamer.sln`（134/134）。
-- [x] 应用启动冒烟验证通过：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj` 受同一文件锁影响失败，改为直接启动 `ReNamerWPF/ReNamer/bin/Debug/net8.0-windows/ReNamer.exe`（PID 424）并人工终止。
+- [x] T012 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T012 回归测试通过（沙箱外）：`dotnet test ReNamerWPF/ReNamer/ReNamer.sln`（134/134）。
+- [x] T013 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T013 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T014 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T014 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T037 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T037 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T038 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T038 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T039 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T039 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [x] T040 构建验证通过（沙箱外）：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj`。
+- [x] T040 启动冒烟验证通过（沙箱外）：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj`（短时拉起后结束进程）。
+- [ ] 说明：普通沙箱模式下仍可能出现 WPF 中间文件 `Access denied` 误报；在本机提权/VS 环境验证通过。
 
 ### 代码落点（本轮）
 - `ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs`
   - `AddFilePaths`：增加路径级异常隔离与受限目录容错，失败计数写入状态栏。
-  - `Rename_Click`：按 `_appSettings.ConfirmRename` 决定是否弹确认。
+  - `AddFilePaths`：首次目录导入时自动应用“包含文件”默认策略并持久化。
+  - `Rename_Click`：接入 `_appSettings.ConfirmRename` / `_appSettings.AutoRemoveRenamed` / `_appSettings.CreateUndoLog` / `_appSettings.ConflictResolution`。
   - `DeleteToRecycleBin_Click`：删除失败提示改为基于实际删除结果。
   - `RestoreWindowState`：恢复 `WindowLeft/Top`，新增 `IsWindowRectVisible` 防越界。
+  - `AutoPreviewIfEnabled` / `Preview_Click` / `Rename_Click`：改为复用 `ExecutePreviewAsync`（异步预览、取消、自动触发防抖）。
+  - 新增 `BeginNewPreviewRequest`、`CancelPendingPreview`：管理预览任务取消与版本一致性。
+  - `Rename_Click`：改为后台 `Task.Run` 执行 `_renameService.Rename`，并通过 `IProgress` 回传 UI 进度。
+  - 新增 `BeginNewRenameRequest`、`CancelPendingRename`：管理重命名任务取消与版本一致性。
+  - 新增 `ShouldReportProgress`，将进度更新节流为约 1% 粒度，减少大批量 UI 刷新压力。
+- `ReNamerWPF/ReNamer/Views/MainWindow.xaml`
+  - `lvFiles` / `lvRules` 启用 `VirtualizingPanel.IsVirtualizing` 与 `VirtualizationMode=Recycling`，降低大数据滚动卡顿。
+  - `lvFiles` 从 `ListView+GridView` 重构为 `DataGrid`，启用 `EnableRowVirtualization` 与 `EnableColumnVirtualization`。
+  - 新增 `EnterpriseDataGrid*` 样式组（头部/行/单元格），统一企业级视觉与交互反馈。
+  - 进一步增强深浅分层（表头/奇偶行/悬停/排序态）并统一单元格文本垂直居中（显示与编辑态一致）。
+- `ReNamerWPF/ReNamer/Models/RenFile.cs`
+  - `ExifDateDisplay` 改为异步懒加载，滚动渲染阶段不再同步打开文件读取 EXIF。
+  - 增加 EXIF 读取并发门限（`SemaphoreSlim`），避免大批量滚动时磁盘并发抖动。
+  - 增加 EXIF 文件类型白名单（仅 jpg/jpeg/tif/tiff），避免非图片触发 `PresentationCore` 解码异常噪音。
+- `ReNamerWPF/ReNamer/Services/RenameService.cs`
+  - `Rename`：新增冲突策略分支（Skip / AddSuffix / Overwrite），并处理批内目标冲突。
+  - `ValidateNewNames`：新增保留名校验、大小写冲突检测、跨卷预检查、目标已存在预检与路径规范化。
+  - 新增 `ComputePreview`：预览计算与 UI 写回分离，支持 `CancellationToken` 中断。
+- `ReNamerWPF/ReNamer/Services/AppSettings.cs`
+  - 增加 `FolderImportDefaultsInitialized`，用于控制首次目录导入默认策略只生效一次。
 
 ### 待完成
 - [ ] T005：按手工回归项（删除到回收站/重命名确认/窗口位置/添加目录）补充人工验证记录。
-- [ ] 阶段 2~5 任务已启动，已完成 T006/T007/T008，待执行 T009~T026。
+- [ ] 阶段 2~5 任务已启动，已完成 T006/T007/T008/T009/T010/T011/T012/T013/T014/T037/T038/T039/T040，待执行 T015~T026。
 
 ### T006：AppSettings“可配不可用”映射清单
 
@@ -40,12 +94,12 @@
 | `PreviewOnFileAdd` | 已接入（T007） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:25`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:46`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:77`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:575` | 已按开关在 `AddFilePaths` 后触发预览 |
 | `HighlightChanges` | 已接入（T007） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:26`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:47`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:78`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:990`、`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1047` | 变化状态由配置控制，关闭时不显示“→”高亮 |
 | `AutoValidate` | 已接入（T008） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:27`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:48`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:79`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1038`、`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1060` | 预览后自动执行校验，重命名前对校验风险二次确认 |
-| `WarnInvalidChars` | 已接入（T008） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:28`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:49`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:80`；校验接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1121`、`ReNamerWPF/ReNamer/Services/RenameService.cs:110` | 校验结果按开关启用/禁用非法字符警告 |
-| `WarnLongPaths` | 已接入（T008） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:29`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:50`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:81`；校验接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1121`、`ReNamerWPF/ReNamer/Services/RenameService.cs:110` | 校验结果按开关启用/禁用长路径警告 |
-| `AutoRemoveRenamed` | 可配不可用 | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:33`；仅在设置页读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:53`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:84` | 重命名后按开关自动移除已完成项（对应 T009） |
-| `CreateUndoLog` | 可配不可用 | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:34`；仅在设置页读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:54`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:85` | 将 Undo 日志生成改为可配置（对应 T009） |
-| `ConflictResolution` | 可配不可用 | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:36`；仅在设置页读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:57`~`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:90` | 在 `RenameService` 冲突分支接入策略（对应 T010） |
-| `FolderSaveAsDefault` | 部分生效（仅持久化） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:64`；过滤器弹窗读写：`ReNamerWPF/ReNamer/Views/FiltersDialog.xaml.cs:31`、`ReNamerWPF/ReNamer/Views/FiltersDialog.xaml.cs:45` | 明确“保存为默认”的生效时机并在启动/导入时应用 |
+| `WarnInvalidChars` | 已接入（T008） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:28`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:49`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:80`；校验接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1166`、`ReNamerWPF/ReNamer/Services/RenameService.cs:212` | 校验结果按开关启用/禁用非法字符警告 |
+| `WarnLongPaths` | 已接入（T008） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:29`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:50`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:81`；校验接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1166`、`ReNamerWPF/ReNamer/Services/RenameService.cs:212` | 校验结果按开关启用/禁用长路径警告 |
+| `AutoRemoveRenamed` | 已接入（T009） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:33`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:53`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:84`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1125` | 重命名成功后按开关自动从列表移除已完成项 |
+| `CreateUndoLog` | 已接入（T009） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:34`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:54`、`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:85`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1120`、`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1186` | 重命名成功后按开关自动生成 Undo 日志文件 |
+| `ConflictResolution` | 已接入（T010） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:36`；设置读写：`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:57`~`ReNamerWPF/ReNamer/Views/SettingsDialog.xaml.cs:90`；主流程接入：`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:1116`、`ReNamerWPF/ReNamer/Services/RenameService.cs:65` | 冲突策略支持“跳过 / 自动后缀 / 覆盖已存在目标” |
+| `FolderSaveAsDefault` | 部分生效（仅持久化） | 定义：`ReNamerWPF/ReNamer/Services/AppSettings.cs:63`；过滤器弹窗读写：`ReNamerWPF/ReNamer/Views/FiltersDialog.xaml.cs:31`、`ReNamerWPF/ReNamer/Views/FiltersDialog.xaml.cs:45` | 明确“保存为默认”的生效时机并在启动/导入时应用 |
 
 ---
 
@@ -101,9 +155,8 @@
 - `AddFolders` 默认体验偏“空列表”：
   - 当前默认 `FolderIncludeAllFiles=false`，首次使用建议默认导入文件。
   - 参考：`ReNamerWPF/ReNamer/Services/AppSettings.cs:55`、`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:539`
-- 扩展 `ValidateNewNames`：
-  - 当前仅重复/非法字符检查（`ReNamerWPF/ReNamer/Services/RenameService.cs:111`）
-  - 建议补充保留名（CON/PRN）、路径长度、大小写冲突、跨卷预检查。
+- 扩展 `ValidateNewNames`（T012 已完成）：
+  - 已补充保留名（CON/PRN/COMx/LPTx）、路径长度、大小写冲突、跨卷预检查。
 
 ### 2.2 易用性（交互）
 - 全局快捷键大量使用 `Shift+字母`（`ReNamerWPF/ReNamer/Views/MainWindow.xaml.cs:478`），建议迁移到 `Ctrl+Shift+` 并在菜单显式展示。
