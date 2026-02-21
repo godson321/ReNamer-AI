@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <MSBuildProjectExtensionsPath>..\..\ReNamerWPF\ReNamer\obj_cli\icon_gen\</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>..\..\ReNamerWPF\ReNamer\obj_cli\icon_gen\</BaseIntermediateOutputPath>
+    <BaseOutputPath>..\..\ReNamerWPF\ReNamer\bin_cli\icon_gen\</BaseOutputPath>
+  </PropertyGroup>
+</Project>
