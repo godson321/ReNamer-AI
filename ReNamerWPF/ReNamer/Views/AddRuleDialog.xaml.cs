@@ -192,7 +192,7 @@ public partial class AddRuleDialog : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-            if (Application.Current.MainWindow is MainWindow mw)
+            if (System.OperatingSystem.IsWindows() && Application.Current.MainWindow is MainWindow mw)
                 mw.AddFilePaths(paths, recursive: true);
         }
     }

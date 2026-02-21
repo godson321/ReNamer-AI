@@ -38,7 +38,7 @@ public class PaddingRule : RuleBase
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
 
         if (AddZeroPadding)
             baseName = Regex.Replace(baseName, @"\d+", m => m.Value.PadLeft(ZeroPaddingLength, '0'));
@@ -108,7 +108,7 @@ public class StripRule : RuleBase
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var stripChars = BuildStripSet();
 
         if (Where == StripWhere.Everywhere)
@@ -209,7 +209,7 @@ public class CleanUpRule : RuleBase
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var result = baseName;
 
         // Strip bracket contents
@@ -301,7 +301,7 @@ public class TransliterateRule : RuleBase
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var alphabet = string.IsNullOrWhiteSpace(Alphabet) ? DefaultAlphabet : Alphabet;
         var pairs = ParseAlphabet(alphabet);
 
@@ -358,7 +358,7 @@ public class RearrangeRule : RuleBase
     public override string Execute(string fileName, RenFile file)
     {
         if (string.IsNullOrEmpty(NewPattern)) return fileName;
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
 
         string[] parts;
         if (SplitMode == RearrangeSplitMode.Positions)
@@ -464,7 +464,7 @@ public class ReformatDateRule : RuleBase
         if (string.IsNullOrEmpty(SourceFormat) || string.IsNullOrEmpty(TargetFormat))
             return fileName;
 
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
 
         // Support multiple source formats separated by |
         var formats = SourceFormat.Split('|').Select(f => f.Trim()).Where(f => f.Length > 0).ToArray();
@@ -562,7 +562,7 @@ public class RandomizeRule : RuleBase, IStatefulRule
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var charset = BuildCharset();
         if (charset.Length == 0) return fileName;
 
@@ -645,7 +645,7 @@ public class UserInputRule : RuleBase, IStatefulRule
 
         if (string.IsNullOrEmpty(line)) return fileName;
 
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         return Mode switch
         {
             UserInputMode.InsertBefore => line + baseName + ext,
@@ -668,7 +668,7 @@ public class MappingRule : RuleBase, IStatefulRule
     public bool PartialMatch { get; set; } = false;
     public bool InverseMapping { get; set; } = false;
     public bool CaseSensitive { get; set; } = false;
-    public bool SkipExtension { get; set; } = false; // 注意：Mapping 默认不跳过扩展名
+    public bool SkipExtension { get; set; } = false; // 注意：Mapping 默认不忽略扩展名
 
     private readonly HashSet<int> _usedMappings = new();
 
@@ -679,7 +679,7 @@ public class MappingRule : RuleBase, IStatefulRule
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
         for (int i = 0; i < Mappings.Count; i++)

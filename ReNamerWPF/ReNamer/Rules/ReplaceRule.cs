@@ -28,7 +28,7 @@ public class ReplaceRule : RuleBase
         if (string.IsNullOrEmpty(FindText))
             return fileName;
 
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var replaceText = RuleHelpers.ResolveMetaTags(ReplaceText, file);
 
         string result;

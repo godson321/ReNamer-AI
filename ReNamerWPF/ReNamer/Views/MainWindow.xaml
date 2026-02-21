@@ -49,8 +49,9 @@
 
         <!-- 现代化 ListView 项样式 -->
         <Style x:Key="ModernListViewItem" TargetType="ListViewItem">
-            <Setter Property="Height" Value="26"/>
-            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Padding" Value="4,0"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Style.Triggers>
@@ -67,22 +68,23 @@
             <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Padding" Value="8,4"/>
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
         </Style>
 
         <Style x:Key="EnterpriseDataGrid" TargetType="{x:Type DataGrid}">
-            <Setter Property="RowHeight" Value="38"/>
-            <Setter Property="ColumnHeaderHeight" Value="40"/>
+            <Setter Property="RowHeight" Value="32"/>
+            <Setter Property="ColumnHeaderHeight" Value="34"/>
             <Setter Property="AlternationCount" Value="2"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
             <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
             <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
-            <Setter Property="RowBackground" Value="{DynamicResource BackgroundBrush}"/>
-            <Setter Property="AlternatingRowBackground" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="RowBackground" Value="Transparent"/>
+            <Setter Property="AlternatingRowBackground" Value="Transparent"/>
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -98,6 +100,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
@@ -112,13 +115,13 @@
                                 </Grid.ColumnDefinitions>
                                 <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  Margin="12,0,10,0"
+                                                  Margin="8,0,8,0"
                                                   RecognizesAccessKey="True"/>
                                 <TextBlock x:Name="SortArrow"
                                            Grid.Column="1"
-                                           Margin="6,0,12,0"
+                                           Margin="4,0,8,0"
                                            VerticalAlignment="Center"
-                                           FontSize="10"
+                                           FontSize="9"
                                            FontWeight="Bold"
                                            Foreground="{TemplateBinding Foreground}"
                                            Visibility="Collapsed"
@@ -175,21 +178,21 @@
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
                         <Condition Property="IsMouseOver" Value="True"/>
                         <Condition Property="IsSelected" Value="False"/>
                     </MultiTrigger.Conditions>
-                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="EnterpriseDataGridCell" TargetType="{x:Type DataGridCell}">
-            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Padding" Value="8,0"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -199,19 +202,21 @@
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                 </Trigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                    <Setter Property="BorderBrush" Value="#CCF7D047"/>
                     <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="#1AF7D047"/>
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
                         <Condition Property="IsSelected" Value="True"/>
                         <Condition Property="IsKeyboardFocusWithin" Value="True"/>
                     </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#FFF7D047"/>
-                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="BorderBrush" Value="#FFE7B900"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="#33F7D047"/>
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
@@ -252,7 +257,8 @@
             <Setter Property="BorderBrush" Value="{DynamicResource BorderHoverBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -298,11 +304,15 @@
         </Style>
         <Style x:Key="FileToolbarButton" TargetType="Button" BasedOn="{StaticResource ToolbarActionButton}">
             <Setter Property="Width" Value="108"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="10,0"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
         </Style>
     </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding CmdPreview}"/>
+    </Window.InputBindings>
 
     <Border x:Name="WindowRootBorder"
             BorderBrush="{StaticResource PrimaryBrush}"
@@ -395,9 +405,7 @@
                     <Separator/>
                     <MenuItem Header="{DynamicResource Menu_ManagePresets}" Command="{Binding CmdManagePresets}"/>
                     <MenuItem Header="{DynamicResource Menu_BrowsePresetsFolder}" Command="{Binding CmdBrowsePresets}"/>
-                    <MenuItem Header="{DynamicResource Menu_ImportPreset}" Command="{Binding CmdImportPreset}"/>
                     <MenuItem Header="{DynamicResource Menu_RescanPresets}" Command="{Binding CmdRescanPresets}"/>
-                    <MenuItem Header="{DynamicResource Menu_CreatePresetLinks}" Command="{Binding CmdCreatePresetLinks}"/>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource Menu_Settings}">
                     <MenuItem Header="{DynamicResource Menu_AllSettings}" Command="{Binding CmdSettings}"/>
@@ -425,38 +433,38 @@
                             Background="{DynamicResource PrimaryBrush}" Opacity="0.25"
                             CornerRadius="1"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- 添加文件 -->
-                    <Button Command="{Binding CmdAddFiles}" Style="{StaticResource CommandBarSecondaryButton}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Icon_AddFile}" Fill="{DynamicResource PrimaryBrush}" 
+                        <!-- 添加文件 -->
+                        <Button Command="{Binding CmdAddFiles}" Style="{StaticResource CommandBarSecondaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource Icon_AddFile}" Fill="{DynamicResource PrimaryBrush}" 
                                   Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Toolbar_AddFiles}" 
+                                <TextBlock Text="{DynamicResource Toolbar_AddFiles}" 
                                        VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
 
-                    <!-- 添加文件夹 -->
-                    <Button Command="{Binding CmdAddFolders}" Style="{StaticResource CommandBarSecondaryButton}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Icon_AddFolder}" Fill="{DynamicResource SemanticWarningBrush}" 
+                        <!-- 添加文件夹 -->
+                        <Button Command="{Binding CmdAddFolders}" Style="{StaticResource CommandBarSecondaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource Icon_AddFolder}" Fill="{DynamicResource SemanticWarningBrush}" 
                                   Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Toolbar_AddFolders}" 
+                                <TextBlock Text="{DynamicResource Toolbar_AddFolders}" 
                                        VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
 
-                    
 
-                    <!-- 预览 -->
-                    <!-- 重命名（强调按钮）-->
-                    <Button Command="{Binding CmdRename}" Style="{StaticResource CommandBarSecondaryButton}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Icon_Rename}" Fill="{DynamicResource PrimaryBrush}" 
+
+                        <!-- 预览 -->
+                        <!-- 重命名（强调按钮）-->
+                        <Button Command="{Binding CmdRename}" Style="{StaticResource CommandBarSecondaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource Icon_Rename}" Fill="{DynamicResource PrimaryBrush}" 
                                   Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Toolbar_Rename}" 
+                                <TextBlock Text="{DynamicResource Toolbar_Rename}" 
                                        VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </DockPanel>
             </Border>
@@ -475,34 +483,34 @@
                         <!-- 规则工具栏 -->
                         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}" 
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                MinHeight="44" Padding="10,6">
+                                MinHeight="38" Padding="8,4">
                             <StackPanel Orientation="Horizontal">
                                 <Button Command="{Binding CmdAddRule}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Add}" Fill="{StaticResource SemanticSuccessBrush}" 
                                               Width="16" Height="16" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Add}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Add}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdRemoveRule}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Remove}" Fill="{StaticResource SemanticErrorBrush}" 
                                               Width="16" Height="16" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Remove}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Remove}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdMoveRuleUp}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Up}" Fill="{StaticResource TextSecondaryBrush}" 
                                               Width="16" Height="16" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Up}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Up}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdMoveRuleDown}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Down}" Fill="{StaticResource TextSecondaryBrush}" 
                                               Width="16" Height="16" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Down}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Down}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -526,6 +534,9 @@
                             <ListView.Resources>
                                 <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource TableColumnHeader}"/>
                             </ListView.Resources>
+                            <ListView.InputBindings>
+                                <KeyBinding Key="Delete" Command="{Binding CmdRemoveRule}"/>
+                            </ListView.InputBindings>
                             <ListView.ContextMenu>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                                     <MenuItem Header="{DynamicResource CtxRule_Add}" Command="{Binding CmdAddRule}"/>
@@ -584,34 +595,41 @@
                         <!-- 文件工具栏 -->
                         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}" 
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                MinHeight="44" Padding="10,6">
+                                MinHeight="38" Padding="8,4">
                             <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding CmdClearAll}" Style="{StaticResource FileToolbarButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon_Remove}" Fill="{StaticResource SemanticErrorBrush}"
+                                              Width="14" Height="14" Stretch="Uniform"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Clear}" Margin="6,0,0,0" FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
                                 <Button Command="{Binding CmdFilters}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Filter}" Fill="{StaticResource InfoBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Filters}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Filters}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdOptions}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Settings}" Fill="{StaticResource TextSecondaryBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Options}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Options}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdAnalyze}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Analyze}" Fill="{StaticResource PrimaryBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Analyze}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Analyze}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                                 <Button Command="{Binding CmdValidate}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource Icon_Check}" Fill="{StaticResource SemanticSuccessBrush}" 
                                               Width="14" Height="14" Stretch="Uniform"/>
-                                        <TextBlock Text="{DynamicResource Toolbar_Validate}" Margin="6,0,0,0" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Validate}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -621,6 +639,7 @@
                         <DataGrid x:Name="lvFiles" SelectionMode="Extended" SelectionUnit="FullRow" AllowDrop="True"
                                   SelectionChanged="Files_SelectionChanged"
                                   PreviewMouseLeftButtonDown="Files_PreviewMouseLeftButtonDown"
+                                  MouseDoubleClick="Files_MouseDoubleClick"
                                   MouseMove="Files_MouseMove" Drop="Files_Drop" DragOver="Files_DragOver"
                                   Sorting="FilesColumnHeader_Click"
                                   Style="{StaticResource EnterpriseDataGrid}"
@@ -643,9 +662,9 @@
                                     <Setter Property="TextWrapping" Value="NoWrap"/>
                                     <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                 </Style>
-                <Style x:Key="CenteredCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
+                                <Style x:Key="CenteredCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
                                 <Style x:Key="ChangedNewNameText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
                                     <Style.Triggers>
                                         <MultiDataTrigger>
@@ -679,6 +698,7 @@
                             </DataGrid.ColumnHeaderStyle>
                             <DataGrid.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding CmdRemoveSelectedFiles}"/>
+                                <KeyBinding Key="F5" Command="{Binding CmdPreview}"/>
                             </DataGrid.InputBindings>
                             <DataGrid.ContextMenu>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -761,8 +781,8 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="{DynamicResource Column_Name}" Width="220" Binding="{Binding OriginalName}" SortMemberPath="OriginalName" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NewName}" Width="220" Binding="{Binding NewName}" SortMemberPath="NewName" ElementStyle="{StaticResource ChangedNewNameText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn x:Name="colFileName" Header="{DynamicResource Column_Name}" Width="220" Binding="{Binding OriginalName}" SortMemberPath="OriginalName" IsReadOnly="True" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                <DataGridTextColumn x:Name="colNewName" Header="{DynamicResource Column_NewName}" Width="220" Binding="{Binding NewName}" SortMemberPath="NewName" ElementStyle="{StaticResource ChangedNewNameText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
                                 <DataGridTextColumn Header="{DynamicResource Column_Path}" Width="200" Binding="{Binding FolderPath}" SortMemberPath="FolderPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
                                 <DataGridTextColumn Header="{DynamicResource Column_Extension}" Width="70" Binding="{Binding Extension}" SortMemberPath="Extension" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
                                 <DataGridTextColumn Header="{DynamicResource Column_Size}" Width="90" Binding="{Binding SizeDisplay}" SortMemberPath="SizeDisplay" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>

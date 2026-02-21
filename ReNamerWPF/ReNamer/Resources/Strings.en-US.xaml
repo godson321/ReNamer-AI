@@ -74,6 +74,7 @@
     
     <!-- Files Toolbar -->
     <sys:String x:Key="Toolbar_Files">Files</sys:String>
+    <sys:String x:Key="Toolbar_Clear">Clear</sys:String>
     <sys:String x:Key="Toolbar_Filters">Filters</sys:String>
     <sys:String x:Key="Toolbar_Options">Options</sys:String>
     <sys:String x:Key="Toolbar_Export">Export</sys:String>
@@ -193,7 +194,7 @@
     <sys:String x:Key="Config_Find">Find:</sys:String>
     <sys:String x:Key="Config_Replace">Replace:</sys:String>
     <sys:String x:Key="Config_CaseSensitive">Case sensitive</sys:String>
-    <sys:String x:Key="Config_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Config_SkipExtension">Ignore extension</sys:String>
     <sys:String x:Key="Config_UseRegex">Use regular expressions</sys:String>
     <sys:String x:Key="Config_Occurrence">Occurrence:</sys:String>
     <sys:String x:Key="Config_All">All</sys:String>
@@ -258,7 +259,7 @@
     <sys:String x:Key="Replace_Last">Last</sys:String>
     <sys:String x:Key="Replace_CaseSensitive">Case sensitive</sys:String>
     <sys:String x:Key="Replace_WholeWords">Whole words only</sys:String>
-    <sys:String x:Key="Replace_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Replace_SkipExtension">Ignore extension</sys:String>
     <sys:String x:Key="Replace_UseWildcards">Interpret '?', '*', '[', ']' as wildcards and '$n' as backreferences?</sys:String>
     
     <!-- Delete Rule -->
@@ -270,7 +271,7 @@
     <sys:String x:Key="Delete_TillEnd">Till the end</sys:String>
     <sys:String x:Key="Delete_CurrentName">Delete current name</sys:String>
     <sys:String x:Key="Delete_RightToLeft">Right-to-left</sys:String>
-    <sys:String x:Key="Delete_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Delete_SkipExtension">Ignore extension</sys:String>
     <sys:String x:Key="Delete_LeaveDelimiter">Do not remove delimiters</sys:String>
     <sys:String x:Key="Delete_Mode">Delete mode:</sys:String>
     <sys:String x:Key="Delete_Mode_Position">Position delete</sys:String>
@@ -345,7 +346,7 @@
     <sys:String x:Key="Regex_Replace">Replace:</sys:String>
     <sys:String x:Key="Regex_Hint">Hint: Use $1..$9 to reference subexpressions.</sys:String>
     <sys:String x:Key="Regex_CaseSensitive">Case-sensitive</sys:String>
-    <sys:String x:Key="Regex_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Regex_SkipExtension">Ignore extension</sys:String>
     <sys:String x:Key="Regex_Help">Help</sys:String>
     <sys:String x:Key="Regex_Help_Tooltip">Open regex usage help</sys:String>
     
@@ -429,7 +430,7 @@
     <sys:String x:Key="Remove_Last">Last</sys:String>
     <sys:String x:Key="Remove_CaseSensitive">Case sensitive</sys:String>
     <sys:String x:Key="Remove_WholeWords">Whole words only</sys:String>
-    <sys:String x:Key="Remove_SkipExtension">Skip extension</sys:String>
+    <sys:String x:Key="Remove_SkipExtension">Ignore extension</sys:String>
     <sys:String x:Key="Remove_UseWildcards">Interpret symbols '?', '*', '[', ']' as wildcards?</sys:String>
 
     <!-- Messages -->
@@ -468,7 +469,7 @@
     <sys:String x:Key="Settings_ConflictResolution">Conflict Resolution</sys:String>
     <sys:String x:Key="Settings_MetaTags">Meta Tags</sys:String>
     <sys:String x:Key="Settings_MiscHint">Additional settings can be added here.</sys:String>
-    <sys:String x:Key="Settings_LoadLastPreset">Load last preset on startup</sys:String>
+    <sys:String x:Key="Settings_LoadLastPreset">Restore last rules on startup</sys:String>
     <sys:String x:Key="Settings_RememberWindowPos">Remember window position</sys:String>
     <sys:String x:Key="Settings_CheckUpdates">Check for updates on startup</sys:String>
     <sys:String x:Key="Settings_Language">Language:</sys:String>

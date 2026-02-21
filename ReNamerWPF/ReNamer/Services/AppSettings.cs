@@ -16,7 +16,7 @@ public class AppSettings
     public string? LastSaveError { get; private set; }
 
     // ─── General ───
-    public bool LoadLastPreset { get; set; } = false;
+    public bool LoadLastPreset { get; set; } = true;
     public bool RememberWindowPosition { get; set; } = true;
     public bool CheckForUpdates { get; set; } = false;
     public bool ConfirmOnExit { get; set; } = false;

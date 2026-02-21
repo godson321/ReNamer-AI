@@ -105,7 +105,7 @@ public class JavaScriptRule : RuleBase, IStatefulRule
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var counterText = CounterDigits > 0
             ? _counter.ToString($"D{CounterDigits}", CultureInfo.InvariantCulture)
             : _counter.ToString(CultureInfo.InvariantCulture);

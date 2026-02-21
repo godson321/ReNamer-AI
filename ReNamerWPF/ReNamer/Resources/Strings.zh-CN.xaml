@@ -74,6 +74,7 @@
     
     <!-- 文件工具栏 -->
     <sys:String x:Key="Toolbar_Files">文件</sys:String>
+    <sys:String x:Key="Toolbar_Clear">清空</sys:String>
     <sys:String x:Key="Toolbar_Filters">过滤器</sys:String>
     <sys:String x:Key="Toolbar_Options">选项</sys:String>
     <sys:String x:Key="Toolbar_Export">导出</sys:String>
@@ -193,7 +194,7 @@
     <sys:String x:Key="Config_Find">查找:</sys:String>
     <sys:String x:Key="Config_Replace">替换:</sys:String>
     <sys:String x:Key="Config_CaseSensitive">区分大小写</sys:String>
-    <sys:String x:Key="Config_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Config_SkipExtension">忽略扩展名</sys:String>
     <sys:String x:Key="Config_UseRegex">使用正则表达式</sys:String>
     <sys:String x:Key="Config_Occurrence">替换次数:</sys:String>
     <sys:String x:Key="Config_All">全部</sys:String>
@@ -258,7 +259,7 @@
     <sys:String x:Key="Replace_Last">最后一个</sys:String>
     <sys:String x:Key="Replace_CaseSensitive">区分大小写</sys:String>
     <sys:String x:Key="Replace_WholeWords">全字匹配</sys:String>
-    <sys:String x:Key="Replace_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Replace_SkipExtension">忽略扩展名</sys:String>
     <sys:String x:Key="Replace_UseWildcards">将 '?', '*', '[', ']' 解释为通配符，'$n' 为反向引用?</sys:String>
     
     <!-- 删除规则 -->
@@ -270,7 +271,7 @@
     <sys:String x:Key="Delete_TillEnd">到末尾</sys:String>
     <sys:String x:Key="Delete_CurrentName">删除当前名称</sys:String>
     <sys:String x:Key="Delete_RightToLeft">从右到左</sys:String>
-    <sys:String x:Key="Delete_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Delete_SkipExtension">忽略扩展名</sys:String>
     <sys:String x:Key="Delete_LeaveDelimiter">不删除分隔符</sys:String>
     <sys:String x:Key="Delete_Mode">删除方式：</sys:String>
     <sys:String x:Key="Delete_Mode_Position">按位置删除</sys:String>
@@ -345,7 +346,7 @@
     <sys:String x:Key="Regex_Replace">替换:</sys:String>
     <sys:String x:Key="Regex_Hint">提示: 使用 $1..$9 引用子表达式。</sys:String>
     <sys:String x:Key="Regex_CaseSensitive">区分大小写</sys:String>
-    <sys:String x:Key="Regex_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Regex_SkipExtension">忽略扩展名</sys:String>
     <sys:String x:Key="Regex_Help">帮助</sys:String>
     <sys:String x:Key="Regex_Help_Tooltip">打开正则用法帮助</sys:String>
     
@@ -429,7 +430,7 @@
     <sys:String x:Key="Remove_Last">最后一个</sys:String>
     <sys:String x:Key="Remove_CaseSensitive">区分大小写</sys:String>
     <sys:String x:Key="Remove_WholeWords">全字匹配</sys:String>
-    <sys:String x:Key="Remove_SkipExtension">跳过扩展名</sys:String>
+    <sys:String x:Key="Remove_SkipExtension">忽略扩展名</sys:String>
     <sys:String x:Key="Remove_UseWildcards">将符号 '?', '*', '[', ']' 解释为通配符?</sys:String>
 
     <!-- 消息 -->
@@ -468,7 +469,7 @@
     <sys:String x:Key="Settings_ConflictResolution">冲突处理</sys:String>
     <sys:String x:Key="Settings_MetaTags">元标签</sys:String>
     <sys:String x:Key="Settings_MiscHint">此处可添加更多设置。</sys:String>
-    <sys:String x:Key="Settings_LoadLastPreset">启动时加载上次预设</sys:String>
+    <sys:String x:Key="Settings_LoadLastPreset">启动时恢复上次规则</sys:String>
     <sys:String x:Key="Settings_RememberWindowPos">记住窗口位置</sys:String>
     <sys:String x:Key="Settings_CheckUpdates">启动时检查更新</sys:String>
     <sys:String x:Key="Settings_Language">语言:</sys:String>

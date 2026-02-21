@@ -66,10 +66,15 @@ public partial class MainWindow : Window
     private const int AutoPreviewDebounceMilliseconds = 200;
     private bool _isHighContrastMode;
     private readonly Dictionary<string, double> _defaultColumnWidths = new(StringComparer.OrdinalIgnoreCase);
+    private bool _statusBarUpdatePending;
     private static readonly string UndoLogsDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ReNamer",
         "UndoLogs");
+    private static readonly string SessionRulesFile = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "ReNamer",
+        "last-session-rules.json");
 
     // Actions (commands)
     public UiAction CmdNewProject { get; private set; } = null!;
@@ -87,9 +92,7 @@ public partial class MainWindow : Window
     public UiAction CmdSavePresetAs { get; private set; } = null!;
     public UiAction CmdManagePresets { get; private set; } = null!;
     public UiAction CmdBrowsePresets { get; private set; } = null!;
-    public UiAction CmdImportPreset { get; private set; } = null!;
     public UiAction CmdRescanPresets { get; private set; } = null!;
-    public UiAction CmdCreatePresetLinks { get; private set; } = null!;
     public UiAction CmdSettings { get; private set; } = null!;
     public UiAction CmdSettingsGeneral { get; private set; } = null!;
     public UiAction CmdSettingsPreview { get; private set; } = null!;
@@ -208,6 +211,7 @@ public partial class MainWindow : Window
             EnsureWindowVisible();
             PopulatePresetMenu();
             PopulateLanguageMenu();
+            RestoreLastSessionRulesIfNeeded();
         };
     }
 
@@ -334,9 +338,7 @@ public partial class MainWindow : Window
         CmdSavePresetAs = CreateAction(_ => SavePresetAs_Click(this, new RoutedEventArgs()), _ => HasRules);
         CmdManagePresets = CreateAction(_ => ManagePresets_Click(this, new RoutedEventArgs()));
         CmdBrowsePresets = CreateAction(_ => BrowsePresets_Click(this, new RoutedEventArgs()));
-        CmdImportPreset = CreateAction(_ => ImportPreset_Click(this, new RoutedEventArgs()));
         CmdRescanPresets = CreateAction(_ => RescanPresets_Click(this, new RoutedEventArgs()));
-        CmdCreatePresetLinks = CreateAction(_ => CreatePresetLinks_Click(this, new RoutedEventArgs()));
 
         CmdSettings = CreateAction(_ => OpenSettingsTab(SettingsTab.General));
         CmdSettingsGeneral = CreateAction(_ => OpenSettingsTab(SettingsTab.General));
@@ -586,6 +588,31 @@ public partial class MainWindow : Window
         RefreshActions();
     }
 
+    private void RequestStatusBarUpdate()
+    {
+        if (_statusBarUpdatePending)
+            return;
+
+        _statusBarUpdatePending = true;
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            _statusBarUpdatePending = false;
+            UpdateStatusBar();
+        }), System.Windows.Threading.DispatcherPriority.Background);
+    }
+
+    private void SetMarkedInBulk(IEnumerable<RenFile> files, Func<RenFile, bool> isMarkedSelector)
+    {
+        var changed = false;
+        foreach (var file in files)
+            changed |= file.SetMarkedSilently(isMarkedSelector(file));
+
+        if (changed)
+            lvFiles.Items.Refresh();
+
+        UpdateStatusBar();
+    }
+
     private void StatusBar_MouseMove(object sender, MouseEventArgs e)
     {
         if (string.IsNullOrEmpty(tbStatusInfo.Text))
@@ -681,7 +708,7 @@ public partial class MainWindow : Window
         }
     }
 
-    internal void AddFilePaths(IEnumerable<string> paths, bool recursive)
+    internal void AddFilePaths(IEnumerable<string> paths, bool recursive, bool forcePreview = false)
     {
         var existing = new HashSet<string>(Files.Select(f => f.FullPath), StringComparer.OrdinalIgnoreCase);
         var added = new List<RenFile>();
@@ -727,9 +754,11 @@ public partial class MainWindow : Window
             ApplyFiltersToFiles(added);
         }
 
-        if (added.Count > 0 && _appSettings.PreviewOnFileAdd)
+        if (added.Count > 0
+            && Rules.Count > 0
+            && (forcePreview || _appSettings.PreviewOnFileAdd || _appSettings.AutoPreview))
         {
-            TryExecute(CmdPreview);
+            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: 0);
         }
 
         if (skippedCount > 0)
@@ -885,12 +914,7 @@ public partial class MainWindow : Window
 
     private void ApplyFiltersToFiles(IEnumerable<RenFile> files)
     {
-        foreach (var file in files)
-        {
-            file.IsMarked = PassesFilters(file);
-        }
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
+        SetMarkedInBulk(files, PassesFilters);
     }
 
     private bool PassesFilters(RenFile file)
@@ -964,7 +988,7 @@ public partial class MainWindow : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-            AddFilePaths(paths, recursive: true);
+            AddFilePaths(paths, recursive: true, forcePreview: true);
         }
     }
 
@@ -1219,6 +1243,8 @@ public partial class MainWindow : Window
 
     private async Task<bool> ExecutePreviewAsync(bool isAutoTrigger, int debounceMilliseconds)
     {
+        CommitPendingFileEdit();
+
         if (!EnsureRulesReadyForExecution())
             return false;
 
@@ -1534,7 +1560,7 @@ public partial class MainWindow : Window
 
     #region File List Features
 
-    private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateStatusBar();
+    private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e) => RequestStatusBarUpdate();
     private void FileCheckBox_Click(object sender, RoutedEventArgs e)
     {
         UpdateStatusBar();
@@ -1546,16 +1572,29 @@ public partial class MainWindow : Window
             return;
 
         var isMarked = headerCheckBox.IsChecked == true;
-        foreach (var file in Files)
-            file.IsMarked = isMarked;
-
-        UpdateStatusBar();
+        SetMarkedInBulk(Files, _ => isMarked);
     }
 
     private void Files_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         _filesDragStartPoint = e.GetPosition(null);
         _draggedFile = GetFileAtPoint(e.GetPosition(lvFiles));
+    }
+
+    private void Files_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Left)
+            return;
+
+        if (!TryGetFileCellContext(e.OriginalSource as DependencyObject, out var file, out var column))
+            return;
+
+        if (!ReferenceEquals(column, colFileName) && !ReferenceEquals(column, colNewName))
+            return;
+
+        lvFiles.SelectedItem = file;
+        EditNewName_Click(sender, new RoutedEventArgs());
+        e.Handled = true;
     }
 
     private void Files_MouseMove(object sender, MouseEventArgs e)
@@ -1591,7 +1630,7 @@ public partial class MainWindow : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-            AddFilePaths(paths, recursive: true);
+            AddFilePaths(paths, recursive: true, forcePreview: true);
             return;
         }
 
@@ -1619,6 +1658,34 @@ public partial class MainWindow : Window
             element = VisualTreeHelper.GetParent(element);
 
         return (element as DataGridRow)?.DataContext as RenFile;
+    }
+
+    private static bool TryGetFileCellContext(DependencyObject? origin, out RenFile? file, out DataGridColumn? column)
+    {
+        file = null;
+        column = null;
+
+        var current = origin;
+        while (current != null && current is not DataGridCell)
+            current = VisualTreeHelper.GetParent(current);
+
+        if (current is not DataGridCell cell || cell.DataContext is not RenFile targetFile)
+            return false;
+
+        file = targetFile;
+        column = cell.Column;
+        return true;
+    }
+
+    private void CommitPendingFileEdit()
+    {
+        var committedCell = lvFiles.CommitEdit(DataGridEditingUnit.Cell, true);
+        var committedRow = lvFiles.CommitEdit(DataGridEditingUnit.Row, true);
+        if (committedCell && committedRow)
+            return;
+
+        lvFiles.CancelEdit(DataGridEditingUnit.Cell);
+        lvFiles.CancelEdit(DataGridEditingUnit.Row);
     }
 
     private void FilesColumnHeader_Click(object sender, DataGridSortingEventArgs e)
@@ -1650,33 +1717,30 @@ public partial class MainWindow : Window
 
     private void MarkSelected_Click(object sender, RoutedEventArgs e)
     {
-        foreach (RenFile f in lvFiles.SelectedItems) f.IsMarked = true;
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToList();
+        SetMarkedInBulk(selected, _ => true);
     }
 
     private void UnmarkSelected_Click(object sender, RoutedEventArgs e)
     {
-        foreach (RenFile f in lvFiles.SelectedItems) f.IsMarked = false;
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToList();
+        SetMarkedInBulk(selected, _ => false);
     }
 
     private void InvertMarking_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var f in Files) f.IsMarked = !f.IsMarked;
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => !f.IsMarked);
     }
 
     private void MarkOnlyChanged_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var f in Files) f.IsMarked = f.HasChanged;
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => f.HasChanged);
     }
 
     private void MarkOnlySelected_Click(object sender, RoutedEventArgs e)
     {
         var selected = lvFiles.SelectedItems.Cast<RenFile>().ToHashSet();
-        foreach (var f in Files) f.IsMarked = selected.Contains(f);
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => selected.Contains(f));
     }
 
     private void ClearAll_Click(object sender, RoutedEventArgs e) => Files.Clear();
@@ -1802,19 +1866,14 @@ public partial class MainWindow : Window
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "JSON Presets (*.json)|*.json|All Files (*.*)|*.*",
+            Filter = "Preset Files (*.json;*.rnp)|*.json;*.rnp|JSON Presets (*.json)|*.json|Legacy Presets (*.rnp)|*.rnp|All Files (*.*)|*.*",
             Title = "Load Preset"
         };
         if (dialog.ShowDialog() == true)
         {
             try
             {
-                var json = File.ReadAllText(dialog.FileName);
-                var loadedRules = PresetService.LoadFromJson(json);
-                Rules.Clear();
-                foreach (var rule in loadedRules) Rules.Add(rule);
-                _appSettings.LastPresetPath = dialog.FileName;
-                SaveSettingsWithFeedback("load preset", showDialog: false);
+                LoadPresetFromPath(dialog.FileName, "load preset", showWarningDialog: true);
             }
             catch (Exception ex)
             {
@@ -1823,25 +1882,79 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SavePreset_Click(object sender, RoutedEventArgs e)
+    private void LoadPresetFromPath(string path, string settingsActionName, bool showWarningDialog, bool updateLastPresetPath = true)
+    {
+        var content = File.ReadAllText(path);
+        var loadedRules = PresetService.LoadFromContent(content, path, out var warningMessage);
+
+        Rules.Clear();
+        foreach (var rule in loadedRules) Rules.Add(rule);
+
+        if (updateLastPresetPath)
+        {
+            _appSettings.LastPresetPath = path;
+            SaveSettingsWithFeedback(settingsActionName, showDialog: false);
+        }
+
+        if (showWarningDialog && !string.IsNullOrWhiteSpace(warningMessage))
+        {
+            MessageBox.Show(warningMessage, "Preset Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void RestoreLastSessionRulesIfNeeded()
+    {
+        if (!_appSettings.LoadLastPreset)
+            return;
+
+        if (!File.Exists(SessionRulesFile))
+            return;
+
+        try
+        {
+            LoadPresetFromPath(
+                SessionRulesFile,
+                settingsActionName: "restore last session rules",
+                showWarningDialog: false,
+                updateLastPresetPath: false);
+            tbStatusInfo.Text = LanguageService.GetString("Status_Ready");
+        }
+        catch (Exception ex)
+        {
+            tbStatusInfo.Text = $"Failed to restore last rules: {ex.Message}";
+            Debug.WriteLine($"[MainWindow] RestoreLastSessionRulesIfNeeded failed: {ex}");
+        }
+    }
+
+    private void SaveSessionRulesSnapshot()
+    {
+        try
+        {
+            var dir = Path.GetDirectoryName(SessionRulesFile);
+            if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            var json = PresetService.SaveToJson(Rules);
+            File.WriteAllText(SessionRulesFile, json);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[MainWindow] SaveSessionRulesSnapshot failed: {ex}");
+        }
+    }
+
+    private async void SavePreset_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrEmpty(_appSettings.LastPresetPath))
         {
             SavePresetAs_Click(sender, e);
             return;
         }
-        try
-        {
-            var json = PresetService.SaveToJson(Rules);
-            File.WriteAllText(_appSettings.LastPresetPath, json);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Failed to save preset: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+
+        await SavePresetToPathAsync(_appSettings.LastPresetPath, updateLastPath: false);
     }
 
-    private void SavePresetAs_Click(object sender, RoutedEventArgs e)
+    private async void SavePresetAs_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog
         {
@@ -1850,17 +1963,43 @@ public partial class MainWindow : Window
         };
         if (dialog.ShowDialog() == true)
         {
-            try
+            await SavePresetToPathAsync(dialog.FileName, updateLastPath: true);
+        }
+    }
+
+    private async Task SavePresetToPathAsync(string path, bool updateLastPath)
+    {
+        const string progressLabel = "保存预设";
+
+        try
+        {
+            BeginProgress(progressLabel);
+            var rulesSnapshot = Rules.ToList();
+            await Task.Yield();
+            await Task.Run(() =>
             {
-                var json = PresetService.SaveToJson(Rules);
-                File.WriteAllText(dialog.FileName, json);
-                _appSettings.LastPresetPath = dialog.FileName;
-                SaveSettingsWithFeedback("save preset as", showDialog: true);
-            }
-            catch (Exception ex)
+                var json = PresetService.SaveToJson(rulesSnapshot);
+                File.WriteAllText(path, json);
+            });
+
+            UpdateProgress(progressLabel, 1, 1);
+
+            if (updateLastPath)
             {
-                MessageBox.Show($"Failed to save preset: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _appSettings.LastPresetPath = path;
+                SaveSettingsWithFeedback("save preset as", showDialog: false);
             }
+
+            tbStatusInfo.Text = $"预设保存成功：{Path.GetFileName(path)}";
+            MessageBox.Show($"预设已保存到：\n{path}", "保存预设", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to save preset: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            EndProgress();
         }
     }
 
@@ -2465,16 +2604,12 @@ public partial class MainWindow : Window
     // Mark extensions
     private void MarkChangedIncCase_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var f in Files)
-            f.IsMarked = !string.Equals(f.OriginalName, f.NewName, StringComparison.Ordinal);
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => !string.Equals(f.OriginalName, f.NewName, StringComparison.Ordinal));
     }
 
     private void MarkChangedExcCase_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var f in Files)
-            f.IsMarked = !string.Equals(f.OriginalName, f.NewName, StringComparison.OrdinalIgnoreCase);
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => !string.Equals(f.OriginalName, f.NewName, StringComparison.OrdinalIgnoreCase));
     }
 
     private void MarkByMask_Click(object sender, RoutedEventArgs e)
@@ -2485,9 +2620,7 @@ public partial class MainWindow : Window
             "*.*");
         if (mask == null) return;
         var regex = WildcardToRegex(mask);
-        foreach (var f in Files)
-            f.IsMarked = regex.IsMatch(f.OriginalName);
-        lvFiles.Items.Refresh(); UpdateStatusBar();
+        SetMarkedInBulk(Files, f => regex.IsMatch(f.OriginalName));
     }
 
     // Clear extensions
@@ -2558,13 +2691,13 @@ public partial class MainWindow : Window
     #region Presets Advanced
 
     private static readonly string PresetsDir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ReNamer", "Presets");
+        Path.Combine(AppContext.BaseDirectory, "Presets");
 
-    private void PopulatePresetMenu()
+    private void PopulatePresetMenu
+    ()
     {
         try
         {
-            // Remove dynamic items (everything after the static Load item)
             while (menuLoadPreset.Items.Count > 0)
                 menuLoadPreset.Items.RemoveAt(0);
 
@@ -2574,14 +2707,24 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var files = Directory.GetFiles(PresetsDir, "*.json");
+            var files = Directory
+                .GetFiles(PresetsDir, "*.*")
+                .Where(path =>
+                {
+                    var ext = Path.GetExtension(path);
+                    return ext.Equals(".json", StringComparison.OrdinalIgnoreCase)
+                           || ext.Equals(".rnp", StringComparison.OrdinalIgnoreCase);
+                })
+                .OrderBy(path => path)
+                .ToArray();
+
             if (files.Length == 0)
             {
                 menuLoadPreset.Items.Add(new MenuItem { Header = "(No presets found)", IsEnabled = false });
                 return;
             }
 
-            foreach (var file in files.OrderBy(f => f))
+            foreach (var file in files)
             {
                 var name = Path.GetFileNameWithoutExtension(file);
                 var mi = new MenuItem { Header = name, Tag = file };
@@ -2590,12 +2733,7 @@ public partial class MainWindow : Window
                     try
                     {
                         var path = (string)((MenuItem)s!).Tag;
-                        var json = File.ReadAllText(path);
-                        var loadedRules = PresetService.LoadFromJson(json);
-                        Rules.Clear();
-                        foreach (var rule in loadedRules) Rules.Add(rule);
-                        _appSettings.LastPresetPath = path;
-                        SaveSettingsWithFeedback("quick load preset", showDialog: false);
+                        LoadPresetFromPath(path, "quick load preset", showWarningDialog: true);
                     }
                     catch (Exception ex)
                     {
@@ -2673,56 +2811,9 @@ public partial class MainWindow : Window
         Process.Start(new ProcessStartInfo(PresetsDir) { UseShellExecute = true });
     }
 
-    private void ImportPreset_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "JSON Presets (*.json)|*.json|All Files (*.*)|*.*",
-            Title = "Import Preset"
-        };
-        if (dialog.ShowDialog() == true)
-        {
-            try
-            {
-                var dest = Path.Combine(PresetsDir, Path.GetFileName(dialog.FileName));
-                if (!Directory.Exists(PresetsDir)) Directory.CreateDirectory(PresetsDir);
-                File.Copy(dialog.FileName, dest, overwrite: true);
-                PopulatePresetMenu();
-                MessageBox.Show($"Imported preset to: {dest}", "Import");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Import failed: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-    }
-
     private void RescanPresets_Click(object sender, RoutedEventArgs e)
     {
         PopulatePresetMenu();
-    }
-
-    private void CreatePresetLinks_Click(object sender, RoutedEventArgs e)
-    {
-        if (!Directory.Exists(PresetsDir)) Directory.CreateDirectory(PresetsDir);
-        var files = Directory.GetFiles(PresetsDir, "*.json");
-        if (files.Length == 0)
-        {
-            MessageBox.Show("No presets found.", "Create Links");
-            return;
-        }
-
-        var linksDir = Path.Combine(PresetsDir, "Links");
-        Directory.CreateDirectory(linksDir);
-        foreach (var preset in files)
-        {
-            var name = Path.GetFileNameWithoutExtension(preset);
-            var linkPath = Path.Combine(linksDir, name + ".url");
-            var url = $"[InternetShortcut]\r\nURL=file:///{preset.Replace("\\", "/")}\r\n";
-            File.WriteAllText(linkPath, url);
-        }
-        Process.Start(new ProcessStartInfo(linksDir) { UseShellExecute = true });
     }
 
     #endregion
@@ -2897,6 +2988,7 @@ public partial class MainWindow : Window
 
         CancelPendingPreview();
         CancelPendingRename();
+        SaveSessionRulesSnapshot();
         SaveWindowState();
     }
 

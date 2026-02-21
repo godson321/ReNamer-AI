@@ -37,7 +37,7 @@ public class InsertRule : RuleBase
     public override string Execute(string fileName, RenFile file)
     {
         if (string.IsNullOrEmpty(InsertText)) return fileName;
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var insertText = RuleHelpers.ResolveMetaTags(InsertText, file);
         return InsertPosition switch
         {
@@ -135,13 +135,13 @@ public class DeleteRule : RuleBase
             DeleteMode.CharacterRemove => ExecuteTextRemove(fileName, file),
             DeleteMode.TextRemove => ExecuteTextRemove(fileName, file),
             DeleteMode.Combined => ExecuteCombined(fileName, file),
-            _ => ExecutePositionDelete(fileName)
+            _ => ExecutePositionDelete(fileName, file)
         };
     }
 
-    private string ExecutePositionDelete(string fileName)
+    private string ExecutePositionDelete(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         if (baseName.Length == 0) return fileName;
         if (DeleteCurrentName) return ext;
 
@@ -181,9 +181,9 @@ public class DeleteRule : RuleBase
         if (RightToLeft) result = Reverse(result);
         return result + ext;
     }
-    private string ExecuteCharacterRemove(string fileName)
+    private string ExecuteCharacterRemove(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         if (baseName.Length == 0) return fileName;
 
         var stripChars = BuildStripSet();
@@ -226,7 +226,7 @@ public class DeleteRule : RuleBase
         }
 
         if (HasStripSelection())
-            result = ExecuteCharacterRemove(result);
+            result = ExecuteCharacterRemove(result, file);
 
         return result;
     }
@@ -234,8 +234,8 @@ public class DeleteRule : RuleBase
     private string ExecuteCombined(string fileName, RenFile file)
     {
         if (TextFirstInCombined)
-            return ExecutePositionDelete(ExecuteTextRemove(fileName, file));
-        return ExecuteTextRemove(ExecutePositionDelete(fileName), file);
+            return ExecutePositionDelete(ExecuteTextRemove(fileName, file), file);
+        return ExecuteTextRemove(ExecutePositionDelete(fileName, file), file);
     }
 
     private bool HasStripSelection()
@@ -327,7 +327,7 @@ public class RemoveRule : RuleBase
     public override string Execute(string fileName, RenFile file)
     {
         if (string.IsNullOrEmpty(Pattern)) return fileName;
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         string result;
         if (UseWildcards)
             result = RuleHelpers.RemoveWildcard(baseName, Pattern, Occurrence);
@@ -401,7 +401,7 @@ public class CaseRule : RuleBase
 
     public override string Execute(string fileName, RenFile file)
     {
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
 
         if (UseSegmentedMode)
         {
@@ -444,7 +444,9 @@ public class CaseRule : RuleBase
 
     private string ApplyPinyinFirstLetter(string input)
     {
-        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(input, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        var letter = OperatingSystem.IsWindows()
+            ? Helpers.PinyinHelper.GetPinyinFirstLetter(input, Math.Max(1, PinyinChineseIndex), PinyinUpperCase)
+            : string.Empty;
         if (string.IsNullOrEmpty(letter))
             letter = PinyinUpperCase ? input[0].ToString().ToUpperInvariant() : input[0].ToString().ToLowerInvariant();
 
@@ -489,7 +491,9 @@ public class CaseRule : RuleBase
     private string ApplyLegacyPinyinCase(string s)
     {
         if (string.IsNullOrEmpty(s)) return s;
-        var letter = Helpers.PinyinHelper.GetPinyinFirstLetter(s, Math.Max(1, PinyinChineseIndex), PinyinUpperCase);
+        var letter = OperatingSystem.IsWindows()
+            ? Helpers.PinyinHelper.GetPinyinFirstLetter(s, Math.Max(1, PinyinChineseIndex), PinyinUpperCase)
+            : string.Empty;
         if (string.IsNullOrEmpty(letter)) return s;
         return PinyinInsertPosition == PinyinInsertPosition.Suffix ? s + letter : letter + s;
     }
@@ -586,7 +590,7 @@ public class SerializeRule : RuleBase, IStatefulRule
         _lastFileName = file.BaseName;
         _fileCounter++;
 
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         int padLen = PadToLength ? PadToLengthValue : Padding;
         var numStr = FormatNum(_currentNumber, padLen);
         var serial = $"{Prefix}{numStr}{Suffix}";
@@ -649,7 +653,7 @@ public class RegexRule : RuleBase
     public override string Execute(string fileName, RenFile file)
     {
         if (string.IsNullOrEmpty(Expression)) return fileName;
-        var (baseName, ext) = SplitFileName(fileName, SkipExtension);
+        var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         try
         {
             var opt = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;

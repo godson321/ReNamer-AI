@@ -120,6 +120,15 @@ public class RenFile : INotifyPropertyChanged
         }
     }
 
+    public bool SetMarkedSilently(bool value)
+    {
+        if (_isMarked == value)
+            return false;
+
+        _isMarked = value;
+        return true;
+    }
+
     /// <summary>是否已重命名</summary>
     public bool IsRenamed
     {

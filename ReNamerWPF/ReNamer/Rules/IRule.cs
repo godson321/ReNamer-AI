@@ -125,9 +125,9 @@ public abstract class RuleBase : IRule
     /// <summary>
     /// 分离文件名和扩展名
     /// </summary>
-    protected static (string baseName, string extension) SplitFileName(string fileName, bool skipExtension)
+    protected static (string baseName, string extension) SplitFileName(string fileName, bool skipExtension, bool isFolder = false)
     {
-        if (!skipExtension)
+        if (!skipExtension || isFolder)
             return (fileName, "");
             
         var ext = Path.GetExtension(fileName);
