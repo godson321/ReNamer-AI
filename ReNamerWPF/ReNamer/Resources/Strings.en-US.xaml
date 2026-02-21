@@ -762,6 +762,8 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Spacing">Space Handling</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Unicode">Unicode</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Other">Other</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">Remove bracketed content:</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">Replace these characters with spaces:</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_TableActions">Table Actions</sys:String>
@@ -783,6 +785,8 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Padding_AddZeroPadding">Add zero padding to length:</sys:String>
     <sys:String x:Key="RuleCfg_Padding_RemoveZeroPadding">Remove zero padding</sys:String>
     <sys:String x:Key="RuleCfg_Padding_AddTextPadding">Add padding to length:</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_NumberSequences">Number sequences</sys:String>
+    <sys:String x:Key="RuleCfg_Padding_TextPadding">Text padding</sys:String>
     <sys:String x:Key="RuleCfg_Padding_PaddingChars">Padding characters:</sys:String>
     <sys:String x:Key="RuleCfg_Padding_Position">Position:</sys:String>
     <sys:String x:Key="RuleCfg_Padding_Left">Left</sys:String>

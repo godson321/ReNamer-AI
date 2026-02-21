@@ -27,9 +27,9 @@
 **⚠️ CRITICAL**: 本阶段未完成前，不进入任何用户故事实施
 
 - [X] T006 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 根容器基线（优先 `Margin="16,12"`，保留必要 MinWidth）
-- [ ] T007 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 标签列宽与对齐策略（简单面板 80，复杂面板 100；标题右对齐、文本左对齐、多行编辑区内容顶部左对齐；同级标签行必须复用同列骨架，字段标签不得非规范加粗；同类输入列宽必须一致，不允许 68/120 等历史混用）
-- [ ] T008 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 行间距策略（8）和分组间距策略（16）
-- [ ] T009 在 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 将 Hint 文本样式统一到 `DialogHintText`
+- [x] T007 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 标签列宽与对齐策略（简单面板 80，复杂面板 100；标题右对齐、文本左对齐、多行编辑区内容顶部左对齐；同级标签行必须复用同列骨架，字段标签不得非规范加粗；同类输入列宽必须一致，不允许 68/120 等历史混用）
+- [x] T008 统一 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 行间距策略（8）和分组间距策略（16）
+- [x] T009 在 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml` 将 Hint 文本样式统一到 `DialogHintText`
 - [X] T010 在 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs` 去除硬编码菜单文案并改为资源读取
 
 **Checkpoint**: 基础规范可复用，进入逐面板拆解阶段
@@ -114,12 +114,12 @@
 **Independent Test**: 中英文切换后无硬编码残留
 
 ### Implementation for User Story 4
-- [ ] T054 [US4] 将 Strip 面板全部硬编码文本替换为 DynamicResource 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
-- [ ] T055 [US4] 将 Rearrange 面板硬编码 Tooltip 替换为资源键于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
-- [ ] T056 [US4] 将 Regex/其他面板按钮说明文案统一资源化于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`, `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
-- [ ] T057 [US4] 将 RuleConfigHelper 菜单分组与说明文本改为资源读取于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs`
-- [ ] T058 [US4] 补齐并校对中英文资源映射于 `ReNamerWPF/ReNamer/Resources/Strings.en-US.xaml`, `ReNamerWPF/ReNamer/Resources/Strings.zh-CN.xaml`
-- [ ] T059 [US4] 全量扫描并清理面板硬编码用户文本于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T054 [US4] 将 Strip 面板全部硬编码文本替换为 DynamicResource 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
+- [x] T055 [US4] 将 Rearrange 面板硬编码 Tooltip 替换为资源键于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
+- [x] T056 [US4] 将 Regex/其他面板按钮说明文案统一资源化于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`, `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T057 [US4] 将 RuleConfigHelper 菜单分组与说明文本改为资源读取于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs`
+- [x] T058 [US4] 补齐并校对中英文资源映射于 `ReNamerWPF/ReNamer/Resources/Strings.en-US.xaml`, `ReNamerWPF/ReNamer/Resources/Strings.zh-CN.xaml`
+- [x] T059 [US4] 全量扫描并清理面板硬编码用户文本于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 
 **Checkpoint**: US4 完成后，本地化完整性可独立验收
 
@@ -130,11 +130,11 @@
 **Independent Test**: 切换主题后逐面板检查前景/背景/边框可读性
 
 ### Implementation for User Story 5
-- [ ] T060 [US5] 将 Strip 只读 TextBox 背景改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
-- [ ] T061 [US5] 将 Rearrange Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
+- [x] T060 [US5] 将 Strip 只读 TextBox 背景改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
+- [x] T061 [US5] 将 Rearrange Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
 - [X] T062 [US5] 将 Transliterate Hint 颜色改为主题 Brush 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
-- [ ] T063 [US5] 将其余面板 Hint/说明色统一为 `DialogHintText` 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
-- [ ] T064 [US5] 全量扫描并清理面板硬编码颜色于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T063 [US5] 将其余面板 Hint/说明色统一为 `DialogHintText` 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T064 [US5] 全量扫描并清理面板硬编码颜色于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 
 **Checkpoint**: US5 完成后，主题兼容性可独立验收
 
@@ -164,8 +164,8 @@
 - [x] T073 执行静态扫描（硬编码文本/硬编码颜色/空 TextBlock/输入框尾部按钮文本符号/同级标签行骨架一致性/字段标签非规范加粗/同类输入列宽一致性）并修复问题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
 - [x] T074 运行构建验证 `dotnet build ReNamerWPF/ReNamer.sln`
 - [x] T075 运行回归测试 `dotnet test ReNamerWPF/ReNamer.sln`
-- [ ] T076 依据 `specs/014-rule-panel-redesign/quickstart.md` 完成亮暗主题 + 中英文 + 窄窗手动验收
-- [ ] T077 对照 `specs/014-rule-panel-redesign/spec.md` 的 SC-001~SC-007 完成最终核对
+- [x] T076 依据 `specs/014-rule-panel-redesign/quickstart.md` 完成亮暗主题 + 中英文 + 窄窗手动验收
+- [x] T077 对照 `specs/014-rule-panel-redesign/spec.md` 的 SC-001~SC-007 完成最终核对
 
 ---
 
@@ -179,7 +179,7 @@
 - [x] T082 [P] 补齐 `ReNamerWPF/ReNamer/Resources/Strings.zh-CN.xaml` 对应翻译键并校对术语一致性
 - [x] T083 扫描并清理 AddRule 相关 UI 残余英文于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`
 - [x] T084 扫描并清理规则面板相关对话框残余英文于 `ReNamerWPF/ReNamer/Views/FiltersDialog.xaml`, `ReNamerWPF/ReNamer/Views/SettingsDialog.xaml`
-- [ ] T085 复测“中文环境不可见英文残留、英文环境不可见中文残留”全链路切换场景于 `specs/014-rule-panel-redesign/quickstart.md`
+- [x] T085 复测“中文环境不可见英文残留、英文环境不可见中文残留”全链路切换场景于 `specs/014-rule-panel-redesign/quickstart.md`
 - [X] T086 统一弹出窗口默认打开位置为屏幕中央于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`, `ReNamerWPF/ReNamer/Views/FiltersDialog.xaml`, `ReNamerWPF/ReNamer/Views/SettingsDialog.xaml`
 
 ---
