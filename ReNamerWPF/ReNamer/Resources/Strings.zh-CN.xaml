@@ -667,18 +667,6 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <!-- Regex -->
     <sys:String x:Key="Regex_InsertExpression">⚡ 插入表达式</sys:String>
 
-    <!-- Strip -->
-    <sys:String x:Key="Strip_English">英文:</sys:String>
-    <sys:String x:Key="Strip_Digits">数字:</sys:String>
-    <sys:String x:Key="Strip_Symbols">符号:</sys:String>
-    <sys:String x:Key="Strip_Brackets">括号:</sys:String>
-    <sys:String x:Key="Strip_UserDefined">自定义:</sys:String>
-    <sys:String x:Key="Strip_UnicodeRange">Unicode 范围:</sys:String>
-    <sys:String x:Key="Strip_Everywhere">任意位置</sys:String>
-    <sys:String x:Key="Strip_Leading">开头</sys:String>
-    <sys:String x:Key="Strip_Trailing">结尾</sys:String>
-    <sys:String x:Key="Strip_AllExceptSelected">仅保留选中字符</sys:String>
-
     <!-- Transliterate -->
     <sys:String x:Key="Translit_Alphabet">字母表</sys:String>
     <sys:String x:Key="Translit_Direction">方向:</sys:String>
@@ -857,18 +845,10 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitMonths">月</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitYears">年</sys:String>
 
-    <sys:String x:Key="RuleCfg_Strip_English">英文：</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Digits">数字：</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Symbols">符号：</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Brackets">括号：</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_UserDefined">自定义：</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_UnicodeRange">Unicode 范围：</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Everywhere">全部位置</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Leading">开头</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Trailing">结尾</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">移除除所选外的所有字符</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Section_Characters">要移除的字符</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Section_Where">位置</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">字母表</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Direction">方向：</sys:String>

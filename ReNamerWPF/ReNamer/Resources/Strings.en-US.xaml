@@ -667,18 +667,6 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <!-- Regex -->
     <sys:String x:Key="Regex_InsertExpression">⚡ Insert Expression</sys:String>
 
-    <!-- Strip -->
-    <sys:String x:Key="Strip_English">English:</sys:String>
-    <sys:String x:Key="Strip_Digits">Digits:</sys:String>
-    <sys:String x:Key="Strip_Symbols">Symbols:</sys:String>
-    <sys:String x:Key="Strip_Brackets">Brackets:</sys:String>
-    <sys:String x:Key="Strip_UserDefined">User defined:</sys:String>
-    <sys:String x:Key="Strip_UnicodeRange">Unicode range:</sys:String>
-    <sys:String x:Key="Strip_Everywhere">Everywhere</sys:String>
-    <sys:String x:Key="Strip_Leading">Leading</sys:String>
-    <sys:String x:Key="Strip_Trailing">Trailing</sys:String>
-    <sys:String x:Key="Strip_AllExceptSelected">Strip all characters except selected</sys:String>
-
     <!-- Transliterate -->
     <sys:String x:Key="Translit_Alphabet">Alphabet</sys:String>
     <sys:String x:Key="Translit_Direction">Direction:</sys:String>
@@ -858,18 +846,10 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitMonths">Months</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitYears">Years</sys:String>
 
-    <sys:String x:Key="RuleCfg_Strip_English">English:</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Digits">Digits:</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Symbols">Symbols:</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Brackets">Brackets:</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_UserDefined">User defined:</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_UnicodeRange">Unicode range:</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Everywhere">Everywhere</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Leading">Leading</sys:String>
     <sys:String x:Key="RuleCfg_Strip_Trailing">Trailing</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">Strip all characters except selected</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Section_Characters">Characters to Strip</sys:String>
-    <sys:String x:Key="RuleCfg_Strip_Section_Where">Where</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">Alphabet</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction:</sys:String>
