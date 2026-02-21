@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
-using ReNamer.Models;
 using ReNamer.Services;
 
 namespace ReNamer.Views;
@@ -10,7 +9,7 @@ public partial class FiltersDialog : Window
 {
     private readonly AppSettings _settings;
 
-    public FiltersDialog(IList<RenFile> files, Action refreshCallback, AppSettings settings)
+    public FiltersDialog(AppSettings settings)
     {
         InitializeComponent();
         _settings = settings;
@@ -19,6 +18,27 @@ public partial class FiltersDialog : Window
 
     private void LoadSettings()
     {
+        chkFiltersApplied.IsChecked = _settings.FiltersApplied;
+        txtNamePattern.Text = _settings.FilterNamePattern;
+        rbNameInclude.IsChecked = !_settings.FilterNameExclude;
+        rbNameExclude.IsChecked = _settings.FilterNameExclude;
+        chkNameCaseSensitive.IsChecked = _settings.FilterNameCaseSensitive;
+
+        txtExtensions.Text = _settings.FilterExtensions;
+
+        txtMinSize.Text = _settings.FilterMinSize > 0
+            ? _settings.FilterMinSize.ToString(CultureInfo.InvariantCulture)
+            : string.Empty;
+        txtMaxSize.Text = _settings.FilterMaxSize > 0
+            ? _settings.FilterMaxSize.ToString(CultureInfo.InvariantCulture)
+            : string.Empty;
+        cmbMinUnit.SelectedIndex = CoerceUnitIndex(_settings.FilterMinSizeUnit);
+        cmbMaxUnit.SelectedIndex = CoerceUnitIndex(_settings.FilterMaxSizeUnit);
+
+        chkAttrReadOnly.IsChecked = _settings.FilterAttrReadOnly;
+        chkAttrHidden.IsChecked = _settings.FilterAttrHidden;
+        chkAttrSystem.IsChecked = _settings.FilterAttrSystem;
+
         chkIncludeAllFiles.IsChecked = _settings.FolderIncludeAllFiles;
         chkIncludeFolderName.IsChecked = _settings.FolderIncludeFolderNames;
         chkIncludeSubFolders.IsChecked = _settings.FolderIncludeSubfolders;
@@ -33,6 +53,29 @@ public partial class FiltersDialog : Window
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
+        _settings.FiltersApplied = chkFiltersApplied.IsChecked == true;
+
+        _settings.FilterNamePattern = txtNamePattern.Text?.Trim() ?? string.Empty;
+        _settings.FilterNameEnabled = !string.IsNullOrWhiteSpace(_settings.FilterNamePattern);
+        _settings.FilterNameExclude = rbNameExclude.IsChecked == true;
+        _settings.FilterNameCaseSensitive = chkNameCaseSensitive.IsChecked == true;
+
+        _settings.FilterExtensions = txtExtensions.Text?.Trim() ?? string.Empty;
+        _settings.FilterExtEnabled = !string.IsNullOrWhiteSpace(_settings.FilterExtensions);
+
+        _settings.FilterMinSize = ParseSizeText(txtMinSize.Text);
+        _settings.FilterMaxSize = ParseSizeText(txtMaxSize.Text);
+        _settings.FilterSizeEnabled = _settings.FilterMinSize > 0 || _settings.FilterMaxSize > 0;
+        _settings.FilterMinSizeUnit = CoerceUnitIndex(cmbMinUnit.SelectedIndex);
+        _settings.FilterMaxSizeUnit = CoerceUnitIndex(cmbMaxUnit.SelectedIndex);
+
+        _settings.FilterAttrReadOnly = chkAttrReadOnly.IsChecked == true;
+        _settings.FilterAttrHidden = chkAttrHidden.IsChecked == true;
+        _settings.FilterAttrSystem = chkAttrSystem.IsChecked == true;
+        _settings.FilterAttrEnabled = _settings.FilterAttrReadOnly
+            || _settings.FilterAttrHidden
+            || _settings.FilterAttrSystem;
+
         _settings.FolderIncludeAllFiles = chkIncludeAllFiles.IsChecked == true;
         _settings.FolderIncludeFolderNames = chkIncludeFolderName.IsChecked == true;
         _settings.FolderIncludeSubfolders = chkIncludeSubFolders.IsChecked == true;
@@ -53,5 +96,25 @@ public partial class FiltersDialog : Window
     {
         DialogResult = false;
         Close();
+    }
+
+    private static int CoerceUnitIndex(int index)
+    {
+        if (index < 0 || index > 3)
+            return 0;
+        return index;
+    }
+
+    private static double ParseSizeText(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return 0;
+
+        var raw = text.Trim();
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var invariantValue))
+            return Math.Max(0, invariantValue);
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.CurrentCulture, out var cultureValue))
+            return Math.Max(0, cultureValue);
+        return 0;
     }
 }

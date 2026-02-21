@@ -14,11 +14,17 @@ public class AppSettings
 {
     public static string? LastLoadError { get; private set; }
     public string? LastSaveError { get; private set; }
+    [JsonIgnore]
+    private FolderImportSnapshot _persistedFolderImport;
+
+    public AppSettings()
+    {
+        _persistedFolderImport = CaptureFolderImportSnapshot();
+    }
 
     // ─── General ───
     public bool LoadLastPreset { get; set; } = true;
     public bool RememberWindowPosition { get; set; } = true;
-    public bool CheckForUpdates { get; set; } = false;
     public bool ConfirmOnExit { get; set; } = false;
     public bool ShowInSystemTray { get; set; } = false;
     public string Language { get; set; } = "zh-CN";
@@ -101,7 +107,9 @@ public class AppSettings
             if (File.Exists(SettingsFile))
             {
                 var json = File.ReadAllText(SettingsFile);
-                return JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new AppSettings();
+                var settings = JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new AppSettings();
+                settings.CapturePersistedFolderImport();
+                return settings;
             }
         }
         catch (Exception ex)
@@ -116,12 +124,19 @@ public class AppSettings
     public bool Save()
     {
         LastSaveError = null;
+        var runtimeFolderImportSnapshot = CaptureFolderImportSnapshot();
         try
         {
             if (!Directory.Exists(SettingsDir))
                 Directory.CreateDirectory(SettingsDir);
+
+            if (!FolderSaveAsDefault)
+                ApplyFolderImportSnapshot(_persistedFolderImport);
+
             var json = JsonSerializer.Serialize(this, JsonOptions);
             File.WriteAllText(SettingsFile, json);
+            if (FolderSaveAsDefault)
+                CapturePersistedFolderImport();
             return true;
         }
         catch (Exception ex)
@@ -129,6 +144,11 @@ public class AppSettings
             LastSaveError = ex.Message;
             Debug.WriteLine($"[AppSettings] Save failed: {ex}");
             return false;
+        }
+        finally
+        {
+            if (!FolderSaveAsDefault)
+                ApplyFolderImportSnapshot(runtimeFolderImportSnapshot);
         }
     }
 
@@ -158,4 +178,47 @@ public class AppSettings
             || FolderMaskFileNameOnly
             || FolderSaveAsDefault;
     }
+
+    private void CapturePersistedFolderImport()
+    {
+        _persistedFolderImport = CaptureFolderImportSnapshot();
+    }
+
+    private FolderImportSnapshot CaptureFolderImportSnapshot()
+    {
+        return new FolderImportSnapshot(
+            FolderIncludeAllFiles,
+            FolderIncludeFolderNames,
+            FolderIncludeSubfolders,
+            FolderIncludeHiddenFiles,
+            FolderIncludeSystemFiles,
+            FolderIgnoreRootFolder,
+            FolderIncludeMask,
+            FolderExcludeMask,
+            FolderMaskFileNameOnly);
+    }
+
+    private void ApplyFolderImportSnapshot(FolderImportSnapshot snapshot)
+    {
+        FolderIncludeAllFiles = snapshot.FolderIncludeAllFiles;
+        FolderIncludeFolderNames = snapshot.FolderIncludeFolderNames;
+        FolderIncludeSubfolders = snapshot.FolderIncludeSubfolders;
+        FolderIncludeHiddenFiles = snapshot.FolderIncludeHiddenFiles;
+        FolderIncludeSystemFiles = snapshot.FolderIncludeSystemFiles;
+        FolderIgnoreRootFolder = snapshot.FolderIgnoreRootFolder;
+        FolderIncludeMask = snapshot.FolderIncludeMask;
+        FolderExcludeMask = snapshot.FolderExcludeMask;
+        FolderMaskFileNameOnly = snapshot.FolderMaskFileNameOnly;
+    }
+
+    private readonly record struct FolderImportSnapshot(
+        bool FolderIncludeAllFiles,
+        bool FolderIncludeFolderNames,
+        bool FolderIncludeSubfolders,
+        bool FolderIncludeHiddenFiles,
+        bool FolderIncludeSystemFiles,
+        bool FolderIgnoreRootFolder,
+        string FolderIncludeMask,
+        string FolderExcludeMask,
+        bool FolderMaskFileNameOnly);
 }

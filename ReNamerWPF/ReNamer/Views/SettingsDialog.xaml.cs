@@ -22,7 +22,6 @@ public partial class SettingsDialog : Window
     {
         chkLoadLastPreset.IsChecked = Settings.LoadLastPreset;
         chkRememberWindowPos.IsChecked = Settings.RememberWindowPosition;
-        chkCheckForUpdates.IsChecked = Settings.CheckForUpdates;
         chkConfirmOnExit.IsChecked = Settings.ConfirmOnExit;
         chkShowInTaskbar.IsChecked = Settings.ShowInSystemTray;
 
@@ -63,7 +62,6 @@ public partial class SettingsDialog : Window
     {
         Settings.LoadLastPreset = chkLoadLastPreset.IsChecked == true;
         Settings.RememberWindowPosition = chkRememberWindowPos.IsChecked == true;
-        Settings.CheckForUpdates = chkCheckForUpdates.IsChecked == true;
         Settings.ConfirmOnExit = chkConfirmOnExit.IsChecked == true;
         Settings.ShowInSystemTray = chkShowInTaskbar.IsChecked == true;
 

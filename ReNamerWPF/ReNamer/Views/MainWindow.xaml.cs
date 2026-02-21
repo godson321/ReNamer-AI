@@ -20,6 +20,7 @@ using Microsoft.Win32;
 using ReNamer.Models;
 using ReNamer.Rules;
 using ReNamer.Services;
+using WinForms = System.Windows.Forms;
 
 namespace ReNamer.Views;
 
@@ -75,6 +76,8 @@ public partial class MainWindow : Window
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ReNamer",
         "last-session-rules.json");
+    private WinForms.NotifyIcon? _trayIcon;
+    private bool _exitRequestedFromTray;
 
     // Actions (commands)
     public UiAction CmdNewProject { get; private set; } = null!;
@@ -212,6 +215,7 @@ public partial class MainWindow : Window
             PopulatePresetMenu();
             PopulateLanguageMenu();
             RestoreLastSessionRulesIfNeeded();
+            UpdateTrayIconState();
         };
     }
 
@@ -346,7 +350,7 @@ public partial class MainWindow : Window
         CmdSettingsRename = CreateAction(_ => OpenSettingsTab(SettingsTab.Rename));
         CmdSettingsMetaTags = CreateAction(_ => OpenSettingsTab(SettingsTab.Rename));
         CmdSettingsMisc = CreateAction(_ => OpenSettingsTab(SettingsTab.Misc));
-        CmdSettingsFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()), _ => HasFiles);
+        CmdSettingsFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()));
         CmdHelpOnline = CreateAction(_ => HelpOnline_Click(this, new RoutedEventArgs()));
         CmdQuickGuide = CreateAction(_ => QuickGuide_Click(this, new RoutedEventArgs()));
         CmdUserManual = CreateAction(_ => UserManual_Click(this, new RoutedEventArgs()));
@@ -513,6 +517,7 @@ public partial class MainWindow : Window
     private void OnLanguageChanged()
     {
         UpdateLanguageMenuChecks();
+        UpdateTrayIconState();
         foreach (var rule in Rules.OfType<RuleBase>())
             rule.NotifyLocalizationChanged();
     }
@@ -2003,17 +2008,26 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+    private void Exit_Click(object sender, RoutedEventArgs e) => RequestAppExit();
 
     private void ManageFiles_Click(object sender, RoutedEventArgs e) => AddFiles_Click(sender, e);
 
     private void Filters_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new FiltersDialog(Files, () => { lvFiles.Items.Refresh(); UpdateStatusBar(); }, _appSettings)
+        var dlg = new FiltersDialog(_appSettings)
         {
             Owner = this
         };
-        dlg.ShowDialog();
+        if (dlg.ShowDialog() != true)
+            return;
+
+        if (_appSettings.FiltersApplied)
+            ApplyFiltersToFiles(Files);
+        else
+            SetMarkedInBulk(Files, _ => true);
+
+        lvFiles.Items.Refresh();
+        UpdateStatusBar();
     }
 
     private void OpenSettingsTab(SettingsTab tab)
@@ -2023,6 +2037,7 @@ public partial class MainWindow : Window
         {
             SaveSettingsWithFeedback("settings dialog", showDialog: true);
             RuleHelpers.ResolveMetaTagsEnabled = _appSettings.ResolveMetaTags;
+            UpdateTrayIconState();
             // Apply language if changed
             if (_appSettings.Language == "en-US")
                 LanguageService.SwitchToEnglish();
@@ -2899,6 +2914,98 @@ public partial class MainWindow : Window
         Activate();
     }
 
+    private void RequestAppExit()
+    {
+        _exitRequestedFromTray = true;
+        Close();
+    }
+
+    private void HideToTray()
+    {
+        UpdateTrayIconState();
+        Hide();
+    }
+
+    private void RestoreFromTray()
+    {
+        _exitRequestedFromTray = false;
+        EnsureWindowVisible();
+        WindowState = WindowState.Normal;
+    }
+
+    private void UpdateTrayIconState()
+    {
+        if (!_appSettings.ShowInSystemTray)
+        {
+            if (_trayIcon != null)
+                _trayIcon.Visible = false;
+            return;
+        }
+
+        EnsureTrayIcon();
+        if (_trayIcon != null)
+        {
+            _trayIcon.Text = "ReNamer";
+            if (_trayIcon.ContextMenuStrip?.Items.Count >= 2)
+            {
+                _trayIcon.ContextMenuStrip.Items[0].Text = LanguageService.GetString("Tray_Open");
+                _trayIcon.ContextMenuStrip.Items[1].Text = LanguageService.GetString("Tray_Exit");
+            }
+            _trayIcon.Visible = true;
+        }
+    }
+
+    private void EnsureTrayIcon()
+    {
+        if (_trayIcon != null)
+            return;
+
+        _trayIcon = new WinForms.NotifyIcon
+        {
+            Icon = GetTrayIcon(),
+            Visible = false
+        };
+
+        _trayIcon.DoubleClick += (_, _) => Dispatcher.BeginInvoke(new Action(RestoreFromTray));
+
+        var menu = new WinForms.ContextMenuStrip();
+        menu.Items.Add(LanguageService.GetString("Tray_Open"), null, (_, _) =>
+            Dispatcher.BeginInvoke(new Action(RestoreFromTray)));
+        menu.Items.Add(LanguageService.GetString("Tray_Exit"), null, (_, _) =>
+            Dispatcher.BeginInvoke(new Action(RequestAppExit)));
+        _trayIcon.ContextMenuStrip = menu;
+    }
+
+    private static System.Drawing.Icon GetTrayIcon()
+    {
+        try
+        {
+            var exePath = Process.GetCurrentProcess().MainModule?.FileName;
+            if (!string.IsNullOrWhiteSpace(exePath))
+            {
+                var icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+                if (icon != null)
+                    return icon;
+            }
+        }
+        catch
+        {
+            // Ignore icon load failures and fallback to default system icon.
+        }
+
+        return System.Drawing.SystemIcons.Application;
+    }
+
+    private void DisposeTrayIcon()
+    {
+        if (_trayIcon == null)
+            return;
+
+        _trayIcon.Visible = false;
+        _trayIcon.Dispose();
+        _trayIcon = null;
+    }
+
     private void SaveWindowState()
     {
         if (_appSettings.RememberWindowPosition)
@@ -2981,9 +3088,35 @@ public partial class MainWindow : Window
 
     private void Window_Closing(object sender, CancelEventArgs e)
     {
+        if (_appSettings.ShowInSystemTray && !_exitRequestedFromTray)
+        {
+            e.Cancel = true;
+            HideToTray();
+            return;
+        }
+
+        if (_appSettings.ConfirmOnExit)
+        {
+            var shouldExit = MessageBox.Show(
+                LanguageService.GetString("Msg_ConfirmExit"),
+                LanguageService.GetString("Menu_Exit"),
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes;
+            if (!shouldExit)
+            {
+                _exitRequestedFromTray = false;
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        _exitRequestedFromTray = false;
+        DisposeTrayIcon();
+
         Rules.CollectionChanged -= Rules_CollectionChanged;
         foreach (var rule in Rules)
             rule.PropertyChanged -= Rule_PropertyChanged;
+        LanguageService.LanguageChanged -= OnLanguageChanged;
         SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
 
         CancelPendingPreview();

@@ -471,11 +471,13 @@
     <sys:String x:Key="Settings_MiscHint">此处可添加更多设置。</sys:String>
     <sys:String x:Key="Settings_LoadLastPreset">启动时恢复上次规则</sys:String>
     <sys:String x:Key="Settings_RememberWindowPos">记住窗口位置</sys:String>
-    <sys:String x:Key="Settings_CheckUpdates">启动时检查更新</sys:String>
     <sys:String x:Key="Settings_Language">语言:</sys:String>
     <sys:String x:Key="Settings_Theme">主题:</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">退出时确认</sys:String>
     <sys:String x:Key="Settings_ShowInTray">显示在系统托盘</sys:String>
+    <sys:String x:Key="Msg_ConfirmExit">确定要退出程序吗？</sys:String>
+    <sys:String x:Key="Tray_Open">打开主窗口</sys:String>
+    <sys:String x:Key="Tray_Exit">退出程序</sys:String>
     <sys:String x:Key="Settings_AutoPreviewRules">规则变更时自动预览</sys:String>
     <sys:String x:Key="Settings_AutoPreviewOnAdd">添加文件时自动预览</sys:String>
     <sys:String x:Key="Settings_HighlightChanges">高亮已更改名称</sys:String>
@@ -499,9 +501,11 @@
     <sys:String x:Key="Filters_ExtFilter">扩展名过滤</sys:String>
     <sys:String x:Key="Filters_SizeFilter">大小过滤</sys:String>
     <sys:String x:Key="Filters_AttrFilter">属性过滤</sys:String>
+    <sys:String x:Key="Filters_EnableListFilter">启用文件列表过滤</sys:String>
     <sys:String x:Key="Filters_EnableNameFilter">启用文件名过滤</sys:String>
     <sys:String x:Key="Filters_Pattern">模式:</sys:String>
     <sys:String x:Key="Filters_WildcardsHint">通配符：* 与 ?</sys:String>
+    <sys:String x:Key="Filters_CaseSensitive">区分大小写</sys:String>
     <sys:String x:Key="Filters_Include">包含</sys:String>
     <sys:String x:Key="Filters_Exclude">排除</sys:String>
     <sys:String x:Key="Filters_EnableExtFilter">启用扩展名过滤</sys:String>
@@ -518,7 +522,7 @@
     <sys:String x:Key="Filters_ReadOnly">只读</sys:String>
     <sys:String x:Key="Filters_Hidden">隐藏</sys:String>
     <sys:String x:Key="Filters_System">系统</sys:String>
-    <sys:String x:Key="Filter_FolderDefaults">添加文件夹的默认属性：</sys:String>
+    <sys:String x:Key="Filter_FolderDefaults">添加文件夹的默认属性</sys:String>
     <sys:String x:Key="Filter_IncludeAllFiles">包含目录下所有文件</sys:String>
     <sys:String x:Key="Filter_IncludeFolderNames">包含文件夹名</sys:String>
     <sys:String x:Key="Filter_IncludeSubfolders">包含子目录</sys:String>

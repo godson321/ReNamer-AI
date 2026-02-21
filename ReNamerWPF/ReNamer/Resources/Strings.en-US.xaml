@@ -471,11 +471,13 @@
     <sys:String x:Key="Settings_MiscHint">Additional settings can be added here.</sys:String>
     <sys:String x:Key="Settings_LoadLastPreset">Restore last rules on startup</sys:String>
     <sys:String x:Key="Settings_RememberWindowPos">Remember window position</sys:String>
-    <sys:String x:Key="Settings_CheckUpdates">Check for updates on startup</sys:String>
     <sys:String x:Key="Settings_Language">Language:</sys:String>
     <sys:String x:Key="Settings_Theme">Theme:</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">Confirm on exit</sys:String>
     <sys:String x:Key="Settings_ShowInTray">Show in system tray</sys:String>
+    <sys:String x:Key="Msg_ConfirmExit">Are you sure you want to exit?</sys:String>
+    <sys:String x:Key="Tray_Open">Open window</sys:String>
+    <sys:String x:Key="Tray_Exit">Exit</sys:String>
     <sys:String x:Key="Settings_AutoPreviewRules">Auto-preview when rules change</sys:String>
     <sys:String x:Key="Settings_AutoPreviewOnAdd">Auto-preview when files are added</sys:String>
     <sys:String x:Key="Settings_HighlightChanges">Highlight changed names</sys:String>
@@ -499,9 +501,11 @@
     <sys:String x:Key="Filters_ExtFilter">Extension Filter</sys:String>
     <sys:String x:Key="Filters_SizeFilter">Size Filter</sys:String>
     <sys:String x:Key="Filters_AttrFilter">Attributes Filter</sys:String>
+    <sys:String x:Key="Filters_EnableListFilter">Enable file list filters</sys:String>
     <sys:String x:Key="Filters_EnableNameFilter">Enable file name filter</sys:String>
     <sys:String x:Key="Filters_Pattern">Pattern:</sys:String>
     <sys:String x:Key="Filters_WildcardsHint">Wildcards: * and ?</sys:String>
+    <sys:String x:Key="Filters_CaseSensitive">Case-sensitive</sys:String>
     <sys:String x:Key="Filters_Include">Include</sys:String>
     <sys:String x:Key="Filters_Exclude">Exclude</sys:String>
     <sys:String x:Key="Filters_EnableExtFilter">Enable extension filter</sys:String>
@@ -518,7 +522,7 @@
     <sys:String x:Key="Filters_ReadOnly">Read-only</sys:String>
     <sys:String x:Key="Filters_Hidden">Hidden</sys:String>
     <sys:String x:Key="Filters_System">System</sys:String>
-    <sys:String x:Key="Filter_FolderDefaults">Default attributes for adding folders:</sys:String>
+    <sys:String x:Key="Filter_FolderDefaults">Default attributes for adding folders</sys:String>
     <sys:String x:Key="Filter_IncludeAllFiles">Include all files under directory</sys:String>
     <sys:String x:Key="Filter_IncludeFolderNames">Include folder names</sys:String>
     <sys:String x:Key="Filter_IncludeSubfolders">Include subfolders</sys:String>

@@ -19,7 +19,6 @@
                     <TextBlock Text="{DynamicResource Settings_Startup}" Style="{StaticResource DialogSectionHeaderText}"/>
                     <CheckBox x:Name="chkLoadLastPreset" Content="{DynamicResource Settings_LoadLastPreset}" Margin="0,4"/>
                     <CheckBox x:Name="chkRememberWindowPos" Content="{DynamicResource Settings_RememberWindowPos}" IsChecked="True" Margin="0,4"/>
-                    <CheckBox x:Name="chkCheckForUpdates" Content="{DynamicResource Settings_CheckUpdates}" Margin="0,4"/>
 
                     <Separator Margin="0,12"/>
                     <TextBlock Text="{DynamicResource Settings_Interface}" Style="{StaticResource DialogSectionHeaderText}"/>
