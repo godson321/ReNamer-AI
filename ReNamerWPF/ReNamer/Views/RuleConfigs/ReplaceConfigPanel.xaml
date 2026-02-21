@@ -17,7 +17,8 @@
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReplaceFind}"/>
             <Button x:Name="btnFindSeparator" Grid.Column="2" ToolTip="{DynamicResource RuleCfg_SeparateItems}"
                     Width="28" Height="28" Margin="4,0,0,0" Click="BtnFindSeparator_Click"
-                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Focusable="False" IsTabStop="False">
                 <Path Data="{StaticResource Icon_Columns}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
             </Button>
         </Grid>
@@ -33,7 +34,8 @@
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReplaceReplace}"/>
             <Button x:Name="btnReplaceMetaTag" Grid.Column="2" ToolTip="{DynamicResource RuleCfg_InsertMetaTag}"
                     Width="28" Height="28" Margin="4,0,0,0" Click="BtnReplaceMetaTag_Click"
-                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Focusable="False" IsTabStop="False">
                 <Path Data="{StaticResource Icon_Insert}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
             </Button>
         </Grid>
@@ -70,7 +72,15 @@
                 </StackPanel>
             </Grid>
         </Grid>
+
         <!-- Use wildcards -->
-        <CheckBox x:Name="chkUseWildcards" Content="{DynamicResource Replace_UseWildcards}" VerticalContentAlignment="Center"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="chkUseWildcards" Grid.Column="1" Margin="8,0,0,0"
+                      Content="{DynamicResource Replace_UseWildcards}" VerticalContentAlignment="Center"/>
+        </Grid>
     </StackPanel>
 </UserControl>

@@ -48,26 +48,13 @@ public partial class MappingConfigPanel : UserControl, IRuleConfigPanel
         _rule.SkipExtension = chkSkipExtension.IsChecked == true;
     }
 
-    private void BtnTable_Click(object sender, RoutedEventArgs e)
-    {
-        var menu = new ContextMenu();
-        var loadFile = new MenuItem { Header = "Load from file..." };
-        loadFile.Click += (_, _) => LoadFromFile();
-        var loadClip = new MenuItem { Header = "Load from clipboard" };
-        loadClip.Click += (_, _) => LoadFromClipboard();
-        var saveFile = new MenuItem { Header = "Save to file..." };
-        saveFile.Click += (_, _) => SaveToFile();
-        var clear = new MenuItem { Header = "Clear" };
-        clear.Click += (_, _) => { _entries.Clear(); };
+    private void BtnLoadFromFile_Click(object sender, RoutedEventArgs e) => LoadFromFile();
 
-        menu.Items.Add(loadFile);
-        menu.Items.Add(loadClip);
-        menu.Items.Add(new Separator());
-        menu.Items.Add(saveFile);
-        menu.Items.Add(new Separator());
-        menu.Items.Add(clear);
-        menu.IsOpen = true;
-    }
+    private void BtnLoadFromClipboard_Click(object sender, RoutedEventArgs e) => LoadFromClipboard();
+
+    private void BtnSaveToFile_Click(object sender, RoutedEventArgs e) => SaveToFile();
+
+    private void BtnClearMappings_Click(object sender, RoutedEventArgs e) => _entries.Clear();
 
     private void LoadFromFile()
     {

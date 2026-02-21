@@ -43,13 +43,13 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
             {
                 dgScripts.SelectedItem = selected;
                 UpdateStatus(_rule.IsScriptLoading
-                    ? $"已选择脚本：{selected.Name}（后台加载中...）"
-                    : $"已选择脚本：{selected.Name}");
+                    ? RF("JavaScript_Status_SelectedLoading", selected.Name)
+                    : RF("JavaScript_Status_Selected", selected.Name));
                 return;
             }
         }
 
-        UpdateStatus("请从列表中双击一个脚本进行选择。");
+        UpdateStatus(R("JavaScript_Status_SelectHint"));
     }
 
     public void ApplyConfig()
@@ -102,7 +102,7 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
         var loadVersion = Interlocked.Increment(ref _scriptLoadVersion);
 
         _rule.MarkScriptLoading(item.FullPath);
-        UpdateStatus($"已选择脚本：{item.Name}（后台加载中...）");
+        UpdateStatus(RF("JavaScript_Status_SelectedLoading", item.Name));
 
         try
         {
@@ -111,19 +111,19 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
                 return;
 
             _rule.MarkScriptLoaded(item.FullPath, script);
-            UpdateStatus($"已选择脚本：{item.Name}（加载完成）");
+            UpdateStatus(RF("JavaScript_Status_SelectedLoaded", item.Name));
         }
         catch (Exception ex)
         {
             _rule.MarkScriptLoadFailed(item.FullPath, ex.Message);
-            UpdateStatus($"脚本加载失败：{item.Name} - {ex.Message}");
+            UpdateStatus(RF("JavaScript_Status_LoadFailed", item.Name, ex.Message));
         }
     }
 
     private void Reload_Click(object sender, RoutedEventArgs e)
     {
         ReloadScriptList();
-        UpdateStatus($"脚本列表已刷新，共 {_scripts.Count} 个脚本。");
+        UpdateStatus(RF("JavaScript_Status_Reloaded", _scripts.Count));
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
@@ -139,16 +139,17 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
 
     private void Validate_Click(object sender, RoutedEventArgs e)
     {
+        var title = R("Rule_JavaScript");
         if (_rule.IsScriptLoading)
         {
-            MessageBox.Show("脚本仍在后台加载，请稍后再试。", "JavaScript", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(R("JavaScript_Validate_WaitLoading"), title, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!_rule.IsScriptReady)
         {
-            var reason = string.IsNullOrWhiteSpace(_rule.ScriptLoadError) ? "尚未选择可用脚本。" : _rule.ScriptLoadError;
-            MessageBox.Show($"当前脚本不可用：{reason}", "JavaScript", MessageBoxButton.OK, MessageBoxImage.Warning);
+            var reason = string.IsNullOrWhiteSpace(_rule.ScriptLoadError) ? R("JavaScript_Validate_NotSelected") : _rule.ScriptLoadError;
+            MessageBox.Show(RF("JavaScript_Validate_Unavailable", reason), title, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -182,26 +183,24 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
                     : ""));
 
             engine.Execute(_rule.ScriptText);
-            MessageBox.Show("✓ Script is valid", "JavaScript", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(R("JavaScript_ValidationSuccess"), title, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Jint.Runtime.JavaScriptException jsEx)
         {
             var line = jsEx.Location.Start.Line;
-            MessageBox.Show($"Script error at line {line}: {jsEx.Message}", "JavaScript", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(RF("JavaScript_ValidationError", line, jsEx.Message), title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Script error: {ex.Message}", "JavaScript", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(RF("JavaScript_ValidationErrorSimple", ex.Message), title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private void Help_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show(
-            "在列表中双击脚本即可选中。\n\n" +
-            "选中后将后台加载脚本。\n" +
-            "当状态显示“加载完成”后即可执行重命名。",
-            "JavaScript Help",
+            R("JavaScript_HelpPopupContent"),
+            R("JavaScript_HelpTitle"),
             MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
@@ -209,6 +208,21 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
     private void UpdateStatus(string text)
     {
         txtStatus.Text = text;
+    }
+
+    private static string RF(string key, params object[] args)
+    {
+        return string.Format(CultureInfo.CurrentUICulture, R(key), args);
+    }
+
+    private static string R(string key)
+    {
+        if (Application.Current?.TryFindResource(key) is string value && !string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        return key;
     }
 
     private sealed class ScriptListItem

@@ -565,9 +565,9 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
                                     <GridViewColumn Header="{DynamicResource Column_Rule}" Width="100" 
-                                                    DisplayMemberBinding="{Binding RuleName}"/>
+                                                    DisplayMemberBinding="{Binding LocalizedRuleName}"/>
                                     <GridViewColumn Header="{DynamicResource Column_Statement}" Width="460" 
-                                                    DisplayMemberBinding="{Binding DisplayDescription}"/>
+                                                    DisplayMemberBinding="{Binding LocalizedDisplayDescription}"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>

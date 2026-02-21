@@ -347,6 +347,7 @@
     <sys:String x:Key="Regex_CaseSensitive">Case-sensitive</sys:String>
     <sys:String x:Key="Regex_SkipExtension">Skip extension</sys:String>
     <sys:String x:Key="Regex_Help">Help</sys:String>
+    <sys:String x:Key="Regex_Help_Tooltip">Open regex usage help</sys:String>
     
     <!-- Insert Rule - Where label -->
     <sys:String x:Key="Insert_Where">Where:</sys:String>
@@ -364,6 +365,10 @@
     <sys:String x:Key="Case_ExtAlwaysLower">Extension always lower case</sys:String>
     <sys:String x:Key="Case_ExtAlwaysUpper">Extension always upper case</sys:String>
     <sys:String x:Key="Case_Composite_Title">Name composition (first letter + remaining letters + extension)</sys:String>
+    <sys:String x:Key="RuleCfg_Case_ForceCaseGroup">Force case</sys:String>
+    <sys:String x:Key="RuleCfg_Case_ExtensionGroup">Extension options</sys:String>
+    <sys:String x:Key="RuleCfg_Case_PinyinIndexPrefix">The</sys:String>
+    <sys:String x:Key="RuleCfg_Case_PinyinIndexSuffix">th Chinese character</sys:String>
     <sys:String x:Key="Case_Composite_FirstLetter">First letter</sys:String>
     <sys:String x:Key="Case_Composite_RemainingLetters">Remaining letters</sys:String>
     <sys:String x:Key="Case_Composite_Extension">Extension</sys:String>
@@ -578,7 +583,21 @@
     <sys:String x:Key="JavaScript_GoToLine">Go to line:</sys:String>
     <sys:String x:Key="JavaScript_ValidationSuccess">✓ Script is valid</sys:String>
     <sys:String x:Key="JavaScript_ValidationError">Script error at line {0}: {1}</sys:String>
+    <sys:String x:Key="JavaScript_ValidationErrorSimple">Script error: {0}</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectedLoading">Selected script: {0} (loading in background...)</sys:String>
+    <sys:String x:Key="JavaScript_Status_Selected">Selected script: {0}</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectHint">Double-click a script in the list to select it.</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectedLoaded">Selected script: {0} (loaded)</sys:String>
+    <sys:String x:Key="JavaScript_Status_LoadFailed">Failed to load script: {0} - {1}</sys:String>
+    <sys:String x:Key="JavaScript_Status_Reloaded">Script list refreshed. Total scripts: {0}.</sys:String>
+    <sys:String x:Key="JavaScript_Validate_WaitLoading">Script is still loading in the background. Please try again later.</sys:String>
+    <sys:String x:Key="JavaScript_Validate_NotSelected">No available script is selected.</sys:String>
+    <sys:String x:Key="JavaScript_Validate_Unavailable">Current script is unavailable: {0}</sys:String>
     <sys:String x:Key="JavaScript_HelpTitle">JavaScript Help</sys:String>
+    <sys:String x:Key="JavaScript_HelpPopupContent">Double-click a script in the list to select it.
+
+The selected script loads in the background.
+When status shows "loaded", you can run rename.</sys:String>
     <sys:String x:Key="JavaScript_LoadScriptsFolder">Load from Scripts folder...</sys:String>
     <sys:String x:Key="JavaScript_BrowseScript">Browse script...</sys:String>
     <sys:String x:Key="JavaScript_SaveScript">Save script...</sys:String>
@@ -745,9 +764,21 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Other">Other</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_TableActions">Table Actions</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_TableHint">Use the buttons above to import, export, or clear mapping data.</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_MatchOptions">Match Options</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_ApplyOptions">Apply Options</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_DataGroup">Mapping Data</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_EmptyHint">No mapping entries yet. Click \"Table Actions\" to import, or add rows manually below.</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_AllowReuse">Allow reuse</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_PartialMatch">Partial match</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_Inverse">Inverse mapping</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Match">Match</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_NewName">New Name</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_LoadFromFile">Load from file</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_LoadFromClipboard">Load from clipboard</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_SaveToFile">Save to file</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Clear">Clear</sys:String>
 
     <sys:String x:Key="RuleCfg_Padding_AddZeroPadding">Add zero padding to length:</sys:String>
     <sys:String x:Key="RuleCfg_Padding_RemoveZeroPadding">Remove zero padding</sys:String>
@@ -758,6 +789,14 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Padding_Right">Right</sys:String>
 
     <sys:String x:Key="RuleCfg_JavaScript_Scripts">Scripts</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ScriptListGroup">Script list</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnName">Script</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnSizeKb">Size (KB)</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnModified">Modified time</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ActionGroup">Actions</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Reload">Reload list</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_OpenFolder">Open scripts folder</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ActionHint">Double-click a script to load it quickly, then validate before applying.</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">Enable meta tags</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Basic">Basic: Result = Name;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Counter">Counter: Result = Name + '_' + Counter;</sys:String>
@@ -766,17 +805,24 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Step">Step:</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Digits">Digits:</sys:String>
 
+    <sys:String x:Key="RuleCfg_Randomize_BasicGroup">Basic settings</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Length">Length of random sequence:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Unique">Unique if possible</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_BasicHint">Generate a random sequence with the configured length. Longer length reduces duplicate probability.</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_CharactersToUse">Characters to use:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Digits">Digits (0..9)</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Letters">English letters (a..z)</sys:String>
-    <sys:String x:Key="RuleCfg_Randomize_UserDefined">User defined:</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_UserDefined">User defined</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_CharactersHint">Select at least one character type. If custom characters are enabled, enter them in the box below.</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_InsertWhere">Insert position:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Prefix">Prefix</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Suffix">Suffix</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Position">Position:</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_ReplaceCurrent">Replace current name</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_InsertHint">Choose how random text is inserted into the filename. \"Position\" starts from 1.</sys:String>
 
     <sys:String x:Key="RuleCfg_Rearrange_SplitUsing">Split using:</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_DelimiterMode">Delimiter</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Delimiters">Delimiters</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Positions">Positions</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">Exact pattern of delimiters</sys:String>
@@ -792,7 +838,14 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_WholeWords">Match as whole words only</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_CustomShortMonths">Use custom short months:</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_CustomLongMonths">Use custom long months:</sys:String>
-    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">❓ Format Help</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">📋 Presets</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatGroup">Format settings</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHint">Pick built-in presets or type custom .NET date/time format strings.</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_OptionsGroup">Matching and month names</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_OptionsHint">Use these options to narrow match scope and avoid replacing non-date text.</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomMonthsHint">Enable custom month names only when source text uses non-standard month words.</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustGroup">Time offset</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustHint">Applies after conversion. Example: +8 hours for timezone normalization.</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_AdjustBy">Adjust time by:</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitHours">Hours</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitMinutes">Minutes</sys:String>
@@ -823,6 +876,9 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_AutoCase">Auto case adjustment</sys:String>
 
     <sys:String x:Key="RuleCfg_UserInput_Instruction">Type your new filenames here (one per line):</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InputGroup">Input</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_ModeGroup">Apply mode</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_FileOptions">File options</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InsertBefore">Insert in front of the current name</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InsertAfter">Insert after the current name</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_Replace">Replace the current name</sys:String>
@@ -898,6 +954,9 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">Enter replacement pattern</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">e.g. .|_|-</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">e.g. $2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_Delimiters">Enter one or more delimiters; use \"|\" to separate multiple values (for example .|_|-). Without \"|\", the whole input is treated as one delimiter (for example \" - \").</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_Positions">Enter 3,6 to split after the 3rd and 6th character.</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_ExactPattern">Treat the input as one complete delimiter string.</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_SplitHint">Delimiters: enter one or more delimiters; use “|” to separate multiple (e.g. .|_|-). If there is no “|”, the whole input is treated as one delimiter (e.g. “ - ”). Positions: enter 3,6 to split after the 3rd/6th character. Exact pattern: treat the input as a single full delimiter string.</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">Enter text to remove</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">e.g. ABC123</sys:String>

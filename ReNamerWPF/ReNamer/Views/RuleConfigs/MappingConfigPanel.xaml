@@ -7,37 +7,103 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="btnTable" Grid.Column="0" Content="{DynamicResource RuleCfg_Mapping_Table}" MinWidth="88" Margin="3"
-                    Style="{DynamicResource SecondaryButtonStyle}" Click="BtnTable_Click"/>
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <CheckBox x:Name="chkAllowReuse" Content="{DynamicResource RuleCfg_Mapping_AllowReuse}" Margin="0,2,16,2" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkPartialMatch" Content="{DynamicResource RuleCfg_Mapping_PartialMatch}" Margin="0,2,16,2" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkInverse" Content="{DynamicResource RuleCfg_Mapping_Inverse}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
-            </StackPanel>
+
+        <Grid Grid.Row="0" Margin="0,0,0,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Style="{DynamicResource SecondaryButtonStyle}" FontSize="12" Click="BtnLoadFromFile_Click" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Path Data="{StaticResource Icon_Files}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+                        <TextBlock Text="{DynamicResource RuleCfg_Mapping_LoadFromFile}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="2" Style="{DynamicResource SecondaryButtonStyle}" FontSize="12" Click="BtnLoadFromClipboard_Click" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Path Data="{StaticResource Icon_Duplicate}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+                        <TextBlock Text="{DynamicResource RuleCfg_Mapping_LoadFromClipboard}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="4" Style="{DynamicResource SecondaryButtonStyle}" FontSize="12" Click="BtnSaveToFile_Click" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Path Data="{StaticResource Icon_Export}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+                        <TextBlock Text="{DynamicResource RuleCfg_Mapping_SaveToFile}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="6" Style="{DynamicResource SecondaryButtonStyle}" FontSize="12" Click="BtnClearMappings_Click" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Path Data="{StaticResource Icon_RemoveItem}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
+                        <TextBlock Text="{DynamicResource RuleCfg_Mapping_Clear}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
         </Grid>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Config_CaseSensitive}" Margin="0,2,16,2" VerticalContentAlignment="Center"/>
-            <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
-        </StackPanel>
-        <!-- DataGrid for mappings -->
-        <DataGrid x:Name="dgMappings" Grid.Row="4" AutoGenerateColumns="False" CanUserAddRows="True"
-                  CanUserDeleteRows="True" HeadersVisibility="Column" GridLinesVisibility="All"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_Match}" Binding="{Binding Match}" Width="*"/>
-                <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_NewName}" Binding="{Binding NewName}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+
+        <GroupBox Grid.Row="1" Margin="0,0,0,8" Padding="8,0,8,8">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{DynamicResource RuleCfg_Mapping_MatchOptions}" Style="{DynamicResource SectionHeaderStyle}" Margin="0,2,0,2" />
+                    <CheckBox x:Name="chkPartialMatch" Content="{DynamicResource RuleCfg_Mapping_PartialMatch}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkCaseSensitive" Content="{DynamicResource Config_CaseSensitive}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkInverse" Content="{DynamicResource RuleCfg_Mapping_Inverse}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="{DynamicResource RuleCfg_Mapping_ApplyOptions}" Style="{DynamicResource SectionHeaderStyle}" Margin="0,2,0,2" />
+                    <CheckBox x:Name="chkAllowReuse" Content="{DynamicResource RuleCfg_Mapping_AllowReuse}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_Mapping_DataGroup}">
+            <Grid Margin="8,6">
+                <DataGrid x:Name="dgMappings" AutoGenerateColumns="False" CanUserAddRows="True"
+                          CanUserDeleteRows="True" HeadersVisibility="Column" GridLinesVisibility="All"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="160">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_Match}" Binding="{Binding Match}" Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource RuleCfg_Mapping_NewName}" Binding="{Binding NewName}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Border IsHitTestVisible="False" Background="{DynamicResource CardBrush}" Opacity="0.85" Margin="1">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=dgMappings, Path=HasItems}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{DynamicResource RuleCfg_Mapping_EmptyHint}" TextWrapping="Wrap"
+                               TextAlignment="Center" Style="{DynamicResource DialogHintText}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16"/>
+                </Border>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

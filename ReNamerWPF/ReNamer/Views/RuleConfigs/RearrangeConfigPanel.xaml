@@ -2,78 +2,148 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="440" MinHeight="280"
+             Width="500" MinHeight="280"
              Background="{DynamicResource CardBrush}">
     <StackPanel>
-        <!-- Split mode -->
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource RuleCfg_Rearrange_SplitUsing}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Top" Margin="0,3,8,0"/>
-            <StackPanel Grid.Column="2">
-                <RadioButton x:Name="rbDelimiters" Content="{DynamicResource Delete_Delimiter_NoColon}" GroupName="Split" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbPositions" Content="{DynamicResource RuleCfg_Rearrange_Positions}" GroupName="Split" Margin="0,2" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbExact" Content="{DynamicResource RuleCfg_Rearrange_ExactPattern}" GroupName="Split" Margin="0,2" VerticalContentAlignment="Center"/>
-                <TextBlock Text="{DynamicResource RuleCfg_Rearrange_SplitHint}" Margin="0,4,0,0" Style="{DynamicResource DialogHintText}"/>
-            </StackPanel>
-        </Grid>
-        <!-- Delimiters -->
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource RuleCfg_Rearrange_Delimiters}" Style="{DynamicResource FormLabelStyle}" Margin="0,0,10,0"/>
-            <TextBox x:Name="txtDelimiters" Grid.Column="2" VerticalAlignment="Center"
-                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeDelimiters}"/>
-        </Grid>
-        <!-- New pattern -->
-        <Grid Margin="0,0,0,4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource RuleCfg_Rearrange_NewPattern}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtNewPattern" Grid.Column="2"
-                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeNewPattern}"/>
-        </Grid>
-        <!-- Hint -->
-        <Grid Margin="0,4,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="2" TextWrapping="Wrap"
-                       Text="{DynamicResource RuleCfg_Rearrange_Hint}" Style="{DynamicResource DialogHintText}"/>
-        </Grid>
-        <!-- Buttons -->
-        <Grid Margin="0,4,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button x:Name="btnDelimSeparator" Content="{DynamicResource RuleCfg_Rearrange_Separator}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3" Margin="0,0,8,0" ToolTip="{DynamicResource RuleCfg_Rearrange_SeparatorTip}" Click="BtnDelimSeparator_Click"/>
-                <Button x:Name="btnPatternMetaTag" Content="{DynamicResource RuleCfg_Rearrange_MetaTag}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3" ToolTip="{DynamicResource RuleCfg_Rearrange_MetaTagTip}" Click="BtnPatternMetaTag_Click"/>
-            </StackPanel>
-        </Grid>
-        <!-- Options -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Split mode -->
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="{DynamicResource RuleCfg_Rearrange_SplitUsing}"
+                       Style="{DynamicResource FormLabelStyle}"
+                       VerticalAlignment="Top"
+                       Margin="0,3,0,0"/>
+            <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton x:Name="rbDelimiters"
+                             Grid.Row="0"
+                             Grid.Column="0"
+                             Content="{DynamicResource RuleCfg_Rearrange_DelimiterMode}"
+                             GroupName="Split"
+                             IsChecked="True"
+                             VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="2"
+                           Text="{DynamicResource RuleCfg_Rearrange_SplitHint_Delimiters}"
+                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           Style="{DynamicResource DialogHintText}"/>
+
+                <RadioButton x:Name="rbPositions"
+                             Grid.Row="2"
+                             Grid.Column="0"
+                             Content="{DynamicResource RuleCfg_Rearrange_Positions}"
+                             GroupName="Split"
+                             VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Row="2"
+                           Grid.Column="2"
+                           Text="{DynamicResource RuleCfg_Rearrange_SplitHint_Positions}"
+                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           Style="{DynamicResource DialogHintText}"/>
+
+                <RadioButton x:Name="rbExact"
+                             Grid.Row="4"
+                             Grid.Column="0"
+                             Content="{DynamicResource RuleCfg_Rearrange_ExactPattern}"
+                             GroupName="Split"
+                             VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Row="4"
+                           Grid.Column="2"
+                           Text="{DynamicResource RuleCfg_Rearrange_SplitHint_ExactPattern}"
+                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+
+            <!-- Delimiters -->
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="{DynamicResource RuleCfg_Rearrange_Delimiters}"
+                       Style="{DynamicResource FormLabelStyle}"
+                       VerticalAlignment="Center"/>
+            <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="txtDelimiters"
+                         Grid.Column="0"
+                         VerticalAlignment="Center"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeDelimiters}"/>
+                <Button x:Name="btnDelimSeparator"
+                        Grid.Column="2"
+                        Content="{DynamicResource RuleCfg_Rearrange_Separator}"
+                        FontSize="11"
+                        Style="{DynamicResource SecondaryButtonStyle}"
+                        Padding="8,3"
+                        Width="80"
+                        ToolTip="{DynamicResource RuleCfg_Rearrange_SeparatorTip}"
+                        Click="BtnDelimSeparator_Click"
+                        Focusable="False"
+                        IsTabStop="False"/>
+            </Grid>
+
+            <!-- New pattern -->
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Text="{DynamicResource RuleCfg_Rearrange_NewPattern}"
+                       Style="{DynamicResource FormLabelStyle}"
+                       VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="txtNewPattern"
+                         Grid.Column="0"
+                         VerticalAlignment="Center"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeNewPattern}"/>
+                <Button x:Name="btnPatternMetaTag"
+                        Grid.Column="2"
+                        Content="{DynamicResource RuleCfg_Rearrange_MetaTag}"
+                        FontSize="11"
+                        Style="{DynamicResource SecondaryButtonStyle}"
+                        Padding="8,3"
+                        Width="80"
+                        ToolTip="{DynamicResource RuleCfg_Rearrange_MetaTagTip}"
+                        Click="BtnPatternMetaTag_Click"
+                        Focusable="False"
+                        IsTabStop="False"/>
+            </Grid>
+
+            <!-- Hint -->
+            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3"
+                       Margin="0,0,0,8"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource RuleCfg_Rearrange_Hint}"
+                       Style="{DynamicResource DialogHintText}"/>
+
+            <!-- Options -->
+            <StackPanel Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" Orientation="Horizontal">
                 <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,0,24,0" VerticalContentAlignment="Center"/>
                 <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Config_RightToLeft}" VerticalContentAlignment="Center"/>
             </StackPanel>

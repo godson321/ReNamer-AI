@@ -49,11 +49,11 @@
 - [X] T016 [US1] 统一 Extension 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
 - [X] T017 [US1] 统一 CleanUp 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
 - [X] T018 [US1] 统一 Strip 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/StripConfigPanel.xaml`
-- [ ] T019 [US1] 统一 Regex 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
-- [ ] T020 [US1] 统一 Rearrange 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
-- [ ] T021 [US1] 统一 Remove 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RemoveConfigPanel.xaml`
-- [ ] T022 [US1] 统一 Randomize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
-- [ ] T023 [US1] 统一 Padding 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
+- [x] T019 [US1] 统一 Regex 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
+- [x] T020 [US1] 统一 Rearrange 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
+- [x] T021 [US1] 统一 Remove 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`（文本模式子面板）
+- [x] T022 [US1] 统一 Randomize 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
+- [x] T023 [US1] 统一 Padding 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
 - [X] T024 [US1] 统一 Transliterate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
 - [X] T025 [US1] 统一 ReformatDate 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
 - [X] T026 [US1] 统一 UserInput 面板布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
@@ -100,10 +100,10 @@
 - [X] T047 [US3] 为 Serialize 左列拆分"编号参数/重置条件/格式选项"于 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
 - [X] T048 [US3] 为 Extension 的 New Extension / Remove Duplicate 区域建立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
 - [X] T049 [US3] 为 CleanUp 的散装 CheckBox 重组为"空格处理/Unicode/其他"于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
-- [ ] T050 [US3] 为 Case 的 ForceCase 与 Extension 选项建立独立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
+- [x] T050 [US3] 为 Case 的 ForceCase 与 Extension 选项建立独立分组于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [X] T051 [US3] 为 Transliterate 右侧拆分“方向/说明/选项”分区于 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
-- [ ] T052 [US3] 为 UserInput 选项区重构为清晰分组布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
-- [ ] T053 [US3] 为 Mapping 选项区改为固定分组布局并增强空态引导于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
+- [x] T052 [US3] 为 UserInput 选项区重构为清晰分组布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
+- [x] T053 [US3] 为 Mapping 选项区改为固定分组布局并增强空态引导于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
 
 **Checkpoint**: US3 完成后，视觉层次可独立验收
 
@@ -148,11 +148,11 @@
 - [X] T065 [US6] 移除 Extension 面板空 TextBlock 占位并改为 Grid/Margin 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ExtensionConfigPanel.xaml`
 - [X] T066 [US6] 移除 Case 面板右侧空 TextBlock 占位并重构对齐于 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [X] T067 [US6] 将 Insert 的 AfterText/BeforeText 从 DockPanel 改为 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
-- [ ] T068 [US6] 将 Rearrange 的关键输入行从 DockPanel 改为 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
-- [ ] T069 [US6] 将 ReformatDate 的 AdjustBy 行改为三列 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
-- [ ] T070 [US6] 将 Randomize Length 行改为 Grid（NUD 靠左）于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
-- [ ] T071 [US6] 将 Mapping 选项区从 WrapPanel 改为固定 Grid 布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
-- [ ] T072 [US6] 将 PascalScript 计数器参数行改为 Grid 对齐于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PascalScriptConfigPanel.xaml`
+- [x] T068 [US6] 将 Rearrange 的关键输入行从 DockPanel 改为 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
+- [x] T069 [US6] 将 ReformatDate 的 AdjustBy 行改为三列 Grid 于 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
+- [x] T070 [US6] 将 Randomize Length 行改为 Grid（NUD 靠左）于 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
+- [x] T071 [US6] 将 Mapping 选项区从 WrapPanel 改为固定 Grid 布局于 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
+- [x] T072 [US6] 将 PascalScript 计数器参数行改为 Grid 对齐于 `ReNamerWPF/ReNamer/Views/RuleConfigs/PascalScriptConfigPanel.xaml`
 
 **Checkpoint**: US6 完成后，布局质量可独立验收
 
@@ -161,9 +161,9 @@
 ## Phase 9: Polish & Cross-Cutting
 **Purpose**: 统一收口、回归验证与交付检查
 
-- [ ] T073 执行静态扫描（硬编码文本/硬编码颜色/空 TextBlock/输入框尾部按钮文本符号/同级标签行骨架一致性/字段标签非规范加粗/同类输入列宽一致性）并修复问题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
-- [ ] T074 运行构建验证 `dotnet build ReNamerWPF/ReNamer.sln`
-- [ ] T075 运行回归测试 `dotnet test ReNamerWPF/ReNamer.sln`
+- [x] T073 执行静态扫描（硬编码文本/硬编码颜色/空 TextBlock/输入框尾部按钮文本符号/同级标签行骨架一致性/字段标签非规范加粗/同类输入列宽一致性）并修复问题于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T074 运行构建验证 `dotnet build ReNamerWPF/ReNamer.sln`
+- [x] T075 运行回归测试 `dotnet test ReNamerWPF/ReNamer.sln`
 - [ ] T076 依据 `specs/014-rule-panel-redesign/quickstart.md` 完成亮暗主题 + 中英文 + 窄窗手动验收
 - [ ] T077 对照 `specs/014-rule-panel-redesign/spec.md` 的 SC-001~SC-007 完成最终核对
 
@@ -172,13 +172,13 @@
 ## Phase 10: 多语言专项检查（逐面板）
 **Purpose**: 防止“英文散落未翻译”回归，执行面板级中英文核查
 
-- [ ] T078 按面板顺序对 Replace~PascalScript 逐个执行中英文切换检查并记录修复点于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
-- [ ] T079 修复 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs` 内部菜单分组/描述的英文硬编码
-- [ ] T080 修复 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml.cs` 中用户可见英文提示（如 MessageBox/Tooltip 文案）
-- [ ] T081 补齐 `ReNamerWPF/ReNamer/Resources/Strings.en-US.xaml` 缺失键并去重命名冲突
-- [ ] T082 [P] 补齐 `ReNamerWPF/ReNamer/Resources/Strings.zh-CN.xaml` 对应翻译键并校对术语一致性
-- [ ] T083 扫描并清理 AddRule 相关 UI 残余英文于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`
-- [ ] T084 扫描并清理规则面板相关对话框残余英文于 `ReNamerWPF/ReNamer/Views/FiltersDialog.xaml`, `ReNamerWPF/ReNamer/Views/SettingsDialog.xaml`
+- [x] T078 按面板顺序对 Replace~PascalScript 逐个执行中英文切换检查并记录修复点于 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml`
+- [x] T079 修复 `ReNamerWPF/ReNamer/Views/RuleConfigs/RuleConfigHelper.cs` 内部菜单分组/描述的英文硬编码
+- [x] T080 修复 `ReNamerWPF/ReNamer/Views/RuleConfigs/*.xaml.cs` 中用户可见英文提示（如 MessageBox/Tooltip 文案）
+- [x] T081 补齐 `ReNamerWPF/ReNamer/Resources/Strings.en-US.xaml` 缺失键并去重命名冲突
+- [x] T082 [P] 补齐 `ReNamerWPF/ReNamer/Resources/Strings.zh-CN.xaml` 对应翻译键并校对术语一致性
+- [x] T083 扫描并清理 AddRule 相关 UI 残余英文于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`
+- [x] T084 扫描并清理规则面板相关对话框残余英文于 `ReNamerWPF/ReNamer/Views/FiltersDialog.xaml`, `ReNamerWPF/ReNamer/Views/SettingsDialog.xaml`
 - [ ] T085 复测“中文环境不可见英文残留、英文环境不可见中文残留”全链路切换场景于 `specs/014-rule-panel-redesign/quickstart.md`
 - [X] T086 统一弹出窗口默认打开位置为屏幕中央于 `ReNamerWPF/ReNamer/Views/AddRuleDialog.xaml`, `ReNamerWPF/ReNamer/Views/FiltersDialog.xaml`, `ReNamerWPF/ReNamer/Views/SettingsDialog.xaml`
 

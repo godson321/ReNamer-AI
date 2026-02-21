@@ -347,6 +347,7 @@
     <sys:String x:Key="Regex_CaseSensitive">区分大小写</sys:String>
     <sys:String x:Key="Regex_SkipExtension">跳过扩展名</sys:String>
     <sys:String x:Key="Regex_Help">帮助</sys:String>
+    <sys:String x:Key="Regex_Help_Tooltip">打开正则用法帮助</sys:String>
     
     <!-- 插入规则 - 位置标签 -->
     <sys:String x:Key="Insert_Where">位置:</sys:String>
@@ -364,6 +365,10 @@
     <sys:String x:Key="Case_ExtAlwaysLower">扩展名始终小写</sys:String>
     <sys:String x:Key="Case_ExtAlwaysUpper">扩展名始终大写</sys:String>
     <sys:String x:Key="Case_Composite_Title">名称构成（首字母 + 其他字母 + 扩展名）</sys:String>
+    <sys:String x:Key="RuleCfg_Case_ForceCaseGroup">强制大小写</sys:String>
+    <sys:String x:Key="RuleCfg_Case_ExtensionGroup">扩展名选项</sys:String>
+    <sys:String x:Key="RuleCfg_Case_PinyinIndexPrefix">第</sys:String>
+    <sys:String x:Key="RuleCfg_Case_PinyinIndexSuffix">个中文字</sys:String>
     <sys:String x:Key="Case_Composite_FirstLetter">首字母</sys:String>
     <sys:String x:Key="Case_Composite_RemainingLetters">其他字母</sys:String>
     <sys:String x:Key="Case_Composite_Extension">扩展名</sys:String>
@@ -578,7 +583,21 @@
     <sys:String x:Key="JavaScript_GoToLine">跳转到行:</sys:String>
     <sys:String x:Key="JavaScript_ValidationSuccess">✓ 脚本有效</sys:String>
     <sys:String x:Key="JavaScript_ValidationError">脚本错误，第 {0} 行: {1}</sys:String>
+    <sys:String x:Key="JavaScript_ValidationErrorSimple">脚本错误：{0}</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectedLoading">已选择脚本：{0}（后台加载中...）</sys:String>
+    <sys:String x:Key="JavaScript_Status_Selected">已选择脚本：{0}</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectHint">请从列表中双击一个脚本进行选择。</sys:String>
+    <sys:String x:Key="JavaScript_Status_SelectedLoaded">已选择脚本：{0}（加载完成）</sys:String>
+    <sys:String x:Key="JavaScript_Status_LoadFailed">脚本加载失败：{0} - {1}</sys:String>
+    <sys:String x:Key="JavaScript_Status_Reloaded">脚本列表已刷新，共 {0} 个脚本。</sys:String>
+    <sys:String x:Key="JavaScript_Validate_WaitLoading">脚本仍在后台加载，请稍后再试。</sys:String>
+    <sys:String x:Key="JavaScript_Validate_NotSelected">尚未选择可用脚本。</sys:String>
+    <sys:String x:Key="JavaScript_Validate_Unavailable">当前脚本不可用：{0}</sys:String>
     <sys:String x:Key="JavaScript_HelpTitle">JavaScript 帮助</sys:String>
+    <sys:String x:Key="JavaScript_HelpPopupContent">在列表中双击脚本即可选中。
+
+选中后将后台加载脚本。
+当状态显示“加载完成”后即可执行重命名。</sys:String>
     <sys:String x:Key="JavaScript_LoadScriptsFolder">加载 Scripts 目录...</sys:String>
     <sys:String x:Key="JavaScript_BrowseScript">浏览脚本...</sys:String>
     <sys:String x:Key="JavaScript_SaveScript">保存脚本...</sys:String>
@@ -745,9 +764,21 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Other">其他</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">表格</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_TableActions">表格操作</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_TableHint">可使用上方按钮导入、导出或清空映射表数据。</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_MatchOptions">匹配选项</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_ApplyOptions">应用选项</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_DataGroup">映射数据</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_EmptyHint">暂无映射项。点击“表格操作”导入，或直接在下方表格手动添加。</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_AllowReuse">允许复用</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_PartialMatch">部分匹配</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_Inverse">反向映射</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Match">匹配</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_NewName">新名称</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_LoadFromFile">从文件加载</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_LoadFromClipboard">从剪贴板加载</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_SaveToFile">保存到文件</sys:String>
+    <sys:String x:Key="RuleCfg_Mapping_Clear">清空</sys:String>
 
     <sys:String x:Key="RuleCfg_Padding_AddZeroPadding">补零到长度：</sys:String>
     <sys:String x:Key="RuleCfg_Padding_RemoveZeroPadding">移除前导零</sys:String>
@@ -765,26 +796,36 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Basic">基础: Result = Name;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Counter">计数: Result = Name + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Folder">文件夹: Result = Folder + '_' + Name;</sys:String>
-    <sys:String x:Key="RuleCfg_Mapping_Match">匹配</sys:String>
-    <sys:String x:Key="RuleCfg_Mapping_NewName">新名称</sys:String>
-
     <sys:String x:Key="RuleCfg_JavaScript_Scripts">脚本</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ScriptListGroup">脚本列表</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnName">脚本</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnSizeKb">大小（KB）</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ColumnModified">修改时间</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ActionGroup">操作</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_Reload">刷新列表</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_OpenFolder">打开脚本目录</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_ActionHint">双击脚本可直接加载；也可先刷新列表后再执行验证。</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">启用元标签</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_CounterStart">计数起始：</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Step">步进：</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Digits">位数：</sys:String>
 
+    <sys:String x:Key="RuleCfg_Randomize_BasicGroup">基础设置</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Length">随机序列长度：</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Unique">尽量唯一</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_BasicHint">随机序列会按设定长度生成；长度越大，重复概率越低。</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Digits">数字（0..9）</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Letters">英文小写字母（a..z）</sys:String>
-    <sys:String x:Key="RuleCfg_Randomize_UserDefined">自定义：</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_UserDefined">自定义</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_CharactersHint">至少选择一种字符类型；如启用自定义字符，请在下方文本框输入可用字符集。</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Prefix">前缀</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Suffix">后缀</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_Position">位置：</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_ReplaceCurrent">替换当前名称</sys:String>
+    <sys:String x:Key="RuleCfg_Randomize_InsertHint">选择随机内容插入到文件名的方式；“位置”从 1 开始计数。</sys:String>
 
     <sys:String x:Key="RuleCfg_Rearrange_SplitUsing">拆分方式：</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_DelimiterMode">分隔符</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Delimiters">分隔符：</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_Positions">位置</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_ExactPattern">分隔符精确模式</sys:String>
@@ -795,12 +836,19 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_SeparatorTip">向“分隔符”输入框插入分隔符</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_MetaTagTip">向“新模式”输入框插入元标签</sys:String>
 
-    <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">查找日期/时间格式：</sys:String>
-    <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">转换为日期/时间格式：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FindFormats">查找日期格式：</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_ConvertTo">转换为日期格式：</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_WholeWords">仅匹配完整单词</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_CustomShortMonths">使用自定义短月份：</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_CustomLongMonths">使用自定义长月份：</sys:String>
-    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">❓ 格式帮助</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHelp">📋 预设</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatGroup">格式设置</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_FormatHint">可选择内置预设，也可直接输入自定义 .NET 日期/时间格式字符串。</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_OptionsGroup">匹配与月份名称</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_OptionsHint">用于收窄匹配范围，避免误改非日期文本。</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_CustomMonthsHint">仅当原始文本使用非标准月份名称时，才需要启用自定义月份。</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustGroup">时间偏移</sys:String>
+    <sys:String x:Key="RuleCfg_ReformatDate_AdjustHint">在格式转换后执行时间增减，例如 +8 小时用于时区归一。</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_AdjustBy">时间调整：</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitHours">小时</sys:String>
     <sys:String x:Key="RuleCfg_ReformatDate_UnitMinutes">分钟</sys:String>
@@ -831,6 +879,9 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_AutoCase">自动大小写调整</sys:String>
 
     <sys:String x:Key="RuleCfg_UserInput_Instruction">在此输入新文件名（每行一个）：</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_InputGroup">输入内容</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_ModeGroup">应用方式</sys:String>
+    <sys:String x:Key="RuleCfg_UserInput_FileOptions">文件选项</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InsertBefore">插入到当前名称前</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InsertAfter">插入到当前名称后</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_Replace">替换当前名称</sys:String>
@@ -906,6 +957,9 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RegexReplace">输入替换模式</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeDelimiters">例如：.|_|-</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RearrangeNewPattern">例如：$2 - $1</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_Delimiters">输入一个或多个分隔符；多个用“|”分隔（例如 .|_|-）。不含“|”时按完整字符串切分（例如“ - ”）。</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_Positions">输入 3,6 表示在第 3/6 个字符后切分。</sys:String>
+    <sys:String x:Key="RuleCfg_Rearrange_SplitHint_ExactPattern">把输入当作单个完整分隔符字符串。</sys:String>
     <sys:String x:Key="RuleCfg_Rearrange_SplitHint">分隔符：输入一个或多个分隔符；多个用 “|” 分开（例：.|_|-）。不含 “|” 时按完整字符串切分（如“ - ”）。位置：输入 3,6 表示在第 3/6 个字符后切分。精确模式：把输入当作单个完整分隔符字符串。</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RemovePattern">输入要移除的文本</sys:String>
     <sys:String x:Key="RuleCfg_Placeholder_RandomizeUserDefined">例如：ABC123</sys:String>

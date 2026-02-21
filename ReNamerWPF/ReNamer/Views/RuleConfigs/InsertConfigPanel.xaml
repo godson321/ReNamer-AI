@@ -18,7 +18,8 @@
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_InsertText}"/>
             <Button x:Name="btnMetaTag" Grid.Column="2" ToolTip="{DynamicResource Insert_MetaTag}"
                     Width="28" Height="28" Margin="4,0,0,0"
-                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Focusable="False" IsTabStop="False">
                 <Path Data="{StaticResource Icon_Insert}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
             </Button>
         </Grid>

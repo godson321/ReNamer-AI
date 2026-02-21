@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Versioning;
 using System.Text;
 using Microsoft.VisualBasic;
 
@@ -8,6 +9,7 @@ namespace ReNamer.Helpers;
 /// 汉字拼音帮助类，支持简繁体中文
 /// 使用Unicode编码范围判断和首字母映射表
 /// </summary>
+[SupportedOSPlatform("windows")]
 public static class PinyinHelper
 {
     /// <summary>

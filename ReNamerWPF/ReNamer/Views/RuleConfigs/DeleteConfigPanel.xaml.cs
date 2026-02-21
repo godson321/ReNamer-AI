@@ -12,6 +12,7 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
     private const string BracketsPresetChars = "(){}[]<>";
     private readonly DeleteRule _rule;
     private bool _syncingSkipExtension;
+    private bool _syncingCaseSensitive;
     private bool _isLoading;
 
     public DeleteConfigPanel(DeleteRule rule)
@@ -46,20 +47,22 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
             rbFromDelimiter.IsChecked = _rule.FromType == DeleteFromType.Delimiter;
             nudFromPosition.Value = _rule.FromPosition;
             txtFromDelimiter.Text = _rule.FromDelimiter;
-            
+
             rbUntilCount.IsChecked = _rule.UntilType == DeleteUntilType.Count;
             rbUntilDelimiter.IsChecked = _rule.UntilType == DeleteUntilType.Delimiter;
             rbUntilEnd.IsChecked = _rule.UntilType == DeleteUntilType.TillEnd;
             nudUntilCount.Value = _rule.UntilCount;
             txtUntilDelimiter.Text = _rule.UntilDelimiter;
-            
+
             chkRightToLeft.IsChecked = _rule.RightToLeft;
             chkLeaveDelimiter.IsChecked = _rule.LeaveDelimiter;
             chkSkipExtensionPosition.IsChecked = _rule.SkipExtension;
 
             // 文本模式 Tab
             txtRemovePattern.Text = _rule.RemovePattern;
-            chkRemoveCaseSensitive.IsChecked = _rule.RemoveCaseSensitive || _rule.CaseSensitive;
+            var caseSensitive = _rule.RemoveCaseSensitive || _rule.CaseSensitive;
+            chkRemoveCaseSensitive.IsChecked = caseSensitive;
+            chkCaseSensitiveCharSet.IsChecked = caseSensitive;
             rbMatchPlain.IsChecked = !_rule.RemoveWholeWordsOnly && !_rule.RemoveUseWildcards;
             rbMatchWholeWords.IsChecked = _rule.RemoveWholeWordsOnly && !_rule.RemoveUseWildcards;
             rbMatchWildcards.IsChecked = _rule.RemoveUseWildcards;
@@ -69,19 +72,19 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
             chkSkipExtensionText.IsChecked = _rule.SkipExtension;
 
             // Popup中的预设选项
-            chkEnglish.IsChecked = _rule.StripEnglishLetters;
-            chkDigits.IsChecked = _rule.StripDigits;
-            chkSymbols.IsChecked = _rule.StripSymbols;
-            chkBrackets.IsChecked = _rule.StripBrackets;
-            chkUserDefined.IsChecked = _rule.StripUserDefined;
-            
+            chkEnglishQuick.IsChecked = _rule.StripEnglishLetters;
+            chkDigitsQuick.IsChecked = _rule.StripDigits;
+            chkSymbolsQuick.IsChecked = _rule.StripSymbols;
+            chkBracketsQuick.IsChecked = _rule.StripBrackets;
+            chkUserDefinedQuick.IsChecked = _rule.StripUserDefined;
+
             // 按字符删除模式
             chkCharSetMode.IsChecked = _rule.StripUserDefined && !string.IsNullOrEmpty(_rule.UserDefinedChars);
             if (chkCharSetMode.IsChecked == true && string.IsNullOrEmpty(txtRemovePattern.Text))
                 txtRemovePattern.Text = _rule.UserDefinedChars;
 
             // 字符集 Tab
-            txtUnicodeRange.Text = _rule.UnicodeRange;
+            txtUnicodeRange.Text = _rule.StripUnicodeRange ? _rule.UnicodeRange : string.Empty;
             rbWhereEverywhere.IsChecked = _rule.Where == StripWhere.Everywhere;
             rbWhereLeading.IsChecked = _rule.Where == StripWhere.Leading;
             rbWhereTrailing.IsChecked = _rule.Where == StripWhere.Trailing;
@@ -149,8 +152,8 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
         _rule.FromType = rbFromDelimiter.IsChecked == true ? DeleteFromType.Delimiter : DeleteFromType.Position;
         _rule.FromPosition = nudFromPosition.Value;
         _rule.FromDelimiter = txtFromDelimiter.Text;
-        _rule.UntilType = rbUntilDelimiter.IsChecked == true ? DeleteUntilType.Delimiter 
-            : rbUntilEnd.IsChecked == true ? DeleteUntilType.TillEnd 
+        _rule.UntilType = rbUntilDelimiter.IsChecked == true ? DeleteUntilType.Delimiter
+            : rbUntilEnd.IsChecked == true ? DeleteUntilType.TillEnd
             : DeleteUntilType.Count;
         _rule.UntilCount = nudUntilCount.Value;
         _rule.UntilDelimiter = txtUntilDelimiter.Text;
@@ -165,7 +168,7 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
     {
         var isCharSetMode = chkCharSetMode.IsChecked == true;
         var text = txtRemovePattern.Text;
-        
+
         if (isCharSetMode)
         {
             // 按字符删除模式
@@ -184,26 +187,31 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
             _rule.RemoveUseWildcards = rbMatchWildcards.IsChecked == true;
             _rule.RemoveWholeWordsOnly = rbMatchWholeWords.IsChecked == true;
         }
-        
+
         _rule.RemoveCaseSensitive = chkRemoveCaseSensitive.IsChecked == true;
         _rule.CaseSensitive = _rule.RemoveCaseSensitive;
-        _rule.RemoveOccurrence = rbOccurrenceFirst.IsChecked == true ? RemoveOccurrence.First 
-            : rbOccurrenceLast.IsChecked == true ? RemoveOccurrence.Last 
+        _rule.RemoveOccurrence = rbOccurrenceFirst.IsChecked == true ? RemoveOccurrence.First
+            : rbOccurrenceLast.IsChecked == true ? RemoveOccurrence.Last
             : RemoveOccurrence.All;
         _rule.SkipExtension = chkSkipExtensionText.IsChecked == true;
     }
 
     private void ApplyCharSetConfig()
     {
-        _rule.StripEnglishLetters = chkEnglish.IsChecked == true;
-        _rule.StripDigits = chkDigits.IsChecked == true;
-        _rule.StripSymbols = chkSymbols.IsChecked == true;
-        _rule.StripBrackets = chkBrackets.IsChecked == true;
+        _rule.StripEnglishLetters = false;
+        _rule.StripDigits = false;
+        _rule.StripSymbols = false;
+        _rule.StripBrackets = false;
+        _rule.StripUserDefined = false;
+        _rule.UserDefinedChars = string.Empty;
+        _rule.StripUnicodeRange = !string.IsNullOrWhiteSpace(txtUnicodeRange.Text);
         _rule.UnicodeRange = txtUnicodeRange.Text;
-        _rule.Where = rbWhereLeading.IsChecked == true ? StripWhere.Leading 
-            : rbWhereTrailing.IsChecked == true ? StripWhere.Trailing 
+        _rule.Where = rbWhereLeading.IsChecked == true ? StripWhere.Leading
+            : rbWhereTrailing.IsChecked == true ? StripWhere.Trailing
             : StripWhere.Everywhere;
         _rule.StripAllExceptSelected = chkAllExcept.IsChecked == true;
+        _rule.CaseSensitive = chkCaseSensitiveCharSet.IsChecked == true;
+        _rule.RemoveCaseSensitive = _rule.CaseSensitive;
         _rule.SkipExtension = chkSkipExtensionCharSet.IsChecked == true;
     }
 
@@ -242,6 +250,8 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
         _rule.UnicodeRange = string.Empty;
         _rule.Where = StripWhere.Everywhere;
         _rule.StripAllExceptSelected = false;
+        _rule.CaseSensitive = false;
+        _rule.RemoveCaseSensitive = false;
     }
 
     private void TabDeleteMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -279,7 +289,7 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
 
     private void SkipExtension_CheckedChanged(object sender, RoutedEventArgs e)
     {
-        if (_syncingSkipExtension || chkSkipExtensionPosition == null || 
+        if (_syncingSkipExtension || chkSkipExtensionPosition == null ||
             chkSkipExtensionText == null || chkSkipExtensionCharSet == null)
             return;
 
@@ -299,8 +309,30 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
         }
     }
 
+    private void CaseSensitive_CheckedChanged(object sender, RoutedEventArgs e)
+    {
+        if (_syncingCaseSensitive || chkRemoveCaseSensitive == null || chkCaseSensitiveCharSet == null)
+            return;
+
+        _syncingCaseSensitive = true;
+        try
+        {
+            var source = sender as CheckBox;
+            var isChecked = source?.IsChecked == true;
+            chkRemoveCaseSensitive.IsChecked = isChecked;
+            chkCaseSensitiveCharSet.IsChecked = isChecked;
+        }
+        finally
+        {
+            _syncingCaseSensitive = false;
+        }
+    }
+
     private void TextPresetOption_Changed(object sender, RoutedEventArgs e)
     {
+        if (_isLoading)
+            return;
+
         // 预设选项变化时更新文本框显示
         if (HasNonCustomPresetSelection())
             txtRemovePattern.Text = BuildPresetDisplayText();
@@ -308,31 +340,27 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
 
     private bool HasNonCustomPresetSelection()
     {
-        return chkEnglish.IsChecked == true ||
-               chkDigits.IsChecked == true ||
-               chkSymbols.IsChecked == true ||
-               chkBrackets.IsChecked == true;
+        return chkEnglishQuick.IsChecked == true ||
+               chkDigitsQuick.IsChecked == true ||
+               chkSymbolsQuick.IsChecked == true ||
+               chkBracketsQuick.IsChecked == true;
     }
 
     private bool HasConfiguredCharSetFromRule()
     {
-        return _rule.StripEnglishLetters ||
-               _rule.StripDigits ||
-               _rule.StripSymbols ||
-               _rule.StripBrackets ||
-               _rule.StripUserDefined ||
-               _rule.StripUnicodeRange ||
+        return _rule.StripUnicodeRange ||
                _rule.StripAllExceptSelected ||
-               _rule.Where != StripWhere.Everywhere;
+               _rule.Where != StripWhere.Everywhere ||
+               _rule.CaseSensitive;
     }
 
     private string BuildPresetDisplayText()
     {
         var text = string.Empty;
-        if (chkEnglish.IsChecked == true) text += EnglishPresetChars;
-        if (chkDigits.IsChecked == true) text += DigitsPresetChars;
-        if (chkSymbols.IsChecked == true) text += SymbolsPresetChars;
-        if (chkBrackets.IsChecked == true) text += BracketsPresetChars;
+        if (chkEnglishQuick.IsChecked == true) text += EnglishPresetChars;
+        if (chkDigitsQuick.IsChecked == true) text += DigitsPresetChars;
+        if (chkSymbolsQuick.IsChecked == true) text += SymbolsPresetChars;
+        if (chkBracketsQuick.IsChecked == true) text += BracketsPresetChars;
         return text;
     }
 

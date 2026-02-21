@@ -21,11 +21,11 @@
                     <ColumnDefinition Width="24"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- 第一行：标题 -->
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Delete_From}" FontWeight="SemiBold" Margin="0,0,0,8"/>
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="{DynamicResource Delete_Until}" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                
+
                 <!-- 第二行：单选按钮 -->
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,8">
                     <RadioButton x:Name="rbFromPosition" Content="{DynamicResource Delete_Position_NoColon}" 
@@ -41,7 +41,7 @@
                     <RadioButton x:Name="rbUntilEnd" Content="{DynamicResource Delete_TillEnd}" 
                                  GroupName="UntilType" Checked="UntilType_Changed"/>
                 </StackPanel>
-                
+
                 <!-- 第三行：输入框（对齐） -->
                 <Grid Grid.Row="2" Grid.Column="0" Margin="0,0,0,16" Height="28">
                     <controls:NumericUpDown x:Name="nudFromPosition" MinValue="1" MaxValue="999999" Value="1" 
@@ -60,123 +60,134 @@
                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                 </Grid>
-                
-                <!-- 底部：右对齐选项 -->
-                <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                    <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Delete_RightToLeft}" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkLeaveDelimiter" Content="{DynamicResource Delete_LeaveDelimiter}" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkSkipExtensionPosition" Content="{DynamicResource Delete_SkipExtension}"
-                              IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged"/>
-                </StackPanel>
+
+                <GroupBox Grid.Row="4" Grid.ColumnSpan="3" Header="{DynamicResource RuleCfg_Section_Options}"
+                          Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="8,6">
+                        <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Delete_RightToLeft}" Margin="0,0,16,0"/>
+                        <CheckBox x:Name="chkLeaveDelimiter" Content="{DynamicResource Delete_LeaveDelimiter}" Margin="0,0,16,0"/>
+                        <CheckBox x:Name="chkSkipExtensionPosition" Content="{DynamicResource Delete_SkipExtension}"
+                                  IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged"/>
+                    </StackPanel>
+                </GroupBox>
             </Grid>
         </TabItem>
-        
+
         <!-- Tab 2: 文本模式删除 -->
         <TabItem Header="{DynamicResource Delete_SubMode_TextPattern}">
             <Grid Margin="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="12"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="24"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <!-- 第一行：匹配方式和出现次数 -->
-                <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="{DynamicResource Delete_MatchMode_NoColon}" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <RadioButton x:Name="rbMatchPlain" Content="{DynamicResource Delete_Match_Plain}" 
-                                 ToolTip="{DynamicResource Delete_Match_Plain_Tip}"
-                                 GroupName="MatchMode" IsChecked="True" Margin="0,0,0,4"/>
-                    <RadioButton x:Name="rbMatchWholeWords" Content="{DynamicResource Delete_Match_WholeWords}" 
-                                 ToolTip="{DynamicResource Delete_Match_WholeWords_Tip}"
-                                 GroupName="MatchMode" Margin="0,0,0,4"/>
-                    <RadioButton x:Name="rbMatchWildcards" Content="{DynamicResource Delete_Match_Wildcards}" 
-                                 ToolTip="{DynamicResource Delete_Match_Wildcards_Tip}"
-                                 GroupName="MatchMode"/>
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="{DynamicResource Delete_Occurrences_NoColon}" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <RadioButton x:Name="rbOccurrenceAll" Content="{DynamicResource Remove_All}" 
-                                 GroupName="Occurrence" IsChecked="True" Margin="0,0,0,4"/>
-                    <RadioButton x:Name="rbOccurrenceFirst" Content="{DynamicResource Remove_First}" 
-                                 GroupName="Occurrence" Margin="0,0,0,4"/>
-                    <RadioButton x:Name="rbOccurrenceLast" Content="{DynamicResource Remove_Last}" 
-                                 GroupName="Occurrence"/>
-                </StackPanel>
-                
-                <!-- 第二行：删除文本输入 -->
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="3">
-                    <TextBlock Text="{DynamicResource Delete_RemovePattern}" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="8"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="4"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="txtRemovePattern" Grid.Column="0"
-                                 ToolTip="{DynamicResource Delete_RemovePattern_Tooltip}"
-                                 helpers:PlaceholderBehavior.Placeholder="{DynamicResource Delete_RemovePattern_Placeholder}"/>
-                        <Button x:Name="btnRemoveSeparator" Grid.Column="2" ToolTip="{DynamicResource RuleCfg_SeparateItems}"
-                                Width="28" Height="28" Click="BtnSeparator_Click"
-                                Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="{StaticResource Icon_Columns}" Fill="{DynamicResource TextSecondaryBrush}" 
-                                  Width="14" Height="14" Stretch="Uniform"/>
-                        </Button>
-                        <Button x:Name="btnTextPresetPicker" Grid.Column="4" ToolTip="{DynamicResource Delete_TextPreset_Button}"
-                                Width="28" Height="28" Click="BtnTextPresetPicker_Click"
-                                Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="{StaticResource Icon_Options}" Fill="{DynamicResource TextSecondaryBrush}" 
-                                  Width="14" Height="14" Stretch="Uniform"/>
-                        </Button>
-                        <Popup x:Name="popupTextPresets"
-                               Placement="Bottom"
-                               PlacementTarget="{Binding ElementName=btnTextPresetPicker}"
-                               StaysOpen="False"
-                               AllowsTransparency="True"
-                               PopupAnimation="Fade"
-                               Closed="PopupTextPresets_Closed">
-                            <Border Background="{DynamicResource CardBrush}"
-                                    BorderBrush="{DynamicResource DividerBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="8">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Delete_TextPreset_MenuTitle}" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                                    <CheckBox x:Name="chkEnglish" Content="{DynamicResource Delete_TextPreset_English}" Margin="0,0,0,4" VerticalContentAlignment="Center"
-                                              ToolTip="{DynamicResource Delete_TextPreset_EnglishTip}" Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
-                                    <CheckBox x:Name="chkDigits" Content="{DynamicResource Delete_TextPreset_Digits}" Margin="0,0,0,4" VerticalContentAlignment="Center"
-                                              ToolTip="{DynamicResource Delete_TextPreset_DigitsTip}" Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
-                                    <CheckBox x:Name="chkSymbols" Content="{DynamicResource Delete_TextPreset_Symbols}" Margin="0,0,0,4" VerticalContentAlignment="Center"
-                                              ToolTip="{DynamicResource Delete_TextPreset_SymbolsTip}" Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
-                                    <CheckBox x:Name="chkBrackets" Content="{DynamicResource Delete_TextPreset_Brackets}" Margin="0,0,0,4" VerticalContentAlignment="Center"
-                                              ToolTip="{DynamicResource Delete_TextPreset_BracketsTip}" Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
-                                    <CheckBox x:Name="chkUserDefined" Content="{DynamicResource Delete_CustomChars}" VerticalContentAlignment="Center"
-                                              Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
-                                </StackPanel>
-                            </Border>
-                        </Popup>
-                    </Grid>
-                </StackPanel>
-                
-                <!-- 底部：选项行（右对齐） -->
-                <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                    <CheckBox x:Name="chkCharSetMode" Content="{DynamicResource Delete_CharSetMode}" 
-                              ToolTip="{DynamicResource Delete_CharSetMode_Tip}" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkRemoveCaseSensitive" Content="{DynamicResource Remove_CaseSensitive}" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkSkipExtensionText" Content="{DynamicResource Delete_SkipExtension}" 
-                              IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged"/>
-                </StackPanel>
+
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="{DynamicResource Delete_MatchMode_NoColon}" Margin="0,0,0,0">
+                        <StackPanel Margin="8,6">
+                            <RadioButton x:Name="rbMatchPlain" Content="{DynamicResource Delete_Match_Plain}" 
+                                         ToolTip="{DynamicResource Delete_Match_Plain_Tip}"
+                                         GroupName="MatchMode" IsChecked="True" Margin="0,0,0,4" VerticalContentAlignment="Center"/>
+                            <RadioButton x:Name="rbMatchWholeWords" Content="{DynamicResource Delete_Match_WholeWords}" 
+                                         ToolTip="{DynamicResource Delete_Match_WholeWords_Tip}"
+                                         GroupName="MatchMode" Margin="0,0,0,4" VerticalContentAlignment="Center"/>
+                            <RadioButton x:Name="rbMatchWildcards" Content="{DynamicResource Delete_Match_Wildcards}" 
+                                         ToolTip="{DynamicResource Delete_Match_Wildcards_Tip}"
+                                         GroupName="MatchMode" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Column="2" Header="{DynamicResource Delete_Occurrences_NoColon}">
+                        <StackPanel Margin="8,6">
+                            <RadioButton x:Name="rbOccurrenceAll" Content="{DynamicResource Remove_All}" 
+                                         GroupName="Occurrence" IsChecked="True" Margin="0,0,0,4" VerticalContentAlignment="Center"/>
+                            <RadioButton x:Name="rbOccurrenceFirst" Content="{DynamicResource Remove_First}" 
+                                         GroupName="Occurrence" Margin="0,0,0,4" VerticalContentAlignment="Center"/>
+                            <RadioButton x:Name="rbOccurrenceLast" Content="{DynamicResource Remove_Last}" 
+                                         GroupName="Occurrence" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource Delete_RemovePattern}"
+                               Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center" Width="auto" Margin="0"/>
+                    <TextBox x:Name="txtRemovePattern" Grid.Column="2" VerticalAlignment="Center"
+                             ToolTip="{DynamicResource Delete_RemovePattern_Tooltip}"
+                             helpers:PlaceholderBehavior.Placeholder="{DynamicResource Delete_RemovePattern_Placeholder}"/>
+                    <Button x:Name="btnRemoveSeparator" Grid.Column="4" ToolTip="{DynamicResource RuleCfg_SeparateItems}"
+                            Width="28" Height="28" Click="BtnSeparator_Click"
+                            Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Focusable="False" IsTabStop="False">
+                        <Path Data="{StaticResource Icon_Columns}" Fill="{DynamicResource TextSecondaryBrush}" 
+                              Width="14" Height="14" Stretch="Uniform"/>
+                    </Button>
+                    <Button x:Name="btnTextPresetPicker" Grid.Column="6" ToolTip="{DynamicResource Delete_TextPreset_Button}"
+                            Width="28" Height="28" Click="BtnTextPresetPicker_Click"
+                            Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Focusable="False" IsTabStop="False">
+                        <Path Data="{StaticResource Icon_Filter}" Fill="{DynamicResource TextSecondaryBrush}" 
+                              Width="14" Height="14" Stretch="Uniform"/>
+                    </Button>
+                    <Popup x:Name="popupTextPresets"
+                           Placement="Bottom"
+                           PlacementTarget="{Binding ElementName=btnTextPresetPicker}"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           PopupAnimation="Fade"
+                           Closed="PopupTextPresets_Closed">
+                        <Border Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="8">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Delete_TextPreset_MenuTitle}" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                <CheckBox x:Name="chkEnglishQuick" Content="{DynamicResource Delete_TextPreset_English}" Margin="0,0,0,4" VerticalContentAlignment="Center"
+                                          ToolTip="{DynamicResource Delete_TextPreset_EnglishTip}"
+                                          Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
+                                <CheckBox x:Name="chkDigitsQuick" Content="{DynamicResource Delete_TextPreset_Digits}" Margin="0,0,0,4" VerticalContentAlignment="Center"
+                                          ToolTip="{DynamicResource Delete_TextPreset_DigitsTip}"
+                                          Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
+                                <CheckBox x:Name="chkSymbolsQuick" Content="{DynamicResource Delete_TextPreset_Symbols}" Margin="0,0,0,4" VerticalContentAlignment="Center"
+                                          ToolTip="{DynamicResource Delete_TextPreset_SymbolsTip}"
+                                          Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
+                                <CheckBox x:Name="chkBracketsQuick" Content="{DynamicResource Delete_TextPreset_Brackets}" Margin="0,0,0,4" VerticalContentAlignment="Center"
+                                          ToolTip="{DynamicResource Delete_TextPreset_BracketsTip}"
+                                          Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
+                                <CheckBox x:Name="chkUserDefinedQuick" Content="{DynamicResource Delete_CustomChars}" VerticalContentAlignment="Center"
+                                          Checked="TextPresetOption_Changed" Unchecked="TextPresetOption_Changed"/>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+
+                <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="8,6">
+                        <CheckBox x:Name="chkCharSetMode" Content="{DynamicResource Delete_CharSetMode}" 
+                                  ToolTip="{DynamicResource Delete_CharSetMode_Tip}" Margin="0,0,16,0" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="chkRemoveCaseSensitive" Content="{DynamicResource Remove_CaseSensitive}" Margin="0,0,16,0" VerticalContentAlignment="Center"
+                                  Checked="CaseSensitive_CheckedChanged" Unchecked="CaseSensitive_CheckedChanged"/>
+                        <CheckBox x:Name="chkSkipExtensionText" Content="{DynamicResource Delete_SkipExtension}" 
+                                  IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </GroupBox>
             </Grid>
         </TabItem>
-        
+
         <!-- Tab 3: 字符集删除（高级） -->
         <TabItem Header="{DynamicResource Delete_SubMode_CharSet}">
             <Grid Margin="12">
@@ -189,16 +200,15 @@
                     <ColumnDefinition Width="24"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- 左侧：Unicode范围 -->
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="{DynamicResource Delete_UnicodeRange}" FontWeight="SemiBold" Margin="0,0,0,8"
-                               ToolTip="{DynamicResource Delete_UnicodeRange_Tip}"/>
+                    <TextBlock Text="{DynamicResource Delete_UnicodeRange}" FontWeight="SemiBold" Margin="0,0,0,8" ToolTip="{DynamicResource Delete_UnicodeRange_Tip}"/>
                     <TextBox x:Name="txtUnicodeRange"
                              ToolTip="{DynamicResource Delete_UnicodeRange_Tip}"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_StripUnicodeRange}"/>
                 </StackPanel>
-                
+
                 <!-- 右侧：删除位置选项 -->
                 <StackPanel Grid.Row="0" Grid.Column="2">
                     <TextBlock Text="{DynamicResource Delete_TextWhere}" FontWeight="SemiBold" Margin="0,0,0,8"/>
@@ -212,14 +222,17 @@
                                  ToolTip="{DynamicResource Delete_Where_Trailing_Tip}"
                                  GroupName="TextWhere"/>
                 </StackPanel>
-                
-                <!-- 底部：右对齐选项 -->
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                    <CheckBox x:Name="chkAllExcept" Content="{DynamicResource RuleCfg_Strip_AllExcept}" 
-                              ToolTip="{DynamicResource Delete_AllExcept_Tip}" Margin="0,0,16,0"/>
-                    <CheckBox x:Name="chkSkipExtensionCharSet" Content="{DynamicResource Delete_SkipExtension}" 
-                              IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged"/>
-                </StackPanel>
+
+                <GroupBox Grid.Row="1" Grid.ColumnSpan="3" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="8,6">
+                        <CheckBox x:Name="chkAllExcept" Content="{DynamicResource RuleCfg_Strip_AllExcept}" 
+                                  ToolTip="{DynamicResource Delete_AllExcept_Tip}" Margin="0,0,16,0"/>
+                        <CheckBox x:Name="chkCaseSensitiveCharSet" Content="{DynamicResource Config_CaseSensitive}" Margin="0,0,16,0"
+                                  Checked="CaseSensitive_CheckedChanged" Unchecked="CaseSensitive_CheckedChanged"/>
+                        <CheckBox x:Name="chkSkipExtensionCharSet" Content="{DynamicResource Delete_SkipExtension}" 
+                                  IsChecked="True" Checked="SkipExtension_CheckedChanged" Unchecked="SkipExtension_CheckedChanged"/>
+                    </StackPanel>
+                </GroupBox>
             </Grid>
         </TabItem>
     </TabControl>

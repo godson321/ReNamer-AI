@@ -6,12 +6,11 @@
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
     <StackPanel>
-        <!-- 数字序列 -->
-        <GroupBox Header="{DynamicResource RuleCfg_Padding_NumberSequences}" Margin="0,0,0,8" HorizontalAlignment="Stretch">
-            <StackPanel Margin="8">
-                <Grid Margin="0,4">
+        <GroupBox Header="{DynamicResource RuleCfg_Padding_NumberSequences}" Margin="0,0,0,16" HorizontalAlignment="Stretch">
+            <StackPanel Margin="8,6">
+                <Grid Margin="0,0,0,8">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
@@ -19,15 +18,14 @@
                     <controls:NumericUpDown x:Name="nudZeroPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
                                             HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Grid>
-                <CheckBox x:Name="chkRemoveZeroPadding" Content="{DynamicResource RuleCfg_Padding_RemoveZeroPadding}" Margin="0,4" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkRemoveZeroPadding" Content="{DynamicResource RuleCfg_Padding_RemoveZeroPadding}" VerticalContentAlignment="Center"/>
             </StackPanel>
         </GroupBox>
-        <!-- 文本填充 -->
-        <GroupBox Header="{DynamicResource RuleCfg_Padding_TextPadding}" Margin="0,0,0,8" HorizontalAlignment="Stretch">
-            <StackPanel Margin="8">
-                <Grid Margin="0,4">
+        <GroupBox Header="{DynamicResource RuleCfg_Padding_TextPadding}" Margin="0,0,0,16" HorizontalAlignment="Stretch">
+            <StackPanel Margin="8,6">
+                <Grid Margin="0,0,0,8">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
@@ -35,9 +33,9 @@
                     <controls:NumericUpDown x:Name="nudTextPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
                                             HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Margin="0,4">
+                <Grid Margin="0,0,0,8">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
@@ -45,9 +43,9 @@
                     <TextBox x:Name="txtPadChars" Grid.Column="2" VerticalAlignment="Center"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_PaddingChars}"/>
                 </Grid>
-                <Grid Margin="0,4">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
@@ -59,7 +57,10 @@
                 </Grid>
             </StackPanel>
         </GroupBox>
-        <!-- Skip extension -->
-        <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" VerticalContentAlignment="Center"/>
+        <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
+            <StackPanel Margin="8,6">
+                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
     </StackPanel>
 </UserControl>

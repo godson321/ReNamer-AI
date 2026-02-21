@@ -4,39 +4,38 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <!-- Top label -->
-        <TextBlock Grid.Row="0" Text="{DynamicResource RuleCfg_UserInput_Instruction}" Style="{DynamicResource DialogLabelText}"/>
-        <!-- Memo -->
-        <TextBox x:Name="txtInput" Grid.Row="2" AcceptsReturn="True" TextWrapping="NoWrap"
-                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                 VerticalAlignment="Stretch"
-                 VerticalContentAlignment="Top"
-                 Padding="8,6,8,6"
-                 MinHeight="180"
-                 FontFamily="Consolas"
-                 helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_UserInput}"/>
-        <!-- Bottom options -->
-        <Grid Grid.Row="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
-                <RadioButton x:Name="rbInsertBefore" Content="{DynamicResource RuleCfg_UserInput_InsertBefore}" GroupName="Mode" Margin="0,2" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbInsertAfter" Content="{DynamicResource RuleCfg_UserInput_InsertAfter}" GroupName="Mode" Margin="0,2" VerticalContentAlignment="Center"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <StackPanel Margin="5,0,5,0">
+                <TextBlock Margin="5,0,5,5" Text="{DynamicResource RuleCfg_UserInput_InputGroup}" Style="{DynamicResource SectionHeaderStyle}"/>
+                <TextBox x:Name="txtInput" AcceptsReturn="True" TextWrapping="NoWrap"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             VerticalAlignment="Stretch"
+                             VerticalContentAlignment="Top"
+                             MinHeight="150"
+                             FontFamily="Consolas" 
+                             helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_UserInput}"/>
             </StackPanel>
-            <StackPanel Grid.Column="1">
-                <RadioButton x:Name="rbReplace" Content="{DynamicResource RuleCfg_UserInput_Replace}" GroupName="Mode" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-            </StackPanel>
-        </Grid>
-    </Grid>
+
+            <GroupBox Header="{DynamicResource RuleCfg_Section_Options}" Margin="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{DynamicResource RuleCfg_UserInput_ModeGroup}" Style="{DynamicResource SectionHeaderStyle}"/>
+                        <RadioButton x:Name="rbInsertBefore" Content="{DynamicResource RuleCfg_UserInput_InsertBefore}" GroupName="Mode" Margin="0,2" VerticalContentAlignment="Center"/>
+                        <RadioButton x:Name="rbInsertAfter" Content="{DynamicResource RuleCfg_UserInput_InsertAfter}" GroupName="Mode" Margin="0,2" VerticalContentAlignment="Center"/>
+                        <RadioButton x:Name="rbReplace" Content="{DynamicResource RuleCfg_UserInput_Replace}" GroupName="Mode" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="{DynamicResource RuleCfg_UserInput_FileOptions}" Style="{DynamicResource SectionHeaderStyle}"/>
+                        <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

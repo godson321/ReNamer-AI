@@ -5,58 +5,124 @@
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
-    <StackPanel>
-        <!-- Length -->
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource RuleCfg_Randomize_Length}"/>
-            <controls:NumericUpDown x:Name="nudLength" Grid.Column="1" Width="80" MinValue="1" MaxValue="260" Value="8"
-                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        </Grid>
-        <!-- Unique -->
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <CheckBox x:Name="chkUnique" Grid.Column="1" Content="{DynamicResource RuleCfg_Randomize_Unique}" IsChecked="True" VerticalContentAlignment="Center"/>
-        </Grid>
-        <!-- Character set + Insert where -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Header="{DynamicResource RuleCfg_Randomize_CharactersToUse}" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8,4">
-                    <CheckBox x:Name="chkDigits" Content="{DynamicResource RuleCfg_Randomize_Digits}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="chkLetters" Content="{DynamicResource RuleCfg_Randomize_Letters}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="chkUserDefined" Content="{DynamicResource RuleCfg_Randomize_UserDefined}" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="txtUserDefined" Margin="0,4,0,0" VerticalAlignment="Center"
-                                 helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RandomizeUserDefined}"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="{DynamicResource RuleCfg_Randomize_InsertWhere}" Grid.Column="2" HorizontalAlignment="Stretch">
-                <StackPanel Margin="8,4">
-                    <RadioButton x:Name="rbPrefix" Content="{DynamicResource RuleCfg_Randomize_Prefix}" GroupName="InsertWhere" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <RadioButton x:Name="rbSuffix" Content="{DynamicResource RuleCfg_Randomize_Suffix}" GroupName="InsertWhere" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="8"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <RadioButton x:Name="rbPosition" Content="{DynamicResource RuleCfg_Randomize_Position}" GroupName="InsertWhere" VerticalContentAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="nudPosition" Grid.Column="2" Width="60" MinValue="1" MaxValue="260" Value="1"
-                                                    VerticalAlignment="Center"/>
-                    </Grid>
-                    <RadioButton x:Name="rbReplace" Content="{DynamicResource RuleCfg_Randomize_ReplaceCurrent}" GroupName="InsertWhere" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,8,0,0" VerticalContentAlignment="Center"/>
-                </StackPanel>
-            </GroupBox>
-        </Grid>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="{DynamicResource RuleCfg_Randomize_BasicGroup}">
+            <Grid Margin="8,6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Width="Auto"
+                           Text="{DynamicResource RuleCfg_Randomize_Length}"
+                           Style="{DynamicResource FormLabelStyle}"
+                           VerticalAlignment="Center"/>
+                <controls:NumericUpDown x:Name="nudLength"
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Width="80"
+                                        MinValue="1"
+                                        MaxValue="260"
+                                        Value="8"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"/>
+                <CheckBox x:Name="chkUnique"
+                          Grid.Row="0"
+                          Grid.Column="4"
+                          Content="{DynamicResource RuleCfg_Randomize_Unique}"
+                          IsChecked="True"
+                          HorizontalAlignment="Left"
+                          VerticalContentAlignment="Center"/>
+
+                <TextBlock Grid.Row="2"
+                           Grid.ColumnSpan="5"
+                           Text="{DynamicResource RuleCfg_Randomize_BasicHint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_Randomize_CharactersToUse}" HorizontalAlignment="Stretch">
+            <StackPanel Margin="8,6">
+                <Grid Margin="0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="chkDigits" Grid.Column="0" Content="{DynamicResource RuleCfg_Randomize_Digits}" IsChecked="True" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkLetters" Grid.Column="2" Content="{DynamicResource RuleCfg_Randomize_Letters}" IsChecked="True" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkUserDefined" Grid.Column="4" Content="{DynamicResource RuleCfg_Randomize_UserDefined}" VerticalContentAlignment="Center"/>
+                </Grid>
+                <TextBox x:Name="txtUserDefined"
+                         Margin="0,4,0,0"
+                         VerticalAlignment="Center"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RandomizeUserDefined}"/>
+                <TextBlock Margin="0,8,0,0"
+                           Text="{DynamicResource RuleCfg_Randomize_CharactersHint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="4" Header="{DynamicResource RuleCfg_Randomize_InsertWhere}" HorizontalAlignment="Stretch">
+            <Grid Margin="8,6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <WrapPanel Grid.Row="0" Orientation="Horizontal">
+                    <RadioButton x:Name="rbPrefix" Content="{DynamicResource RuleCfg_Randomize_Prefix}" GroupName="InsertWhere" IsChecked="True" Margin="0,2,14,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbSuffix" Content="{DynamicResource RuleCfg_Randomize_Suffix}" GroupName="InsertWhere" Margin="0,2,14,2" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbReplace" Content="{DynamicResource RuleCfg_Randomize_ReplaceCurrent}" GroupName="InsertWhere" Margin="0,2,14,2" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2,0,2" VerticalContentAlignment="Center"/>
+                </WrapPanel>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton x:Name="rbPosition" Content="{DynamicResource RuleCfg_Randomize_Position}" GroupName="InsertWhere" VerticalContentAlignment="Center"/>
+                    <controls:NumericUpDown x:Name="nudPosition"
+                                            Grid.Column="2"
+                                            Width="60"
+                                            MinValue="1"
+                                            MaxValue="260"
+                                            Value="1"
+                                            VerticalAlignment="Center"/>
+                </Grid>
+
+                <TextBlock Grid.Row="4"
+                           Text="{DynamicResource RuleCfg_Randomize_InsertHint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
 </UserControl>

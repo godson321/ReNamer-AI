@@ -5,50 +5,70 @@
              MinWidth="440" MinHeight="280"
              Background="{DynamicResource CardBrush}">
     <StackPanel>
-        <!-- Expression -->
-        <Grid Margin="0,0,0,8">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Regex_Expression}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtExpression" Grid.Column="2" VerticalAlignment="Center"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Expression -->
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="{DynamicResource Regex_Expression}"
+                       Style="{DynamicResource FormLabelStyle}"
+                       VerticalAlignment="Center"/>
+            <TextBox x:Name="txtExpression"
+                     Grid.Row="0" Grid.Column="2"
+                     Margin="0,0,0,8"
+                     VerticalAlignment="Center"
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexExpression}"/>
-        </Grid>
-        <!-- Replace -->
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Regex_Replace}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-            <TextBox x:Name="txtReplace" Grid.Column="2" VerticalAlignment="Center"
+
+            <!-- Replace -->
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="{DynamicResource Regex_Replace}"
+                       Style="{DynamicResource FormLabelStyle}"
+                       VerticalAlignment="Center"/>
+            <TextBox x:Name="txtReplace"
+                     Grid.Row="1" Grid.Column="2"
+                     Margin="0,0,0,8"
+                     VerticalAlignment="Center"
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexReplace}"/>
-        </Grid>
-        <Grid Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="2" Text="{DynamicResource Regex_Hint}" Style="{DynamicResource DialogHintText}"/>
-        </Grid>
-        <!-- Buttons -->
-        <Grid Margin="0,0,0,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button x:Name="btnInsertExpr" Content="{DynamicResource Regex_InsertExpression}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3" Margin="0,0,8,0" Click="BtnInsertExpr_Click"/>
-                <Button x:Name="btnHelp" Content="{DynamicResource Regex_Help}" FontSize="11" Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3" Click="BtnHelp_Click"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="2"
+                       Margin="0,0,0,8"
+                       Text="{DynamicResource Regex_Hint}"
+                       Style="{DynamicResource DialogHintText}"/>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="3" Grid.Column="2"
+                        Margin="0,0,0,16"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left">
+                <Button x:Name="btnInsertExpr"
+                        Content="{DynamicResource Regex_InsertExpression}"
+                        FontSize="11"
+                        Style="{DynamicResource SecondaryButtonStyle}"
+                        Padding="8,3"
+                        Margin="0,0,8,0"
+                        Click="BtnInsertExpr_Click"
+                        Focusable="False" IsTabStop="False"/>
+                <Button x:Name="btnHelp"
+                        Content="{DynamicResource Regex_Help}"
+                        ToolTip="{DynamicResource Regex_Help_Tooltip}"
+                        FontSize="11"
+                        Style="{DynamicResource SecondaryButtonStyle}"
+                        Padding="8,3"
+                        Click="BtnHelp_Click"
+                        Focusable="False" IsTabStop="False"/>
             </StackPanel>
         </Grid>
+
         <!-- Options -->
         <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
             <StackPanel Margin="8,6">

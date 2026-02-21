@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,6 +47,7 @@ public class IndexConverter : IValueConverter
         => throw new NotImplementedException();
 }
 
+[SupportedOSPlatform("windows")]
 public partial class MainWindow : Window
 {
     private readonly RenameService _renameService;
@@ -506,7 +508,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void OnLanguageChanged() => UpdateLanguageMenuChecks();
+    private void OnLanguageChanged()
+    {
+        UpdateLanguageMenuChecks();
+        foreach (var rule in Rules.OfType<RuleBase>())
+            rule.NotifyLocalizationChanged();
+    }
 
     private void UpdateLanguageMenuChecks()
     {
