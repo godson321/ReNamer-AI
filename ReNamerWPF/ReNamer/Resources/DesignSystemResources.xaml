@@ -304,5 +304,40 @@
         <Setter Property="Padding" Value="8"/>
         <Setter Property="Effect" Value="{StaticResource Elevation1}"/>
     </Style>
+
+    <!-- ========================================
+         ENTERPRISE DIALOG / RULE PANEL TOKENS
+         ======================================== -->
+
+    <Style x:Key="EnterpriseDialogCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="14"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <Style x:Key="EnterpriseDialogInputTextBoxStyle" TargetType="TextBox">
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="EnterpriseDialogInputComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="EnterpriseDialogPrimaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Setter Property="MinWidth" Value="128"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Padding" Value="14,6"/>
+    </Style>
+
+    <Style x:Key="EnterpriseDialogSecondaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+        <Setter Property="MinWidth" Value="128"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Padding" Value="14,6"/>
+    </Style>
     
 </ResourceDictionary>

@@ -223,6 +223,7 @@
     <sys:String x:Key="Dialog_Close">关闭</sys:String>
     <sys:String x:Key="Dialog_Apply">应用</sys:String>
     <sys:String x:Key="Dialog_Configuration">配置:</sys:String>
+    <sys:String x:Key="Dialog_RuleTypes">规则类型</sys:String>
     <sys:String x:Key="Dialog_AddPathsTitle">添加路径</sys:String>
     <sys:String x:Key="Dialog_AddPathsPrompt">输入文件/文件夹路径（每行一个）：</sys:String>
     <sys:String x:Key="Dialog_EditNewNameTitle">编辑新名称</sys:String>

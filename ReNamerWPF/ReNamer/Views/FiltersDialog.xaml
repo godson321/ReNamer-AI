@@ -4,7 +4,9 @@
         Title="{DynamicResource Dialog_FilterSettings}" Width="1020" Height="680"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource BackgroundBrush}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,14 +15,13 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="10"
-                Padding="14"
+                Style="{StaticResource EnterpriseDialogCardStyle}"
                 Margin="0,0,0,12">
             <StackPanel>
-                <TextBlock Text="{DynamicResource Dialog_FilterSettings}" Style="{StaticResource DialogSectionHeaderText}"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Path Data="{DynamicResource Icon_Filters}" Width="16" Height="16" Fill="{DynamicResource PrimaryBrush}" Stretch="Uniform" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource Dialog_FilterSettings}" Style="{StaticResource DialogSectionHeaderText}" Margin="8,0,0,0"/>
+                </StackPanel>
                 <TextBlock Text="{DynamicResource Filter_Tips}" Style="{StaticResource DialogHintText}" Margin="0,4,0,0"/>
             </StackPanel>
         </Border>
@@ -33,11 +34,7 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
-                    Background="{DynamicResource CardBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
-                    Padding="14">
+                    Style="{StaticResource EnterpriseDialogCardStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -46,11 +43,13 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0"
-                               Text="{DynamicResource Dialog_Filters}"
-                               Style="{StaticResource DialogSectionHeaderText}"
-                               Margin="0,0,0,8"/>
-                    <Border Grid.Row="1" Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,12"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+                        <Path Data="{DynamicResource Icon_Filter}" Width="14" Height="14" Fill="{DynamicResource InfoBrush}" Stretch="Uniform" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Dialog_Filters}"
+                                   Style="{StaticResource DialogSectionHeaderText}"
+                                   Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
 
                     <Grid Grid.Row="2">
                         <Grid.RowDefinitions>
@@ -61,7 +60,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"/>
+                            <ColumnDefinition Width="118"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -75,10 +74,10 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" x:Name="txtNamePattern" Height="30" Margin="0,0,8,0"/>
+                            <TextBox Grid.Column="0" x:Name="txtNamePattern" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" Margin="0,0,8,0"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                 <RadioButton x:Name="rbNameInclude" Content="{DynamicResource Filters_Include}" GroupName="NameMode" Margin="0,0,12,0"/>
-                                <RadioButton x:Name="rbNameExclude" Content="{DynamicResource Filters_Exclude}" GroupName="NameMode"/>
+                                <RadioButton x:Name="rbNameExclude" Content="{DynamicResource Filters_Exclude}" GroupName="NameMode" Margin="0,0,12,0"/>
                             </StackPanel>
                         </Grid>
 
@@ -87,7 +86,7 @@
                                    Style="{StaticResource DialogLabelText}"
                                    VerticalAlignment="Center"
                                    Margin="0,0,8,0"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtExtensions" Height="30" Margin="0,0,0,8"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtExtensions" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" MinWidth="260" Margin="0,0,0,8"/>
 
                         <TextBlock Grid.Row="2" Grid.Column="0"
                                    Text="{DynamicResource Filters_SizeFilter}"
@@ -97,24 +96,24 @@
                         <Grid Grid.Row="2" Grid.Column="1" Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="86"/>
-                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="92"/>
+                                <ColumnDefinition Width="84"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="86"/>
-                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="92"/>
+                                <ColumnDefinition Width="84"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{DynamicResource Filters_Min}" Style="{StaticResource DialogLabelText}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBox Grid.Column="1" x:Name="txtMinSize" Height="30" Margin="0,0,6,0"/>
-                            <ComboBox Grid.Column="2" x:Name="cmbMinUnit" Height="30" Margin="0,0,12,0">
+                            <TextBox Grid.Column="1" x:Name="txtMinSize" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" Margin="0,0,6,0"/>
+                            <ComboBox Grid.Column="2" x:Name="cmbMinUnit" Style="{StaticResource EnterpriseDialogInputComboBoxStyle}" MinWidth="84" Margin="0,0,12,0">
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_B}" />
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_KB}" />
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_MB}" />
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_GB}" />
                             </ComboBox>
                             <TextBlock Grid.Column="3" Text="{DynamicResource Filters_Max}" Style="{StaticResource DialogLabelText}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBox Grid.Column="4" x:Name="txtMaxSize" Height="30" Margin="0,0,6,0"/>
-                            <ComboBox Grid.Column="5" x:Name="cmbMaxUnit" Height="30">
+                            <TextBox Grid.Column="4" x:Name="txtMaxSize" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" Margin="0,0,6,0"/>
+                            <ComboBox Grid.Column="5" x:Name="cmbMaxUnit" Style="{StaticResource EnterpriseDialogInputComboBoxStyle}" MinWidth="84" Margin="0,0,4,0">
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_B}" />
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_KB}" />
                                 <ComboBoxItem Content="{DynamicResource Filters_Unit_MB}" />
@@ -125,9 +124,9 @@
                         <TextBlock Grid.Row="3" Grid.Column="0"
                                    Text="{DynamicResource Filters_AttrFilter}"
                                    Style="{StaticResource DialogLabelText}"
-                                   VerticalAlignment="Top"
-                                   Margin="0,6,8,0"/>
-                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,2,0,8">
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Center">
                             <CheckBox x:Name="chkAttrReadOnly" Content="{DynamicResource Filters_ReadOnly}" Margin="0,0,14,0"/>
                             <CheckBox x:Name="chkAttrHidden" Content="{DynamicResource Filters_Hidden}" Margin="0,0,14,0"/>
                             <CheckBox x:Name="chkAttrSystem" Content="{DynamicResource Filters_System}" Margin="0,0,14,0"/>
@@ -135,13 +134,14 @@
                         </StackPanel>
 
                         <TextBlock Grid.Row="4" Grid.Column="0"
-                                   Text="{DynamicResource Dialog_Settings}"
+                                   Text="{DynamicResource Filters_EnableAttrFilter}"
                                    Style="{StaticResource DialogLabelText}"
                                    VerticalAlignment="Center"
                                    Margin="0,0,8,0"/>
                         <CheckBox Grid.Row="4" Grid.Column="1"
                                   x:Name="chkFiltersApplied"
-                                  Content="{DynamicResource Filters_EnableListFilter}"/>
+                                  Content="{DynamicResource Filters_EnableListFilter}"
+                                  VerticalAlignment="Center"/>
                     </Grid>
 
                     <StackPanel Grid.Row="3" Margin="0,4,0,0">
@@ -152,11 +152,7 @@
             </Border>
 
             <Border Grid.Column="2"
-                    Background="{DynamicResource CardBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
-                    Padding="14">
+                    Style="{StaticResource EnterpriseDialogCardStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -167,15 +163,17 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="118"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="{DynamicResource Filter_FolderDefaults}"
-                               Style="{StaticResource DialogSectionHeaderText}"
-                               Margin="0,0,0,8"/>
-                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,12"/>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+                        <Path Data="{DynamicResource Icon_Settings}" Width="14" Height="14" Fill="{DynamicResource InfoBrush}" Stretch="Uniform" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Filter_FolderDefaults}"
+                                   Style="{StaticResource DialogSectionHeaderText}"
+                                   Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
 
                     <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
@@ -196,10 +194,10 @@
                     </Grid>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource Filter_IncludeLabel}" Style="{StaticResource DialogLabelText}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtIncludePattern" Height="30" Margin="0,0,0,8"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtIncludePattern" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" MinWidth="220" Margin="0,0,0,8"/>
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource Filter_ExcludeLabel}" Style="{StaticResource DialogLabelText}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtExcludePattern" Height="30" Margin="0,0,0,8"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtExcludePattern" Style="{StaticResource EnterpriseDialogInputTextBoxStyle}" MinWidth="220" Margin="0,0,0,8"/>
 
                     <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
                         <CheckBox x:Name="chkPatternFileNameOnly" Content="{DynamicResource Filter_FileNameOnly}" Margin="0,0,0,8"/>
@@ -210,10 +208,7 @@
         </Grid>
 
         <Border Grid.Row="2"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="10"
+                Style="{StaticResource EnterpriseDialogCardStyle}"
                 Padding="12"
                 Margin="0,12,0,0">
             <Grid>
@@ -222,11 +217,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox Grid.Column="0" x:Name="chkSaveAsDefault" Content="{DynamicResource Filter_SaveAsDefault}" VerticalAlignment="Center"/>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="{DynamicResource Dialog_Save}" Width="120" Margin="0,0,12,0" Click="Save_Click" IsDefault="True"
-                            Style="{StaticResource PrimaryButtonStyle}"/>
-                    <Button Content="{DynamicResource Dialog_Cancel}" Width="120" Click="Cancel_Click" IsCancel="True"
-                            Style="{StaticResource SecondaryButtonStyle}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{DynamicResource Dialog_Save}" Margin="0,0,12,0" Click="Save_Click" IsDefault="True"
+                            Style="{StaticResource EnterpriseDialogPrimaryActionButtonStyle}"/>
+                    <Button Content="{DynamicResource Dialog_Cancel}" Click="Cancel_Click" IsCancel="True"
+                            Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"/>
                 </StackPanel>
             </Grid>
         </Border>

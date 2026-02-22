@@ -223,6 +223,7 @@
     <sys:String x:Key="Dialog_Close">Close</sys:String>
     <sys:String x:Key="Dialog_Apply">Apply</sys:String>
     <sys:String x:Key="Dialog_Configuration">Configuration:</sys:String>
+    <sys:String x:Key="Dialog_RuleTypes">Rule Types</sys:String>
     <sys:String x:Key="Dialog_AddPathsTitle">Add Paths</sys:String>
     <sys:String x:Key="Dialog_AddPathsPrompt">Enter file/folder paths (one per line):</sys:String>
     <sys:String x:Key="Dialog_EditNewNameTitle">Edit New Name</sys:String>
