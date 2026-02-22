@@ -42,9 +42,9 @@
         </GroupBox>
 
         <GroupBox Header="{DynamicResource Insert_Where}">
-            <StackPanel Margin="6,4">
-                <RadioButton x:Name="rbPrefix" Content="{DynamicResource Insert_Prefix}" GroupName="InsertWhere" IsChecked="True" Margin="0,1" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="rbSuffix" Content="{DynamicResource Insert_Suffix}" GroupName="InsertWhere" Margin="0,1" VerticalContentAlignment="Center"/>
+            <StackPanel Margin="6,0,6,0">
+                <RadioButton x:Name="rbPrefix" Content="{DynamicResource Insert_Prefix}" GroupName="InsertWhere" IsChecked="True" Margin="0,0,0,6" VerticalContentAlignment="Center"/>
+                <RadioButton x:Name="rbSuffix" Content="{DynamicResource Insert_Suffix}" GroupName="InsertWhere" Margin="0,6" VerticalContentAlignment="Center"/>
 
                 <Grid Margin="0,1">
                     <Grid.ColumnDefinitions>
@@ -105,8 +105,8 @@
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_InsertBeforeText}"/>
                 </Grid>
 
-                <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Insert_ReplaceCurrentName}" GroupName="InsertWhere" Margin="0,1" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,6,0,0" VerticalContentAlignment="Center"/>
+                <RadioButton x:Name="rbReplaceName" Content="{DynamicResource Insert_ReplaceCurrentName}" GroupName="InsertWhere" Margin="0,6" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,6" VerticalContentAlignment="Center"/>
             </StackPanel>
         </GroupBox>
     </StackPanel>
