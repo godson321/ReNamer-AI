@@ -55,8 +55,8 @@
 - [x] T014 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/CaseConfigPanel.xaml`
 - [x] T015 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/CleanUpConfigPanel.xaml`
 - [x] T016 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`
-- [ ] T017 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
-- [ ] T018 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/JavaScriptConfigPanel.xaml`
+- [x] T017 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
+- [x] T018 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/JavaScriptConfigPanel.xaml`
 - [ ] T019 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
 - [ ] T020 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
 - [ ] T021 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`

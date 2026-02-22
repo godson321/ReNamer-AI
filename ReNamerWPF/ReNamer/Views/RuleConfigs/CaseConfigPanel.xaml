@@ -1,9 +1,15 @@
 <UserControl x:Class="ReNamer.Views.RuleConfigs.CaseConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:ReNamer.Controls"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="0" MinHeight="0"
+             d:DesignWidth="520"
+             d:DesignHeight="360"
+             mc:Ignorable="d"
+             MinWidth="0"
+             MinHeight="0"
              UseLayoutRounding="True"
              SnapsToDevicePixels="True"
              HorizontalAlignment="Stretch"
@@ -23,7 +29,7 @@
         </Style>
     </UserControl.Resources>
 
-    <StackPanel Margin="0,0,0,2">
+    <StackPanel Margin="6">
             <GroupBox Header="{DynamicResource Case_Composite_Title}">
                 <Grid Margin="6,4">
                     <Grid.ColumnDefinitions>

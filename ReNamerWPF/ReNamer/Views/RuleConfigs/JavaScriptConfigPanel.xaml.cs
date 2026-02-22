@@ -42,14 +42,9 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
             if (selected != null)
             {
                 dgScripts.SelectedItem = selected;
-                UpdateStatus(_rule.IsScriptLoading
-                    ? RF("JavaScript_Status_SelectedLoading", selected.Name)
-                    : RF("JavaScript_Status_Selected", selected.Name));
                 return;
             }
         }
-
-        UpdateStatus(R("JavaScript_Status_SelectHint"));
     }
 
     public void ApplyConfig()
@@ -102,7 +97,6 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
         var loadVersion = Interlocked.Increment(ref _scriptLoadVersion);
 
         _rule.MarkScriptLoading(item.FullPath);
-        UpdateStatus(RF("JavaScript_Status_SelectedLoading", item.Name));
 
         try
         {
@@ -111,19 +105,16 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
                 return;
 
             _rule.MarkScriptLoaded(item.FullPath, script);
-            UpdateStatus(RF("JavaScript_Status_SelectedLoaded", item.Name));
         }
         catch (Exception ex)
         {
             _rule.MarkScriptLoadFailed(item.FullPath, ex.Message);
-            UpdateStatus(RF("JavaScript_Status_LoadFailed", item.Name, ex.Message));
         }
     }
 
     private void Reload_Click(object sender, RoutedEventArgs e)
     {
         ReloadScriptList();
-        UpdateStatus(RF("JavaScript_Status_Reloaded", _scripts.Count));
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
@@ -203,11 +194,6 @@ public partial class JavaScriptConfigPanel : UserControl, IRuleConfigPanel
             R("JavaScript_HelpTitle"),
             MessageBoxButton.OK,
             MessageBoxImage.Information);
-    }
-
-    private void UpdateStatus(string text)
-    {
-        txtStatus.Text = text;
     }
 
     private static string RF(string key, params object[] args)

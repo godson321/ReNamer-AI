@@ -318,9 +318,12 @@
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
 
-    <Style x:Key="EnterpriseDialogInputTextBoxStyle" TargetType="TextBox">
+    <Style x:Key="EnterpriseDialogInputTextBoxStyle"
+           TargetType="TextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
     <Style x:Key="EnterpriseDialogInputComboBoxStyle"

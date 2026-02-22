@@ -804,7 +804,7 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_ColumnModified">Modified time</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_ActionGroup">Actions</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Reload">Reload list</sys:String>
-    <sys:String x:Key="RuleCfg_JavaScript_OpenFolder">Open scripts folder</sys:String>
+    <sys:String x:Key="RuleCfg_JavaScript_OpenFolder">Scripts folder</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_ActionHint">Double-click a script to load it quickly, then validate before applying.</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_EnableMetaTags">Enable meta tags</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Basic">Basic: Result = Name;</sys:String>

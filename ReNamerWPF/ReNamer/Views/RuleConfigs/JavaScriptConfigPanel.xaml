@@ -1,26 +1,21 @@
 <UserControl x:Class="ReNamer.Views.RuleConfigs.JavaScriptConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             MinWidth="560" MinHeight="300"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignWidth="520"
+             d:DesignHeight="360"
+             mc:Ignorable="d"
+             MinWidth="0"
+             MinHeight="0"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True"
+             HorizontalAlignment="Stretch"
              Background="{DynamicResource CardBrush}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <StackPanel Margin="6">
 
-        <TextBlock x:Name="txtStatus"
-                   Grid.Row="0"
-                   Margin="0,0,0,0"
-                   Style="{DynamicResource DialogHintText}"
-                   TextWrapping="Wrap" />
-
-        <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_JavaScript_ScriptListGroup}">
-            <Grid Margin="8,6">
+        <GroupBox Header="{DynamicResource RuleCfg_JavaScript_ActionHint}" Margin="0,0,0,6">
+            <Grid Margin="0,0,0,4">
                 <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4">
                     <DataGrid x:Name="dgScripts"
                               AutoGenerateColumns="False"
@@ -29,6 +24,7 @@
                               CanUserDeleteRows="False"
                               SelectionMode="Single"
                               MouseDoubleClick="ScriptsGrid_MouseDoubleClick"
+                              MinHeight="180"
                               Background="{DynamicResource TextBoxBrush}"
                               Foreground="{DynamicResource TextBrush}">
                         <DataGrid.Columns>
@@ -41,60 +37,57 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Grid.Row="4" Header="{DynamicResource RuleCfg_JavaScript_ActionGroup}">
-            <Grid Margin="8,6">
+        <GroupBox Header="{DynamicResource RuleCfg_JavaScript_ActionGroup}" Margin="0,0,0,4">
+            <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="btnReload"
+                <Button x:Name="btnReload" MinWidth="100"
                         Grid.Column="0"
-                        FontSize="12"
-                        Style="{DynamicResource SecondaryButtonStyle}"
+                        Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"
                         Click="Reload_Click"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        Margin="0,0,4,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Path Data="{StaticResource Icon_Analyze}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
                         <TextBlock Text="{DynamicResource RuleCfg_JavaScript_Reload}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="btnOpenFolder"
-                        Grid.Column="2"
-                        FontSize="12"
-                        Style="{DynamicResource SecondaryButtonStyle}"
+                <Button x:Name="btnOpenFolder" MinWidth="100"
+                        Grid.Column="1"
+                        Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"
                         Click="OpenFolder_Click"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Path Data="{StaticResource Icon_Files}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
                         <TextBlock Text="{DynamicResource RuleCfg_JavaScript_OpenFolder}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="btnValidate"
-                        Grid.Column="4"
-                        FontSize="12"
-                        Style="{DynamicResource SecondaryButtonStyle}"
+                <Button x:Name="btnValidate" MinWidth="100"
+                        Grid.Column="2"
+                        Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"
                         Click="Validate_Click"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Path Data="{StaticResource Icon_Check}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
                         <TextBlock Text="{DynamicResource JavaScript_Validate}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="btnHelp"
-                        Grid.Column="6"
-                        FontSize="12"
-                        Style="{DynamicResource SecondaryButtonStyle}"
+                <Button x:Name="btnHelp" MinWidth="100"
+                        Grid.Column="3"
+                        Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"
                         Click="Help_Click"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        Margin="4,0,0,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Path Data="{StaticResource Icon_Options}" Fill="{DynamicResource TextSecondaryBrush}" Width="14" Height="14" Stretch="Uniform"/>
                         <TextBlock Text="{DynamicResource JavaScript_Help}" Margin="6,0,0,0" VerticalAlignment="Center"/>
@@ -102,11 +95,6 @@
                 </Button>
             </Grid>
         </GroupBox>
-
-        <TextBlock Grid.Row="5"
-                   Margin="2,8,2,0"
-                   Text="{DynamicResource RuleCfg_JavaScript_ActionHint}"
-                   TextWrapping="Wrap"
-                   Style="{DynamicResource DialogHintText}"/>
-    </Grid>
+        
+    </StackPanel>
 </UserControl>
