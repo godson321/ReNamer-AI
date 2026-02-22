@@ -47,3 +47,4 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.temp
+/ReNamerWPF/ReNamer/obj_cli/icon_gen
