@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Case 面板企业化重设计（6方案 / 动态演示）</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --shell:#111827;
+      --panel:#f8fafc;
+      --line:#d0d5dd;
+      --text:#101828;
+      --muted:#667085;
+      --primary:#1570ef;
+      --primary-soft:#eaf2ff;
+      --ok:#067647;
+      --warn:#b54708;
+      --radius:10px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Microsoft YaHei UI","Segoe UI",Arial,sans-serif;
+      background:radial-gradient(1200px 800px at 20% -10%, #1f2937 0%, #0b1020 45%, #080b14 100%);
+      color:#e5e7eb;
+    }
+    .page{max-width:1280px;margin:24px auto;padding:0 14px}
+    .title{font-size:24px;font-weight:700;margin:0 0 6px}
+    .sub{margin:0 0 14px;color:#b8c1cf}
+    .layout{display:grid;grid-template-columns:300px 1fr;gap:14px}
+    .left,.right{
+      background:rgba(17,24,39,.85);
+      border:1px solid rgba(148,163,184,.35);
+      border-radius:14px;
+      backdrop-filter: blur(6px);
+    }
+    .left{padding:14px}
+    .right{padding:14px}
+    .h{font-size:14px;color:#cbd5e1;margin:0 0 10px}
+    .scheme-list{display:grid;gap:8px}
+    .scheme{
+      width:100%;
+      text-align:left;
+      border:1px solid #334155;
+      border-radius:10px;
+      background:#0f172a;
+      color:#e2e8f0;
+      padding:10px;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .scheme:hover{border-color:#60a5fa}
+    .scheme.active{
+      border-color:#3b82f6;
+      background:#0b1d42;
+      box-shadow:inset 0 0 0 1px rgba(59,130,246,.45);
+    }
+    .scheme .n{font-size:13px;font-weight:700;margin-bottom:2px}
+    .scheme .d{font-size:12px;color:#9fb0c7;line-height:1.45}
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:#93a5bf;
+      line-height:1.6;
+      border-top:1px dashed #334155;
+      padding-top:10px;
+    }
+
+    .preview-shell{
+      border-radius:12px;
+      background:#0b1224;
+      border:1px solid #1f2a44;
+      padding:12px;
+      min-height:760px;
+    }
+    .preview{
+      display:none;
+      background:var(--panel);
+      color:var(--text);
+      border:1px solid #d9dfe8;
+      border-radius:12px;
+      padding:14px;
+      box-shadow:0 10px 30px rgba(2,6,23,.18);
+    }
+    .preview.active{display:block}
+    .preview-head{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:10px;
+      padding-bottom:8px;
+      border-bottom:1px dashed #d0d5dd;
+    }
+    .preview-head b{font-size:16px}
+    .pill{
+      font-size:12px;
+      background:var(--primary-soft);
+      color:#1d4ed8;
+      border:1px solid #c7d7fe;
+      border-radius:999px;
+      padding:3px 8px;
+      margin-left:6px;
+    }
+
+    .group{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:10px;
+      margin-bottom:10px;
+    }
+    .group > .gt{
+      font-size:13px;
+      font-weight:700;
+      color:#344054;
+      margin-bottom:8px;
+    }
+    .top-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+    .field .lab{
+      font-size:12px;color:#475467;margin-bottom:4px;
+    }
+    select,input[type="text"],.fake{
+      width:100%;
+      height:28px;
+      border:1px solid #cfd4dc;
+      border-radius:6px;
+      padding:0 8px;
+      font-size:14px;
+      color:#111827;
+      background:#fff;
+    }
+    .fake{display:flex;align-items:center}
+    .force-grid{
+      display:grid;
+      grid-template-columns:118px 1fr;
+      gap:8px;
+      align-items:center;
+    }
+    .force-hint{grid-column:2;color:#667085;font-size:12px}
+    .check{
+      display:flex;align-items:center;gap:8px;
+      font-size:14px;color:#1f2937;
+    }
+    .check-row{margin:2px 0}
+    .pinyin-wrap{
+      margin-top:10px;
+      background:#f8fafc;
+      border:1px solid #dbe1ea;
+      border-radius:8px;
+      padding:8px;
+      overflow:hidden;
+      transition:max-height .2s ease,opacity .2s ease,margin-top .2s ease,padding .2s ease;
+      max-height:200px;opacity:1;
+    }
+    .pinyin-wrap.hide{
+      max-height:0;opacity:0;margin-top:0;padding-top:0;padding-bottom:0;border-width:0;
+    }
+    .row-a,.row-b,.row-c,.row-d,.row-e{
+      display:grid;gap:8px;align-items:center
+    }
+    .row-a{grid-template-columns:auto 84px auto minmax(128px,1fr) minmax(128px,1fr)}
+    .row-b{grid-template-columns:118px 84px 118px 1fr 1fr}
+    .row-c{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .chip{
+      display:inline-flex;align-items:center;height:24px;padding:0 8px;
+      border-radius:999px;background:#eef4ff;color:#1d4ed8;border:1px solid #c7d7fe;font-size:12px;
+    }
+    .row-d{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .tile .k{font-size:12px;color:#667085;margin-bottom:4px}
+    .row-e{grid-template-columns:220px 220px 1fr}
+    .status{
+      margin-top:6px;font-size:12px;color:#667085;
+    }
+    .status .ok{color:var(--ok);font-weight:700}
+    .status .warn{color:var(--warn);font-weight:700}
+    @media (max-width:1040px){
+      .layout{grid-template-columns:1fr}
+      .row-e{grid-template-columns:1fr}
+      .top-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="title">Case 面板企业化重设计（6方案）</h1>
+    <p class="sub">这版是完整面板，不只是拼音行；支持动态显示/隐藏：当“首字母”选择“中文拼音首字母”时才显示拼音参数区。</p>
+
+    <div class="layout">
+      <aside class="left">
+        <p class="h">选择方案</p>
+        <div class="scheme-list" id="schemeList">
+          <button class="scheme active" data-target="a"><div class="n">方案 A - 平衡栅格</div><div class="d">稳妥易落地，视觉均衡，风险最低</div></button>
+          <button class="scheme" data-target="b"><div class="n">方案 B - 双层语义</div><div class="d">参数与动作分层，信息最清晰</div></button>
+          <button class="scheme" data-target="c"><div class="n">方案 C - 句式编辑条</div><div class="d">轻量自然语言感，视觉更“产品化”</div></button>
+          <button class="scheme" data-target="d"><div class="n">方案 D - 四宫格</div><div class="d">字段分块强，后台系统感最强</div></button>
+          <button class="scheme" data-target="e"><div class="n">方案 E - 主次分栏</div><div class="d">扩展性最好，适合后续增加策略</div></button>
+          <button class="scheme" data-target="f"><div class="n">方案 F - C+E 混合</div><div class="d">E 的布局 + C 的句式标签（第 / 个中文字）</div></button>
+        </div>
+        <div class="hint">
+          动态交互：<br>
+          1) 切换“首字母”到“中文拼音首字母”查看拼音参数区出现。<br>
+          2) 勾选“强制片段大小写”查看输入区显示。<br>
+          3) 勾选/取消“忽略扩展名”查看状态变化。
+        </div>
+      </aside>
+
+      <main class="right">
+        <div class="preview-shell">
+
+          <!-- A -->
+          <section class="preview active" data-name="a">
+            <div class="preview-head">
+              <b>方案 A：平衡栅格</b>
+              <span><span class="pill">推荐</span><span class="pill">最稳</span></span>
+            </div>
+            <div class="group">
+              <div class="gt">名称构成（首字母 + 其他字母 + 扩展名）</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-a">
+                  <div class="fake">第</div><input type="text" value="1"><div class="fake">个中文字</div>
+                  <select><option>大写</option><option>小写</option></select>
+                  <select><option>插入</option><option>替换</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">强制片段</div>
+                <input type="text" placeholder="例如：CD,DVD,DJ">
+                <div></div>
+                <div class="force-hint">提示：用逗号分隔的片段保持输入时大小写。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+
+          <!-- B -->
+          <section class="preview" data-name="b">
+            <div class="preview-head"><b>方案 B：双层语义</b><span class="pill">清晰度优先</span></div>
+            <div class="group">
+              <div class="gt">名称构成</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-b">
+                  <div class="fake">目标位置</div><input type="text" value="1"><div class="fake">单位</div><div class="fake">个中文字</div><div class="fake">状态：<span class="ok">有效</span></div>
+                </div>
+                <div style="margin-top:8px;display:grid;grid-template-columns:118px 1fr;gap:8px">
+                  <div class="fake">应用方式</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <select><option>大写</option><option>小写</option></select>
+                    <select><option>插入</option><option>替换</option></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">强制片段</div><input type="text" placeholder="例如：HDTV,OVA,BDRip"><div></div>
+                <div class="force-hint">双层结构下，提示语归到字段下方。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+
+          <!-- C -->
+          <section class="preview" data-name="c">
+            <div class="preview-head"><b>方案 C：句式编辑条</b><span class="pill">产品感</span></div>
+            <div class="group">
+              <div class="gt">名称构成</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-c">
+                  <span class="chip">第</span><input type="text" value="1" style="width:84px"><span class="chip">个中文字</span>
+                  <select style="min-width:140px"><option>大写</option><option>小写</option></select>
+                  <select style="min-width:140px"><option>插入</option><option>替换</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">片段列表</div><input type="text" placeholder="例如：DJ,CD,DVD"><div></div>
+                <div class="force-hint">自然语言风格，弱化“表单感”。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+
+          <!-- D -->
+          <section class="preview" data-name="d">
+            <div class="preview-head"><b>方案 D：四宫格字段块</b><span class="pill">后台系统风</span></div>
+            <div class="group">
+              <div class="gt">名称构成</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-d">
+                  <div class="tile"><div class="k">位置</div><input type="text" value="1"></div>
+                  <div class="tile"><div class="k">单位</div><div class="fake">个中文字</div></div>
+                  <div class="tile"><div class="k">字母大小写</div><select><option>大写</option><option>小写</option></select></div>
+                  <div class="tile"><div class="k">动作</div><select><option>插入</option><option>替换</option></select></div>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">片段列表</div><input type="text" placeholder="例如：CD,DVD,DJ"><div></div>
+                <div class="force-hint">字段块化适合长周期维护。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+
+          <!-- E -->
+          <section class="preview" data-name="e">
+            <div class="preview-head"><b>方案 E：主次分栏</b><span class="pill">扩展性强</span></div>
+            <div class="group">
+              <div class="gt">名称构成</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-e">
+                  <div style="display:grid;grid-template-columns:auto 84px auto;gap:8px;align-items:center">
+                    <div class="fake">第</div><input type="text" value="1"><div class="fake">个中文字</div>
+                  </div>
+                  <select><option>大写</option><option>小写</option></select>
+                  <select><option>插入（前缀）</option><option>替换（首字）</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">片段列表</div><input type="text" placeholder="例如：BDrip,OVA,WEB-DL"><div></div>
+                <div class="force-hint">策略区可继续扩展更多动作。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+
+          <!-- F -->
+          <section class="preview" data-name="f">
+            <div class="preview-head"><b>方案 F：C + E 混合</b><span><span class="pill">混合版</span><span class="pill">可落地</span></span></div>
+            <div class="group">
+              <div class="gt">名称构成</div>
+              <div class="top-grid">
+                <div class="field"><div class="lab">首字母</div><select class="firstMode"><option>不改变</option><option>大写</option><option>小写</option><option>中文拼音首字母</option></select></div>
+                <div class="field"><div class="lab">其他字母</div><select><option>不改变</option><option>全部大写</option><option>全部小写</option><option>每个单词首字母大写</option></select></div>
+                <div class="field"><div class="lab">扩展名</div><select><option>不改变</option><option>小写</option><option>大写</option></select></div>
+              </div>
+              <div class="pinyin-wrap hide">
+                <div class="row-e">
+                  <div style="display:grid;grid-template-columns:auto 84px auto;gap:8px;align-items:center">
+                    <span class="chip">第</span>
+                    <input type="text" value="1">
+                    <span class="chip">个中文字</span>
+                  </div>
+                  <select><option>大写</option><option>小写</option></select>
+                  <select><option>插入（前缀）</option><option>替换（首字）</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">强制大小写</div>
+              <div class="check-row"><label class="check"><input type="checkbox"> 保留原大小写</label></div>
+              <div class="check-row"><label class="check"><input class="forceToggle" type="checkbox"> 强制片段大小写</label></div>
+              <div class="force-grid forceBox" style="display:none">
+                <div class="fake">片段列表</div><input type="text" placeholder="例如：BDrip,OVA,WEB-DL"><div></div>
+                <div class="force-hint">布局沿用 E，标签语言风格沿用 C。</div>
+              </div>
+            </div>
+            <div class="group">
+              <div class="gt">扩展名选项</div>
+              <label class="check"><input class="skipExt" type="checkbox" checked> 忽略扩展名</label>
+              <div class="status">当前状态：<span class="ok extState">已忽略扩展名</span></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const schemeBtns = Array.from(document.querySelectorAll(".scheme"));
+      const previews = Array.from(document.querySelectorAll(".preview"));
+
+      function activate(name){
+        schemeBtns.forEach(b=>b.classList.toggle("active",b.dataset.target===name));
+        previews.forEach(p=>p.classList.toggle("active",p.dataset.name===name));
+      }
+      schemeBtns.forEach(btn=>btn.addEventListener("click",()=>activate(btn.dataset.target)));
+
+      previews.forEach(panel=>{
+        const first = panel.querySelector(".firstMode");
+        const pinyinWrap = panel.querySelector(".pinyin-wrap");
+        const forceToggle = panel.querySelector(".forceToggle");
+        const forceBox = panel.querySelector(".forceBox");
+        const skipExt = panel.querySelector(".skipExt");
+        const extState = panel.querySelector(".extState");
+
+        if(first && pinyinWrap){
+          const syncPinyin = ()=>{
+            const show = first.value.indexOf("中文拼音")>=0;
+            pinyinWrap.classList.toggle("hide", !show);
+          };
+          first.addEventListener("change",syncPinyin);
+          syncPinyin();
+        }
+        if(forceToggle && forceBox){
+          const syncForce = ()=>{ forceBox.style.display = forceToggle.checked ? "grid" : "none"; };
+          forceToggle.addEventListener("change",syncForce);
+          syncForce();
+        }
+        if(skipExt && extState){
+          const syncExt = ()=>{
+            if(skipExt.checked){
+              extState.textContent = "已忽略扩展名";
+              extState.className = "ok extState";
+            }else{
+              extState.textContent = "扩展名参与处理";
+              extState.className = "warn extState";
+            }
+          };
+          skipExt.addEventListener("change",syncExt);
+          syncExt();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

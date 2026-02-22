@@ -1815,7 +1815,8 @@ public partial class MainWindow : Window
             LanguageService.GetString("Dialog_EditNewNameTitle"),
             LanguageService.GetString("Column_NewName"),
             file.NewName,
-            validator: text => string.IsNullOrWhiteSpace(text) ? LanguageService.GetString("Dialog_InputRequired") : null)
+            validator: text => string.IsNullOrWhiteSpace(text) ? LanguageService.GetString("Dialog_InputRequired") : null,
+            originalText: file.OriginalName)
         {
             Owner = this
         };
@@ -2107,9 +2108,12 @@ public partial class MainWindow : Window
     {
         var dlg = new Window
         {
-            Title = "Analyze Sample Text", Width = 450, Height = 200,
+            Title = "Analyze Sample Text",
+            Width = 450,
+            Height = 200,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this, ResizeMode = ResizeMode.NoResize
+            Owner = this,
+            ResizeMode = ResizeMode.NoResize
         };
         var sp = new StackPanel { Margin = new Thickness(16) };
         sp.Children.Add(new TextBlock { Text = "Enter sample text to test rules:", Margin = new Thickness(0, 0, 0, 8) });
@@ -2779,9 +2783,12 @@ public partial class MainWindow : Window
 
         var dlg = new Window
         {
-            Title = "Manage Presets", Width = 400, Height = 350,
+            Title = "Manage Presets",
+            Width = 400,
+            Height = 350,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this, ResizeMode = ResizeMode.CanResize
+            Owner = this,
+            ResizeMode = ResizeMode.CanResize
         };
         var grid = new Grid { Margin = new Thickness(12) };
         grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });

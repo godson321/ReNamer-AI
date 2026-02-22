@@ -1,5 +1,7 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using ReNamer.Rules;
 
 namespace ReNamer.Views.RuleConfigs;
@@ -7,13 +9,14 @@ namespace ReNamer.Views.RuleConfigs;
 public partial class CaseConfigPanel : UserControl, IRuleConfigPanel
 {
     private readonly CaseRule _rule;
+    private bool _isPinyinOptionsVisible;
 
     public CaseConfigPanel(CaseRule rule)
     {
         InitializeComponent();
         _rule = rule;
         LoadConfig();
-        UpdatePinyinOptionsVisibility();
+        UpdatePinyinOptionsVisibility(immediate: true);
     }
 
     private void LoadConfig()
@@ -79,11 +82,49 @@ public partial class CaseConfigPanel : UserControl, IRuleConfigPanel
         else cmbExtMode.SelectedIndex = 0;
     }
 
-    private void UpdatePinyinOptionsVisibility()
+    private void UpdatePinyinOptionsVisibility(bool immediate = false)
     {
-        if (cmbFirstMode == null || pnlPinyinOptions == null)
+        if (cmbFirstMode == null || pnlPinyinOptions == null || pinyinOptionsHost == null)
             return;
-        pnlPinyinOptions.Visibility = cmbFirstMode.SelectedIndex == 3 ? Visibility.Visible : Visibility.Collapsed;
+
+        var shouldShow = cmbFirstMode.SelectedIndex == 3;
+        var expandedHeight = GetPinyinExpandedHeight();
+
+        if (immediate)
+        {
+            pinyinOptionsHost.MaxHeight = shouldShow ? expandedHeight : 0;
+            pinyinOptionsHost.Opacity = shouldShow ? 1 : 0;
+            _isPinyinOptionsVisible = shouldShow;
+            return;
+        }
+
+        if (shouldShow == _isPinyinOptionsVisible)
+            return;
+
+        _isPinyinOptionsVisible = shouldShow;
+
+        var heightAnimation = new DoubleAnimation
+        {
+            To = shouldShow ? expandedHeight : 0,
+            Duration = TimeSpan.FromMilliseconds(180),
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+
+        var opacityAnimation = new DoubleAnimation
+        {
+            To = shouldShow ? 1 : 0,
+            Duration = TimeSpan.FromMilliseconds(140),
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+
+        pinyinOptionsHost.BeginAnimation(MaxHeightProperty, heightAnimation, HandoffBehavior.SnapshotAndReplace);
+        pinyinOptionsHost.BeginAnimation(OpacityProperty, opacityAnimation, HandoffBehavior.SnapshotAndReplace);
+    }
+
+    private double GetPinyinExpandedHeight()
+    {
+        pnlPinyinOptions.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        return Math.Max(40, pnlPinyinOptions.DesiredSize.Height);
     }
 
     private FirstLetterMode GetFirstMode() => cmbFirstMode.SelectedIndex switch

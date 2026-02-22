@@ -230,6 +230,8 @@
     <sys:String x:Key="Dialog_RuleCommentTitle">规则备注</sys:String>
     <sys:String x:Key="Dialog_RuleCommentPrompt">规则“{0}”的备注：</sys:String>
     <sys:String x:Key="Dialog_InputRequired">请输入内容。</sys:String>
+    <sys:String x:Key="Dialog_OriginalFileName">旧文件名</sys:String>
+    <sys:String x:Key="Dialog_NewNameSingleLineOnly">新文件名不能包含换行。</sys:String>
     <sys:String x:Key="Dialog_MarkByMaskTitle">按掩码标记</sys:String>
     <sys:String x:Key="Dialog_MarkByMaskPrompt">输入通配符模式：</sys:String>
     <sys:String x:Key="Dialog_SelectByNameLengthTitle">按名称长度选择</sys:String>
@@ -787,6 +789,15 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Randomize_InsertWhere">插入位置：</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">移除括号内容：</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">替换以下字符为空格：</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Round">移除小括号 (...) 及其中内容。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Square">移除中括号 [...] 及其中内容。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Curly">移除花括号 {...} 及其中内容。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Dot">将点号 . 替换为空格。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Comma">将逗号 , 替换为空格。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Underscore">将下划线 _ 替换为空格。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Plus">将加号 + 替换为空格。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Hyphen">将连字符 - 替换为空格。</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Web20">将 URL 编码空格 %20 替换为普通空格。</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Basic">基础: Result = Name;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Counter">计数: Result = Name + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_JavaScript_Folder">文件夹: Result = Folder + '_' + Name;</sys:String>

@@ -11,7 +11,7 @@ namespace ReNamer.Views;
 public partial class AddRuleDialog : Window
 {
     public IRule? SelectedRule { get; private set; }
-    
+
     // 当前配置面板
     private IRuleConfigPanel? _currentPanel;
     // 当前预创建的规则实例
@@ -23,7 +23,7 @@ public partial class AddRuleDialog : Window
     private static readonly List<string> RuleTypes = new()
     {
         "Replace", "Insert", "Delete", "Case", "Serialize",
-        "Padding", "CleanUp", "Transliterate", "RegEx", 
+        "Padding", "CleanUp", "Transliterate", "RegEx",
         "Rearrange", "ReformatDate", "Randomize", "JavaScript", "UserInput", "Mapping"
     };
 
@@ -57,7 +57,7 @@ public partial class AddRuleDialog : Window
         _isEditMode = false;
         LoadRules();
         LanguageService.LanguageChanged += LoadRules;
-        
+
         // 默认选中第一个
         if (lbRules.Items.Count > 0)
             lbRules.SelectedIndex = 0;
@@ -73,7 +73,7 @@ public partial class AddRuleDialog : Window
         DialogResult = true;
         Close();
     }
-    
+
     /// <summary>
     /// 编辑规则模式：左侧高亮对应规则，右侧显示配置
     /// </summary>
@@ -86,7 +86,7 @@ public partial class AddRuleDialog : Window
         _currentRule = editableRule;
         Title = LanguageService.GetString("Dialog_EditRule");
         btnAddRule.Content = LanguageService.GetString("Dialog_OK");
-        
+
         // 定位到对应规则类型
         var typeKey = GetRuleTypeKey(editableRule);
         for (int i = 0; i < lbRules.Items.Count; i++)
@@ -97,14 +97,14 @@ public partial class AddRuleDialog : Window
                 break;
             }
         }
-        
+
         // 编辑模式禁用规则切换
         lbRules.IsEnabled = false;
-        
+
         // 加载当前规则的配置到面板
         LoadConfigPanel(editableRule);
     }
-    
+
     private void LoadRules()
     {
         var selectedIndex = lbRules.SelectedIndex;
@@ -119,16 +119,16 @@ public partial class AddRuleDialog : Window
         if (selectedIndex >= 0 && selectedIndex < rules.Count)
             lbRules.SelectedIndex = selectedIndex;
     }
-    
+
     /// <summary>
     /// 左侧规则列表选中变化→右侧动态加载配置面板
     /// </summary>
     private void Rules_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_isEditMode) return; // 编辑模式不响应切换
-        
+
         if (lbRules.SelectedItem is not RuleInfo info) return;
-        
+
         // 创建新的规则实例
         _currentRule = CreateRuleInstance(info.TypeKey);
         if (_currentRule != null)
@@ -142,13 +142,12 @@ public partial class AddRuleDialog : Window
                 Text = LanguageService.GetString("Msg_ComingSoon"),
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Foreground = System.Windows.Media.Brushes.Gray,
-                FontSize = 14
+                Foreground = System.Windows.Media.Brushes.Gray
             };
             _currentPanel = null;
         }
     }
-    
+
     private void LoadConfigPanel(IRule rule)
     {
         _currentPanel = CreateConfigPanel(rule);
@@ -196,7 +195,7 @@ public partial class AddRuleDialog : Window
                 mw.AddFilePaths(paths, recursive: true);
         }
     }
-    
+
     private static IRule? CreateRuleInstance(string typeKey)
     {
         return typeKey switch
@@ -219,7 +218,7 @@ public partial class AddRuleDialog : Window
             _ => null
         };
     }
-    
+
     private static IRuleConfigPanel? CreateConfigPanel(IRule rule)
     {
         return rule switch
@@ -242,7 +241,7 @@ public partial class AddRuleDialog : Window
             _ => null
         };
     }
-    
+
     private static string GetRuleTypeKey(IRule rule)
     {
         return rule switch

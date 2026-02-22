@@ -230,6 +230,8 @@
     <sys:String x:Key="Dialog_RuleCommentTitle">Rule Comment</sys:String>
     <sys:String x:Key="Dialog_RuleCommentPrompt">Comment for rule \"{0}\":</sys:String>
     <sys:String x:Key="Dialog_InputRequired">Please enter a value.</sys:String>
+    <sys:String x:Key="Dialog_OriginalFileName">Original file name</sys:String>
+    <sys:String x:Key="Dialog_NewNameSingleLineOnly">New file name cannot contain line breaks.</sys:String>
     <sys:String x:Key="Dialog_MarkByMaskTitle">Mark by Mask</sys:String>
     <sys:String x:Key="Dialog_MarkByMaskPrompt">Enter wildcard pattern:</sys:String>
     <sys:String x:Key="Dialog_SelectByNameLengthTitle">Select by Name Length</sys:String>
@@ -758,6 +760,15 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_Section_Other">Other</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_StripBrackets">Remove bracketed content:</sys:String>
     <sys:String x:Key="RuleCfg_CleanUp_ReplaceCharsWithSpaces">Replace these characters with spaces:</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Round">Remove text enclosed in round brackets (...).</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Square">Remove text enclosed in square brackets [...].</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Curly">Remove text enclosed in curly braces {...}.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Dot">Replace a dot (.) with a space.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Comma">Replace a comma (,) with a space.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Underscore">Replace an underscore (_) with a space.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Plus">Replace a plus sign (+) with a space.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Hyphen">Replace a hyphen (-) with a space.</sys:String>
+    <sys:String x:Key="RuleCfg_CleanUp_Tip_Web20">Replace URL-encoded space (%20) with a normal space.</sys:String>
 
     <sys:String x:Key="RuleCfg_Mapping_Table">Table</sys:String>
     <sys:String x:Key="RuleCfg_Mapping_TableActions">Table Actions</sys:String>

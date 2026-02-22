@@ -13,7 +13,7 @@
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
     
-    <Grid Margin="5">
+    <Grid Margin="6">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -79,8 +79,13 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
-                        <Path Data="{DynamicResource Icon_Settings}" Width="14" Height="14" Fill="{DynamicResource InfoBrush}" Stretch="Uniform" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource Dialog_Configuration}"
+                        <Path Data="{Binding ElementName=lbRules, Path=SelectedItem.Icon}"
+                              Width="16"
+                              Height="16"
+                              Fill="{DynamicResource TextBrush}"
+                              Stretch="Uniform"
+                              VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ElementName=lbRules, Path=SelectedItem.Name}"
                                    Style="{StaticResource DialogSectionHeaderText}"
                                    Margin="8,0,0,0"/>
                     </StackPanel>

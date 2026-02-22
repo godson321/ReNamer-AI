@@ -3,90 +3,187 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:ReNamer.Controls"
              xmlns:helpers="clr-namespace:ReNamer.Helpers"
-             MinWidth="500" MinHeight="280"
+             MinWidth="0" MinHeight="0"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True"
+             HorizontalAlignment="Stretch"
              Background="{DynamicResource CardBrush}">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel>
+    <UserControl.Resources>
+        <Style x:Key="CasePinyinChipStyle" TargetType="Border">
+            <Setter Property="Background" Value="#EEF4FF"/>
+            <Setter Property="BorderBrush" Value="#C7D7FE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="7,1"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CasePinyinChipTextStyle" TargetType="TextBlock" BasedOn="{StaticResource DialogLabelText}">
+            <Setter Property="Foreground" Value="#1D4ED8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Margin="0,0,0,2">
             <GroupBox Header="{DynamicResource Case_Composite_Title}">
-                <Grid Margin="8,6">
+                <Grid Margin="6,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0">
-                        <TextBlock Text="{DynamicResource Case_Composite_FirstLetter}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ComboBox x:Name="cmbFirstMode" SelectedIndex="0" SelectionChanged="CmbFirstMode_SelectionChanged">
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinFirst}"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="0" Grid.Column="2">
-                        <TextBlock Text="{DynamicResource Case_Composite_RemainingLetters}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ComboBox x:Name="cmbRestMode" SelectedIndex="0">
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_AllUpper}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_AllLower}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_CapitalizeWords}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Invert}"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="0" Grid.Column="4">
-                        <TextBlock Text="{DynamicResource Case_Composite_Extension}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ComboBox x:Name="cmbExtMode" SelectedIndex="0">
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
-                            <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="pnlPinyinOptions" Margin="0,6,0,0">
-                        <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="{DynamicResource Case_Composite_FirstLetter}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="cmbFirstMode"
+                              SelectedIndex="0"
+                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                              SelectionChanged="CmbFirstMode_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinFirst}"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <TextBlock Text="{DynamicResource Case_Composite_RemainingLetters}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="cmbRestMode"
+                              SelectedIndex="0"
+                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_AllUpper}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_AllLower}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_CapitalizeWords}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Invert}"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="4">
+                    <TextBlock Text="{DynamicResource Case_Composite_Extension}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="cmbExtMode"
+                              SelectedIndex="0"
+                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
+                        <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="5"
+                        x:Name="pinyinOptionsHost"
+                        Margin="0,6,0,0"
+                        MaxHeight="0"
+                        Opacity="0"
+                        ClipToBounds="True">
+                    <Grid x:Name="pnlPinyinOptions">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="128"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="84"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{DynamicResource RuleCfg_Case_PinyinIndexPrefix}" VerticalAlignment="Center" Margin="5"/>
-                            <controls:NumericUpDown x:Name="nudPinyinIndex" Grid.Column="1" Width="50" MinValue="1" MaxValue="99" Value="1" Margin="5"/>
-                            <TextBlock Grid.Column="2" Text="{DynamicResource RuleCfg_Case_PinyinIndexSuffix}" VerticalAlignment="Center" Margin="5"/>
-                            <ComboBox Grid.Column="3" x:Name="cmbPinyinCase" SelectedIndex="0" Margin="5">
-                                <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
-                                <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
-                            </ComboBox>
-                            <ComboBox Grid.Column="4" x:Name="cmbPinyinAction" SelectedIndex="0"  Margin="5">
-                                <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinInsert}"/>
-                                <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinReplace}"/>
-                            </ComboBox>
+
+                            <Border Grid.Column="0" Style="{StaticResource CasePinyinChipStyle}">
+                                <TextBlock Text="{DynamicResource RuleCfg_Case_PinyinIndexPrefix}" Style="{StaticResource CasePinyinChipTextStyle}"/>
+                            </Border>
+                            <controls:NumericUpDown x:Name="nudPinyinIndex"
+                                                    Grid.Column="1"
+                                                    Height="28"
+                                                    Margin="6,0"
+                                                    VerticalAlignment="Center"
+                                                    MinValue="1"
+                                                    MaxValue="99"
+                                                    Value="1"/>
+                            <Border Grid.Column="2" Style="{StaticResource CasePinyinChipStyle}">
+                                <TextBlock Text="{DynamicResource RuleCfg_Case_PinyinIndexSuffix}" Style="{StaticResource CasePinyinChipTextStyle}"/>
+                            </Border>
                         </Grid>
-                    </StackPanel>
-                </Grid>
-            </GroupBox>
 
-            <GroupBox Header="{DynamicResource RuleCfg_Case_ForceCaseGroup}">
-                <StackPanel Margin="8,6">
-                    <CheckBox x:Name="chkPreserveCase" Content="{DynamicResource Case_PreserveCase}" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="chkForceCase" Content="{DynamicResource Case_ForceCase}" Margin="0,2,0,4" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="txtForceCase" Margin="24,0,0,0" VerticalAlignment="Center"
-                             helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_CaseForceCase}"/>
-                    <TextBlock Text="{DynamicResource Case_ForceCaseHint}" TextWrapping="Wrap" Margin="24,4,0,0" Style="{DynamicResource DialogHintText}"/>
-                </StackPanel>
-            </GroupBox>
+                        <ComboBox Grid.Column="1"
+                                  x:Name="cmbPinyinCase"
+                                  SelectedIndex="0"
+                                  Margin="6,0,0,0"
+                                  MinWidth="112"
+                                  VerticalAlignment="Center"
+                                  Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                            <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
+                            <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
+                        </ComboBox>
 
-            <GroupBox Header="{DynamicResource RuleCfg_Case_ExtensionGroup}">
-                <StackPanel Margin="8,6">
-                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" VerticalContentAlignment="Center"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
-    </ScrollViewer>
+                        <ComboBox Grid.Column="2"
+                                  x:Name="cmbPinyinAction"
+                                  SelectedIndex="0"
+                                  Margin="6,0,0,0"
+                                  MinWidth="112"
+                                  VerticalAlignment="Center"
+                                  Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                            <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinInsert}"/>
+                            <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinReplace}"/>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="{DynamicResource RuleCfg_Case_ForceCaseGroup}">
+            <Grid Margin="6,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="118"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <CheckBox x:Name="chkPreserveCase"
+                          Grid.Row="0"
+                          Grid.ColumnSpan="2"
+                          Content="{DynamicResource Case_PreserveCase}"
+                          Margin="0,0,0,1"
+                          VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkForceCase"
+                          Grid.Row="1"
+                          Content="{DynamicResource Case_ForceCase}"
+                          VerticalContentAlignment="Center"/>
+                <TextBox x:Name="txtForceCase"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         VerticalContentAlignment="Center"
+                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_CaseForceCase}"/>
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="1"
+                           Text="{DynamicResource Case_ForceCaseHint}"
+                           TextWrapping="Wrap"
+                           Margin="0,1,0,0"
+                           Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="{DynamicResource RuleCfg_Case_ExtensionGroup}">
+            <Grid Margin="6,4">
+                <CheckBox x:Name="chkSkipExtension"
+                          Content="{DynamicResource Config_SkipExtension}"
+                          IsChecked="True"
+                          VerticalContentAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
 </UserControl>

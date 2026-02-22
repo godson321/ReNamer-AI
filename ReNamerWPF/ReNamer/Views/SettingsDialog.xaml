@@ -4,93 +4,123 @@
         Title="{DynamicResource Dialog_Settings}" Width="760" Height="620" MinWidth="680" MinHeight="540"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True" ResizeMode="CanResize"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource BackgroundBrush}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
 
-    <Grid Margin="12">
+    <Grid Margin="6">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl x:Name="tabSettings" Grid.Row="0">
-            <!-- General -->
-            <TabItem Header="{DynamicResource Tab_General}">
-                <StackPanel Margin="12">
-                    <TextBlock Text="{DynamicResource Settings_Startup}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <CheckBox x:Name="chkLoadLastPreset" Content="{DynamicResource Settings_LoadLastPreset}" Margin="0,4"/>
-                    <CheckBox x:Name="chkRememberWindowPos" Content="{DynamicResource Settings_RememberWindowPos}" IsChecked="True" Margin="0,4"/>
+        <Border
+                Style="{StaticResource EnterpriseDialogCardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <Separator Margin="0,12"/>
-                    <TextBlock Text="{DynamicResource Settings_Interface}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,4">
-                        <TextBlock Text="{DynamicResource Settings_Language}" Style="{StaticResource DialogLabelText}" Width="80"/>
-                        <ComboBox x:Name="cmbLanguage" Width="180">
-                            <ComboBoxItem Content="{DynamicResource Language_Chinese}" Tag="zh-CN"/>
-                            <ComboBoxItem Content="{DynamicResource Language_English}" Tag="en-US"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,4">
-                        <TextBlock Text="{DynamicResource Settings_Theme}" Style="{StaticResource DialogLabelText}" Width="80"/>
-                        <ComboBox x:Name="cmbTheme" Width="180">
-                            <ComboBoxItem Content="{DynamicResource Theme_Light}" Tag="Light"/>
-                            <ComboBoxItem Content="{DynamicResource Theme_Dark}" Tag="Dark"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <CheckBox x:Name="chkConfirmOnExit" Content="{DynamicResource Settings_ConfirmExit}" Margin="0,8"/>
-                    <CheckBox x:Name="chkShowInTaskbar" Content="{DynamicResource Settings_ShowInTray}" Margin="0,4"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+                    <Path Data="{DynamicResource Icon_Settings}" Width="14" Height="14" Fill="{DynamicResource InfoBrush}" Stretch="Uniform" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource Dialog_Configuration}" Style="{StaticResource DialogSectionHeaderText}" Margin="8,0,0,0"/>
                 </StackPanel>
-            </TabItem>
+                <Border Grid.Row="1" Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
 
-            <!-- Preview -->
-            <TabItem Header="{DynamicResource Tab_Preview}">
-                <StackPanel Margin="12">
-                    <TextBlock Text="{DynamicResource Settings_PreviewOptions}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <CheckBox x:Name="chkAutoPreview" Content="{DynamicResource Settings_AutoPreviewRules}" IsChecked="True" Margin="0,4"/>
-                    <CheckBox x:Name="chkPreviewOnFileAdd" Content="{DynamicResource Settings_AutoPreviewOnAdd}" Margin="0,4"/>
-                    <CheckBox x:Name="chkHighlightChanges" Content="{DynamicResource Settings_HighlightChanges}" IsChecked="True" Margin="0,4"/>
+                <TabControl x:Name="tabSettings" Grid.Row="2" BorderThickness="0" Background="Transparent">
+                    <!-- General -->
+                    <TabItem Header="{DynamicResource Tab_General}" Width="50">
+                        <StackPanel Margin="12">
+                            <TextBlock Text="{DynamicResource Settings_Startup}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <CheckBox x:Name="chkLoadLastPreset" Content="{DynamicResource Settings_LoadLastPreset}" Margin="0,4"/>
+                            <CheckBox x:Name="chkRememberWindowPos" Content="{DynamicResource Settings_RememberWindowPos}" IsChecked="True" Margin="0,4"/>
 
-                    <Separator Margin="0,12"/>
-                    <TextBlock Text="{DynamicResource Settings_Validation}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <CheckBox x:Name="chkAutoValidate" Content="{DynamicResource Settings_AutoValidate}" Margin="0,4"/>
-                    <CheckBox x:Name="chkWarnInvalidChars" Content="{DynamicResource Settings_WarnInvalidChars}" IsChecked="True" Margin="0,4"/>
-                    <CheckBox x:Name="chkWarnLongPaths" Content="{DynamicResource Settings_WarnLongPaths}" IsChecked="True" Margin="0,4"/>
+                            <Separator Margin="0,12"/>
+                            <TextBlock Text="{DynamicResource Settings_Interface}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4">
+                                <TextBlock Text="{DynamicResource Settings_Language}" Style="{StaticResource DialogLabelText}" Width="118"/>
+                                <ComboBox x:Name="cmbLanguage" Width="220" Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                                    <ComboBoxItem Content="{DynamicResource Language_Chinese}" Tag="zh-CN"/>
+                                    <ComboBoxItem Content="{DynamicResource Language_English}" Tag="en-US"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,4">
+                                <TextBlock Text="{DynamicResource Settings_Theme}" Style="{StaticResource DialogLabelText}" Width="118"/>
+                                <ComboBox x:Name="cmbTheme" Width="220" Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                                    <ComboBoxItem Content="{DynamicResource Theme_Light}" Tag="Light"/>
+                                    <ComboBoxItem Content="{DynamicResource Theme_Dark}" Tag="Dark"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <CheckBox x:Name="chkConfirmOnExit" Content="{DynamicResource Settings_ConfirmExit}" Margin="0,8"/>
+                            <CheckBox x:Name="chkShowInTaskbar" Content="{DynamicResource Settings_ShowInTray}" Margin="0,4"/>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- Preview -->
+                    <TabItem Header="{DynamicResource Tab_Preview}" Width="50">
+                        <StackPanel Margin="12">
+                            <TextBlock Text="{DynamicResource Settings_PreviewOptions}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <CheckBox x:Name="chkAutoPreview" Content="{DynamicResource Settings_AutoPreviewRules}" IsChecked="True" Margin="0,4"/>
+                            <CheckBox x:Name="chkPreviewOnFileAdd" Content="{DynamicResource Settings_AutoPreviewOnAdd}" Margin="0,4"/>
+                            <CheckBox x:Name="chkHighlightChanges" Content="{DynamicResource Settings_HighlightChanges}" IsChecked="True" Margin="0,4"/>
+
+                            <Separator Margin="0,12"/>
+                            <TextBlock Text="{DynamicResource Settings_Validation}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <CheckBox x:Name="chkAutoValidate" Content="{DynamicResource Settings_AutoValidate}" Margin="0,4"/>
+                            <CheckBox x:Name="chkWarnInvalidChars" Content="{DynamicResource Settings_WarnInvalidChars}" IsChecked="True" Margin="0,4"/>
+                            <CheckBox x:Name="chkWarnLongPaths" Content="{DynamicResource Settings_WarnLongPaths}" IsChecked="True" Margin="0,4"/>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- Rename -->
+                    <TabItem Header="{DynamicResource Tab_Rename}" Width="50">
+                        <StackPanel Margin="12">
+                            <TextBlock Text="{DynamicResource Settings_RenameOptions}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <CheckBox x:Name="chkConfirmRename" Content="{DynamicResource Settings_ConfirmRename}" IsChecked="True" Margin="0,4"/>
+                            <CheckBox x:Name="chkAutoRemoveRenamed" Content="{DynamicResource Settings_AutoRemoveRenamed}" Margin="0,4"/>
+                            <CheckBox x:Name="chkCreateUndoLog" Content="{DynamicResource Settings_CreateUndoLog}" IsChecked="True" Margin="0,4"/>
+
+                            <Separator Margin="0,12"/>
+                            <TextBlock Text="{DynamicResource Settings_ConflictResolution}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <RadioButton x:Name="rbConflictSkip" Content="{DynamicResource Settings_ConflictSkip}" IsChecked="True" Margin="0,4"/>
+                            <RadioButton x:Name="rbConflictAddSuffix" Content="{DynamicResource Settings_ConflictAddSuffix}" Margin="0,4"/>
+                            <RadioButton x:Name="rbConflictOverwrite" Content="{DynamicResource Settings_ConflictOverwrite}" Margin="0,4" Foreground="{DynamicResource SemanticErrorBrush}"/>
+
+                            <Separator Margin="0,12"/>
+                            <TextBlock Text="{DynamicResource Settings_MetaTags}" Style="{StaticResource DialogSectionHeaderText}"/>
+                            <CheckBox x:Name="chkResolveMetaTags" Content="{DynamicResource Settings_ResolveMetaTags}" IsChecked="True" Margin="0,4"/>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- Misc -->
+                    <TabItem Header="{DynamicResource Tab_Misc}" Width="50">
+                        <StackPanel Margin="12">
+                            <TextBlock Text="{DynamicResource Settings_MiscHint}" Style="{StaticResource DialogHintText}"/>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource EnterpriseDialogCardStyle}"
+                Padding="12"
+                Margin="0,12,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{DynamicResource Dialog_OK}" Margin="0,0,12,0" Click="OK_Click" IsDefault="True"
+                            Style="{StaticResource EnterpriseDialogPrimaryActionButtonStyle}"/>
+                    <Button Content="{DynamicResource Dialog_Cancel}" Click="Cancel_Click" IsCancel="True"
+                            Style="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}"/>
                 </StackPanel>
-            </TabItem>
-
-            <!-- Rename -->
-            <TabItem Header="{DynamicResource Tab_Rename}">
-                <StackPanel Margin="12">
-                    <TextBlock Text="{DynamicResource Settings_RenameOptions}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <CheckBox x:Name="chkConfirmRename" Content="{DynamicResource Settings_ConfirmRename}" IsChecked="True" Margin="0,4"/>
-                    <CheckBox x:Name="chkAutoRemoveRenamed" Content="{DynamicResource Settings_AutoRemoveRenamed}" Margin="0,4"/>
-                    <CheckBox x:Name="chkCreateUndoLog" Content="{DynamicResource Settings_CreateUndoLog}" IsChecked="True" Margin="0,4"/>
-
-                    <Separator Margin="0,12"/>
-                    <TextBlock Text="{DynamicResource Settings_ConflictResolution}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <RadioButton x:Name="rbConflictSkip" Content="{DynamicResource Settings_ConflictSkip}" IsChecked="True" Margin="0,4"/>
-                    <RadioButton x:Name="rbConflictAddSuffix" Content="{DynamicResource Settings_ConflictAddSuffix}" Margin="0,4"/>
-                    <RadioButton x:Name="rbConflictOverwrite" Content="{DynamicResource Settings_ConflictOverwrite}" Margin="0,4" Foreground="{DynamicResource SemanticErrorBrush}"/>
-
-                    <Separator Margin="0,12"/>
-                    <TextBlock Text="{DynamicResource Settings_MetaTags}" Style="{StaticResource DialogSectionHeaderText}"/>
-                    <CheckBox x:Name="chkResolveMetaTags" Content="{DynamicResource Settings_ResolveMetaTags}" IsChecked="True" Margin="0,4"/>
-                </StackPanel>
-            </TabItem>
-
-            <!-- Misc -->
-            <TabItem Header="{DynamicResource Tab_Misc}">
-                <StackPanel Margin="12">
-                    <TextBlock Text="{DynamicResource Settings_MiscHint}" Style="{StaticResource DialogHintText}"/>
-                </StackPanel>
-            </TabItem>
-        </TabControl>
-
-        <!-- Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="{DynamicResource Dialog_OK}" Width="90" Margin="0,0,8,0" Click="OK_Click" IsDefault="True"
-                    Style="{StaticResource PrimaryButtonStyle}"/>
-            <Button Content="{DynamicResource Dialog_Cancel}" Width="90" Click="Cancel_Click" IsCancel="True"
-                    Style="{StaticResource SecondaryButtonStyle}"/>
-        </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
