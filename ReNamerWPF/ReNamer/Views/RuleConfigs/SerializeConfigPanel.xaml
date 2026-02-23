@@ -50,8 +50,8 @@
                 <controls:NumericUpDown x:Name="nudPadLength" Grid.Row="6" Grid.Column="1" Width="80" MinValue="0" MaxValue="999999" Value="1" HorizontalAlignment="Right"/>
 
                 <TextBlock Grid.Row="8" Text="{DynamicResource Serialize_NumberingSystem}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                <ComboBox x:Name="cmbNumberingSystem" Grid.Row="8" Grid.Column="1" MinWidth="170" HorizontalAlignment="Stretch"/>
-                <TextBlock Grid.Row="10" Text="{DynamicResource Serialize_CustomSymbols}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="cmbNumberingSystem" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock Grid.Row="10" Text="{DynamicResource Serialize_CustomSymbols}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center" Width="auto"/>
                 <TextBox x:Name="txtCustomSymbols" Grid.Row="10" Grid.Column="1"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_SerializeCustomSymbols}"/>
             </Grid>

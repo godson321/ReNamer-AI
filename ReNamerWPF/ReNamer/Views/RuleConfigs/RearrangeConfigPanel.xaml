@@ -14,34 +14,13 @@
              HorizontalAlignment="Stretch"
              Background="{DynamicResource CardBrush}">
     <StackPanel Margin="6">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <!-- Split mode -->
-            <TextBlock Grid.Row="0" Grid.Column="0"
-                       Text="{DynamicResource RuleCfg_Rearrange_SplitUsing}"
-                       Style="{DynamicResource FormLabelStyle}"
-                       VerticalAlignment="Top"
-                       Margin="0,3,0,0"/>
-            <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
+        <GroupBox Header="{DynamicResource RuleCfg_Rearrange_SplitUsing}" Margin="0,0,0,6">
+            <Grid Margin="6,4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="6"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -60,102 +39,137 @@
                 <TextBlock Grid.Row="0"
                            Grid.Column="2"
                            Text="{DynamicResource RuleCfg_Rearrange_SplitHint_Delimiters}"
-                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
                            Style="{DynamicResource DialogHintText}"/>
 
                 <RadioButton x:Name="rbPositions"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Margin="0,4,0,4"
+                             Content="{DynamicResource RuleCfg_Rearrange_Positions}"
+                             GroupName="Split"
+                             VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="2"
+                           Margin="0,4,0,0"
+                           Text="{DynamicResource RuleCfg_Rearrange_SplitHint_Positions}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           Style="{DynamicResource DialogHintText}"/>
+
+                <RadioButton x:Name="rbExact"
                              Grid.Row="2"
                              Grid.Column="0"
-                             Content="{DynamicResource RuleCfg_Rearrange_Positions}"
+                             Margin="0,4,0,4"
+                             Content="{DynamicResource RuleCfg_Rearrange_ExactPattern}"
                              GroupName="Split"
                              VerticalContentAlignment="Center"/>
                 <TextBlock Grid.Row="2"
                            Grid.Column="2"
-                           Text="{DynamicResource RuleCfg_Rearrange_SplitHint_Positions}"
-                           TextWrapping="Wrap" VerticalAlignment="Center"
-                           Style="{DynamicResource DialogHintText}"/>
-
-                <RadioButton x:Name="rbExact"
-                             Grid.Row="4"
-                             Grid.Column="0"
-                             Content="{DynamicResource RuleCfg_Rearrange_ExactPattern}"
-                             GroupName="Split"
-                             VerticalContentAlignment="Center"/>
-                <TextBlock Grid.Row="4"
-                           Grid.Column="2"
+                           Margin="0,4,0,0"
                            Text="{DynamicResource RuleCfg_Rearrange_SplitHint_ExactPattern}"
-                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
                            Style="{DynamicResource DialogHintText}"/>
-            </Grid>
 
-            <!-- Delimiters -->
-            <TextBlock Grid.Row="1" Grid.Column="0"
+                <Grid Grid.Row="3" Grid.ColumnSpan="3" Margin="0,6,6,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Margin="0,6,0,0"
                        Text="{DynamicResource RuleCfg_Rearrange_Delimiters}"
                        Style="{DynamicResource FormLabelStyle}"
                        VerticalAlignment="Center"/>
-            <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="txtDelimiters"
-                         Grid.Column="0"
-                         VerticalAlignment="Center"
-                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeDelimiters}"/>
-                <Button x:Name="btnDelimSeparator"
-                        Grid.Column="2"
-                        Content="{DynamicResource RuleCfg_Rearrange_Separator}"
-                        FontSize="11"
-                        Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3"
-                        Width="80"
-                        ToolTip="{DynamicResource RuleCfg_Rearrange_SeparatorTip}"
-                        Click="BtnDelimSeparator_Click"
-                        Focusable="False"
-                        IsTabStop="False"/>
-            </Grid>
+                    <TextBox x:Name="txtDelimiters"
+                     Grid.Row="0"
+                     Grid.Column="2"
+                     Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                     VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeDelimiters}"/>
+                    <Button x:Name="btnDelimSeparator"
+                    Grid.Row="0"
+                    Grid.Column="4"
+                    Width="28"
+                    Height="28"
+                    Padding="0"
+                    ToolTip="{DynamicResource RuleCfg_Rearrange_SeparatorTip}"
+                    Click="BtnDelimSeparator_Click"
+                    Focusable="False"
+                    IsTabStop="False">
+                        <Path Data="{StaticResource Icon_Columns}"
+                      Fill="{DynamicResource TextSecondaryBrush}"
+                      Width="14"
+                      Height="14"
+                      Stretch="Uniform"/>
+                    </Button>
 
-            <!-- New pattern -->
-            <TextBlock Grid.Row="2" Grid.Column="0"
+                    <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="0,6,0,0"
                        Text="{DynamicResource RuleCfg_Rearrange_NewPattern}"
                        Style="{DynamicResource FormLabelStyle}"
                        VerticalAlignment="Center"/>
-            <Grid Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,8">
+                    <TextBox x:Name="txtNewPattern"
+                     Grid.Row="1"
+                     Grid.Column="2"
+                     Margin="0,6,0,0"
+                     Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                     VerticalAlignment="Center"
+                     helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeNewPattern}"/>
+                    <Button x:Name="btnPatternMetaTag"
+                    Grid.Row="1"
+                    Grid.Column="4"
+                    Margin="0,6,0,0"
+                    Width="28"
+                    Height="28"
+                    Padding="0"
+                    ToolTip="{DynamicResource RuleCfg_Rearrange_MetaTagTip}"
+                    Click="BtnPatternMetaTag_Click"
+                    Focusable="False"
+                    IsTabStop="False">
+                        <Path Data="{StaticResource Icon_Options}"
+                      Fill="{DynamicResource TextSecondaryBrush}"
+                      Width="14"
+                      Height="14"
+                      Stretch="Uniform"/>
+                    </Button>
+                </Grid>
+
+                <TextBlock Margin="20,6,6,6" Grid.Row="4" Grid.ColumnSpan="3" 
+                   TextWrapping="Wrap"
+                   Text="{DynamicResource RuleCfg_Rearrange_Hint}"
+                   Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
+            <Grid Margin="6,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="txtNewPattern"
-                         Grid.Column="0"
-                         VerticalAlignment="Center"
-                         helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeNewPattern}"/>
-                <Button x:Name="btnPatternMetaTag"
-                        Grid.Column="2"
-                        Content="{DynamicResource RuleCfg_Rearrange_MetaTag}"
-                        FontSize="11"
-                        Style="{DynamicResource SecondaryButtonStyle}"
-                        Padding="8,3"
-                        Width="80"
-                        ToolTip="{DynamicResource RuleCfg_Rearrange_MetaTagTip}"
-                        Click="BtnPatternMetaTag_Click"
-                        Focusable="False"
-                        IsTabStop="False"/>
+                <CheckBox x:Name="chkSkipExtension"
+                          Grid.Column="0"
+                          Content="{DynamicResource Config_SkipExtension}"
+                          IsChecked="True"
+                          VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkRightToLeft"
+                          Grid.Column="1"
+                          Content="{DynamicResource Config_RightToLeft}"
+                          VerticalContentAlignment="Center"/>
             </Grid>
-
-            <!-- Hint -->
-            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3"
-                       Margin="0,0,0,8"
-                       TextWrapping="Wrap"
-                       Text="{DynamicResource RuleCfg_Rearrange_Hint}"
-                       Style="{DynamicResource DialogHintText}"/>
-
-            <!-- Options -->
-            <StackPanel Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" Orientation="Horizontal">
-                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,0,24,0" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="chkRightToLeft" Content="{DynamicResource Config_RightToLeft}" VerticalContentAlignment="Center"/>
-            </StackPanel>
-        </Grid>
+        </GroupBox>
     </StackPanel>
 </UserControl>

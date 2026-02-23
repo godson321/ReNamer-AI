@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         
         <!-- 上半部分：左右分栏 -->
-        <Grid Grid.Row="0" Margin="0,0,0,12">
+        <Grid Grid.Row="0" Margin="0,0,0,6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="12"/>

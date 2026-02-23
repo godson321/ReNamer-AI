@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Padding 面板 5 方案预览（520x360）</title>
+  <style>
+    :root {
+      --bg: #f3f5f7;
+      --card: #ffffff;
+      --line: #d8dde6;
+      --text: #1f2937;
+      --muted: #64748b;
+      --brand: #1677c8;
+      --brand-soft: #e8f2fb;
+      --ok: #0f766e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+    .head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .head h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .tag {
+      font-size: 12px;
+      color: var(--ok);
+      background: #e9faf5;
+      border: 1px solid #bde7db;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .tip {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #334155;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn.active {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: #0f4f86;
+      font-weight: 600;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 560px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .panel-wrap {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, .05);
+    }
+    .frame-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .frame {
+      width: 520px;
+      height: 360px;
+      border: 1px dashed #9fb2c8;
+      background: #f8fafc;
+      border-radius: 10px;
+      overflow: auto;
+      padding: 6px;
+      position: relative;
+    }
+    .variant {
+      display: none;
+      height: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .variant.active { display: block; }
+    .gb {
+      border: 1px solid #d6dce5;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+    .gb h3 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      color: #334155;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .label {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ctrl {
+      min-width: 84px;
+      height: 28px;
+      border: 1px solid #bcc6d3;
+      border-radius: 6px;
+      background: #fff;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+    .text {
+      height: 28px;
+      border: 1px solid #bcc6d3;
+      border-radius: 6px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      color: #64748b;
+      font-size: 13px;
+      min-width: 180px;
+    }
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+    }
+    .mini h2 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+    .mini p {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .score {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 8px;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .meter {
+      height: 8px;
+      border-radius: 999px;
+      background: #e8edf3;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .meter > i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #1d7bc6, #5ca7df);
+    }
+    .s-note {
+      margin-top: 8px;
+      padding: 8px;
+      font-size: 12px;
+      color: #155e75;
+      background: #ecfeff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+    }
+    .two-line { white-space: normal; line-height: 1.3; }
+    .tight .row { margin-bottom: 4px; }
+    .line3 {
+      display: grid;
+      grid-template-columns: 118px 1fr 84px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 2px;
+    }
+    @media (max-width: 1080px) {
+      .layout { grid-template-columns: 1fr; }
+      .panel-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>Padding 面板 5 方案（可视化按 520x360）</h1>
+      <span class="tag">1:1 尺寸预览</span>
+    </div>
+    <p class="tip">重点：`NumericUpDown` 与对应开关的距离已压缩，避免“控件离太远”。点击下方方案切换预览。</p>
+
+    <div class="toolbar">
+      <button class="btn active" data-v="a">方案 A（稳妥）</button>
+      <button class="btn" data-v="b">方案 B（标签列）</button>
+      <button class="btn" data-v="c">方案 C（紧凑）</button>
+      <button class="btn" data-v="d">方案 D（双栏）</button>
+      <button class="btn" data-v="e">方案 E（最企业）</button>
+    </div>
+
+    <div class="layout">
+      <div class="panel-wrap">
+        <div class="frame-title">
+          <span>嵌入父容器可视区</span>
+          <strong>520 x 360</strong>
+        </div>
+        <div class="frame">
+          <section id="v-a" class="variant active">
+            <div class="gb">
+              <h3>数字序列</h3>
+              <div class="row">
+                <div class="label">补零到长度</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="label">移除前导零</div>
+            </div>
+            <div class="gb">
+              <h3>文本填充</h3>
+              <div class="row">
+                <div class="label">填充到长度</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="line3">
+                <div class="label">填充字符</div>
+                <div class="text">请输入字符</div>
+                <div class="sub"></div>
+              </div>
+              <div class="line3">
+                <div class="label">位置</div>
+                <div class="label">● 左侧　○ 右侧</div>
+                <div class="sub"></div>
+              </div>
+            </div>
+            <div class="gb">
+              <h3>选项</h3>
+              <div class="label">☑ 忽略扩展名</div>
+            </div>
+          </section>
+
+          <section id="v-b" class="variant">
+            <div class="gb">
+              <h3>数字序列</h3>
+              <div class="line3">
+                <div class="label">补零到长度</div>
+                <div class="sub">值</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="label">☐ 移除前导零</div>
+            </div>
+            <div class="gb">
+              <h3>文本填充</h3>
+              <div class="line3">
+                <div class="label">填充到长度</div>
+                <div class="sub">值</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="line3">
+                <div class="label">填充字符</div>
+                <div class="text">例如：0 或 _</div>
+                <div class="sub"></div>
+              </div>
+              <div class="line3">
+                <div class="label">位置</div>
+                <div class="label">● 左侧　○ 右侧</div>
+                <div class="sub"></div>
+              </div>
+            </div>
+            <div class="gb"><div class="label">☑ 忽略扩展名</div></div>
+          </section>
+
+          <section id="v-c" class="variant tight">
+            <div class="gb">
+              <h3>数字序列</h3>
+              <div class="row">
+                <div class="label">☑ 补零到长度</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="label">☐ 移除前导零</div>
+            </div>
+            <div class="gb">
+              <h3>文本填充</h3>
+              <div class="row">
+                <div class="label">☑ 填充到长度</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="row">
+                <div class="label">填充字符</div>
+                <div class="text">...</div>
+              </div>
+              <div class="row">
+                <div class="label">位置</div>
+                <div class="label">● 左侧　○ 右侧</div>
+              </div>
+            </div>
+            <div class="gb"><div class="label">☑ 忽略扩展名</div></div>
+          </section>
+
+          <section id="v-d" class="variant">
+            <div class="cols">
+              <div class="gb">
+                <h3>数字序列</h3>
+                <div class="row">
+                  <div class="label">补零到长度</div>
+                  <div class="ctrl">[ NUD ]</div>
+                </div>
+                <div class="label">☐ 移除前导零</div>
+              </div>
+              <div class="gb">
+                <h3>选项</h3>
+                <div class="label two-line">☑ 忽略扩展名</div>
+              </div>
+            </div>
+            <div class="gb">
+              <h3>文本填充</h3>
+              <div class="row">
+                <div class="label">填充到长度</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="line3">
+                <div class="label">填充字符</div>
+                <div class="text">可输入多个字符</div>
+                <div></div>
+              </div>
+              <div class="line3">
+                <div class="label">位置</div>
+                <div class="label">● 左侧　○ 右侧</div>
+                <div></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="v-e" class="variant">
+            <div class="gb">
+              <h3>数字序列</h3>
+              <div class="line3">
+                <div class="label">补零到长度</div>
+                <div class="sub">启用时生效</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="line3">
+                <div class="label">移除前导零</div>
+                <div class="sub">布尔选项</div>
+                <div class="label">☐</div>
+              </div>
+            </div>
+            <div class="gb">
+              <h3>文本填充</h3>
+              <div class="line3">
+                <div class="label">填充到长度</div>
+                <div class="sub">启用时生效</div>
+                <div class="ctrl">[ NUD ]</div>
+              </div>
+              <div class="line3">
+                <div class="label">填充字符</div>
+                <div class="text">输入字符，如 0、_、*</div>
+                <div></div>
+              </div>
+              <div class="line3">
+                <div class="label">位置</div>
+                <div class="label">● 左侧　○ 右侧</div>
+                <div></div>
+              </div>
+            </div>
+            <div class="gb"><div class="label">☑ 忽略扩展名</div></div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="mini">
+        <h2 id="meta-title">方案 A（稳妥）</h2>
+        <p id="meta-desc">最接近当前实现，但把 NUD 放到同一行紧邻右侧，改动风险最低。</p>
+        <div class="score">
+          <div>紧凑度</div>
+          <div><div class="meter"><i id="s1" style="width:72%"></i></div></div>
+          <div>可读性</div>
+          <div><div class="meter"><i id="s2" style="width:86%"></i></div></div>
+          <div>改造成本</div>
+          <div><div class="meter"><i id="s3" style="width:30%"></i></div></div>
+        </div>
+        <div class="s-note">建议先选 A 或 E。A 风险最小，E 对齐最企业化。</div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      a: { t: "方案 A（稳妥）", d: "最接近当前实现，但把 NUD 放到同一行紧邻右侧，改动风险最低。", s: [72, 86, 30] },
+      b: { t: "方案 B（标签列）", d: "采用 118 标签列 + 84 数值列，表单感最强，对齐稳定。", s: [75, 90, 45] },
+      c: { t: "方案 C（紧凑）", d: "密度最高，空间利用率最好，适合避免滚动条。", s: [92, 72, 40] },
+      d: { t: "方案 D（双栏）", d: "左侧主要设置、右侧选项，信息分区明确但视觉变化较大。", s: [78, 82, 55] },
+      e: { t: "方案 E（最企业）", d: "统一行式规范，标签-说明-控件三段式，审美最企业化。", s: [80, 91, 58] }
+    };
+
+    const btns = document.querySelectorAll(".btn");
+    const panels = document.querySelectorAll(".variant");
+    const mt = document.getElementById("meta-title");
+    const md = document.getElementById("meta-desc");
+    const s1 = document.getElementById("s1");
+    const s2 = document.getElementById("s2");
+    const s3 = document.getElementById("s3");
+
+    function setVariant(k) {
+      btns.forEach(b => b.classList.toggle("active", b.dataset.v === k));
+      panels.forEach(p => p.classList.toggle("active", p.id === "v-" + k));
+      mt.textContent = data[k].t;
+      md.textContent = data[k].d;
+      s1.style.width = data[k].s[0] + "%";
+      s2.style.width = data[k].s[1] + "%";
+      s3.style.width = data[k].s[2] + "%";
+    }
+
+    btns.forEach(b => b.addEventListener("click", () => setVariant(b.dataset.v)));
+  </script>
+</body>
+</html>

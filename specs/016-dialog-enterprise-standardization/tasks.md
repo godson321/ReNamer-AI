@@ -57,12 +57,12 @@
 - [x] T016 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/DeleteConfigPanel.xaml`
 - [x] T017 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/InsertConfigPanel.xaml`
 - [x] T018 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/JavaScriptConfigPanel.xaml`
-- [ ] T019 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
-- [ ] T020 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
-- [ ] T021 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
-- [ ] T022 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
-- [ ] T023 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
-- [ ] T024 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
+- [x] T019 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/MappingConfigPanel.xaml`
+- [x] T020 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/PaddingConfigPanel.xaml`
+- [x] T021 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RandomizeConfigPanel.xaml`
+- [x] T022 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
+- [x] T023 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
+- [x] T024 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
 - [ ] T025 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReplaceConfigPanel.xaml`
 - [ ] T026 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
 - [ ] T027 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`

@@ -37,7 +37,7 @@
 - 当用户要求“设计页面/界面”时：
   - CS 项目优先使用 `interface-design`
   - BS 项目优先使用 `ui-ux-pro-max` 或 `ui-designer`
-- 对话框企业化改造的后续页面统一要求：最外层根容器使用紧凑间距（`Margin="6"`）
+- 规则面板（`UserControl`）中第一个布局容器（如 `StackPanel` / `Grid`）统一使用 `Margin="6"`，作为默认内容内边距基线
 - 过滤器/对话框企业化统一规则（可复用到各规则面板）：
   - 布局骨架统一为“顶部说明卡 + 中部内容卡 + 底部操作卡”，不使用 Tab 作为主结构
   - 卡片样式统一使用 `EnterpriseDialogCardStyle`（`DynamicResource` 主题资源、统一圆角/边框/内边距）

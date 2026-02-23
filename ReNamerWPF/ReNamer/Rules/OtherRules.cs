@@ -646,6 +646,11 @@ public class RegexRule : RuleBase
     public string ReplaceText { get; set; } = "";
     public bool CaseSensitive { get; set; } = false;
     public bool SkipExtension { get; set; } = true;
+    public bool ReplaceFirstOnly { get; set; } = false;
+    public bool Multiline { get; set; } = false;
+    public bool Singleline { get; set; } = false;
+    public bool IgnorePatternWhitespace { get; set; } = false;
+    public bool CultureInvariant { get; set; } = false;
 
     public override string RuleName => "Regular Expressions";
     public override string Description => $"Regex: {Expression} → {ReplaceText}";
@@ -656,8 +661,18 @@ public class RegexRule : RuleBase
         var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         try
         {
-            var opt = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-            return new Regex(Expression, opt).Replace(baseName, ReplaceText) + ext;
+            var opt = RegexOptions.None;
+            if (!CaseSensitive) opt |= RegexOptions.IgnoreCase;
+            if (Multiline) opt |= RegexOptions.Multiline;
+            if (Singleline) opt |= RegexOptions.Singleline;
+            if (IgnorePatternWhitespace) opt |= RegexOptions.IgnorePatternWhitespace;
+            if (CultureInvariant) opt |= RegexOptions.CultureInvariant;
+
+            var regex = new Regex(Expression, opt);
+            var result = ReplaceFirstOnly
+                ? regex.Replace(baseName, ReplaceText, 1)
+                : regex.Replace(baseName, ReplaceText);
+            return result + ext;
         }
         catch { return fileName; }
     }

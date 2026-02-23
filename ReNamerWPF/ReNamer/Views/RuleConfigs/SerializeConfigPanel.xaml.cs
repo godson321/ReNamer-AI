@@ -14,6 +14,8 @@ public partial class SerializeConfigPanel : UserControl, IRuleConfigPanel
     {
         public string Value { get; init; } = string.Empty;
         public string Display { get; init; } = string.Empty;
+
+        public override string ToString() => Display;
     }
 
     private static readonly (string Value, string Key)[] NumberingSystemOptions =

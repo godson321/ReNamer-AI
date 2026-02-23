@@ -15,61 +15,107 @@
              HorizontalAlignment="Stretch"
              Background="{DynamicResource CardBrush}">
     <StackPanel Margin="6">
-        <GroupBox Header="{DynamicResource RuleCfg_Padding_NumberSequences}" Margin="0,0,0,16" HorizontalAlignment="Stretch">
-            <StackPanel Margin="8,6">
-                <Grid Margin="0,0,0,8">
+        <GroupBox Header="{DynamicResource RuleCfg_Padding_NumberSequences}" Margin="0,0,0,6">
+            <Grid Margin="6,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="8"/>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="84"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="chkAddZeroPadding" Content="{DynamicResource RuleCfg_Padding_AddZeroPadding}" VerticalContentAlignment="Center"/>
-                    <controls:NumericUpDown x:Name="nudZeroPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
-                                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="chkAddZeroPadding"
+                              Grid.Column="0"
+                              Content="{DynamicResource RuleCfg_Padding_AddZeroPadding}"
+                              VerticalContentAlignment="Center"/>
+                    <controls:NumericUpDown x:Name="nudZeroPadLength"
+                                            Grid.Column="2"
+                                            MinValue="1"
+                                            MaxValue="260"
+                                            Value="1"
+                                            Height="28"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"/>
                 </Grid>
-                <CheckBox x:Name="chkRemoveZeroPadding" Content="{DynamicResource RuleCfg_Padding_RemoveZeroPadding}" VerticalContentAlignment="Center"/>
-            </StackPanel>
+
+                <CheckBox x:Name="chkRemoveZeroPadding"
+                          Grid.Row="1"
+                          Margin="0,4,0,0"
+                          Content="{DynamicResource RuleCfg_Padding_RemoveZeroPadding}"
+                          VerticalContentAlignment="Center"/>
+            </Grid>
         </GroupBox>
-        <GroupBox Header="{DynamicResource RuleCfg_Padding_TextPadding}" Margin="0,0,0,16" HorizontalAlignment="Stretch">
-            <StackPanel Margin="8,6">
-                <Grid Margin="0,0,0,8">
+
+        <GroupBox Header="{DynamicResource RuleCfg_Padding_TextPadding}" Margin="0,0,0,6">
+            <Grid Margin="6,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="8"/>
-                        <ColumnDefinition Width="80"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="chkAddTextPadding" Content="{DynamicResource RuleCfg_Padding_AddTextPadding}" VerticalContentAlignment="Center"/>
-                    <controls:NumericUpDown x:Name="nudTextPadLength" Grid.Column="2" Width="80" MinValue="1" MaxValue="260" Value="1"
-                                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{DynamicResource RuleCfg_Padding_PaddingChars}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                    <TextBox x:Name="txtPadChars" Grid.Column="2" VerticalAlignment="Center"
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="chkAddTextPadding"
+                              Grid.Column="0"
+                              Content="{DynamicResource RuleCfg_Padding_AddTextPadding}"
+                              VerticalContentAlignment="Center"/>
+                    <controls:NumericUpDown x:Name="nudTextPadLength"
+                                            Grid.Column="2"
+                                            MinValue="1"
+                                            MaxValue="260"
+                                            Value="1"
+                                            Height="28"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"/>
+                    <TextBox x:Name="txtPadChars"
+                             Grid.Column="4"
+                             VerticalAlignment="Center"
+                             Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_PaddingChars}"/>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="8"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{DynamicResource RuleCfg_Padding_Position}" Style="{DynamicResource FormLabelStyle}" VerticalAlignment="Center"/>
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <RadioButton x:Name="rbLeft" Content="{DynamicResource RuleCfg_Padding_Left}" GroupName="PadPos" IsChecked="True" Margin="0,0,12,0" VerticalContentAlignment="Center"/>
-                        <RadioButton x:Name="rbRight" Content="{DynamicResource RuleCfg_Padding_Right}" GroupName="PadPos" VerticalContentAlignment="Center"/>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Margin="6,6,0,6"
+                               Text="{DynamicResource RuleCfg_Padding_Position}"
+                               Style="{DynamicResource FormLabelStyle}"
+                               VerticalAlignment="Center" HorizontalAlignment="Right" TextAlignment="Right"/>
+                    <StackPanel Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="3"
+                                Orientation="Horizontal"  Margin="0,6,6,6"
+                                VerticalAlignment="Center">
+                        <RadioButton x:Name="rbLeft" Grid.Row="1"
+                                     Content="{DynamicResource RuleCfg_Padding_Left}"
+                                     GroupName="PadPos"
+                                     IsChecked="True"
+                                     Margin="0,0,12,0"
+                                     VerticalContentAlignment="Center"/>
+                        <RadioButton x:Name="rbRight"
+                                     Content="{DynamicResource RuleCfg_Padding_Right}"
+                                     GroupName="PadPos"
+                                     VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </Grid>
-            </StackPanel>
+            </Grid>
         </GroupBox>
+
         <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
-            <StackPanel Margin="8,6">
-                <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" VerticalContentAlignment="Center"/>
-            </StackPanel>
+            <Grid Margin="6,4">
+                <CheckBox x:Name="chkSkipExtension"
+                          Content="{DynamicResource Config_SkipExtension}"
+                          IsChecked="True"
+                          VerticalContentAlignment="Center"/>
+            </Grid>
         </GroupBox>
     </StackPanel>
 </UserControl>
