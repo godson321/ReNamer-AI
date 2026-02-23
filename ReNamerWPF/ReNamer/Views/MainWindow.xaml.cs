@@ -613,7 +613,11 @@ public partial class MainWindow : Window
             changed |= file.SetMarkedSilently(isMarkedSelector(file));
 
         if (changed)
+        {
             lvFiles.Items.Refresh();
+            if (Rules.Count > 0 && _appSettings.AutoPreview)
+                _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
+        }
 
         UpdateStatusBar();
     }
@@ -1569,6 +1573,7 @@ public partial class MainWindow : Window
     private void FileCheckBox_Click(object sender, RoutedEventArgs e)
     {
         UpdateStatusBar();
+        AutoPreviewIfEnabled(sender, e);
     }
 
     private void FileHeaderCheckBox_Click(object sender, RoutedEventArgs e)
@@ -1654,6 +1659,7 @@ public partial class MainWindow : Window
 
         Files.Move(oldIndex, newIndex);
         lvFiles.SelectedItem = dragged;
+        AutoPreviewIfEnabled(sender, new RoutedEventArgs());
     }
 
     private RenFile? GetFileAtPoint(Point point)
@@ -1776,6 +1782,7 @@ public partial class MainWindow : Window
         {
             Files.Move(index, index - 1);
             lvFiles.SelectedIndex = index - 1;
+            AutoPreviewIfEnabled(sender, e);
         }
     }
 
@@ -1786,6 +1793,7 @@ public partial class MainWindow : Window
         {
             Files.Move(index, index + 1);
             lvFiles.SelectedIndex = index + 1;
+            AutoPreviewIfEnabled(sender, e);
         }
     }
 
@@ -1905,6 +1913,12 @@ public partial class MainWindow : Window
         if (showWarningDialog && !string.IsNullOrWhiteSpace(warningMessage))
         {
             MessageBox.Show(warningMessage, "Preset Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        // 预设加载后立即重算文件表格预览，避免 UI 仍显示旧规则结果。
+        if (Files.Count > 0)
+        {
+            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: 0);
         }
     }
 
@@ -2168,6 +2182,9 @@ public partial class MainWindow : Window
                           .ToList();
         Files.Clear();
         foreach (var f in sorted) Files.Add(f);
+
+        if (Rules.Count > 0 && _appSettings.AutoPreview)
+            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
     }
 
     private void Analyze_Click(object sender, RoutedEventArgs e)
@@ -2353,6 +2370,7 @@ public partial class MainWindow : Window
         {
             var idx = Math.Max(0, lvRules.SelectedIndex);
             Rules.Insert(idx, dialog.SelectedRule);
+            AutoPreviewIfEnabled(sender, e);
         }
     }
 
@@ -2363,6 +2381,7 @@ public partial class MainWindow : Window
         {
             var idx = lvRules.SelectedIndex < 0 ? Rules.Count : lvRules.SelectedIndex + 1;
             Rules.Insert(idx, dialog.SelectedRule);
+            AutoPreviewIfEnabled(sender, e);
         }
     }
 
