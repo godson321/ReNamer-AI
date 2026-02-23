@@ -23,7 +23,7 @@
         <GroupBox Grid.Row="0" Header="{DynamicResource RuleCfg_Mapping_TableActions}" Margin="0,0,0,6">
             <Grid Margin="6,4">
                 <Grid.Resources>
-                    <Style x:Key="MappingActionButtonStyle" TargetType="Button" BasedOn="{StaticResource EnterpriseDialogSecondaryActionButtonStyle}">
+                    <Style x:Key="MappingActionButtonStyle" TargetType="Button" BasedOn="{DynamicResource EnterpriseDialogSecondaryActionButtonStyle}">
                         <Setter Property="MinWidth" Value="0"/>
                         <Setter Property="Padding" Value="8,5"/>
                         <Setter Property="FontSize" Value="12"/>

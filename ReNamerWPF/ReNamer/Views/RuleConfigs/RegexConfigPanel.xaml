@@ -21,13 +21,6 @@
         <GroupBox Grid.Row="0" Header="{DynamicResource Rule_RegEx}" Margin="0,0,0,6">
             <Grid Margin="6,4">
                 <Grid.Resources>
-                    <Style x:Key="RegexInlineActionButtonStyle" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
-                        <Setter Property="MinWidth" Value="0"/>
-                        <Setter Property="MinHeight" Value="28"/>
-                        <Setter Property="Padding" Value="10,4"/>
-                        <Setter Property="FontSize" Value="12"/>
-                        <Setter Property="FontWeight" Value="SemiBold"/>
-                    </Style>
                     <DataTemplate x:Key="RegexOptionWrapContentTemplate">
                         <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
                     </DataTemplate>
@@ -55,14 +48,14 @@
                 <TextBox x:Name="txtExpression"
                          Grid.Row="0"
                          Grid.Column="2"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          VerticalAlignment="Center"
                          TextChanged="PreviewTextChanged"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexExpression}"/>
                 <Button x:Name="btnInsertExpr"
                         Grid.Row="0"
                         Grid.Column="4"
-                        Style="{StaticResource RegexInlineActionButtonStyle}"
+                        Style="{DynamicResource RulePanelInlineActionButtonStyle}"
                         Content="{DynamicResource Regex_InsertExpression}"
                         Click="BtnInsertExpr_Click"
                         Focusable="False"
@@ -78,7 +71,7 @@
                          Grid.Row="1"
                          Grid.Column="2"
                          Margin="0,6,0,0"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          VerticalAlignment="Center"
                          TextChanged="PreviewTextChanged"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RegexReplace}"/>
@@ -87,7 +80,7 @@
                         Grid.Column="4"
                         Margin="0,6,0,0"
                         ToolTip="{DynamicResource Regex_Help_Tooltip}"
-                        Style="{StaticResource RegexInlineActionButtonStyle}"
+                        Style="{DynamicResource RulePanelInlineActionButtonStyle}"
                         Content="{DynamicResource Regex_Help}"
                         Click="BtnHelp_Click"
                         Focusable="False"
@@ -104,7 +97,7 @@
                           Grid.Column="2"
                           Grid.ColumnSpan="3"
                           Margin="0,6,0,0"
-                          Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                          Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                           SelectionChanged="PreviewModeChanged"
                           SelectedIndex="0"
                           VerticalAlignment="Center">
@@ -195,7 +188,7 @@
                 <TextBox x:Name="txtSampleInput"
                          Grid.Row="0"
                          Grid.Column="2"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          VerticalAlignment="Center"
                          TextChanged="PreviewTextChanged"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource Regex_TestInput_Placeholder}"/>
@@ -210,7 +203,7 @@
                          Grid.Row="1"
                          Grid.Column="2"
                          Margin="0,6,0,0"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          VerticalAlignment="Center"
                          IsReadOnly="True"/>
 
@@ -232,11 +225,11 @@
                               Grid.Column="0"
                               MinWidth="118"
                               MaxWidth="156"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                               SelectionChanged="CmbGroupSelector_SelectionChanged"/>
                     <TextBox x:Name="txtGroupValue"
                              Grid.Column="2"
-                             Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                             Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                              IsReadOnly="True"/>
                 </Grid>
 

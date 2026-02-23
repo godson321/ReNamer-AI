@@ -92,7 +92,7 @@
                          Grid.ColumnSpan="3"
                          Margin="0,4,0,0"
                          VerticalAlignment="Center"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Randomize_CharactersHint}"/>
             </Grid>
         </GroupBox>

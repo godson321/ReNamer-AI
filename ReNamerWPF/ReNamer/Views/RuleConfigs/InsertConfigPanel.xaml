@@ -23,7 +23,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox x:Name="txtInsert"
                          Grid.Column="0"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_InsertText}"/>
                 <Button x:Name="btnMetaTag"
                         Grid.Column="1"
@@ -84,7 +84,7 @@
                     <TextBox x:Name="txtAfterText"
                              Grid.Column="1"
                              Margin="8,0,0,0"
-                             Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                             Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_InsertAfterText}"/>
                 </Grid>
 
@@ -101,7 +101,7 @@
                     <TextBox x:Name="txtBeforeText"
                              Grid.Column="1"
                              Margin="8,0,0,0"
-                             Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                             Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_InsertBeforeText}"/>
                 </Grid>
 

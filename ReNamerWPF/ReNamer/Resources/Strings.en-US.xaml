@@ -896,7 +896,7 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">Strip all characters except selected</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">Alphabet</sys:String>
-    <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction:</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Direction">Direction</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Forward">Forward</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Backward">Backward</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_HintTitle">Hint:</sys:String>

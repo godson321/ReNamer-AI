@@ -95,7 +95,7 @@
                     <TextBox x:Name="txtDelimiters"
                      Grid.Row="0"
                      Grid.Column="2"
-                     Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                     Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                      VerticalAlignment="Center"
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeDelimiters}"/>
                     <Button x:Name="btnDelimSeparator"
@@ -125,7 +125,7 @@
                      Grid.Row="1"
                      Grid.Column="2"
                      Margin="0,6,0,0"
-                     Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                     Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                      VerticalAlignment="Center"
                      helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_RearrangeNewPattern}"/>
                     <Button x:Name="btnPatternMetaTag"

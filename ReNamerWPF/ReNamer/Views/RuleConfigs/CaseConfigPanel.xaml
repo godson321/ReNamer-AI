@@ -48,7 +48,7 @@
                     <TextBlock Text="{DynamicResource Case_Composite_FirstLetter}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
                     <ComboBox x:Name="cmbFirstMode"
                               SelectedIndex="0"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                               SelectionChanged="CmbFirstMode_SelectionChanged">
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
@@ -61,7 +61,7 @@
                     <TextBlock Text="{DynamicResource Case_Composite_RemainingLetters}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
                     <ComboBox x:Name="cmbRestMode"
                               SelectedIndex="0"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}">
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
                         <ComboBoxItem Content="{DynamicResource Case_Composite_AllUpper}"/>
                         <ComboBoxItem Content="{DynamicResource Case_Composite_AllLower}"/>
@@ -74,7 +74,7 @@
                     <TextBlock Text="{DynamicResource Case_Composite_Extension}" Style="{DynamicResource DialogLabelText}" Margin="0,0,0,4"/>
                     <ComboBox x:Name="cmbExtMode"
                               SelectedIndex="0"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}">
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Keep}"/>
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
                         <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
@@ -125,7 +125,7 @@
                                   Margin="6,0,0,0"
                                   MinWidth="112"
                                   VerticalAlignment="Center"
-                                  Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                                  Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}">
                             <ComboBoxItem Content="{DynamicResource Case_Composite_Upper}"/>
                             <ComboBoxItem Content="{DynamicResource Case_Composite_Lower}"/>
                         </ComboBox>
@@ -136,7 +136,7 @@
                                   Margin="6,0,0,0"
                                   MinWidth="112"
                                   VerticalAlignment="Center"
-                                  Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                                  Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}">
                             <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinInsert}"/>
                             <ComboBoxItem Content="{DynamicResource Case_Composite_PinyinReplace}"/>
                         </ComboBox>
@@ -171,7 +171,7 @@
                          Grid.Row="1"
                          Grid.Column="1"
                          VerticalContentAlignment="Center"
-                         Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_CaseForceCase}"/>
 
                 <TextBlock Grid.Row="2"

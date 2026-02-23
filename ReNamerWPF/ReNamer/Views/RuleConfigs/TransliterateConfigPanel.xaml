@@ -14,36 +14,89 @@
              HorizontalAlignment="Stretch"
              Background="{DynamicResource CardBrush}">
     <Grid Margin="6">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="16"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <GroupBox Grid.Column="0" Header="{DynamicResource RuleCfg_Transliterate_Alphabet}">
-            <Grid Margin="8,6">
-                <TextBox x:Name="txtAlphabet" AcceptsReturn="True" TextWrapping="NoWrap"
-                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                         MinHeight="200" VerticalAlignment="Stretch" VerticalContentAlignment="Top" Padding="8,6,8,6" FontFamily="Consolas"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="{DynamicResource RuleCfg_Transliterate_Alphabet}" Margin="0,0,0,8">
+            <Grid Margin="6,4">
+                <TextBox x:Name="txtAlphabet"
+                         AcceptsReturn="True"
+                         TextWrapping="NoWrap"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
+                         Height="Auto"
+                         MinHeight="136"
+                         VerticalAlignment="Stretch"
+                         VerticalContentAlignment="Top"
+                         Padding="8,6"
+                         FontFamily="Consolas"
                          helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_TransliterateAlphabet}"/>
             </Grid>
         </GroupBox>
-        <StackPanel Grid.Column="2">
-            <GroupBox Header="{DynamicResource RuleCfg_Transliterate_Direction}" Margin="0,0,0,16">
-                <StackPanel Margin="8,6">
-                    <RadioButton x:Name="rbForward" Content="{DynamicResource RuleCfg_Transliterate_Forward}" GroupName="Dir" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <RadioButton x:Name="rbBackward" Content="{DynamicResource RuleCfg_Transliterate_Backward}" GroupName="Dir" Margin="0,2" VerticalContentAlignment="Center"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="{DynamicResource RuleCfg_Transliterate_HintTitle}" Margin="0,0,0,16">
-                <TextBlock Margin="8,6" TextWrapping="Wrap"
-                           Text="{DynamicResource RuleCfg_Transliterate_Hint}" Style="{DynamicResource DialogHintText}"/>
-            </GroupBox>
-            <GroupBox Header="{DynamicResource RuleCfg_Section_Options}">
-                <StackPanel Margin="8,6">
-                    <CheckBox x:Name="chkAutoCase" Content="{DynamicResource RuleCfg_Transliterate_AutoCase}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="chkSkipExtension" Content="{DynamicResource Config_SkipExtension}" IsChecked="True" Margin="0,2" VerticalContentAlignment="Center"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+
+        <GroupBox Grid.Row="1" Header="{DynamicResource RuleCfg_Section_Options}">
+            <Grid Margin="6,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="118"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="{DynamicResource RuleCfg_Transliterate_Direction}"
+                           Style="{DynamicResource FormLabelStyle}"
+                           VerticalAlignment="Center"/>
+                <WrapPanel Grid.Row="0"
+                           Grid.Column="2"
+                           ItemHeight="26">
+                    <RadioButton x:Name="rbForward"
+                                 Content="{DynamicResource RuleCfg_Transliterate_Forward}"
+                                 GroupName="Dir"
+                                 IsChecked="True"
+                                 Margin="0,0,12,0"
+                                 VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbBackward"
+                                 Content="{DynamicResource RuleCfg_Transliterate_Backward}"
+                                 GroupName="Dir"
+                                 VerticalContentAlignment="Center"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           Text="{DynamicResource RuleCfg_Section_Options}"
+                           Style="{DynamicResource FormLabelStyle}"
+                           VerticalAlignment="Center"/>
+                <WrapPanel Grid.Row="1"
+                           Grid.Column="2"
+                           Margin="0,6,0,0"
+                           ItemHeight="26">
+                    <CheckBox x:Name="chkAutoCase"
+                              Content="{DynamicResource RuleCfg_Transliterate_AutoCase}"
+                              IsChecked="True"
+                              Margin="0,0,12,0"
+                              VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkSkipExtension"
+                              Content="{DynamicResource Config_SkipExtension}"
+                              IsChecked="True"
+                              VerticalContentAlignment="Center"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="2"
+                           Margin="0,8,0,0"
+                           Text="{DynamicResource RuleCfg_Transliterate_Hint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

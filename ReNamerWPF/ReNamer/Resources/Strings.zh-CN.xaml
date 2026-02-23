@@ -895,7 +895,7 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Strip_AllExcept">移除除所选外的所有字符</sys:String>
 
     <sys:String x:Key="RuleCfg_Transliterate_Alphabet">字母表</sys:String>
-    <sys:String x:Key="RuleCfg_Transliterate_Direction">方向：</sys:String>
+    <sys:String x:Key="RuleCfg_Transliterate_Direction">方向</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Forward">正向</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Backward">反向</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_HintTitle">提示：</sys:String>

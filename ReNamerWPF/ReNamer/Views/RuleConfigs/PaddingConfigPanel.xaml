@@ -84,7 +84,7 @@
                     <TextBox x:Name="txtPadChars"
                              Grid.Column="4"
                              VerticalAlignment="Center"
-                             Style="{StaticResource EnterpriseDialogInputTextBoxStyle}"
+                             Style="{DynamicResource EnterpriseDialogInputTextBoxStyle}"
                              helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_PaddingChars}"/>
 
                     <TextBlock Grid.Column="0" Grid.Row="1" Margin="6,6,0,6"

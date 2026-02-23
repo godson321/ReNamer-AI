@@ -38,7 +38,7 @@
                           Grid.Column="1"
                           IsEditable="True"
                           HorizontalAlignment="Stretch"
-                          Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                          Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                           helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateSource}">
                     <ComboBoxItem Content="yyyy-MM-dd"/>
                     <ComboBoxItem Content="dd.MM.yyyy"/>
@@ -74,7 +74,7 @@
                           Margin="0,6,0,0"
                           IsEditable="True"
                           HorizontalAlignment="Stretch"
-                          Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                          Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                           helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_ReformatDate_FormatHint}">
                     <ComboBoxItem Content="yyyy-MM-dd"/>
                     <ComboBoxItem Content="dd.MM.yyyy"/>
@@ -133,7 +133,7 @@
                               Grid.Column="2"
                               IsEditable="True"
                               HorizontalAlignment="Stretch"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                               helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateShortMonths}"/>
 
                     <CheckBox x:Name="chkCustomLongMonths"
@@ -148,7 +148,7 @@
                               Margin="0,6,0,0"
                               IsEditable="True"
                               HorizontalAlignment="Stretch"
-                              Style="{StaticResource EnterpriseDialogInputComboBoxStyle}"
+                              Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}"
                               helpers:PlaceholderBehavior.Placeholder="{DynamicResource RuleCfg_Placeholder_ReformatDateLongMonths}"/>
                 </Grid>
             </Grid>
@@ -186,7 +186,7 @@
                           Grid.Column="4"
                           MinWidth="84"
                           HorizontalAlignment="Left"
-                          Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                          Style="{DynamicResource EnterpriseDialogInputComboBoxStyle}">
                     <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitHours}" IsSelected="True"/>
                     <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitMinutes}"/>
                     <ComboBoxItem Content="{DynamicResource RuleCfg_ReformatDate_UnitSeconds}"/>

@@ -63,18 +63,18 @@
 - [x] T022 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RearrangeConfigPanel.xaml`
 - [x] T023 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReformatDateConfigPanel.xaml`
 - [x] T024 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/RegexConfigPanel.xaml`
-- [ ] T025 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReplaceConfigPanel.xaml`
-- [ ] T026 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
-- [ ] T027 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
-- [ ] T028 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
-- [ ] T028A [US3] 统一规则面板改造约束：不新增顶部说明卡，保持紧凑内容布局
+- [x] T025 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/ReplaceConfigPanel.xaml`
+- [x] T026 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/SerializeConfigPanel.xaml`
+- [x] T027 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/TransliterateConfigPanel.xaml`
+- [x] T028 [P] [US3] 改造 `ReNamerWPF/ReNamer/Views/RuleConfigs/UserInputConfigPanel.xaml`
+- [x] T028A [US3] 统一规则面板改造约束：不新增顶部说明卡，保持紧凑内容布局
 
 ### 4.2 规则统一校正
 
-- [ ] T029 [US3] 全量规则面板统一标签列宽、输入高度和分组留白
-- [ ] T030 [US3] 全量规则面板统一主次按钮样式（中文优先尺寸）
-- [ ] T031 [US3] 全量规则面板检查 `DynamicResource` 使用，移除可能导致主题切换异常的 `StaticResource` 误用
-- [ ] T032 [US3] 对含“数值+单位”行的规则面板统一单位列最小宽度（`>=84`）
+- [x] T029 [US3] 全量规则面板统一标签列宽、输入高度和分组留白
+- [x] T030 [US3] 全量规则面板统一主次按钮样式（中文优先尺寸）
+- [x] T031 [US3] 全量规则面板检查 `DynamicResource` 使用，移除可能导致主题切换异常的 `StaticResource` 误用
+- [x] T032 [US3] 对含“数值+单位”行的规则面板统一单位列最小宽度（`>=84`）
 
 **独立验收**：15 个规则面板视觉规范一致，中文无裁切，主题切换稳定
 
@@ -82,13 +82,13 @@
 
 ## Phase 5：验证与收口
 
-- [ ] T033 [US1] 执行构建验证：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj -c Debug -v minimal`
-- [ ] T034 [US1] 执行启动冒烟：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj -c Debug`
-- [ ] T035 [US3] 人工回归：SettingsDialog（中文、缩放、主题切换）
-- [ ] T036 [US3] 人工回归：TextInputDialog（中文、缩放、主题切换）
-- [ ] T037 [US3] 人工回归：15 个规则面板（对齐、按钮、单位下拉、防遮挡）
-- [ ] T038 [US3] 在 `specs/016-dialog-enterprise-standardization/plan.md` 记录验证结果与风险收口
-- [ ] T039 [US3] 最后收口：将相关 XAML 中可复用的硬编码尺寸提取到 `DesignSystemResources.xaml` 样式资源（保持行为不变）
+- [x] T033 [US1] 执行构建验证：`dotnet build ReNamerWPF/ReNamer/ReNamer.csproj -c Debug -v minimal`
+- [x] T034 [US1] 执行启动冒烟：`dotnet run --project ReNamerWPF/ReNamer/ReNamer.csproj -c Debug`
+- [x] T035 [US3] 人工回归：SettingsDialog（中文、缩放、主题切换）
+- [x] T036 [US3] 人工回归：TextInputDialog（中文、缩放、主题切换）
+- [x] T037 [US3] 人工回归：15 个规则面板（对齐、按钮、单位下拉、防遮挡）
+- [x] T038 [US3] 在 `specs/016-dialog-enterprise-standardization/plan.md` 记录验证结果与风险收口
+- [x] T039 [US3] 最后收口：将相关 XAML 中可复用的硬编码尺寸提取到 `DesignSystemResources.xaml` 样式资源（保持行为不变）
 
 ---
 
