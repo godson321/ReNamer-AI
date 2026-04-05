@@ -509,9 +509,6 @@
     <sys:String x:Key="Settings_RememberWindowPos">Remember window position</sys:String>
     <sys:String x:Key="Settings_Language">Language:</sys:String>
     <sys:String x:Key="Settings_Theme">Theme:</sys:String>
-    <sys:String x:Key="Settings_FileListEngine">File list engine:</sys:String>
-    <sys:String x:Key="Settings_FileListEngine_Wpf">WPF DataGrid (default)</sys:String>
-    <sys:String x:Key="Settings_FileListEngine_Win32">Win32 ListView (performance)</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">Confirm on exit</sys:String>
     <sys:String x:Key="Settings_ShowInTray">Show in system tray</sys:String>
     <sys:String x:Key="Msg_ConfirmExit">Are you sure you want to exit?</sys:String>

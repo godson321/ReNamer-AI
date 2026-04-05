@@ -509,9 +509,6 @@
     <sys:String x:Key="Settings_RememberWindowPos">记住窗口位置</sys:String>
     <sys:String x:Key="Settings_Language">语言:</sys:String>
     <sys:String x:Key="Settings_Theme">主题:</sys:String>
-    <sys:String x:Key="Settings_FileListEngine">文件列表引擎:</sys:String>
-    <sys:String x:Key="Settings_FileListEngine_Wpf">WPF DataGrid（默认）</sys:String>
-    <sys:String x:Key="Settings_FileListEngine_Win32">Win32 ListView（性能）</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">退出时确认</sys:String>
     <sys:String x:Key="Settings_ShowInTray">显示在系统托盘</sys:String>
     <sys:String x:Key="Msg_ConfirmExit">确定要退出程序吗？</sys:String>

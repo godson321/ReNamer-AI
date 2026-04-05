@@ -29,6 +29,9 @@
 
     <Window.Resources>
         <local:IndexConverter x:Key="IndexConverter"/>
+        <local:CollectionIndexConverter x:Key="CollectionIndexConverter"/>
+        <local:RuleDropPreviewVisibilityConverter x:Key="RuleDropPreviewVisibilityConverter"/>
+        <local:RuleDropPreviewVerticalAlignmentConverter x:Key="RuleDropPreviewVerticalAlignmentConverter"/>
         <!-- 状态指示器样式 -->
         <Style x:Key="StateIndicator" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -74,6 +77,185 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="12"/>
         </Style>
+        <Style x:Key="EnterpriseRuleColumnHeader" TargetType="GridViewColumnHeader" BasedOn="{StaticResource TableColumnHeader}">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="CompactRuleUtilityColumnHeader" TargetType="GridViewColumnHeader" BasedOn="{StaticResource EnterpriseRuleColumnHeader}">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="EnterpriseRuleListViewItem" TargetType="ListViewItem" BasedOn="{StaticResource ModernListViewItem}">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="EnterpriseRuleCellBorder" TargetType="Border">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=Background}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+        <Style x:Key="RuleDragHandleStyle" TargetType="Border">
+            <Setter Property="Width" Value="14"/>
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="SizeAll"/>
+            <Setter Property="ToolTip" Value="{DynamicResource Rules_DragHint}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.75"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ClassicRuleTableHeaderCell" TargetType="Border">
+            <Setter Property="Background" Value="#FFECEFF3"/>
+            <Setter Property="BorderBrush" Value="#FFC5CED8"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+        <Style x:Key="ClassicRuleTableHeaderLastCell" TargetType="Border" BasedOn="{StaticResource ClassicRuleTableHeaderCell}">
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style x:Key="ClassicRuleTableRowItem" TargetType="ListViewItem" BasedOn="{StaticResource ModernListViewItem}">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="#FFFFFFFF"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF7FAFD"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFEAF2FF"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ClassicRuleTableCell" TargetType="Border">
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="BorderBrush" Value="#FFD6DEE8"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=Background}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+        <Style x:Key="ClassicRuleTableUtilityCell" TargetType="Border" BasedOn="{StaticResource ClassicRuleTableCell}">
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style x:Key="ClassicRuleTableLastCell" TargetType="Border" BasedOn="{StaticResource ClassicRuleTableCell}">
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style x:Key="ClassicRuleHeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#FF2A313A"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="RuleColumnResizeThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Cursor" Value="SizeWE"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RuleDragHandleThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="Width" Value="14"/>
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="Cursor" Value="SizeAll"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="Transparent">
+                            <UniformGrid Rows="3" Columns="2"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center">
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                            </UniformGrid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="ClassicRuleListItemTemplate">
+            <Grid HorizontalAlignment="Stretch" SnapsToDevicePixels="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleDragColumnWidth}"/>
+                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleCheckColumnWidth}"/>
+                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleIndexColumnWidth}"/>
+                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleNameColumnWidth}"/>
+                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleDescriptionColumnWidth}"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource ClassicRuleTableUtilityCell}">
+                    <Thumb Style="{StaticResource RuleDragHandleThumbStyle}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
+                           PreviewMouseLeftButtonUp="RuleDragHandle_PreviewMouseLeftButtonUp"
+                           PreviewMouseMove="Rules_MouseMove"/>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource ClassicRuleTableUtilityCell}">
+                    <CheckBox IsChecked="{Binding IsEnabled}"
+                              Click="RuleCheckBox_Click"
+                              Cursor="Arrow"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource ClassicRuleTableCell}">
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </Border>
+                <Border Grid.Column="3" Style="{StaticResource ClassicRuleTableCell}">
+                    <TextBlock Text="{Binding LocalizedRuleName}"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis"/>
+                </Border>
+                <Border Grid.Column="4" Style="{StaticResource ClassicRuleTableLastCell}">
+                    <TextBlock Text="{Binding LocalizedDisplayDescription}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding LocalizedDisplayDescription}"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
         <Style x:Key="EnterpriseDataGrid" TargetType="{x:Type DataGrid}">
             <Setter Property="RowHeight" Value="24"/>
@@ -235,7 +417,136 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="RuleTableDataGrid" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource EnterpriseDataGrid}">
+            <Setter Property="Background" Value="#FFFFFFFF"/>
+            <Setter Property="RowBackground" Value="#FFFFFFFF"/>
+            <Setter Property="AlternatingRowBackground" Value="#FFFFFFFF"/>
+        </Style>
+
+        <Style x:Key="RuleTableDataGridRow" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource EnterpriseDataGridRow}">
+            <Setter Property="Background" Value="#FFFFFFFF"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        </Style>
+
+        <Style x:Key="RuleTableDataGridCell" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                            <Border Background="{TemplateBinding Background}"/>
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <Border Height="2"
+                                    Margin="0,-1,0,-1"
+                                    Background="{DynamicResource PrimaryBrush}"
+                                    IsHitTestVisible="False">
+                                <Border.Visibility>
+                                    <MultiBinding Converter="{StaticResource RuleDropPreviewVisibilityConverter}">
+                                        <Binding/>
+                                        <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="RuleDropPreviewTarget"/>
+                                    </MultiBinding>
+                                </Border.Visibility>
+                                <Border.VerticalAlignment>
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}"
+                                             Path="RuleDropPreviewInsertAfter"
+                                             Converter="{StaticResource RuleDropPreviewVerticalAlignmentConverter}"/>
+                                </Border.VerticalAlignment>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- 工具栏按钮样式 -->
+        <Style x:Key="FileDragHandleStyle" TargetType="Border" BasedOn="{StaticResource RuleDragHandleStyle}">
+            <Setter Property="ToolTip" Value="{x:Null}"/>
+        </Style>
+
+        <Style x:Key="FileTableDataGridCell" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <Border Height="2"
+                                    Margin="0,-1,0,-1"
+                                    Background="{DynamicResource PrimaryBrush}"
+                                    IsHitTestVisible="False">
+                                <Border.Visibility>
+                                    <MultiBinding Converter="{StaticResource RuleDropPreviewVisibilityConverter}">
+                                        <Binding/>
+                                        <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="FileDropPreviewTarget"/>
+                                    </MultiBinding>
+                                </Border.Visibility>
+                                <Border.VerticalAlignment>
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}"
+                                             Path="FileDropPreviewInsertAfter"
+                                             Converter="{StaticResource RuleDropPreviewVerticalAlignmentConverter}"/>
+                                </Border.VerticalAlignment>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(fileList:LogicalSelectionHelper.IsLogicalSelected)}" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                </DataTrigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="#CCF7D047"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="#1AF7D047"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsKeyboardFocusWithin" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#FFE7B900"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="#33F7D047"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="ToolbarIconButton" TargetType="Button">
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="Padding" Value="7,3"/>
@@ -533,28 +844,225 @@
                         </Border>
 
                         <!-- 规则列表 -->
-                        <ListView x:Name="lvRules" SelectionMode="Extended"
+                        <DataGrid x:Name="lvRules"
+                                  SelectionMode="Extended"
+                                  SelectionUnit="FullRow"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  CanUserResizeColumns="True"
+                                  CanUserReorderColumns="True"
+                                  CanUserSortColumns="False"
+                                  HeadersVisibility="Column"
                                   MouseDoubleClick="Rules_DoubleClick"
                                   SelectionChanged="Rules_SelectionChanged"
-                                  PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
-                                  MouseMove="Rules_MouseMove" Drop="Rules_Drop" DragOver="Rules_DragOver"
+                                  Drop="Rules_Drop"
+                                  DragOver="Rules_DragOver"
+                                  DragLeave="Rules_DragLeave"
                                   AllowDrop="True"
                                   ToolTip="{DynamicResource Rules_DragHint}"
                                   AlternationCount="2147483647"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling"
                                   ScrollViewer.CanContentScroll="True"
-                                  Background="{DynamicResource SurfaceBrush}"
-                                  BorderThickness="1"
-                                  BorderBrush="{DynamicResource BorderBrush}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem" BasedOn="{StaticResource ModernListViewItem}">
-                                    <Setter Property="Cursor" Value="SizeAll"/>
+                                  Style="{StaticResource RuleTableDataGrid}"
+                                  RowStyle="{StaticResource RuleTableDataGridRow}"
+                                  CellStyle="{StaticResource RuleTableDataGridCell}">
+                            <DataGrid.Resources>
+                                <Style x:Key="CenteredRuleCheckBox" TargetType="{x:Type CheckBox}">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.Resources>
-                                <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource TableColumnHeader}"/>
-                            </ListView.Resources>
+                                <Style x:Key="RuleCellText" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextWrapping" Value="NoWrap"/>
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                                <Style x:Key="RuleNameCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource RuleCellText}">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource EnterpriseDataGridColumnHeader}"/>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.InputBindings>
+                                <KeyBinding Key="Delete" Command="{Binding CmdRemoveRule}"/>
+                                <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding CmdRulesSelectAll}"/>
+                            </DataGrid.InputBindings>
+                            <DataGrid.ContextMenu>
+                                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                    <MenuItem Header="{DynamicResource CtxRule_Add}" Command="{Binding CmdAddRule}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_AddAbove}" Command="{Binding CmdRuleAddAbove}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_AddBelow}" Command="{Binding CmdRuleAddBelow}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Edit}" Command="{Binding CmdRuleEdit}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Duplicate}" Command="{Binding CmdRuleDuplicate}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Remove}" Command="{Binding CmdRemoveRule}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_RemoveAll}" Command="{Binding CmdRuleRemoveAll}"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MoveUp}" Command="{Binding CmdMoveRuleUp}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MoveDown}" Command="{Binding CmdMoveRuleDown}"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource Menu_ExportClipboard}" Command="{Binding CmdRuleExport}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_Comment}" Command="{Binding CmdRuleComment}"/>
+                                    <Separator/>
+                                    <MenuItem Header="{DynamicResource CtxRule_SelectAll}" InputGestureText="Ctrl+A" Command="{Binding CmdRulesSelectAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_MarkAll}" Command="{Binding CmdRulesMarkAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_UnmarkAll}" Command="{Binding CmdRulesUnmarkAll}"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="34" CanUserSort="False">
+                                    <DataGridTemplateColumn.CellStyle>
+                                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource RuleTableDataGridCell}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTemplateColumn.CellStyle>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource RuleDragHandleStyle}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
+                                                    PreviewMouseLeftButtonUp="RuleDragHandle_PreviewMouseLeftButtonUp"
+                                                    MouseMove="Rules_MouseMove">
+                                                <UniformGrid Rows="3"
+                                                             Columns="2"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center">
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                </UniformGrid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="46" CanUserSort="False">
+                                    <DataGridTemplateColumn.CellStyle>
+                                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource RuleTableDataGridCell}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTemplateColumn.CellStyle>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Style="{StaticResource CenteredRuleCheckBox}"
+                                                      IsChecked="{Binding IsEnabled}"
+                                                      Click="RuleCheckBox_Click"
+                                                      Cursor="Arrow"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="#" Width="50" CanUserSort="False">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Style="{StaticResource RuleCellText}"
+                                                       HorizontalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource CollectionIndexConverter}">
+                                                        <Binding/>
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="Rules"/>
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="RuleOrderVersion"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{DynamicResource Column_Rule}"
+                                                    Width="170"
+                                                    Binding="{Binding LocalizedRuleName}"
+                                                    ElementStyle="{StaticResource RuleNameCellText}"/>
+                                <DataGridTextColumn Header="{DynamicResource Column_Statement}"
+                                                    Width="*"
+                                                    Binding="{Binding LocalizedDisplayDescription}"
+                                                    ElementStyle="{StaticResource RuleCellText}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Border Visibility="Collapsed"
+                                Background="{DynamicResource BackgroundBrush}"
+                                BorderBrush="#FFC5CED8"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="36"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0"
+                                      Margin="0"
+                                      Background="#FFECEFF3"
+                                      SnapsToDevicePixels="True">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleDragColumnWidth}"/>
+                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleCheckColumnWidth}"/>
+                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleIndexColumnWidth}"/>
+                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleNameColumnWidth}"/>
+                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=RuleDescriptionColumnWidth}"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Style="{StaticResource ClassicRuleTableHeaderCell}">
+                                        <Thumb Style="{StaticResource RuleColumnResizeThumbStyle}"
+                                               Tag="drag"
+                                               DragDelta="RulesHeaderResizeThumb_DragDelta"/>
+                                    </Border>
+                                    <Border Grid.Column="1" Style="{StaticResource ClassicRuleTableHeaderCell}">
+                                        <Thumb Style="{StaticResource RuleColumnResizeThumbStyle}"
+                                               Tag="check"
+                                               DragDelta="RulesHeaderResizeThumb_DragDelta"/>
+                                    </Border>
+                                    <Border Grid.Column="2" Style="{StaticResource ClassicRuleTableHeaderCell}">
+                                        <Grid>
+                                            <TextBlock Text="#" Style="{StaticResource ClassicRuleHeaderText}" HorizontalAlignment="Center"/>
+                                            <Thumb Style="{StaticResource RuleColumnResizeThumbStyle}"
+                                                   Tag="index"
+                                                   DragDelta="RulesHeaderResizeThumb_DragDelta"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="3" Style="{StaticResource ClassicRuleTableHeaderCell}">
+                                        <Grid>
+                                            <TextBlock Text="{DynamicResource Column_Rule}" Style="{StaticResource ClassicRuleHeaderText}"/>
+                                            <Thumb Style="{StaticResource RuleColumnResizeThumbStyle}"
+                                                   Tag="rule"
+                                                   DragDelta="RulesHeaderResizeThumb_DragDelta"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="4" Style="{StaticResource ClassicRuleTableHeaderLastCell}">
+                                        <TextBlock Text="{DynamicResource Column_Statement}" Style="{StaticResource ClassicRuleHeaderText}"/>
+                                    </Border>
+                                </Grid>
+
+                                <ListView x:Name="lvRulesLegacy"
+                                          Grid.Row="1"
+                                          SelectionMode="Extended"
+                                          MouseDoubleClick="Rules_DoubleClick"
+                                          SelectionChanged="Rules_SelectionChanged"
+                                          Drop="Rules_Drop"
+                                          DragOver="Rules_DragOver"
+                                          AllowDrop="True"
+                                          ToolTip="{DynamicResource Rules_DragHint}"
+                                          AlternationCount="2147483647"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingPanel.VirtualizationMode="Recycling"
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          Background="{DynamicResource BackgroundBrush}"
+                                          BorderThickness="0"
+                                          Padding="0">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem" BasedOn="{StaticResource ClassicRuleTableRowItem}"/>
+                                    </ListView.ItemContainerStyle>
                             <ListView.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding CmdRemoveRule}"/>
                                 <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding CmdRulesSelectAll}"/>
@@ -582,30 +1090,82 @@
                             </ListView.ContextMenu>
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Width="40">
+                                    <GridViewColumn Width="34" Header="">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox IsChecked="{Binding IsEnabled}"
-                                                          Click="RuleCheckBox_Click"
-                                                          Cursor="Arrow"/>
+                                                <Border Style="{StaticResource ClassicRuleTableUtilityCell}">
+                                                    <Border Style="{StaticResource RuleDragHandleStyle}"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
+                                                            PreviewMouseLeftButtonUp="RuleDragHandle_PreviewMouseLeftButtonUp"
+                                                            MouseMove="Rules_MouseMove">
+                                                        <TextBlock Text="⋮⋮"
+                                                                   FontFamily="Segoe UI Symbol"
+                                                                   FontSize="10"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                                   Opacity="0.82"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </Border>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="#" Width="40">
+                                    <GridViewColumn Width="46" Header="">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}" 
-                                                           HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                <Border Style="{StaticResource ClassicRuleTableUtilityCell}">
+                                                    <CheckBox IsChecked="{Binding IsEnabled}"
+                                                              Click="RuleCheckBox_Click"
+                                                              Cursor="Arrow"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                                </Border>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Column_Rule}" Width="100" 
-                                                    DisplayMemberBinding="{Binding LocalizedRuleName}"/>
-                                    <GridViewColumn Header="{DynamicResource Column_Statement}" Width="460" 
-                                                    DisplayMemberBinding="{Binding LocalizedDisplayDescription}"/>
+                                    <GridViewColumn Header="#" Width="50">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource ClassicRuleTableCell}">
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{DynamicResource Column_Rule}" Width="170">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource ClassicRuleTableCell}">
+                                                    <TextBlock Text="{Binding LocalizedRuleName}"
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{DynamicResource Column_Statement}" Width="440">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource ClassicRuleTableLastCell}">
+                                                    <TextBlock Text="{Binding LocalizedDisplayDescription}"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding LocalizedDisplayDescription}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                 </GridView>
-                            </ListView.View>
-                        </ListView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
+                        </Border>
                     </DockPanel>
                 </Border>
 
@@ -675,7 +1235,7 @@
                                   Sorting="FilesColumnHeader_Click"
                                   Style="{StaticResource EnterpriseDataGrid}"
                                   RowStyle="{StaticResource EnterpriseDataGridRow}"
-                                  CellStyle="{StaticResource EnterpriseDataGridCell}"
+                                  CellStyle="{StaticResource FileTableDataGridCell}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserAddRows="False"
@@ -789,6 +1349,36 @@
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="34" SortMemberPath="FileReorder" CanUserSort="False">
+                                        <DataGridTemplateColumn.CellStyle>
+                                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource FileTableDataGridCell}">
+                                                <Setter Property="Padding" Value="0"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTemplateColumn.CellStyle>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource FileDragHandleStyle}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        PreviewMouseLeftButtonDown="Files_PreviewMouseLeftButtonDown"
+                                                        PreviewMouseLeftButtonUp="FileDragHandle_PreviewMouseLeftButtonUp"
+                                                        MouseMove="Files_MouseMove">
+                                                    <UniformGrid Rows="3"
+                                                                 Columns="2"
+                                                                 HorizontalAlignment="Center"
+                                                                 VerticalAlignment="Center">
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                        <Ellipse Width="2.5" Height="2.5" Fill="#FF8894A3" Margin="1"/>
+                                                    </UniformGrid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Width="44" SortMemberPath="IsMarked">
                                         <DataGridTemplateColumn.HeaderTemplate>
                                             <DataTemplate>
@@ -797,7 +1387,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.HeaderTemplate>
                                         <DataGridTemplateColumn.CellStyle>
-                                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource EnterpriseDataGridCell}">
+                                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource FileTableDataGridCell}">
                                                 <Setter Property="Padding" Value="0"/>
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>

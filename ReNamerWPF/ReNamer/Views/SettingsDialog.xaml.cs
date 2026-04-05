@@ -42,13 +42,6 @@ public partial class SettingsDialog : Window
         }
         if (cmbTheme.SelectedIndex < 0) cmbTheme.SelectedIndex = 0;
 
-        foreach (ComboBoxItem item in cmbFileListEngine.Items)
-        {
-            if (string.Equals(item.Tag as string, Settings.FileListEngine.ToString(), StringComparison.OrdinalIgnoreCase))
-            { cmbFileListEngine.SelectedItem = item; break; }
-        }
-        if (cmbFileListEngine.SelectedIndex < 0) cmbFileListEngine.SelectedIndex = 0;
-
         chkAutoPreview.IsChecked = Settings.AutoPreview;
         chkPreviewOnFileAdd.IsChecked = Settings.PreviewOnFileAdd;
         chkHighlightChanges.IsChecked = Settings.HighlightChanges;
@@ -79,12 +72,6 @@ public partial class SettingsDialog : Window
 
         if (cmbTheme.SelectedItem is ComboBoxItem themeItem)
             Settings.Theme = themeItem.Tag as string ?? "Light";
-
-        if (cmbFileListEngine.SelectedItem is ComboBoxItem listEngineItem
-            && Enum.TryParse<FileListEngine>(listEngineItem.Tag as string, out var engine))
-            Settings.FileListEngine = engine;
-        else
-            Settings.FileListEngine = FileListEngine.WpfDataGrid;
 
         Settings.AutoPreview = chkAutoPreview.IsChecked == true;
         Settings.PreviewOnFileAdd = chkPreviewOnFileAdd.IsChecked == true;

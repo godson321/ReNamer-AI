@@ -18,6 +18,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using ReNamer.Models;
 using ReNamer.Rules;
@@ -34,6 +35,9 @@ public class IndexConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is DataGridRow dataGridRow)
+            return (dataGridRow.GetIndex() + 1).ToString(CultureInfo.InvariantCulture);
+
         if (value is int alternationIndex)
             return (alternationIndex + 1).ToString(CultureInfo.InvariantCulture);
 
@@ -51,15 +55,95 @@ public class IndexConverter : IValueConverter
         => throw new NotImplementedException();
 }
 
+public class CollectionIndexConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2 ||
+            values[0] == DependencyProperty.UnsetValue ||
+            values[1] == DependencyProperty.UnsetValue)
+        {
+            return string.Empty;
+        }
+
+        var item = values[0];
+        if (values[1] is IList list)
+        {
+            int index = list.IndexOf(item);
+            return index >= 0
+                ? (index + 1).ToString(CultureInfo.InvariantCulture)
+                : string.Empty;
+        }
+
+        if (values[1] is IEnumerable enumerable)
+        {
+            int index = 0;
+            foreach (var current in enumerable)
+            {
+                if (ReferenceEquals(current, item) || Equals(current, item))
+                    return (index + 1).ToString(CultureInfo.InvariantCulture);
+
+                index++;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
+
+public class RuleDropPreviewVisibilityConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2 ||
+            values[0] == DependencyProperty.UnsetValue ||
+            values[1] == DependencyProperty.UnsetValue)
+        {
+            return Visibility.Collapsed;
+        }
+
+        var currentItem = values[0];
+        var previewItem = values[1];
+        return previewItem != null && ReferenceEquals(currentItem, previewItem)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
+
+public class RuleDropPreviewVerticalAlignmentConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is bool insertAfter && insertAfter
+            ? VerticalAlignment.Bottom
+            : VerticalAlignment.Top;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
+
 [SupportedOSPlatform("windows")]
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
     private readonly RenameService _renameService;
     private readonly AppSettings _appSettings;
     private Point _rulesDragStartPoint;
     private IRule? _draggedRule;
+    private int _draggedRuleIndex = -1;
+    private IRule? _ruleDropPreviewTarget;
+    private bool _ruleDropPreviewInsertAfter;
+    private int _ruleDropPreviewEventVersion;
+    private string? _lastRuleDragPreviewSignature;
     private Point _filesDragStartPoint;
     private RenFile? _draggedFile;
+    private int _draggedFileIndex = -1;
+    private RenFile? _fileDropPreviewTarget;
+    private bool _fileDropPreviewInsertAfter;
     private readonly List<UiAction> _actions = new();
     private readonly object _previewSync = new();
     private CancellationTokenSource? _previewCts;
@@ -71,9 +155,18 @@ public partial class MainWindow : Window
     private const int PreviewProgressUpdateTarget = 40;
     private const int LargeSelectionThreshold = 1200;
     private const int ParallelImportCreationThreshold = 256;
+    private const string RuleDragIndexDataFormat = "ReNamer.RuleDragIndex";
+    private const string FileDragIndexDataFormat = "ReNamer.FileDragIndex";
+    private const string FileReorderColumnKey = "FileReorder";
     private static readonly int ParallelImportCreationDegree = Math.Clamp(Environment.ProcessorCount, 2, 8);
     private bool _isHighContrastMode;
+    private int _ruleOrderVersion;
     private readonly Dictionary<string, double> _defaultColumnWidths = new(StringComparer.OrdinalIgnoreCase);
+    private GridLength _ruleDragColumnWidth = new(34);
+    private GridLength _ruleCheckColumnWidth = new(46);
+    private GridLength _ruleIndexColumnWidth = new(50);
+    private GridLength _ruleNameColumnWidth = new(170);
+    private GridLength _ruleDescriptionColumnWidth = new(1, GridUnitType.Star);
     private bool _statusBarUpdatePending;
     private bool _actionsRefreshPending;
     private int _fileSelectionBatchDepth;
@@ -95,7 +188,7 @@ public partial class MainWindow : Window
     private readonly HashSet<RenFile> _trackedFileSubscriptions = new();
     private IFileListView _fileListView = null!;
     private WpfFileListViewAdapter _wpfFileListView = null!;
-    private Win32FileListViewHost? _win32FileListView;
+    private Win32FileListViewHost? _win32FileListView = null;
     private readonly List<FileListColumn> _fileListColumns = new();
     private Win32FileListPalette? _win32Palette;
     private readonly List<RenFile> _viewItems = new();
@@ -109,6 +202,11 @@ public partial class MainWindow : Window
         AppRootDir,
         "logs",
         "file-import-debug.log");
+    private static readonly object RuleDragLogSync = new();
+    private static readonly string RuleDragLogFile = Path.Combine(
+        AppRootDir,
+        "logs",
+        "rule-drag-debug.log");
     private static readonly string UndoLogsDir = Path.Combine(
         AppRootDir,
         "logs",
@@ -240,6 +338,59 @@ public partial class MainWindow : Window
 
     public RangeObservableCollection<RenFile> Files { get; } = new();
     public ObservableCollection<IRule> Rules { get; } = new();
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public GridLength RuleDragColumnWidth
+    {
+        get => _ruleDragColumnWidth;
+        set => SetRuleColumnWidth(ref _ruleDragColumnWidth, value, nameof(RuleDragColumnWidth));
+    }
+
+    public GridLength RuleCheckColumnWidth
+    {
+        get => _ruleCheckColumnWidth;
+        set => SetRuleColumnWidth(ref _ruleCheckColumnWidth, value, nameof(RuleCheckColumnWidth));
+    }
+
+    public GridLength RuleIndexColumnWidth
+    {
+        get => _ruleIndexColumnWidth;
+        set => SetRuleColumnWidth(ref _ruleIndexColumnWidth, value, nameof(RuleIndexColumnWidth));
+    }
+
+    public GridLength RuleNameColumnWidth
+    {
+        get => _ruleNameColumnWidth;
+        set => SetRuleColumnWidth(ref _ruleNameColumnWidth, value, nameof(RuleNameColumnWidth));
+    }
+
+    public GridLength RuleDescriptionColumnWidth
+    {
+        get => _ruleDescriptionColumnWidth;
+        set => SetRuleColumnWidth(ref _ruleDescriptionColumnWidth, value, nameof(RuleDescriptionColumnWidth));
+    }
+
+    public int RuleOrderVersion => _ruleOrderVersion;
+
+    public IRule? RuleDropPreviewTarget
+    {
+        get => _ruleDropPreviewTarget;
+    }
+
+    public bool RuleDropPreviewInsertAfter
+    {
+        get => _ruleDropPreviewInsertAfter;
+    }
+
+    public RenFile? FileDropPreviewTarget
+    {
+        get => _fileDropPreviewTarget;
+    }
+
+    public bool FileDropPreviewInsertAfter
+    {
+        get => _fileDropPreviewInsertAfter;
+    }
 
     public MainWindow()
     {
@@ -301,6 +452,122 @@ public partial class MainWindow : Window
     {
         Debug.WriteLine($"[MainWindow] {context}: {ex}");
     }
+
+    private void SetRuleColumnWidth(ref GridLength field, GridLength value, string propertyName)
+    {
+        if (field.Equals(value))
+            return;
+
+        field = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private void AdvanceRuleOrderVersion()
+    {
+        unchecked
+        {
+            _ruleOrderVersion++;
+        }
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RuleOrderVersion)));
+    }
+
+    private void SetRuleDropPreview(IRule? target, bool insertAfter)
+    {
+        bool targetChanged = !ReferenceEquals(_ruleDropPreviewTarget, target);
+        bool insertAfterChanged = _ruleDropPreviewInsertAfter != insertAfter;
+        if (!targetChanged && !insertAfterChanged)
+            return;
+
+        _ruleDropPreviewTarget = target;
+        _ruleDropPreviewInsertAfter = insertAfter;
+
+        if (targetChanged)
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RuleDropPreviewTarget)));
+
+        if (insertAfterChanged)
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RuleDropPreviewInsertAfter)));
+    }
+
+    private void ClearRuleDropPreview(string reason = "clear")
+    {
+        if (_ruleDropPreviewTarget != null)
+        {
+            LogRuleDragDiag(
+                $"[RuleDrag] preview-clear reason={reason} targetIndex={Rules.IndexOf(_ruleDropPreviewTarget)} " +
+                $"target='{DescribeRule(_ruleDropPreviewTarget)}' insertAfter={_ruleDropPreviewInsertAfter}");
+        }
+
+        _lastRuleDragPreviewSignature = null;
+        SetRuleDropPreview(null, false);
+    }
+
+    private static string DescribeRule(IRule? rule)
+        => rule == null
+            ? "<null>"
+            : $"{rule.RuleName}/{rule.GetType().Name}";
+
+    private static string DescribeFile(RenFile? file)
+        => file == null
+            ? "<null>"
+            : $"{file.OriginalName}";
+
+    private static void LogRuleDragDiag(string message)
+    {
+        var line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [T{Environment.CurrentManagedThreadId}] {message}";
+        Debug.WriteLine(line);
+
+        lock (RuleDragLogSync)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(RuleDragLogFile);
+                if (!string.IsNullOrWhiteSpace(dir))
+                    Directory.CreateDirectory(dir);
+
+                File.AppendAllText(RuleDragLogFile, line + Environment.NewLine);
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private void LogRuleDragPreviewState(string stage, Point point, int? hitRowIndex, int rawInsertionIndex, int previewTargetIndex, bool insertAfter)
+    {
+        string signature = $"{stage}|hit={hitRowIndex?.ToString(CultureInfo.InvariantCulture) ?? "none"}|raw={rawInsertionIndex}|target={previewTargetIndex}|after={insertAfter}";
+        if (string.Equals(_lastRuleDragPreviewSignature, signature, StringComparison.Ordinal))
+            return;
+
+        _lastRuleDragPreviewSignature = signature;
+        var previewTarget = previewTargetIndex >= 0 && previewTargetIndex < Rules.Count
+            ? Rules[previewTargetIndex]
+            : null;
+        LogRuleDragDiag(
+            $"[RuleDrag] {stage} pt=({point.X:F1},{point.Y:F1}) hitRow={hitRowIndex?.ToString(CultureInfo.InvariantCulture) ?? "none"} " +
+            $"rawInsert={rawInsertionIndex} previewTargetIndex={previewTargetIndex} " +
+            $"previewTarget='{DescribeRule(previewTarget)}' insertAfter={insertAfter}");
+    }
+
+    private void SetFileDropPreview(RenFile? target, bool insertAfter)
+    {
+        bool targetChanged = !ReferenceEquals(_fileDropPreviewTarget, target);
+        bool insertAfterChanged = _fileDropPreviewInsertAfter != insertAfter;
+        if (!targetChanged && !insertAfterChanged)
+            return;
+
+        _fileDropPreviewTarget = target;
+        _fileDropPreviewInsertAfter = insertAfter;
+
+        if (targetChanged)
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileDropPreviewTarget)));
+
+        if (insertAfterChanged)
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileDropPreviewInsertAfter)));
+    }
+
+    private void ClearFileDropPreview()
+        => SetFileDropPreview(null, false);
 
     private static void LogImportDiag(string message)
     {
@@ -393,6 +660,7 @@ public partial class MainWindow : Window
             }
         }
 
+        AdvanceRuleOrderVersion();
         RefreshActions();
     }
 
@@ -648,26 +916,30 @@ public partial class MainWindow : Window
     private bool CanRename => _renameableFileCount > 0;
     private bool CanMoveRuleUp => lvRules.SelectedIndex > 0;
     private bool CanMoveRuleDown => lvRules.SelectedIndex >= 0 && lvRules.SelectedIndex < Rules.Count - 1;
-    private bool IsWin32FileList => _appSettings.FileListEngine == FileListEngine.Win32ListView;
+    private bool IsWin32FileList => false;
 
     private static readonly HashSet<string> DefaultVisibleColumns = new(StringComparer.OrdinalIgnoreCase)
     {
+        FileReorderColumnKey,
         "IsMarked", "State", "OriginalName", "NewName", "Error"
     };
+
+    private static bool IsForcedVisibleFileColumn(string key)
+        => string.Equals(key, FileReorderColumnKey, StringComparison.OrdinalIgnoreCase);
 
     private void HideExtraColumns()
     {
         foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
-            if (!DefaultVisibleColumns.Contains(key))
+            if (!DefaultVisibleColumns.Contains(key) && !IsForcedVisibleFileColumn(key))
                 col.Visibility = Visibility.Collapsed;
         }
 
         if (IsWin32FileList)
         {
             foreach (var col in _fileListColumns)
-                col.Visible = DefaultVisibleColumns.Contains(col.Key);
+                col.Visible = DefaultVisibleColumns.Contains(col.Key) || IsForcedVisibleFileColumn(col.Key);
             _win32FileListView?.ApplyColumnVisibility();
         }
     }
@@ -700,24 +972,11 @@ public partial class MainWindow : Window
 
     private void InitializeFileListView()
     {
-        if (IsWin32FileList)
-        {
-            _win32FileListView = new Win32FileListViewHost(_fileListColumns);
-            _fileListView = _win32FileListView;
-            win32FileListHost.Content = _win32FileListView;
-            win32FileListHost.Visibility = Visibility.Visible;
-            lvFiles.Visibility = Visibility.Collapsed;
-            InitializeWin32FileListView(_win32FileListView);
-            RebuildViewItems(preserveSelection: false);
-        }
-        else
-        {
-            _fileListView = _wpfFileListView;
-            _fileListView.ItemsSource = Files;
-            ConfigureWpfCollectionView();
-            win32FileListHost.Visibility = Visibility.Collapsed;
-            lvFiles.Visibility = Visibility.Visible;
-        }
+        _fileListView = _wpfFileListView;
+        _fileListView.ItemsSource = Files;
+        ConfigureWpfCollectionView();
+        win32FileListHost.Visibility = Visibility.Collapsed;
+        lvFiles.Visibility = Visibility.Visible;
     }
 
     private void InitializeWin32FileListView(Win32FileListViewHost host)
@@ -850,6 +1109,7 @@ public partial class MainWindow : Window
     {
         col.TextGetter = col.Key switch
         {
+            FileReorderColumnKey => _ => string.Empty,
             "IsMarked" => _ => string.Empty,
             "State" => f => ((RenFile)f).State,
             "OriginalName" => f => ((RenFile)f).OriginalName,
@@ -877,6 +1137,7 @@ public partial class MainWindow : Window
 
         col.SortValueGetter = col.Key switch
         {
+            FileReorderColumnKey => _ => string.Empty,
             "IsMarked" => f => ((RenFile)f).IsMarked,
             "State" => f => ((RenFile)f).State,
             "OriginalName" => f => ((RenFile)f).OriginalName,
@@ -902,7 +1163,8 @@ public partial class MainWindow : Window
             _ => _ => string.Empty
         };
 
-        if (string.Equals(col.Key, "IsMarked", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(col.Key, "IsMarked", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(col.Key, FileReorderColumnKey, StringComparison.OrdinalIgnoreCase))
             col.Sortable = false;
     }
 
@@ -915,6 +1177,7 @@ public partial class MainWindow : Window
 
         return key switch
         {
+            FileReorderColumnKey => string.Empty,
             "IsMarked" => string.Empty,
             "State" => LanguageService.GetString("Column_State"),
             "OriginalName" => LanguageService.GetString("Column_Name"),
@@ -2105,9 +2368,7 @@ public partial class MainWindow : Window
         var index = lvRules.SelectedIndex;
         if (index > 0)
         {
-            var item = Rules[index];
-            Rules.RemoveAt(index);
-            Rules.Insert(index - 1, item);
+            Rules.Move(index, index - 1);
             lvRules.SelectedIndex = index - 1;
             AutoPreviewIfEnabled(sender, e);
         }
@@ -2118,9 +2379,7 @@ public partial class MainWindow : Window
         var index = lvRules.SelectedIndex;
         if (index >= 0 && index < Rules.Count - 1)
         {
-            var item = Rules[index];
-            Rules.RemoveAt(index);
-            Rules.Insert(index + 1, item);
+            Rules.Move(index, index + 1);
             lvRules.SelectedIndex = index + 1;
             AutoPreviewIfEnabled(sender, e);
         }
@@ -2132,53 +2391,295 @@ public partial class MainWindow : Window
 
     private void Rules_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (sender is not FrameworkElement handle || handle.DataContext is not IRule rule)
+        {
+            _draggedRule = null;
+            _draggedRuleIndex = -1;
+            _lastRuleDragPreviewSignature = null;
+            return;
+        }
+
         _rulesDragStartPoint = e.GetPosition(null);
-        _draggedRule = GetRuleAtPoint(e.GetPosition(lvRules));
+        _draggedRule = rule;
+        _draggedRuleIndex = Rules.IndexOf(rule);
+        _lastRuleDragPreviewSignature = null;
+        LogRuleDragDiag($"[RuleDrag] mouse-down dragIndex={_draggedRuleIndex} rule='{DescribeRule(rule)}' start=({_rulesDragStartPoint.X:F1},{_rulesDragStartPoint.Y:F1})");
+        lvRules.SelectedItem = rule;
+        handle.CaptureMouse();
+        e.Handled = true;
     }
 
     private void Rules_MouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed || _draggedRule == null) return;
+        if (sender is not UIElement handle || e.LeftButton != MouseButtonState.Pressed || _draggedRule == null || _draggedRuleIndex < 0)
+            return;
+
         var position = e.GetPosition(null);
         if (Math.Abs(position.X - _rulesDragStartPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
             Math.Abs(position.Y - _rulesDragStartPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
         {
-            DragDrop.DoDragDrop(lvRules, _draggedRule, DragDropEffects.Move);
+            if (handle.IsMouseCaptured)
+                handle.ReleaseMouseCapture();
+
+            try
+            {
+                var dragData = CreateRuleDragDataObject(_draggedRuleIndex);
+                LogRuleDragDiag(
+                    $"[RuleDrag] do-drag-drop dragIndex={_draggedRuleIndex} rule='{DescribeRule(_draggedRule)}' " +
+                    $"start=({_rulesDragStartPoint.X:F1},{_rulesDragStartPoint.Y:F1}) current=({position.X:F1},{position.Y:F1})");
+                DragDrop.DoDragDrop(handle, dragData, DragDropEffects.Move);
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                LogException("Rules_MouseMove.DoDragDrop", ex);
+                LogRuleDragDiag($"[RuleDrag] do-drag-drop-fail dragIndex={_draggedRuleIndex} rule='{DescribeRule(_draggedRule)}' message='{ex.Message}'");
+                tbStatusInfo.Text = "规则拖动失败，请重试。";
+            }
+            finally
+            {
+                ClearRuleDropPreview("mouse-move-finally");
+                _draggedRule = null;
+                _draggedRuleIndex = -1;
+            }
+        }
+    }
+
+    private void RuleDragHandle_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is UIElement handle && handle.IsMouseCaptured)
+            handle.ReleaseMouseCapture();
+
+        _draggedRule = null;
+        _draggedRuleIndex = -1;
+        LogRuleDragDiag("[RuleDrag] mouse-up release");
+        ClearRuleDropPreview("mouse-up");
+    }
+
+    private void RulesHeaderResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: string columnKey })
+            return;
+
+        const double minimumUtilityWidth = 28;
+        const double minimumNumberWidth = 42;
+        const double minimumRuleWidth = 120;
+
+        switch (columnKey)
+        {
+            case "drag":
+                RuleDragColumnWidth = new GridLength(Math.Max(minimumUtilityWidth, RuleDragColumnWidth.Value + e.HorizontalChange));
+                break;
+            case "check":
+                RuleCheckColumnWidth = new GridLength(Math.Max(minimumUtilityWidth, RuleCheckColumnWidth.Value + e.HorizontalChange));
+                break;
+            case "index":
+                RuleIndexColumnWidth = new GridLength(Math.Max(minimumNumberWidth, RuleIndexColumnWidth.Value + e.HorizontalChange));
+                break;
+            case "rule":
+                RuleNameColumnWidth = new GridLength(Math.Max(minimumRuleWidth, RuleNameColumnWidth.Value + e.HorizontalChange));
+                break;
         }
     }
 
     private void Rules_DragOver(object sender, DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(typeof(IRule)) ? DragDropEffects.Move : DragDropEffects.None;
+        if (TryGetDraggedRuleIndex(e.Data, out var dragIndex))
+        {
+            unchecked
+            {
+                _ruleDropPreviewEventVersion++;
+            }
+
+            LogRuleDragDiag($"[RuleDrag] drag-over version={_ruleDropPreviewEventVersion} dragIndex={dragIndex} pt=({e.GetPosition(lvRules).X:F1},{e.GetPosition(lvRules).Y:F1})");
+            UpdateRuleDropPreview(e.GetPosition(lvRules));
+            e.Effects = DragDropEffects.Move;
+        }
+        else
+        {
+            LogRuleDragDiag("[RuleDrag] drag-over ignored no-data");
+            ClearRuleDropPreview("drag-over-no-data");
+            e.Effects = DragDropEffects.None;
+        }
+
+        e.Handled = true;
+    }
+
+    private void Rules_DragLeave(object sender, DragEventArgs e)
+    {
+        LogRuleDragDiag("[RuleDrag] drag-leave ignored to prevent preview flicker");
         e.Handled = true;
     }
 
     private void Rules_Drop(object sender, DragEventArgs e)
     {
-        if (!e.Data.GetDataPresent(typeof(IRule))) return;
-        var dragged = e.Data.GetData(typeof(IRule)) as IRule;
-        if (dragged == null) return;
+        if (!TryGetDraggedRuleIndex(e.Data, out var oldIndex))
+        {
+            LogRuleDragDiag("[RuleDrag] drop ignored no-data");
+            ClearRuleDropPreview("drop-no-data");
+            return;
+        }
 
-        var target = GetRuleAtPoint(e.GetPosition(lvRules));
-        int oldIndex = Rules.IndexOf(dragged);
-        if (oldIndex < 0) return;
+        var dragged = oldIndex >= 0 && oldIndex < Rules.Count
+            ? Rules[oldIndex]
+            : _draggedRule;
+        if (dragged == null)
+        {
+            LogRuleDragDiag($"[RuleDrag] drop ignored missing-rule oldIndex={oldIndex}");
+            ClearRuleDropPreview("drop-missing-rule");
+            return;
+        }
 
-        int newIndex = target != null ? Rules.IndexOf(target) : Rules.Count - 1;
-        if (newIndex < 0) newIndex = Rules.Count - 1;
-        if (newIndex == oldIndex) return;
-        if (newIndex > oldIndex) newIndex--; // account for removal
+        var dropPoint = e.GetPosition(lvRules);
+        oldIndex = Rules.IndexOf(dragged);
+        if (oldIndex < 0)
+        {
+            LogRuleDragDiag($"[RuleDrag] drop ignored old-index-not-found rule='{DescribeRule(dragged)}'");
+            ClearRuleDropPreview("drop-old-index-not-found");
+            return;
+        }
 
+        int insertionIndex = GetRuleInsertIndex(dropPoint);
+        if (insertionIndex > oldIndex)
+            insertionIndex--;
+
+        int newIndex = Math.Clamp(insertionIndex, 0, Rules.Count - 1);
+        if (newIndex == oldIndex)
+        {
+            LogRuleDragDiag(
+                $"[RuleDrag] drop no-op rule='{DescribeRule(dragged)}' oldIndex={oldIndex} " +
+                $"rawInsert={insertionIndex} newIndex={newIndex} pt=({dropPoint.X:F1},{dropPoint.Y:F1})");
+            ClearRuleDropPreview("drop-no-op");
+            return;
+        }
+
+        LogRuleDragDiag(
+            $"[RuleDrag] drop move rule='{DescribeRule(dragged)}' oldIndex={oldIndex} " +
+            $"rawInsert={insertionIndex} newIndex={newIndex} pt=({dropPoint.X:F1},{dropPoint.Y:F1})");
         Rules.Move(oldIndex, newIndex);
         lvRules.SelectedItem = dragged;
+        ClearRuleDropPreview("drop-complete");
         AutoPreviewIfEnabled(sender, new RoutedEventArgs());
     }
 
-    private IRule? GetRuleAtPoint(Point point)
+    private static DataObject CreateRuleDragDataObject(int ruleIndex)
+    {
+        var dragData = new DataObject();
+        dragData.SetData(RuleDragIndexDataFormat, ruleIndex.ToString(CultureInfo.InvariantCulture));
+        return dragData;
+    }
+
+    private static bool TryGetDraggedRuleIndex(IDataObject dataObject, out int ruleIndex)
+    {
+        ruleIndex = -1;
+        if (!dataObject.GetDataPresent(RuleDragIndexDataFormat))
+            return false;
+
+        var raw = dataObject.GetData(RuleDragIndexDataFormat) as string;
+        return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out ruleIndex);
+    }
+
+    private int GetRuleInsertIndex(Point point)
+    {
+        var row = GetRuleRowAtPoint(point);
+        if (row == null)
+            return Rules.Count;
+
+        int rowIndex = row.GetIndex();
+        if (rowIndex < 0)
+            return Rules.Count;
+
+        var rowTopLeft = row.TranslatePoint(new Point(0, 0), lvRules);
+        bool insertAfter = point.Y > rowTopLeft.Y + (row.ActualHeight / 2);
+        return insertAfter ? rowIndex + 1 : rowIndex;
+    }
+
+    private void UpdateRuleDropPreview(Point point)
+    {
+        if (Rules.Count == 0)
+        {
+            LogRuleDragDiag($"[RuleDrag] preview skipped reason=no-rules pt=({point.X:F1},{point.Y:F1})");
+            ClearRuleDropPreview("preview-no-rules");
+            return;
+        }
+
+        var row = GetRuleRowAtPoint(point);
+        if (row != null)
+        {
+            int hitRowIndex = row.GetIndex();
+            int rawInsertionIndex = GetRuleInsertIndex(point);
+            ApplyRuleDropPreview(point, hitRowIndex, rawInsertionIndex);
+            return;
+        }
+
+        if (lvRules.ItemContainerGenerator.ContainerFromIndex(0) is DataGridRow firstRow &&
+            firstRow.DataContext is IRule)
+        {
+            var firstRowTop = firstRow.TranslatePoint(new Point(0, 0), lvRules).Y;
+            if (point.Y <= firstRowTop + (firstRow.ActualHeight / 2))
+            {
+                ApplyRuleDropPreview(point, 0, 0);
+                return;
+            }
+        }
+
+        if (lvRules.ItemContainerGenerator.ContainerFromIndex(Rules.Count - 1) is DataGridRow lastRow &&
+            lastRow.DataContext is IRule)
+        {
+            var lastRowTop = lastRow.TranslatePoint(new Point(0, 0), lvRules).Y;
+            if (point.Y >= lastRowTop + (lastRow.ActualHeight / 2))
+            {
+                ApplyRuleDropPreview(point, Rules.Count - 1, Rules.Count);
+                return;
+            }
+        }
+
+        LogRuleDragDiag($"[RuleDrag] preview clear reason=no-hit pt=({point.X:F1},{point.Y:F1})");
+        ClearRuleDropPreview("preview-no-hit");
+    }
+
+    private void ApplyRuleDropPreview(Point point, int? hitRowIndex, int insertionIndex)
+    {
+        if (Rules.Count == 0)
+        {
+            LogRuleDragDiag($"[RuleDrag] preview apply skipped reason=no-rules pt=({point.X:F1},{point.Y:F1})");
+            ClearRuleDropPreview("apply-preview-no-rules");
+            return;
+        }
+
+        insertionIndex = Math.Clamp(insertionIndex, 0, Rules.Count);
+        if (insertionIndex == 0)
+        {
+            LogRuleDragPreviewState("preview", point, hitRowIndex, insertionIndex, 0, insertAfter: false);
+            SetRuleDropPreview(Rules[0], insertAfter: false);
+            return;
+        }
+
+        if (insertionIndex >= Rules.Count)
+        {
+            LogRuleDragPreviewState("preview", point, hitRowIndex, insertionIndex, Rules.Count - 1, insertAfter: true);
+            SetRuleDropPreview(Rules[^1], insertAfter: true);
+            return;
+        }
+
+        LogRuleDragPreviewState("preview", point, hitRowIndex, insertionIndex, insertionIndex, insertAfter: false);
+        // 中间插入位置统一预览为“目标行顶部”，避免上一行底部/下一行顶部之间来回闪烁。
+        SetRuleDropPreview(Rules[insertionIndex], insertAfter: false);
+    }
+
+    private DataGridRow? GetRuleRowAtPoint(Point point)
     {
         var element = lvRules.InputHitTest(point) as DependencyObject;
-        while (element != null && element is not ListViewItem)
+        if (element == null)
+            return null;
+
+        if (ItemsControl.ContainerFromElement(lvRules, element) is DataGridRow row)
+            return row;
+
+        while (element != null && element is not DataGridRow)
             element = VisualTreeHelper.GetParent(element);
-        return (element as ListViewItem)?.DataContext as IRule;
+
+        return element as DataGridRow;
     }
 
     private void RuleCheckBox_Click(object sender, RoutedEventArgs e) => AutoPreviewIfEnabled(sender, e);
@@ -2694,8 +3195,36 @@ public partial class MainWindow : Window
     {
         if (IsWin32FileList)
             return;
+
+        RenFile? file = null;
+        UIElement? dragSource = sender as UIElement;
+
+        if (sender is FrameworkElement handle && handle.DataContext is RenFile handleFile)
+        {
+            file = handleFile;
+            dragSource = handle;
+        }
+        else
+        {
+            file = GetFileAtPoint(e.GetPosition(lvFiles));
+            dragSource = lvFiles;
+        }
+
+        if (file == null || dragSource == null)
+        {
+            _draggedFile = null;
+            _draggedFileIndex = -1;
+            return;
+        }
+
         _filesDragStartPoint = e.GetPosition(null);
-        _draggedFile = GetFileAtPoint(e.GetPosition(lvFiles));
+        _draggedFile = file;
+        _draggedFileIndex = Files.IndexOf(file);
+        _fileListView.SelectedItem = file;
+        dragSource.CaptureMouse();
+
+        if (!ReferenceEquals(dragSource, lvFiles))
+            e.Handled = true;
     }
 
     private void Files_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -2716,12 +3245,27 @@ public partial class MainWindow : Window
 
     private void Files_MouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed || _draggedFile == null) return;
+        if (sender is not UIElement handle || e.LeftButton != MouseButtonState.Pressed || _draggedFile == null || _draggedFileIndex < 0)
+            return;
+
         var position = e.GetPosition(null);
         if (Math.Abs(position.X - _filesDragStartPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
             Math.Abs(position.Y - _filesDragStartPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
         {
-            DragDrop.DoDragDrop(lvFiles, _draggedFile, DragDropEffects.Move);
+            if (handle.IsMouseCaptured)
+                handle.ReleaseMouseCapture();
+
+            try
+            {
+                var dragData = CreateFileDragDataObject(_draggedFileIndex);
+                DragDrop.DoDragDrop(handle, dragData, DragDropEffects.Move);
+            }
+            finally
+            {
+                ClearFileDropPreview();
+                _draggedFile = null;
+                _draggedFileIndex = -1;
+            }
         }
     }
 
@@ -2729,14 +3273,17 @@ public partial class MainWindow : Window
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
+            ClearFileDropPreview();
             e.Effects = DragDropEffects.Copy;
         }
-        else if (e.Data.GetDataPresent(typeof(RenFile)))
+        else if (TryGetDraggedFileIndex(e.Data, out _))
         {
+            UpdateFileDropPreview(e.GetPosition(lvFiles));
             e.Effects = DragDropEffects.Move;
         }
         else
         {
+            ClearFileDropPreview();
             e.Effects = DragDropEffects.None;
         }
         e.Handled = true;
@@ -2746,27 +3293,171 @@ public partial class MainWindow : Window
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
+            ClearFileDropPreview();
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
             AddFilePaths(paths, recursive: true, forcePreview: _appSettings.AutoPreview);
             return;
         }
 
-        if (!e.Data.GetDataPresent(typeof(RenFile))) return;
-        var dragged = e.Data.GetData(typeof(RenFile)) as RenFile;
-        if (dragged == null) return;
+        if (!TryGetDraggedFileIndex(e.Data, out var oldIndex))
+        {
+            ClearFileDropPreview();
+            return;
+        }
 
-        var target = GetFileAtPoint(e.GetPosition(lvFiles));
-        int oldIndex = Files.IndexOf(dragged);
-        if (oldIndex < 0) return;
+        var dragged = oldIndex >= 0 && oldIndex < Files.Count
+            ? Files[oldIndex]
+            : _draggedFile;
+        if (dragged == null)
+        {
+            ClearFileDropPreview();
+            return;
+        }
 
-        int newIndex = target != null ? Files.IndexOf(target) : Files.Count - 1;
-        if (newIndex < 0) newIndex = Files.Count - 1;
-        if (newIndex == oldIndex) return;
-        if (newIndex > oldIndex) newIndex--;
+        var dropPoint = e.GetPosition(lvFiles);
+        oldIndex = Files.IndexOf(dragged);
+        if (oldIndex < 0)
+        {
+            ClearFileDropPreview();
+            return;
+        }
+
+        int insertionIndex = GetFileInsertIndex(dropPoint);
+        if (insertionIndex > oldIndex)
+            insertionIndex--;
+
+        int newIndex = Math.Clamp(insertionIndex, 0, Files.Count - 1);
+        if (newIndex == oldIndex)
+        {
+            ClearFileDropPreview();
+            return;
+        }
 
         Files.Move(oldIndex, newIndex);
         _fileListView.SelectedItem = dragged;
+        ClearFileDropPreview();
         NotifyPreviewRefreshNeededForFileOrder();
+    }
+
+    private void FileDragHandle_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is UIElement handle && handle.IsMouseCaptured)
+            handle.ReleaseMouseCapture();
+
+        _draggedFile = null;
+        _draggedFileIndex = -1;
+        ClearFileDropPreview();
+    }
+
+    private static DataObject CreateFileDragDataObject(int fileIndex)
+    {
+        var dragData = new DataObject();
+        dragData.SetData(FileDragIndexDataFormat, fileIndex.ToString(CultureInfo.InvariantCulture));
+        return dragData;
+    }
+
+    private static bool TryGetDraggedFileIndex(IDataObject dataObject, out int fileIndex)
+    {
+        fileIndex = -1;
+        if (!dataObject.GetDataPresent(FileDragIndexDataFormat))
+            return false;
+
+        var raw = dataObject.GetData(FileDragIndexDataFormat) as string;
+        return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out fileIndex);
+    }
+
+    private int GetFileInsertIndex(Point point)
+    {
+        var row = GetFileRowAtPoint(point);
+        if (row == null)
+            return Files.Count;
+
+        int rowIndex = row.GetIndex();
+        if (rowIndex < 0)
+            return Files.Count;
+
+        var rowTopLeft = row.TranslatePoint(new Point(0, 0), lvFiles);
+        bool insertAfter = point.Y > rowTopLeft.Y + (row.ActualHeight / 2);
+        return insertAfter ? rowIndex + 1 : rowIndex;
+    }
+
+    private void UpdateFileDropPreview(Point point)
+    {
+        if (Files.Count == 0)
+        {
+            ClearFileDropPreview();
+            return;
+        }
+
+        var row = GetFileRowAtPoint(point);
+        if (row != null)
+        {
+            ApplyFileDropPreview(GetFileInsertIndex(point));
+            return;
+        }
+
+        if (lvFiles.ItemContainerGenerator.ContainerFromIndex(0) is DataGridRow firstRow &&
+            firstRow.DataContext is RenFile)
+        {
+            var firstRowTop = firstRow.TranslatePoint(new Point(0, 0), lvFiles).Y;
+            if (point.Y <= firstRowTop + (firstRow.ActualHeight / 2))
+            {
+                ApplyFileDropPreview(0);
+                return;
+            }
+        }
+
+        if (lvFiles.ItemContainerGenerator.ContainerFromIndex(Files.Count - 1) is DataGridRow lastRow &&
+            lastRow.DataContext is RenFile)
+        {
+            var lastRowTop = lastRow.TranslatePoint(new Point(0, 0), lvFiles).Y;
+            if (point.Y >= lastRowTop + (lastRow.ActualHeight / 2))
+            {
+                ApplyFileDropPreview(Files.Count);
+                return;
+            }
+        }
+
+        ClearFileDropPreview();
+    }
+
+    private void ApplyFileDropPreview(int insertionIndex)
+    {
+        if (Files.Count == 0)
+        {
+            ClearFileDropPreview();
+            return;
+        }
+
+        insertionIndex = Math.Clamp(insertionIndex, 0, Files.Count);
+        if (insertionIndex == 0)
+        {
+            SetFileDropPreview(Files[0], insertAfter: false);
+            return;
+        }
+
+        if (insertionIndex >= Files.Count)
+        {
+            SetFileDropPreview(Files[^1], insertAfter: true);
+            return;
+        }
+
+        SetFileDropPreview(Files[insertionIndex], insertAfter: false);
+    }
+
+    private DataGridRow? GetFileRowAtPoint(Point point)
+    {
+        var element = lvFiles.InputHitTest(point) as DependencyObject;
+        if (element == null)
+            return null;
+
+        if (ItemsControl.ContainerFromElement(lvFiles, element) is DataGridRow row)
+            return row;
+
+        while (element != null && element is not DataGridRow)
+            element = VisualTreeHelper.GetParent(element);
+
+        return element as DataGridRow;
     }
 
     private RenFile? GetFileAtPoint(Point point)
@@ -4823,7 +5514,7 @@ public partial class MainWindow : Window
 
                 if (_appSettings.VisibleColumns.Count > 0)
                 {
-                    var isVisible = _appSettings.VisibleColumns.Contains(col.Key);
+                    var isVisible = _appSettings.VisibleColumns.Contains(col.Key) || IsForcedVisibleFileColumn(col.Key);
                     col.Visible = isVisible;
                     if (isVisible && (!_appSettings.ColumnWidths.TryGetValue(col.Key, out var persistedWidth) || persistedWidth <= 0))
                     {
@@ -4850,7 +5541,7 @@ public partial class MainWindow : Window
 
             if (_appSettings.VisibleColumns.Count > 0)
             {
-                var isVisible = _appSettings.VisibleColumns.Contains(key);
+                var isVisible = _appSettings.VisibleColumns.Contains(key) || IsForcedVisibleFileColumn(key);
                 col.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (isVisible && (!_appSettings.ColumnWidths.TryGetValue(key, out var persistedWidth) || persistedWidth <= 0))
                 {

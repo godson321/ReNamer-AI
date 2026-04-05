@@ -45,7 +45,6 @@ public class AppSettings
     public bool ResolveMetaTags { get; set; } = true;
     public int ConflictResolution { get; set; } = 0; // 0=Skip, 1=AddSuffix, 2=Overwrite
     public bool EnableInputDebugLogging { get; set; } = false;
-    public FileListEngine FileListEngine { get; set; } = FileListEngine.WpfDataGrid;
 
     // ─── Filters ───
     public bool FiltersApplied { get; set; } = false;
