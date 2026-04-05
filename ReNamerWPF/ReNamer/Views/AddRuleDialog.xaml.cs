@@ -23,7 +23,7 @@ public partial class AddRuleDialog : Window
     private static readonly List<string> RuleTypes = new()
     {
         "Replace", "Insert", "Delete", "Case", "Serialize",
-        "Padding", "CleanUp", "Transliterate", "RegEx",
+        "Padding", "CleanUp", "Transliterate", "ChineseConvert", "ChineseNumber", "RegEx",
         "Rearrange", "ReformatDate", "Randomize", "JavaScript", "UserInput", "Mapping"
     };
 
@@ -39,6 +39,8 @@ public partial class AddRuleDialog : Window
         ["Padding"] = (Geometry)Application.Current.FindResource("Icon_Padding"),
         ["CleanUp"] = (Geometry)Application.Current.FindResource("Icon_CleanUp"),
         ["Transliterate"] = (Geometry)Application.Current.FindResource("Icon_Transliterate"),
+        ["ChineseConvert"] = (Geometry)Application.Current.FindResource("Icon_Transliterate"),
+        ["ChineseNumber"] = (Geometry)Application.Current.FindResource("Icon_Transliterate"),
         ["RegEx"] = (Geometry)Application.Current.FindResource("Icon_RegEx"),
         ["Rearrange"] = (Geometry)Application.Current.FindResource("Icon_Rearrange"),
         ["ReformatDate"] = (Geometry)Application.Current.FindResource("Icon_ReformatDate"),
@@ -209,6 +211,8 @@ public partial class AddRuleDialog : Window
             "Padding" => new PaddingRule(),
             "CleanUp" => new CleanUpRule(),
             "Transliterate" => new TransliterateRule(),
+            "ChineseConvert" => new ChineseConvertRule(),
+            "ChineseNumber" => new ChineseNumberRule(),
             "Rearrange" => new RearrangeRule(),
             "ReformatDate" => new ReformatDateRule(),
             "Randomize" => new RandomizeRule(),
@@ -232,6 +236,8 @@ public partial class AddRuleDialog : Window
             PaddingRule r => new PaddingConfigPanel(r),
             CleanUpRule r => new CleanUpConfigPanel(r),
             TransliterateRule r => new TransliterateConfigPanel(r),
+            ChineseConvertRule r => new ChineseConvertConfigPanel(r),
+            ChineseNumberRule r => new ChineseNumberConfigPanel(r),
             RearrangeRule r => new RearrangeConfigPanel(r),
             ReformatDateRule r => new ReformatDateConfigPanel(r),
             RandomizeRule r => new RandomizeConfigPanel(r),
@@ -256,6 +262,8 @@ public partial class AddRuleDialog : Window
             PaddingRule => "Padding",
             CleanUpRule => "CleanUp",
             TransliterateRule => "Transliterate",
+            ChineseConvertRule => "ChineseConvert",
+            ChineseNumberRule => "ChineseNumber",
             RearrangeRule => "Rearrange",
             ReformatDateRule => "ReformatDate",
             RandomizeRule => "Randomize",

@@ -213,16 +213,24 @@ public class DeleteRule : RuleBase
         var result = fileName;
         if (!string.IsNullOrEmpty(RemovePattern))
         {
-            var removeRule = new RemoveRule
+            if (RuleHelpers.ContainsUnescapedSeparator(RemovePattern))
             {
-                Pattern = RemovePattern,
-                Occurrence = RemoveOccurrence,
-                CaseSensitive = RemoveCaseSensitive,
-                WholeWordsOnly = RemoveWholeWordsOnly,
-                SkipExtension = SkipExtension,
-                UseWildcards = RemoveUseWildcards
-            };
-            result = removeRule.Execute(result, file);
+                result = ExecuteMultipleTextRemove(result, file);
+            }
+            else
+            {
+                var removeRule = new RemoveRule
+                {
+                    Pattern = RuleHelpers.UnescapeSeparatorEscapes(RemovePattern),
+                    Occurrence = RemoveOccurrence,
+                    CaseSensitive = RemoveCaseSensitive,
+                    WholeWordsOnly = RemoveWholeWordsOnly,
+                    SkipExtension = SkipExtension,
+                    UseWildcards = RemoveUseWildcards,
+                    EnableMultiPattern = false
+                };
+                result = removeRule.Execute(result, file);
+            }
         }
 
         if (HasStripSelection())
@@ -236,6 +244,24 @@ public class DeleteRule : RuleBase
         if (TextFirstInCombined)
             return ExecutePositionDelete(ExecuteTextRemove(fileName, file), file);
         return ExecuteTextRemove(ExecutePositionDelete(fileName, file), file);
+    }
+
+    /// <summary>
+    /// 执行多文本删除模式 - 按|分隔多个删除项
+    /// </summary>
+    private string ExecuteMultipleTextRemove(string input, RenFile file)
+    {
+        var removeRule = new RemoveRule
+        {
+            Pattern = RemovePattern,
+            Occurrence = RemoveOccurrence,
+            CaseSensitive = RemoveCaseSensitive,
+            WholeWordsOnly = RemoveWholeWordsOnly,
+            SkipExtension = SkipExtension,
+            UseWildcards = RemoveUseWildcards,
+            EnableMultiPattern = true
+        };
+        return removeRule.Execute(input, file);
     }
 
     private bool HasStripSelection()
@@ -320,6 +346,7 @@ public class RemoveRule : RuleBase
     public bool WholeWordsOnly { get; set; } = false;
     public bool SkipExtension { get; set; } = true;
     public bool UseWildcards { get; set; } = false;
+    public bool EnableMultiPattern { get; set; } = true;
 
     public override string RuleName => "Remove";
     public override string Description => $"Remove \"{Pattern}\"";
@@ -328,30 +355,161 @@ public class RemoveRule : RuleBase
     {
         if (string.IsNullOrEmpty(Pattern)) return fileName;
         var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
+        var singlePattern = RuleHelpers.UnescapeSeparatorEscapes(Pattern);
         string result;
-        if (UseWildcards)
-            result = RuleHelpers.RemoveWildcard(baseName, Pattern, Occurrence);
+
+        if (EnableMultiPattern && RuleHelpers.ContainsUnescapedSeparator(Pattern))
+        {
+            result = ExecuteMultipleRemove(baseName, file);
+        }
+        else if (UseWildcards)
+            result = RuleHelpers.RemoveWildcard(baseName, singlePattern, Occurrence, CaseSensitive);
         else if (WholeWordsOnly)
-            result = RuleHelpers.RemoveWholeWords(baseName, Pattern, CaseSensitive, Occurrence);
+            result = RuleHelpers.RemoveWholeWords(baseName, singlePattern, CaseSensitive, Occurrence);
         else
-            result = RemoveSimple(baseName);
+            result = RemoveSimple(baseName, singlePattern);
         return result + ext;
     }
 
-    private string RemoveSimple(string input)
+    private string RemoveSimple(string input, string pattern)
     {
         var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
         var r = input;
         switch (Occurrence)
         {
             case RemoveOccurrence.All:
-                int i; while ((i = r.IndexOf(Pattern, cmp)) >= 0) r = r.Remove(i, Pattern.Length); break;
+                int i; while ((i = r.IndexOf(pattern, cmp)) >= 0) r = r.Remove(i, pattern.Length); break;
             case RemoveOccurrence.First:
-                var fi = r.IndexOf(Pattern, cmp); if (fi >= 0) r = r.Remove(fi, Pattern.Length); break;
+                var fi = r.IndexOf(pattern, cmp); if (fi >= 0) r = r.Remove(fi, pattern.Length); break;
             case RemoveOccurrence.Last:
-                var li = r.LastIndexOf(Pattern, cmp); if (li >= 0) r = r.Remove(li, Pattern.Length); break;
+                var li = r.LastIndexOf(pattern, cmp); if (li >= 0) r = r.Remove(li, pattern.Length); break;
         }
         return r;
+    }
+
+    /// <summary>
+    /// 执行多模式移除 - 按|分隔多个移除项
+    /// </summary>
+    private string ExecuteMultipleRemove(string baseName, RenFile file)
+    {
+        var removeParts = RuleHelpers.SplitUnescaped(Pattern);
+        if (Occurrence != RemoveOccurrence.All)
+            return ExecuteMultipleRemoveGlobalSingle(baseName, removeParts);
+
+        var result = baseName;
+
+        foreach (var removePart in removeParts)
+        {
+            var pattern = removePart;
+            if (string.IsNullOrEmpty(pattern)) continue;
+
+            var removeRule = new RemoveRule
+            {
+                Pattern = pattern,
+                Occurrence = Occurrence,
+                CaseSensitive = CaseSensitive,
+                WholeWordsOnly = WholeWordsOnly,
+                SkipExtension = false,
+                UseWildcards = UseWildcards,
+                EnableMultiPattern = false
+            };
+            result = removeRule.Execute(result, file);
+        }
+
+        return result;
+    }
+
+    private string ExecuteMultipleRemoveGlobalSingle(string input, string[] removeParts)
+    {
+        int selectedIndex = -1;
+        int selectedPosition = Occurrence == RemoveOccurrence.First ? int.MaxValue : -1;
+
+        for (int i = 0; i < removeParts.Length; i++)
+        {
+            var pattern = removeParts[i];
+            if (string.IsNullOrEmpty(pattern)) continue;
+            if (!TryGetRemoveMatchPosition(input, pattern, out var position)) continue;
+
+            if (Occurrence == RemoveOccurrence.First)
+            {
+                if (position < selectedPosition)
+                {
+                    selectedPosition = position;
+                    selectedIndex = i;
+                }
+            }
+            else
+            {
+                if (position > selectedPosition)
+                {
+                    selectedPosition = position;
+                    selectedIndex = i;
+                }
+            }
+        }
+
+        if (selectedIndex < 0) return input;
+
+        var selectedPattern = removeParts[selectedIndex];
+        if (UseWildcards)
+            return RuleHelpers.RemoveWildcard(input, selectedPattern, Occurrence, CaseSensitive);
+        if (WholeWordsOnly)
+            return RuleHelpers.RemoveWholeWords(input, selectedPattern, CaseSensitive, Occurrence);
+
+        var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        if (Occurrence == RemoveOccurrence.First)
+        {
+            var index = input.IndexOf(selectedPattern, cmp);
+            return index >= 0 ? input.Remove(index, selectedPattern.Length) : input;
+        }
+
+        var lastIndex = input.LastIndexOf(selectedPattern, cmp);
+        return lastIndex >= 0 ? input.Remove(lastIndex, selectedPattern.Length) : input;
+    }
+
+    private bool TryGetRemoveMatchPosition(string input, string pattern, out int position)
+    {
+        if (UseWildcards)
+        {
+            var regexPattern = RuleHelpers.WildcardToRegex(pattern, supportBackreferences: false);
+            var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+            var regex = new Regex(regexPattern, options);
+            var matches = regex.Matches(input);
+            if (matches.Count == 0)
+            {
+                position = -1;
+                return false;
+            }
+
+            position = Occurrence == RemoveOccurrence.First
+                ? matches[0].Index
+                : matches[^1].Index;
+            return true;
+        }
+
+        if (WholeWordsOnly)
+        {
+            var regexPattern = RuleHelpers.BuildWholeWordPattern(pattern, CaseSensitive);
+            var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+            var regex = new Regex(regexPattern, options);
+            var matches = regex.Matches(input);
+            if (matches.Count == 0)
+            {
+                position = -1;
+                return false;
+            }
+
+            position = Occurrence == RemoveOccurrence.First
+                ? matches[0].Index
+                : matches[^1].Index;
+            return true;
+        }
+
+        var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        position = Occurrence == RemoveOccurrence.First
+            ? input.IndexOf(pattern, cmp)
+            : input.LastIndexOf(pattern, cmp);
+        return position >= 0;
     }
 }
 

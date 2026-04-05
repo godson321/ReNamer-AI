@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -20,6 +22,7 @@ using Microsoft.Win32;
 using ReNamer.Models;
 using ReNamer.Rules;
 using ReNamer.Services;
+using ReNamer.Views.FileList;
 using WinForms = System.Windows.Forms;
 
 namespace ReNamer.Views;
@@ -65,17 +68,82 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _renameCts;
     private int _renameRequestVersion;
     private const int AutoPreviewDebounceMilliseconds = 200;
+    private const int PreviewProgressUpdateTarget = 40;
+    private const int LargeSelectionThreshold = 1200;
+    private const int ParallelImportCreationThreshold = 256;
+    private static readonly int ParallelImportCreationDegree = Math.Clamp(Environment.ProcessorCount, 2, 8);
     private bool _isHighContrastMode;
     private readonly Dictionary<string, double> _defaultColumnWidths = new(StringComparer.OrdinalIgnoreCase);
     private bool _statusBarUpdatePending;
+    private bool _actionsRefreshPending;
+    private int _fileSelectionBatchDepth;
+    private bool _fileSelectionStatusDirty;
+    private int _wpfFilesBatchDepth;
+    private int _win32FilesBatchDepth;
+    private bool _win32FilesChangedWhileBatch;
+    private int _win32FilesDeferredChangeCount;
+    private NotifyCollectionChangedAction? _win32LastDeferredAction;
+    private bool _fileStateCacheDirty;
+    private int _fileStateUiFlushPending;
+    private bool _autoPreviewQueuedDuringBatch;
+    private bool _largeSelectionInProgress;
+    private int _totalFileCount;
+    private int _markedFileCount;
+    private int _renamedFileCount;
+    private int _renameableFileCount;
+    private int _selectedFileCount;
+    private readonly HashSet<RenFile> _trackedFileSubscriptions = new();
+    private IFileListView _fileListView = null!;
+    private WpfFileListViewAdapter _wpfFileListView = null!;
+    private Win32FileListViewHost? _win32FileListView;
+    private readonly List<FileListColumn> _fileListColumns = new();
+    private Win32FileListPalette? _win32Palette;
+    private readonly List<RenFile> _viewItems = new();
+    private string? _viewSortKey;
+    private ListSortDirection? _viewSortDirection;
+    private long _importTraceSequence;
+    private long _previewTraceSequence;
+    private static readonly string AppRootDir = AppContext.BaseDirectory;
+    private static readonly object ImportLogSync = new();
+    private static readonly string ImportLogFile = Path.Combine(
+        AppRootDir,
+        "logs",
+        "file-import-debug.log");
     private static readonly string UndoLogsDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "ReNamer",
+        AppRootDir,
+        "logs",
         "UndoLogs");
     private static readonly string SessionRulesFile = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "ReNamer",
+        AppRootDir,
+        "config",
         "last-session-rules.json");
+    private static readonly HashSet<string> MutableSortProperties = new(StringComparer.Ordinal)
+    {
+        nameof(RenFile.IsMarked),
+        nameof(RenFile.State),
+        nameof(RenFile.OriginalName),
+        nameof(RenFile.NewName),
+        nameof(RenFile.Error),
+        nameof(RenFile.OldPath),
+        nameof(RenFile.ExifDate),
+        nameof(RenFile.NameDigits),
+        nameof(RenFile.NameLength),
+        nameof(RenFile.PathDigits),
+        nameof(RenFile.PathLength),
+        nameof(RenFile.NewPath),
+        nameof(RenFile.NewNameLength),
+        nameof(RenFile.NewPathLength)
+    };
+    private static readonly HashSet<string> FileStateImpactingProperties = new(StringComparer.Ordinal)
+    {
+        nameof(RenFile.IsMarked),
+        nameof(RenFile.IsRenamed),
+        nameof(RenFile.NewName),
+        nameof(RenFile.OriginalName),
+        nameof(RenFile.Error),
+        nameof(RenFile.State),
+        nameof(RenFile.OldPath)
+    };
     private WinForms.NotifyIcon? _trayIcon;
     private bool _exitRequestedFromTray;
 
@@ -170,7 +238,7 @@ public partial class MainWindow : Window
     public UiAction CmdMoveFileDown { get; private set; } = null!;
     public UiAction CmdRemoveSelectedFiles { get; private set; } = null!;
 
-    public ObservableCollection<RenFile> Files { get; } = new();
+    public RangeObservableCollection<RenFile> Files { get; } = new();
     public ObservableCollection<IRule> Rules { get; } = new();
 
     public MainWindow()
@@ -187,13 +255,21 @@ public partial class MainWindow : Window
             MessageBox.Show(loadErrorMessage, "Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         RuleHelpers.ResolveMetaTagsEnabled = _appSettings.ResolveMetaTags;
+        App.SetInputDebugLoggingEnabled(_appSettings.EnableInputDebugLogging);
         ThemeService.ApplyTheme(_appSettings.Theme);
 
-        lvFiles.ItemsSource = Files;
+        _wpfFileListView = new WpfFileListViewAdapter(lvFiles, LargeSelectionThreshold);
+        _wpfFileListView.SelectionChanged += (_, _) => HandleFileSelectionChanged();
+        BuildFileListColumns();
+        InitializeFileListView();
+
         lvRules.ItemsSource = Rules;
 
-        Files.CollectionChanged += (_, _) => UpdateStatusBar();
+        Files.CollectionChanged += Files_CollectionChanged;
         Rules.CollectionChanged += Rules_CollectionChanged;
+
+        foreach (var file in Files)
+            TrackFilePropertyChanged(file);
 
         foreach (var rule in Rules)
             rule.PropertyChanged += Rule_PropertyChanged;
@@ -203,6 +279,8 @@ public partial class MainWindow : Window
         InitActions();
         SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         ApplyHighContrastMode(SystemParameters.HighContrast);
+        RecalculateFileStateCache();
+        _selectedFileCount = _fileListView.SelectedCount;
 
         // Hide extra columns by default (indices 8+: Folder, NewPath, SizeKB, SizeMB, etc.)
         Loaded += (_, _) =>
@@ -222,6 +300,27 @@ public partial class MainWindow : Window
     private static void LogException(string context, Exception ex)
     {
         Debug.WriteLine($"[MainWindow] {context}: {ex}");
+    }
+
+    private static void LogImportDiag(string message)
+    {
+        var line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [T{Environment.CurrentManagedThreadId}] {message}";
+        Debug.WriteLine(line);
+        App.LogInputDebug(message);
+
+        lock (ImportLogSync)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(ImportLogFile);
+                if (!string.IsNullOrWhiteSpace(dir))
+                    Directory.CreateDirectory(dir);
+                File.AppendAllText(ImportLogFile, line + Environment.NewLine);
+            }
+            catch
+            {
+            }
+        }
     }
 
     private void ShowBackgroundOperationError(string userMessage, bool showDialog)
@@ -295,6 +394,94 @@ public partial class MainWindow : Window
         }
 
         RefreshActions();
+    }
+
+    private void Files_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (var file in e.OldItems.OfType<RenFile>())
+                UntrackFilePropertyChanged(file);
+        }
+
+        if (e.NewItems != null)
+        {
+            foreach (var file in e.NewItems.OfType<RenFile>())
+                TrackFilePropertyChanged(file);
+        }
+
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+            ResyncFilePropertySubscriptions();
+
+        MarkFileStateCacheDirty();
+
+        if (IsWin32FileList)
+        {
+            if (_win32FilesBatchDepth > 0)
+            {
+                _win32FilesChangedWhileBatch = true;
+                _win32FilesDeferredChangeCount++;
+                _win32LastDeferredAction = e.Action;
+                if (_win32FilesDeferredChangeCount == 1 || _win32FilesDeferredChangeCount % 500 == 0)
+                {
+                    LogImportDiag(
+                        $"[FileSync] deferred action={e.Action} files={Files.Count} view={_viewItems.Count} " +
+                        $"batchDepth={_win32FilesBatchDepth} deferredCount={_win32FilesDeferredChangeCount}");
+                }
+                return;
+            }
+
+            LogImportDiag($"[FileSync] action={e.Action} files={Files.Count} view={_viewItems.Count} batchDepth={_win32FilesBatchDepth} changedWhileBatch={_win32FilesChangedWhileBatch}");
+            RebuildViewItems(preserveSelection: true);
+            LogImportDiag($"[FileSync] rebuilt action={e.Action} files={Files.Count} view={_viewItems.Count}");
+            FlushFileStateUi();
+            return;
+        }
+
+        if (_wpfFilesBatchDepth > 0)
+            return;
+
+        FlushFileStateUi();
+    }
+
+    private void TrackFilePropertyChanged(RenFile file)
+    {
+        if (_trackedFileSubscriptions.Add(file))
+            file.PropertyChanged += File_PropertyChanged;
+    }
+
+    private void UntrackFilePropertyChanged(RenFile file)
+    {
+        if (_trackedFileSubscriptions.Remove(file))
+            file.PropertyChanged -= File_PropertyChanged;
+    }
+
+    private void ResyncFilePropertySubscriptions()
+    {
+        var currentFiles = Files.ToHashSet();
+        foreach (var file in _trackedFileSubscriptions.Except(currentFiles).ToList())
+            UntrackFilePropertyChanged(file);
+
+        foreach (var file in currentFiles)
+            TrackFilePropertyChanged(file);
+    }
+
+    private void File_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is null || !FileStateImpactingProperties.Contains(e.PropertyName))
+            return;
+
+        if (!Dispatcher.CheckAccess())
+        {
+            RequestFileStateUiFlush();
+            return;
+        }
+
+        MarkFileStateCacheDirty();
+        if (IsFileMutationBatchActive)
+            return;
+
+        FlushFileStateUi();
     }
 
     private void Rule_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -380,7 +567,7 @@ public partial class MainWindow : Window
 
         CmdFilters = CreateAction(_ => Filters_Click(this, new RoutedEventArgs()));
         CmdOptions = CreateAction(_ => Options_Click(this, new RoutedEventArgs()));
-        CmdAnalyze = CreateAction(_ => Analyze_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
+        CmdAnalyze = CreateAction(_ => Analyze_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
         CmdValidate = CreateAction(_ => Validate_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdAutosizeColumns = CreateAction(_ => AutosizeColumns());
         CmdFixConflicts = CreateAction(_ => FixConflictingNames(), _ => HasFiles);
@@ -389,11 +576,11 @@ public partial class MainWindow : Window
         CmdCountFiles = CreateAction(_ => CountFiles(), _ => HasFiles);
         CmdSortForFolders = CreateAction(_ => SortForFolders(), _ => HasFiles);
 
-        CmdEditNewName = CreateAction(_ => EditNewName_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdOpenFile = CreateAction(_ => OpenFile_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdOpenFolder = CreateAction(_ => OpenFolder_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdOpenWithNotepad = CreateAction(_ => OpenWithNotepad_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdFileProperties = CreateAction(_ => FileProperties_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
+        CmdEditNewName = CreateAction(_ => EditNewName_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdOpenFile = CreateAction(_ => OpenFile_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdOpenFolder = CreateAction(_ => OpenFolder_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdOpenWithNotepad = CreateAction(_ => OpenWithNotepad_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdFileProperties = CreateAction(_ => FileProperties_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
         CmdCutFiles = CreateAction(_ => CutFilesToClipboard_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
         CmdCopyFiles = CreateAction(_ => CopyFilesToClipboard_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
         CmdDeleteRecycle = CreateAction(_ => DeleteToRecycleBin_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
@@ -420,9 +607,9 @@ public partial class MainWindow : Window
         CmdSelectByNameLength = CreateAction(_ => SelectByNameLength_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdSelectByExtension = CreateAction(_ => SelectByExtension_Click(this, new RoutedEventArgs()), _ => HasFiles);
         CmdSelectByMask = CreateAction(_ => SelectByMask_Click(this, new RoutedEventArgs()), _ => HasFiles);
-        CmdMoveFileUp = CreateAction(_ => MoveFileUp_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdMoveFileDown = CreateAction(_ => MoveFileDown_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
-        CmdRemoveSelectedFiles = CreateAction(_ => RemoveSelectedFiles_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles);
+        CmdMoveFileUp = CreateAction(_ => MoveFileUp_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdMoveFileDown = CreateAction(_ => MoveFileDown_Click(this, new RoutedEventArgs()), _ => HasSingleSelectedFile);
+        CmdRemoveSelectedFiles = CreateAction(_ => RemoveSelectedFiles_Click(this, new RoutedEventArgs()), _ => HasSelectedFiles || HasMarkedFiles);
     }
 
     private UiAction CreateAction(Action<object?> execute, Func<object?, bool>? canExecute = null)
@@ -438,14 +625,30 @@ public partial class MainWindow : Window
             action.RaiseCanExecuteChanged();
     }
 
-    private bool HasFiles => Files.Count > 0;
+    private void RequestActionsRefresh()
+    {
+        if (_actionsRefreshPending)
+            return;
+
+        _actionsRefreshPending = true;
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            _actionsRefreshPending = false;
+            RefreshActions();
+        }), System.Windows.Threading.DispatcherPriority.Background);
+    }
+
+    private bool HasFiles => _totalFileCount > 0;
     private bool HasRules => Rules.Count > 0;
     private bool HasSelectedRule => lvRules.SelectedItem != null;
-    private bool HasSelectedFiles => lvFiles.SelectedItems.Count > 0;
-    private bool HasRenamedFiles => Files.Any(f => f.IsRenamed);
-    private bool CanRename => Files.Any(f => f.IsMarked && f.HasChanged && !f.IsRenamed);
+    private bool HasSelectedFiles => _selectedFileCount > 0;
+    private bool HasSingleSelectedFile => _selectedFileCount == 1;
+    private bool HasMarkedFiles => _markedFileCount > 0;
+    private bool HasRenamedFiles => _renamedFileCount > 0;
+    private bool CanRename => _renameableFileCount > 0;
     private bool CanMoveRuleUp => lvRules.SelectedIndex > 0;
     private bool CanMoveRuleDown => lvRules.SelectedIndex >= 0 && lvRules.SelectedIndex < Rules.Count - 1;
+    private bool IsWin32FileList => _appSettings.FileListEngine == FileListEngine.Win32ListView;
 
     private static readonly HashSet<string> DefaultVisibleColumns = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -460,10 +663,293 @@ public partial class MainWindow : Window
             if (!DefaultVisibleColumns.Contains(key))
                 col.Visibility = Visibility.Collapsed;
         }
+
+        if (IsWin32FileList)
+        {
+            foreach (var col in _fileListColumns)
+                col.Visible = DefaultVisibleColumns.Contains(col.Key);
+            _win32FileListView?.ApplyColumnVisibility();
+        }
+    }
+
+    private void BuildFileListColumns()
+    {
+        _fileListColumns.Clear();
+        foreach (var col in lvFiles.Columns)
+        {
+            var key = GetColumnKey(col);
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+
+            var headerText = GetColumnHeaderText(key, col);
+            var width = col.Width.DisplayValue;
+            if (double.IsNaN(width) || width <= 0)
+                width = col.Width.Value > 0 ? col.Width.Value : 80;
+
+            var listCol = new FileListColumn(key, headerText)
+            {
+                Width = (int)Math.Round(width),
+                Visible = col.Visibility == Visibility.Visible,
+                IsCheckBox = string.Equals(key, "IsMarked", StringComparison.OrdinalIgnoreCase),
+                Sortable = !string.IsNullOrWhiteSpace(col.SortMemberPath)
+            };
+            ApplyFileListColumnMappings(listCol);
+            _fileListColumns.Add(listCol);
+        }
+    }
+
+    private void InitializeFileListView()
+    {
+        if (IsWin32FileList)
+        {
+            _win32FileListView = new Win32FileListViewHost(_fileListColumns);
+            _fileListView = _win32FileListView;
+            win32FileListHost.Content = _win32FileListView;
+            win32FileListHost.Visibility = Visibility.Visible;
+            lvFiles.Visibility = Visibility.Collapsed;
+            InitializeWin32FileListView(_win32FileListView);
+            RebuildViewItems(preserveSelection: false);
+        }
+        else
+        {
+            _fileListView = _wpfFileListView;
+            _fileListView.ItemsSource = Files;
+            ConfigureWpfCollectionView();
+            win32FileListHost.Visibility = Visibility.Collapsed;
+            lvFiles.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void InitializeWin32FileListView(Win32FileListViewHost host)
+    {
+        host.CellTextProvider = (row, col) => GetWin32CellText(row, col);
+        host.CellStyleProvider = (row, col, selected) => GetWin32CellStyle(row, col, selected);
+        host.ItemCheckedProvider = row => GetWin32ItemChecked(row);
+        host.ItemCheckedChanged = (row, isChecked) => OnWin32ItemCheckedChanged(row, isChecked);
+        host.ItemActivated = (row, col) => OnWin32ItemActivated(row, col);
+        host.ColumnHeaderClick = col => OnWin32ColumnHeaderClick(col);
+        host.ColumnHeaderRightClick = _ => ShowWin32ColumnsMenuAtCursor();
+        host.ColumnHeaderAutoSize = col => OnWin32ColumnHeaderAutoSize(col);
+        host.ContextMenuRequested = pt => ShowWin32ContextMenu(pt);
+        host.ReorderRequest = (from, to) => OnWin32ReorderRequest(from, to);
+        host.ExternalFilesDropped = files => AddFilePaths(files, recursive: true, forcePreview: _appSettings.AutoPreview);
+        host.KeyGesture = (key, modifiers) => OnWin32KeyGesture(key, modifiers);
+        host.HeaderCheckToggle = _ => ToggleAllMarks();
+        host.SelectionChanged += (_, _) => HandleFileSelectionChanged();
+        ApplyWin32Palette(host);
+        UpdateWin32HeaderCheckState();
+    }
+
+    private void ConfigureWpfCollectionView()
+    {
+        if (CollectionViewSource.GetDefaultView(Files) is ICollectionViewLiveShaping liveShaping && liveShaping.CanChangeLiveSorting)
+        {
+            liveShaping.LiveSortingProperties.Clear();
+            foreach (var property in MutableSortProperties)
+                liveShaping.LiveSortingProperties.Add(property);
+        }
+    }
+
+    private void UpdateWpfLiveSorting(string? sortProperty)
+    {
+        if (CollectionViewSource.GetDefaultView(Files) is not ICollectionViewLiveShaping liveShaping || !liveShaping.CanChangeLiveSorting)
+            return;
+
+        liveShaping.IsLiveSorting = !string.IsNullOrWhiteSpace(sortProperty)
+            && MutableSortProperties.Contains(sortProperty);
+    }
+
+    private void ClearWpfSort()
+    {
+        if (CollectionViewSource.GetDefaultView(lvFiles.ItemsSource) is not ICollectionView view)
+            return;
+
+        using (view.DeferRefresh())
+            view.SortDescriptions.Clear();
+
+        UpdateWpfLiveSorting(null);
+        foreach (var col in lvFiles.Columns)
+            col.SortDirection = null;
+    }
+
+    private void ClearActiveFileSort()
+    {
+        if (IsWin32FileList)
+        {
+            _viewSortKey = null;
+            _viewSortDirection = null;
+            _win32FileListView?.SetSortIndicator(-1, null);
+            return;
+        }
+
+        ClearWpfSort();
+    }
+
+    private void RebuildViewItems(bool preserveSelection)
+    {
+        if (!IsWin32FileList)
+            return;
+
+        List<RenFile>? selected = null;
+        if (preserveSelection)
+            selected = _fileListView.SelectedItems.Cast<RenFile>().ToList();
+
+        _viewItems.Clear();
+        _viewItems.AddRange(Files);
+
+        if (!string.IsNullOrWhiteSpace(_viewSortKey) && _viewSortDirection.HasValue)
+            ApplyViewSort();
+
+        _fileListView.ItemsSource = _viewItems;
+
+        if (!string.IsNullOrWhiteSpace(_viewSortKey) && _viewSortDirection.HasValue && _win32FileListView != null)
+        {
+            var idx = _fileListColumns.FindIndex(c => string.Equals(c.Key, _viewSortKey, StringComparison.OrdinalIgnoreCase));
+            if (idx >= 0)
+                _win32FileListView.SetSortIndicator(idx, _viewSortDirection);
+        }
+
+        if (selected != null && selected.Count > 0)
+            _fileListView.SetSelectedItems(selected);
+
+        LogImportDiag($"[ViewRebuild] preserveSelection={preserveSelection} files={Files.Count} view={_viewItems.Count} selectedRestored={(selected?.Count ?? 0)} sortKey={_viewSortKey ?? "<none>"} sortDir={_viewSortDirection?.ToString() ?? "<none>"}");
+    }
+
+    private void ApplyViewSort()
+    {
+        if (string.IsNullOrWhiteSpace(_viewSortKey) || !_viewSortDirection.HasValue)
+            return;
+
+        var column = _fileListColumns.FirstOrDefault(c => string.Equals(c.Key, _viewSortKey, StringComparison.OrdinalIgnoreCase));
+        if (column?.SortValueGetter == null)
+            return;
+
+        _viewItems.Sort((a, b) =>
+        {
+            var av = column.SortValueGetter(a);
+            var bv = column.SortValueGetter(b);
+            var result = Comparer<IComparable>.Default.Compare(av, bv);
+            return _viewSortDirection == ListSortDirection.Ascending ? result : -result;
+        });
+    }
+
+    private void ClearWin32Sort()
+    {
+        var selected = GetSelectedFiles().ToList();
+        _viewSortKey = null;
+        _viewSortDirection = null;
+        _viewItems.Clear();
+        _viewItems.AddRange(Files);
+        _win32FileListView?.SetSortIndicator(-1, null);
+        _fileListView.Refresh();
+        if (selected.Count > 0)
+            _fileListView.SetSelectedItems(selected);
+    }
+
+    private void ApplyFileListColumnMappings(FileListColumn col)
+    {
+        col.TextGetter = col.Key switch
+        {
+            "IsMarked" => _ => string.Empty,
+            "State" => f => ((RenFile)f).State,
+            "OriginalName" => f => ((RenFile)f).OriginalName,
+            "NewName" => f => ((RenFile)f).NewName,
+            "FolderPath" => f => ((RenFile)f).FolderPath,
+            "Extension" => f => ((RenFile)f).Extension,
+            "SizeDisplay" => f => ((RenFile)f).SizeDisplay,
+            "Error" => f => ((RenFile)f).Error ?? string.Empty,
+            "FolderName" => f => ((RenFile)f).FolderName,
+            "NewPath" => f => ((RenFile)f).NewPath,
+            "SizeKB" => f => ((RenFile)f).SizeKB,
+            "SizeMB" => f => ((RenFile)f).SizeMB,
+            "CreatedDisplay" => f => ((RenFile)f).CreatedDisplay,
+            "ModifiedDisplay" => f => ((RenFile)f).ModifiedDisplay,
+            "ExifDateDisplay" => f => ((RenFile)f).ExifDateDisplay,
+            "NameDigits" => f => ((RenFile)f).NameDigits,
+            "PathDigits" => f => ((RenFile)f).PathDigits,
+            "NameLength" => f => ((RenFile)f).NameLength.ToString(),
+            "NewNameLength" => f => ((RenFile)f).NewNameLength.ToString(),
+            "PathLength" => f => ((RenFile)f).PathLength.ToString(),
+            "NewPathLength" => f => ((RenFile)f).NewPathLength.ToString(),
+            "OldPath" => f => ((RenFile)f).OldPath,
+            _ => _ => string.Empty
+        };
+
+        col.SortValueGetter = col.Key switch
+        {
+            "IsMarked" => f => ((RenFile)f).IsMarked,
+            "State" => f => ((RenFile)f).State,
+            "OriginalName" => f => ((RenFile)f).OriginalName,
+            "NewName" => f => ((RenFile)f).NewName,
+            "FolderPath" => f => ((RenFile)f).FolderPath,
+            "Extension" => f => ((RenFile)f).Extension,
+            "SizeDisplay" => f => ((RenFile)f).Size,
+            "Error" => f => ((RenFile)f).Error ?? string.Empty,
+            "FolderName" => f => ((RenFile)f).FolderName,
+            "NewPath" => f => ((RenFile)f).NewPath,
+            "SizeKB" => f => ((RenFile)f).Size,
+            "SizeMB" => f => ((RenFile)f).Size,
+            "CreatedDisplay" => f => ((RenFile)f).Created,
+            "ModifiedDisplay" => f => ((RenFile)f).Modified,
+            "ExifDateDisplay" => f => ((RenFile)f).ExifDate ?? DateTime.MinValue,
+            "NameDigits" => f => ((RenFile)f).NameDigits,
+            "PathDigits" => f => ((RenFile)f).PathDigits,
+            "NameLength" => f => ((RenFile)f).NameLength,
+            "NewNameLength" => f => ((RenFile)f).NewNameLength,
+            "PathLength" => f => ((RenFile)f).PathLength,
+            "NewPathLength" => f => ((RenFile)f).NewPathLength,
+            "OldPath" => f => ((RenFile)f).OldPath,
+            _ => _ => string.Empty
+        };
+
+        if (string.Equals(col.Key, "IsMarked", StringComparison.OrdinalIgnoreCase))
+            col.Sortable = false;
+    }
+
+    private string GetColumnHeaderText(string key, DataGridColumn col)
+    {
+        if (col.Header is string header && !string.IsNullOrWhiteSpace(header))
+            return header;
+        if (col.Header is TextBlock tb && !string.IsNullOrWhiteSpace(tb.Text))
+            return tb.Text;
+
+        return key switch
+        {
+            "IsMarked" => string.Empty,
+            "State" => LanguageService.GetString("Column_State"),
+            "OriginalName" => LanguageService.GetString("Column_Name"),
+            "NewName" => LanguageService.GetString("Column_NewName"),
+            "FolderPath" => LanguageService.GetString("Column_Path"),
+            "Extension" => LanguageService.GetString("Column_Extension"),
+            "SizeDisplay" => LanguageService.GetString("Column_Size"),
+            "Error" => LanguageService.GetString("Column_Error"),
+            "FolderName" => LanguageService.GetString("Column_Folder"),
+            "NewPath" => LanguageService.GetString("Column_NewPath"),
+            "SizeKB" => LanguageService.GetString("Column_SizeKB"),
+            "SizeMB" => LanguageService.GetString("Column_SizeMB"),
+            "CreatedDisplay" => LanguageService.GetString("Column_Created"),
+            "ModifiedDisplay" => LanguageService.GetString("Column_Modified"),
+            "ExifDateDisplay" => LanguageService.GetString("Column_ExifDate"),
+            "NameDigits" => LanguageService.GetString("Column_NameDigits"),
+            "PathDigits" => LanguageService.GetString("Column_PathDigits"),
+            "NameLength" => LanguageService.GetString("Column_NameLength"),
+            "NewNameLength" => LanguageService.GetString("Column_NewNameLength"),
+            "PathLength" => LanguageService.GetString("Column_PathLength"),
+            "NewPathLength" => LanguageService.GetString("Column_NewPathLength"),
+            "OldPath" => LanguageService.GetString("Column_OldPath"),
+            _ => key
+        };
     }
 
     private static string GetColumnKey(DataGridColumn col)
     {
+        if (col is DataGridBoundColumn boundColumn
+            && boundColumn.Binding is Binding binding
+            && !string.IsNullOrWhiteSpace(binding.Path?.Path))
+        {
+            return binding.Path.Path;
+        }
+
         if (!string.IsNullOrWhiteSpace(col.SortMemberPath))
             return col.SortMemberPath;
 
@@ -496,9 +982,28 @@ public partial class MainWindow : Window
             _appSettings.ColumnWidths[key] = width;
     }
 
+    private void UpdateColumnWidthCache(FileListColumn col, int width)
+    {
+        if (string.IsNullOrWhiteSpace(col.Key) || width <= 0)
+            return;
+
+        _appSettings.ColumnWidths[col.Key] = width;
+    }
+
     private void CaptureDefaultColumnWidths()
     {
         _defaultColumnWidths.Clear();
+        if (IsWin32FileList)
+        {
+            foreach (var col in _fileListColumns)
+            {
+                if (string.IsNullOrEmpty(col.Key))
+                    continue;
+                _defaultColumnWidths[col.Key] = col.Width;
+            }
+            return;
+        }
+
         foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
@@ -520,6 +1025,22 @@ public partial class MainWindow : Window
         UpdateTrayIconState();
         foreach (var rule in Rules.OfType<RuleBase>())
             rule.NotifyLocalizationChanged();
+        UpdateWin32ColumnHeaders();
+    }
+
+    private void UpdateWin32ColumnHeaders()
+    {
+        if (!IsWin32FileList || _win32FileListView == null)
+            return;
+
+        var count = Math.Min(lvFiles.Columns.Count, _fileListColumns.Count);
+        for (int i = 0; i < count; i++)
+        {
+            var key = GetColumnKey(lvFiles.Columns[i]);
+            var header = GetColumnHeaderText(key, lvFiles.Columns[i]);
+            _fileListColumns[i].Header = header;
+            _win32FileListView.UpdateColumnHeader(i, header);
+        }
     }
 
     private void UpdateLanguageMenuChecks()
@@ -586,15 +1107,17 @@ public partial class MainWindow : Window
 
     private void UpdateStatusBar()
     {
-        var total = Files.Count;
-        var marked = Files.Count(f => f.IsMarked);
-        var selected = lvFiles.SelectedItems.Count;
-        tbStatusFiles.Text = LanguageService.GetString("Status_FilesSummary", total, marked, selected);
-        RefreshActions();
+        tbStatusFiles.Text = LanguageService.GetString("Status_FilesSummary", _totalFileCount, _markedFileCount, _selectedFileCount);
     }
 
     private void RequestStatusBarUpdate()
     {
+        if (_fileSelectionBatchDepth > 0)
+        {
+            _fileSelectionStatusDirty = true;
+            return;
+        }
+
         if (_statusBarUpdatePending)
             return;
 
@@ -602,24 +1125,295 @@ public partial class MainWindow : Window
         Dispatcher.BeginInvoke(new Action(() =>
         {
             _statusBarUpdatePending = false;
+            if (_fileSelectionBatchDepth > 0)
+            {
+                _fileSelectionStatusDirty = true;
+                return;
+            }
+
             UpdateStatusBar();
         }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
-    private void SetMarkedInBulk(IEnumerable<RenFile> files, Func<RenFile, bool> isMarkedSelector)
+    private void BeginFileSelectionBatch()
     {
-        var changed = false;
-        foreach (var file in files)
-            changed |= file.SetMarkedSilently(isMarkedSelector(file));
+        _fileSelectionBatchDepth++;
+    }
 
-        if (changed)
+    private void EndFileSelectionBatch()
+    {
+        _fileSelectionBatchDepth--;
+        if (_fileSelectionBatchDepth == 0 && _fileSelectionStatusDirty)
         {
-            lvFiles.Items.Refresh();
-            if (Rules.Count > 0 && _appSettings.AutoPreview)
+            _fileSelectionStatusDirty = false;
+            RequestStatusBarUpdate();
+        }
+
+        if (_fileSelectionBatchDepth == 0)
+            RequestActionsRefresh();
+    }
+
+    private void RunFileSelectionBatch(Action action)
+    {
+        BeginFileSelectionBatch();
+        try
+        {
+            action();
+        }
+        finally
+        {
+            EndFileSelectionBatch();
+        }
+    }
+
+    private void RecalculateFileStateCache()
+    {
+        _totalFileCount = Files.Count;
+        _markedFileCount = 0;
+        _renamedFileCount = 0;
+        _renameableFileCount = 0;
+
+        foreach (var file in Files)
+        {
+            if (file.IsMarked)
+                _markedFileCount++;
+            if (file.IsRenamed)
+                _renamedFileCount++;
+            if (file.IsMarked && file.HasChanged)
+                _renameableFileCount++;
+        }
+
+        _fileStateCacheDirty = false;
+    }
+
+    private bool IsFileMutationBatchActive => _wpfFilesBatchDepth > 0 || _win32FilesBatchDepth > 0;
+
+    private void MarkFileStateCacheDirty()
+    {
+        _fileStateCacheDirty = true;
+    }
+
+    private void RequestFileStateUiFlush()
+    {
+        if (Interlocked.Exchange(ref _fileStateUiFlushPending, 1) == 1)
+            return;
+
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            Interlocked.Exchange(ref _fileStateUiFlushPending, 0);
+            MarkFileStateCacheDirty();
+            if (IsFileMutationBatchActive)
+                return;
+
+            FlushFileStateUi();
+        }), System.Windows.Threading.DispatcherPriority.Background);
+    }
+
+    private void FlushFileStateUi()
+    {
+        if (_fileStateCacheDirty)
+            RecalculateFileStateCache();
+
+        _selectedFileCount = _fileListView.SelectedCount;
+        UpdateStatusBar();
+        RefreshActions();
+        UpdateWin32HeaderCheckState();
+    }
+
+    private void BeginWpfFilesBatch()
+    {
+        if (IsWin32FileList)
+            return;
+
+        _wpfFilesBatchDepth++;
+    }
+
+    private void EndWpfFilesBatch(IReadOnlyCollection<RenFile>? selectionToRestore = null, bool clearSelection = false)
+    {
+        if (IsWin32FileList || _wpfFilesBatchDepth <= 0)
+            return;
+
+        _wpfFilesBatchDepth--;
+        if (_wpfFilesBatchDepth != 0)
+            return;
+
+        if (clearSelection)
+        {
+            RunFileSelectionBatch(() => _fileListView.ClearSelection());
+        }
+        else if (selectionToRestore != null)
+        {
+            var survivors = selectionToRestore.Where(Files.Contains).ToList();
+            RunFileSelectionBatch(() => SetSelectedFiles(survivors));
+        }
+
+        FlushFileStateUi();
+        if (_autoPreviewQueuedDuringBatch)
+        {
+            _autoPreviewQueuedDuringBatch = false;
+            if (_appSettings.AutoPreview && Rules.Count > 0)
+                _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
+        }
+    }
+
+    private void RunWpfFilesBatch(Action action, bool preserveSelection = false, bool clearSelection = false, bool queueAutoPreview = false)
+    {
+        if (IsWin32FileList)
+        {
+            action();
+            return;
+        }
+
+        var selectionToRestore = preserveSelection ? GetSelectedFiles().ToList() : null;
+        BeginWpfFilesBatch();
+        try
+        {
+            action();
+            if (queueAutoPreview)
+                _autoPreviewQueuedDuringBatch = true;
+        }
+        finally
+        {
+            EndWpfFilesBatch(selectionToRestore, clearSelection);
+        }
+    }
+
+    private void BeginWin32FilesBatch()
+    {
+        if (!IsWin32FileList)
+            return;
+        if (_win32FilesBatchDepth == 0)
+        {
+            _win32FilesDeferredChangeCount = 0;
+            _win32LastDeferredAction = null;
+        }
+        _win32FilesBatchDepth++;
+    }
+
+    private void EndWin32FilesBatch()
+    {
+        if (!IsWin32FileList || _win32FilesBatchDepth <= 0)
+            return;
+
+        _win32FilesBatchDepth--;
+        if (_win32FilesBatchDepth != 0)
+            return;
+
+        var changed = _win32FilesChangedWhileBatch;
+        var deferredCount = _win32FilesDeferredChangeCount;
+        var lastAction = _win32LastDeferredAction;
+        _win32FilesChangedWhileBatch = false;
+        _win32FilesDeferredChangeCount = 0;
+        _win32LastDeferredAction = null;
+        if (!changed)
+            return;
+
+        LogImportDiag(
+            $"[BatchEnd] rebuild-start files={Files.Count} view={_viewItems.Count} " +
+            $"deferredCount={deferredCount} lastAction={lastAction?.ToString() ?? "<none>"}");
+        RebuildViewItems(preserveSelection: false);
+        LogImportDiag($"[BatchEnd] rebuild-end files={Files.Count} view={_viewItems.Count}");
+        FlushFileStateUi();
+    }
+
+    private IReadOnlyList<RenFile> GetSelectedFiles()
+        => _fileListView.SelectedItems.Cast<RenFile>().ToList();
+
+    private RenFile? GetSelectedFile()
+        => _fileListView.SelectedCount == 1 ? _fileListView.SelectedItem as RenFile : null;
+
+    private void SetSelectedFiles(IEnumerable<RenFile> files)
+        => _fileListView.SetSelectedItems(files is IList list ? list : files.ToList());
+
+    private void RefreshFileList()
+        => _fileListView.Refresh();
+
+    private Task SelectAllFilesInChunksAsync()
+    {
+        if (_largeSelectionInProgress || Files.Count == 0)
+            return Task.CompletedTask;
+
+        if (IsWin32FileList)
+        {
+            var sw = Stopwatch.StartNew();
+            RunFileSelectionBatch(() => _fileListView.SelectAll());
+            sw.Stop();
+            App.LogInputDebug($"[SelectAll] win32 count={Files.Count} totalMs={sw.ElapsedMilliseconds}");
+            return Task.CompletedTask;
+        }
+
+        _largeSelectionInProgress = true;
+        try
+        {
+            var sw = Stopwatch.StartNew();
+            RunFileSelectionBatch(() => _fileListView.SelectAll());
+            sw.Stop();
+            var mode = _wpfFileListView.IsLogicalSelectAllActive ? "logical-large" : "native-large";
+            App.LogInputDebug($"[SelectAll] {mode} count={Files.Count} totalMs={sw.ElapsedMilliseconds}");
+        }
+        finally
+        {
+            _largeSelectionInProgress = false;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void SetMarkedInBulk(IEnumerable<RenFile> files, Func<RenFile, bool> isMarkedSelector, bool autoPreview = true)
+    {
+        var targets = files?.Distinct().ToList() ?? new List<RenFile>();
+        if (targets.Count == 0)
+            return;
+
+        var changed = false;
+        if (IsWin32FileList)
+        {
+            foreach (var file in targets)
+                changed |= file.SetMarkedSilently(isMarkedSelector(file));
+        }
+        else
+        {
+            RunWpfFilesBatch(() =>
+            {
+                foreach (var file in targets)
+                {
+                    var newValue = isMarkedSelector(file);
+                    if (file.IsMarked == newValue)
+                        continue;
+
+                    file.IsMarked = newValue;
+                    changed = true;
+                }
+                if (changed && autoPreview)
+                    _autoPreviewQueuedDuringBatch = true;
+            }, preserveSelection: true);
+        }
+
+        if (changed && IsWin32FileList)
+        {
+            RefreshFileList();
+            if (autoPreview && Rules.Count > 0 && _appSettings.AutoPreview)
                 _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
         }
 
-        UpdateStatusBar();
+        if (IsWin32FileList)
+            FlushFileStateUi();
+    }
+
+    private void NotifyPreviewRefreshNeededForFileOrder()
+    {
+        if (Files.Count == 0 || Rules.Count == 0)
+            return;
+
+        tbStatusInfo.Text = LanguageService.GetString("Status_PreviewRefreshNeeded_Order");
+    }
+
+    private void NotifyPreviewRefreshNeededForMarking()
+    {
+        if (Files.Count == 0 || Rules.Count == 0)
+            return;
+
+        tbStatusInfo.Text = LanguageService.GetString("Status_PreviewRefreshNeeded_Marking");
     }
 
     private void StatusBar_MouseMove(object sender, MouseEventArgs e)
@@ -719,53 +1513,65 @@ public partial class MainWindow : Window
 
     internal void AddFilePaths(IEnumerable<string> paths, bool recursive, bool forcePreview = false)
     {
-        var existing = new HashSet<string>(Files.Select(f => f.FullPath), StringComparer.OrdinalIgnoreCase);
+        var traceId = Interlocked.Increment(ref _importTraceSequence);
+        var importSw = Stopwatch.StartNew();
+        var pathList = paths?.ToList() ?? new List<string>();
+        var useWin32Batch = IsWin32FileList;
+        var useWpfBatch = !useWin32Batch;
+        List<RenFile>? selectionToRestore = null;
+        if (useWin32Batch)
+        {
+            BeginWin32FilesBatch();
+        }
+        else
+        {
+            selectionToRestore = GetSelectedFiles().ToList();
+            BeginWpfFilesBatch();
+        }
+
+        LogImportDiag(
+            $"[Import#{traceId}] start paths={pathList.Count} recursive={recursive} forcePreview={forcePreview} " +
+            $"engine={(IsWin32FileList ? "Win32" : "WPF")} filesBefore={Files.Count} viewBefore={_viewItems.Count} " +
+            $"includeAllFiles={_appSettings.FolderIncludeAllFiles} includeFolders={_appSettings.FolderIncludeFolderNames} includeSubfolders={_appSettings.FolderIncludeSubfolders} " +
+            $"includeMask='{_appSettings.FolderIncludeMask}' excludeMask='{_appSettings.FolderExcludeMask}'");
+
         var added = new List<RenFile>();
         int skippedCount = 0;
+        int duplicateInputCount = 0;
+        int pathNotFoundCount = 0;
 
-        foreach (var path in paths)
+        try
         {
-            if (string.IsNullOrWhiteSpace(path))
-                continue;
+            if (pathList.Any(Directory.Exists))
+                EnsureFolderImportDefaultsForFirstUse();
+            var importService = new FileImportService(
+                CreateFileImportOptions(recursive),
+                LogImportDiag);
+            var batch = importService.BuildBatch(pathList, Files.Select(f => f.FullPath), traceId);
+            added = batch.Items.ToList();
+            skippedCount = batch.SkippedCount;
+            duplicateInputCount = batch.DuplicateInputCount;
+            pathNotFoundCount = batch.PathNotFoundCount;
 
-            try
-            {
-                if (File.Exists(path) && !existing.Contains(path))
-                {
-                    var rf = new RenFile(path);
-                    Files.Add(rf);
-                    added.Add(rf);
-                    existing.Add(path);
-                }
-                else if (Directory.Exists(path))
-                {
-                    EnsureFolderImportDefaultsForFirstUse();
-                    AddDirectoryEntries(path, recursive, existing, added, ref skippedCount);
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                skippedCount++;
-            }
-            catch (IOException)
-            {
-                skippedCount++;
-            }
-            catch (Exception ex)
-            {
-                skippedCount++;
-                Debug.WriteLine($"AddFilePaths skipped '{path}': {ex.Message}");
-            }
+            if (added.Count > 0)
+                Files.AddRange(added);
+        }
+        finally
+        {
+            if (useWin32Batch)
+                EndWin32FilesBatch();
+            else
+                EndWpfFilesBatch(selectionToRestore);
         }
 
         if (_appSettings.FiltersApplied && added.Count > 0)
         {
-            ApplyFiltersToFiles(added);
+            ApplyFiltersToFiles(added, autoPreview: false);
         }
 
         if (added.Count > 0
             && Rules.Count > 0
-            && (forcePreview || _appSettings.PreviewOnFileAdd || _appSettings.AutoPreview))
+            && (forcePreview || _appSettings.PreviewOnFileAdd))
         {
             _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: 0);
         }
@@ -774,6 +1580,11 @@ public partial class MainWindow : Window
         {
             tbStatusInfo.Text = $"Skipped {skippedCount} path(s) due to access restrictions.";
         }
+
+        importSw.Stop();
+        LogImportDiag(
+            $"[Import#{traceId}] end added={added.Count} skipped={skippedCount} duplicates={duplicateInputCount} notFound={pathNotFoundCount} " +
+            $"filesAfter={Files.Count} viewAfter={_viewItems.Count} filtersApplied={_appSettings.FiltersApplied} elapsedMs={importSw.ElapsedMilliseconds}");
     }
 
     private void EnsureFolderImportDefaultsForFirstUse()
@@ -784,90 +1595,280 @@ public partial class MainWindow : Window
         SaveSettingsWithFeedback("folder import defaults", showDialog: false);
     }
 
-    private void AddDirectoryEntries(string rootPath, bool recursive, HashSet<string> existing, List<RenFile> added, ref int skippedCount)
+    private FileImportOptions CreateFileImportOptions(bool recursive)
+        => new(
+            Recursive: recursive,
+            IncludeAllFiles: _appSettings.FolderIncludeAllFiles,
+            IncludeFolderNames: _appSettings.FolderIncludeFolderNames,
+            IncludeSubfolders: _appSettings.FolderIncludeSubfolders,
+            IncludeHiddenFiles: _appSettings.FolderIncludeHiddenFiles,
+            IncludeSystemFiles: _appSettings.FolderIncludeSystemFiles,
+            IgnoreRootFolder: _appSettings.FolderIgnoreRootFolder,
+            MaskFileNameOnly: _appSettings.FolderMaskFileNameOnly,
+            IncludeMask: _appSettings.FolderIncludeMask,
+            ExcludeMask: _appSettings.FolderExcludeMask);
+
+    private void AddDirectoryEntries(string rootPath, bool recursive, HashSet<string> existing, List<RenFile> added, ref int skippedCount, long traceId)
     {
-        var allowSubfolders = recursive && _appSettings.FolderIncludeSubfolders;
+        var scanSw = Stopwatch.StartNew();
+        var allowSubfolders = _appSettings.FolderIncludeSubfolders;
         var searchOption = allowSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        var includeFiles = _appSettings.FolderIncludeAllFiles;
+        var includeMasks = ParseFolderMasks(_appSettings.FolderIncludeMask);
+        var excludeMasks = ParseFolderMasks(_appSettings.FolderExcludeMask);
+
+        int dirCandidates = 0;
+        int dirAdded = 0;
+        int dirFilteredAttr = 0;
+        int dirFilteredMask = 0;
+        int dirDuplicate = 0;
+        int fileCandidates = 0;
+        int fileAdded = 0;
+        int fileFilteredAttr = 0;
+        int fileFilteredMask = 0;
+        int fileDuplicate = 0;
+
+        LogImportDiag(
+            $"[Import#{traceId}] dir-scan root='{rootPath}' allowSubfolders={allowSubfolders} includeFiles={includeFiles} includeFolders={_appSettings.FolderIncludeFolderNames} searchOption={searchOption}");
+
+        var childDirs = allowSubfolders
+            ? SafeEnumerateDirectories(rootPath, SearchOption.AllDirectories, ref skippedCount).ToList()
+            : [];
+        var traversalRoots = new List<string>(childDirs.Count + 1) { rootPath };
+        traversalRoots.AddRange(childDirs);
 
         if (_appSettings.FolderIncludeFolderNames)
         {
             List<string> dirs;
             if (allowSubfolders)
             {
-                dirs = SafeEnumerateDirectories(rootPath, searchOption, ref skippedCount).ToList();
-                if (!_appSettings.FolderIgnoreRootFolder)
-                    dirs.Insert(0, rootPath);
+                dirs = _appSettings.FolderIgnoreRootFolder ? childDirs : traversalRoots;
             }
             else
             {
                 dirs = _appSettings.FolderIgnoreRootFolder ? [] : [rootPath];
             }
 
+            dirCandidates = dirs.Count;
+            var acceptedDirs = new List<string>(dirs.Count);
+            var acceptedDirSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var dir in dirs)
             {
-                if (!PassesFolderImportSettings(dir, isFolder: true))
+                if (!PassesFolderImportAttributes(dir))
+                {
+                    dirFilteredAttr++;
+                    if (dirFilteredAttr <= 5)
+                        LogImportDiag($"[Import#{traceId}] dir-filter-attr '{dir}'");
                     continue;
-                if (existing.Contains(dir))
-                    continue;
+                }
 
-                var rf = new RenFile(dir);
-                Files.Add(rf);
-                added.Add(rf);
-                existing.Add(dir);
+                if (!PassesFolderImportMasks(dir, isFolder: true, includeMasks, excludeMasks))
+                {
+                    dirFilteredMask++;
+                    if (dirFilteredMask <= 5)
+                        LogImportDiag($"[Import#{traceId}] dir-filter-mask '{dir}'");
+                    continue;
+                }
+
+                if (existing.Contains(dir) || !acceptedDirSet.Add(dir))
+                {
+                    dirDuplicate++;
+                    continue;
+                }
+
+                acceptedDirs.Add(dir);
             }
-        }
 
-        if (_appSettings.FolderIncludeAllFiles)
-        {
-            foreach (var file in SafeEnumerateFiles(rootPath, searchOption, ref skippedCount))
+            var dirItems = CreateRenFilesForPaths(acceptedDirs, traceId, "dir", ref skippedCount);
+            for (int i = 0; i < dirItems.Length; i++)
             {
-                if (!PassesFolderImportSettings(file, isFolder: false))
-                    continue;
-                if (existing.Contains(file))
+                var rf = dirItems[i];
+                if (rf == null)
                     continue;
 
-                var rf = new RenFile(file);
                 Files.Add(rf);
                 added.Add(rf);
-                existing.Add(file);
+                existing.Add(acceptedDirs[i]);
+                dirAdded++;
+                if (dirAdded <= 5)
+                    LogImportDiag($"[Import#{traceId}] dir-added '{acceptedDirs[i]}'");
             }
         }
+
+        if (includeFiles)
+        {
+            var files = SafeEnumerateFilesFromRoots(traversalRoots, ref skippedCount).ToList();
+            fileCandidates = files.Count;
+            var acceptedFiles = new List<string>(files.Count);
+            var acceptedFileSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var file in files)
+            {
+                if (!PassesFolderImportAttributes(file))
+                {
+                    fileFilteredAttr++;
+                    if (fileFilteredAttr <= 5)
+                        LogImportDiag($"[Import#{traceId}] file-filter-attr '{file}'");
+                    continue;
+                }
+
+                if (!PassesFolderImportMasks(file, isFolder: false, includeMasks, excludeMasks))
+                {
+                    fileFilteredMask++;
+                    if (fileFilteredMask <= 5)
+                        LogImportDiag($"[Import#{traceId}] file-filter-mask '{file}'");
+                    continue;
+                }
+
+                if (existing.Contains(file) || !acceptedFileSet.Add(file))
+                {
+                    fileDuplicate++;
+                    continue;
+                }
+
+                acceptedFiles.Add(file);
+            }
+
+            var fileItems = CreateRenFilesForPaths(acceptedFiles, traceId, "file", ref skippedCount);
+            for (int i = 0; i < fileItems.Length; i++)
+            {
+                var rf = fileItems[i];
+                if (rf == null)
+                    continue;
+
+                Files.Add(rf);
+                added.Add(rf);
+                existing.Add(acceptedFiles[i]);
+                fileAdded++;
+                if (fileAdded <= 8)
+                    LogImportDiag($"[Import#{traceId}] file-added '{acceptedFiles[i]}'");
+            }
+        }
+
+        scanSw.Stop();
+        LogImportDiag(
+            $"[Import#{traceId}] dir-scan-summary root='{rootPath}' " +
+            $"dirCandidates={dirCandidates} dirAdded={dirAdded} dirFilteredAttr={dirFilteredAttr} dirFilteredMask={dirFilteredMask} dirDuplicate={dirDuplicate} " +
+            $"fileCandidates={fileCandidates} fileAdded={fileAdded} fileFilteredAttr={fileFilteredAttr} fileFilteredMask={fileFilteredMask} fileDuplicate={fileDuplicate} skipped={skippedCount} elapsedMs={scanSw.ElapsedMilliseconds}");
+    }
+
+    private RenFile?[] CreateRenFilesForPaths(IReadOnlyList<string> paths, long traceId, string scope, ref int skippedCount)
+    {
+        var result = new RenFile?[paths.Count];
+        if (paths.Count == 0)
+            return result;
+
+        if (paths.Count < ParallelImportCreationThreshold)
+        {
+            int sequentialFailures = 0;
+            foreach (var (path, index) in paths.Select((value, idx) => (value, idx)))
+            {
+                try
+                {
+                    result[index] = new RenFile(path);
+                }
+                catch (Exception ex)
+                {
+                    sequentialFailures++;
+                    if (sequentialFailures <= 5)
+                        LogImportDiag($"[Import#{traceId}] {scope}-create-failed path='{path}' message='{ex.Message}'");
+                }
+            }
+
+            if (sequentialFailures > 0)
+                skippedCount += sequentialFailures;
+            return result;
+        }
+
+        LogImportDiag($"[Import#{traceId}] {scope}-materialize mode=parallel count={paths.Count} degree={ParallelImportCreationDegree}");
+        int failed = 0;
+        Parallel.For(
+            0,
+            paths.Count,
+            new ParallelOptions { MaxDegreeOfParallelism = ParallelImportCreationDegree },
+            i =>
+            {
+                try
+                {
+                    result[i] = new RenFile(paths[i]);
+                }
+                catch
+                {
+                    Interlocked.Increment(ref failed);
+                }
+            });
+
+        if (failed > 0)
+        {
+            skippedCount += failed;
+            LogImportDiag($"[Import#{traceId}] {scope}-create-failed count={failed}");
+        }
+
+        return result;
     }
 
     private static IEnumerable<string> SafeEnumerateDirectories(string path, SearchOption searchOption, ref int skippedCount)
     {
-        try
+        var result = new List<string>();
+        var pending = new Queue<string>();
+        pending.Enqueue(path);
+
+        while (pending.Count > 0)
         {
-            return Directory.EnumerateDirectories(path, "*", searchOption).ToList();
+            var current = pending.Dequeue();
+            IEnumerable<string> dirs;
+            try
+            {
+                dirs = Directory.EnumerateDirectories(current, "*", SearchOption.TopDirectoryOnly);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                skippedCount++;
+                LogImportDiag($"[ImportEnum] dir-enum unauthorized current='{current}'");
+                continue;
+            }
+            catch (IOException)
+            {
+                skippedCount++;
+                LogImportDiag($"[ImportEnum] dir-enum io-failed current='{current}'");
+                continue;
+            }
+
+            foreach (var dir in dirs)
+            {
+                result.Add(dir);
+                if (searchOption == SearchOption.AllDirectories)
+                    pending.Enqueue(dir);
+            }
+
+            if (searchOption == SearchOption.TopDirectoryOnly)
+                break;
         }
-        catch (UnauthorizedAccessException)
-        {
-            skippedCount++;
-            return Enumerable.Empty<string>();
-        }
-        catch (IOException)
-        {
-            skippedCount++;
-            return Enumerable.Empty<string>();
-        }
+
+        return result;
     }
 
-    private static IEnumerable<string> SafeEnumerateFiles(string path, SearchOption searchOption, ref int skippedCount)
+    private static IEnumerable<string> SafeEnumerateFilesFromRoots(IEnumerable<string> roots, ref int skippedCount)
     {
-        try
+        var result = new List<string>();
+        foreach (var current in roots)
         {
-            return Directory.EnumerateFiles(path, "*", searchOption).ToList();
+            try
+            {
+                result.AddRange(Directory.EnumerateFiles(current, "*", SearchOption.TopDirectoryOnly));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                skippedCount++;
+                LogImportDiag($"[ImportEnum] file-enum unauthorized current='{current}'");
+            }
+            catch (IOException)
+            {
+                skippedCount++;
+                LogImportDiag($"[ImportEnum] file-enum io-failed current='{current}'");
+            }
         }
-        catch (UnauthorizedAccessException)
-        {
-            skippedCount++;
-            return Enumerable.Empty<string>();
-        }
-        catch (IOException)
-        {
-            skippedCount++;
-            return Enumerable.Empty<string>();
-        }
+
+        return result;
     }
 
     private bool PassesFolderImportSettings(string fullPath, bool isFolder)
@@ -879,6 +1880,9 @@ public partial class MainWindow : Window
 
     private bool PassesFolderImportAttributes(string fullPath)
     {
+        if (_appSettings.FolderIncludeHiddenFiles && _appSettings.FolderIncludeSystemFiles)
+            return true;
+
         try
         {
             var attrs = File.GetAttributes(fullPath);
@@ -897,20 +1901,16 @@ public partial class MainWindow : Window
 
     private bool PassesFolderImportMasks(string fullPath, bool isFolder)
     {
+        var includeMasks = ParseFolderMasks(_appSettings.FolderIncludeMask);
+        var excludeMasks = ParseFolderMasks(_appSettings.FolderExcludeMask);
+        return PassesFolderImportMasks(fullPath, isFolder, includeMasks, excludeMasks);
+    }
+
+    private bool PassesFolderImportMasks(string fullPath, bool isFolder, string[] includeMasks, string[] excludeMasks)
+    {
         var target = _appSettings.FolderMaskFileNameOnly ? Path.GetFileName(fullPath) : fullPath;
         if (string.IsNullOrEmpty(target))
             return false;
-
-        var includeMasks = (_appSettings.FolderIncludeMask ?? string.Empty)
-            .Split(';')
-            .Select(x => x.Trim())
-            .Where(x => x.Length > 0)
-            .ToArray();
-        var excludeMasks = (_appSettings.FolderExcludeMask ?? string.Empty)
-            .Split(';')
-            .Select(x => x.Trim())
-            .Where(x => x.Length > 0)
-            .ToArray();
 
         if (includeMasks.Length > 0 && !includeMasks.Any(mask => MatchWildcard(target, mask, false)))
             return false;
@@ -921,9 +1921,21 @@ public partial class MainWindow : Window
         return true;
     }
 
-    private void ApplyFiltersToFiles(IEnumerable<RenFile> files)
+    private static string[] ParseFolderMasks(string? rawMasks)
     {
-        SetMarkedInBulk(files, PassesFilters);
+        if (string.IsNullOrWhiteSpace(rawMasks))
+            return [];
+
+        return rawMasks
+            .Split(';')
+            .Select(x => x.Trim())
+            .Where(x => x.Length > 0)
+            .ToArray();
+    }
+
+    private void ApplyFiltersToFiles(IEnumerable<RenFile> files, bool autoPreview = true)
+    {
+        SetMarkedInBulk(files, PassesFilters, autoPreview);
     }
 
     private bool PassesFilters(RenFile file)
@@ -997,7 +2009,7 @@ public partial class MainWindow : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-            AddFilePaths(paths, recursive: true, forcePreview: true);
+            AddFilePaths(paths, recursive: true, forcePreview: _appSettings.AutoPreview);
         }
     }
 
@@ -1188,7 +2200,16 @@ public partial class MainWindow : Window
 
     private void AutoPreviewIfEnabled(object sender, RoutedEventArgs e)
     {
-        if (_appSettings.AutoPreview)
+        if (!_appSettings.AutoPreview)
+            return;
+
+        if (_wpfFilesBatchDepth > 0)
+        {
+            _autoPreviewQueuedDuringBatch = true;
+            return;
+        }
+
+        if (Rules.Count > 0)
             _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
     }
 
@@ -1257,10 +2278,15 @@ public partial class MainWindow : Window
         if (!EnsureRulesReadyForExecution())
             return false;
 
+        var traceId = Interlocked.Increment(ref _previewTraceSequence);
+        var totalSw = Stopwatch.StartNew();
         var previewLabel = LanguageService.GetString("Status_Previewing");
         var markedFiles = Files.Where(f => f.IsMarked).ToList();
         var unmarkedFiles = Files.Where(f => !f.IsMarked).ToList();
-        var ruleSnapshot = Rules.ToList();
+        var ruleSnapshot = Rules.Where(r => r.IsEnabled).ToList();
+        LogImportDiag(
+            $"[Preview#{traceId}] start auto={isAutoTrigger} debounceMs={debounceMilliseconds} " +
+            $"files={Files.Count} marked={markedFiles.Count} unmarked={unmarkedFiles.Count} enabledRules={ruleSnapshot.Count}");
         var (token, version) = BeginNewPreviewRequest();
 
         try
@@ -1269,15 +2295,20 @@ public partial class MainWindow : Window
             {
                 await Task.Delay(debounceMilliseconds);
                 if (token.IsCancellationRequested || !IsLatestPreviewRequest(version))
+                {
+                    totalSw.Stop();
+                    LogImportDiag($"[Preview#{traceId}] canceled stage=debounce totalMs={totalSw.ElapsedMilliseconds}");
                     return false;
+                }
             }
 
             BeginProgress(previewLabel);
             IProgress<(int current, int total)> progress = new Progress<(int current, int total)>(
                 p => UpdateProgress(previewLabel, p.current, p.total));
-            int previewProgressStep = Math.Max(1, markedFiles.Count / 100);
+            int previewProgressStep = Math.Max(1, markedFiles.Count / PreviewProgressUpdateTarget);
             int lastPreviewProgress = 0;
 
+            var computeSw = Stopwatch.StartNew();
             var previewResults = await Task.Run(
                 () => _renameService.ComputePreview(
                     markedFiles,
@@ -1290,33 +2321,77 @@ public partial class MainWindow : Window
                         lastPreviewProgress = cur;
                         progress.Report((cur, total));
                     },
-                    token));
+                    token),
+                token);
+            computeSw.Stop();
 
             if (token.IsCancellationRequested || !IsLatestPreviewRequest(version))
+            {
+                totalSw.Stop();
+                LogImportDiag($"[Preview#{traceId}] canceled stage=after-compute computeMs={computeSw.ElapsedMilliseconds} totalMs={totalSw.ElapsedMilliseconds}");
                 return false;
+            }
 
-            foreach (var result in previewResults)
-                result.file.NewName = result.newName;
+            var applySw = new Stopwatch();
+            if (!IsWin32FileList)
+                BeginWpfFilesBatch();
 
-            foreach (var file in unmarkedFiles)
-                file.NewName = file.OriginalName;
+            var resetSw = new Stopwatch();
+            var uiSw = new Stopwatch();
+            try
+            {
+                applySw.Restart();
+                foreach (var result in previewResults)
+                    result.file.ApplyPreviewName(result.newName);
+                applySw.Stop();
 
-            ApplyHighlightChangesState(Files.Where(f => !f.IsRenamed));
-            lvFiles.Items.Refresh();
-            UpdateStatusBar();
+                resetSw.Restart();
+                foreach (var file in unmarkedFiles)
+                    file.ApplyPreviewName(file.OriginalName, force: true);
+                resetSw.Stop();
 
+                uiSw.Restart();
+                ApplyHighlightChangesState(Files.Where(f => !f.IsRenamed));
+                if (IsWin32FileList)
+                {
+                    RefreshFileList();
+                    FlushFileStateUi();
+                }
+                uiSw.Stop();
+            }
+            finally
+            {
+                if (!IsWin32FileList)
+                    EndWpfFilesBatch();
+            }
+
+            long validateMs = 0;
             if (_appSettings.AutoValidate)
             {
+                var validateSw = Stopwatch.StartNew();
                 var errors = ValidateMarkedFiles();
                 tbStatusInfo.Text = errors.Count == 0
                     ? "Auto validation passed."
                     : $"Auto validation found {errors.Count} issue(s). Run Validate to view details.";
+                validateSw.Stop();
+                validateMs = validateSw.ElapsedMilliseconds;
+            }
+            else
+            {
+                tbStatusInfo.Text = LanguageService.GetString("Status_PreviewCompleted");
             }
 
+            totalSw.Stop();
+            LogImportDiag(
+                $"[Preview#{traceId}] end auto={isAutoTrigger} marked={markedFiles.Count} unmarked={unmarkedFiles.Count} " +
+                $"results={previewResults.Count} computeMs={computeSw.ElapsedMilliseconds} applyMs={applySw.ElapsedMilliseconds} " +
+                $"resetMs={resetSw.ElapsedMilliseconds} uiMs={uiSw.ElapsedMilliseconds} validateMs={validateMs} totalMs={totalSw.ElapsedMilliseconds}");
             return true;
         }
         catch (Exception ex)
         {
+            totalSw.Stop();
+            LogImportDiag($"[Preview#{traceId}] fail auto={isAutoTrigger} message='{ex.Message}' totalMs={totalSw.ElapsedMilliseconds}");
             tbStatusInfo.Text = $"Preview failed: {ex.Message}";
             if (!isAutoTrigger)
             {
@@ -1387,7 +2462,7 @@ public partial class MainWindow : Window
         if (!await ExecutePreviewAsync(isAutoTrigger: false, debounceMilliseconds: 0))
             return;
 
-        var toRename = Files.Count(f => f.IsMarked && f.HasChanged && !f.IsRenamed);
+        var toRename = Files.Count(f => f.IsMarked && f.HasChanged);
         if (toRename == 0) return;
 
         if (_appSettings.AutoValidate)
@@ -1417,7 +2492,7 @@ public partial class MainWindow : Window
         if (!shouldProceed)
             return;
 
-        var renameTargets = Files.Where(f => f.IsMarked && f.HasChanged && !f.IsRenamed).ToList();
+        var renameTargets = Files.Where(f => f.IsMarked && f.HasChanged).ToList();
         var renameLabel = LanguageService.GetString("Status_Renaming");
         var (token, version) = BeginNewRenameRequest();
 
@@ -1460,14 +2535,24 @@ public partial class MainWindow : Window
                 undoLogPath = CreateUndoLogFile(renamedFiles);
             }
 
-            if (_appSettings.AutoRemoveRenamed && renamedFiles.Count > 0)
+            // 重命名成功后自动取消勾选，避免后续操作混入已完成项。
+            if (IsWin32FileList)
+            if (IsWin32FileList)
             {
-                foreach (var file in renamedFiles)
-                    Files.Remove(file);
-            }
+                if (_appSettings.AutoRemoveRenamed && renamedFiles.Count > 0)
+                    Files.RemoveRange(renamedFiles);
 
-            lvFiles.Items.Refresh();
-            UpdateStatusBar();
+                RefreshFileList();
+                FlushFileStateUi();
+            }
+            else
+            {
+                RunWpfFilesBatch(() =>
+                {
+                    if (_appSettings.AutoRemoveRenamed && renamedFiles.Count > 0)
+                        Files.RemoveRange(renamedFiles);
+                }, preserveSelection: !_appSettings.AutoRemoveRenamed, clearSelection: _appSettings.AutoRemoveRenamed);
+            }
 
             var resultMessage = LanguageService.GetString("Msg_RenameResult", success, failed);
             if (_appSettings.CreateUndoLog && renamedFiles.Count > 0)
@@ -1506,9 +2591,15 @@ public partial class MainWindow : Window
 
     private void UndoRename_Click(object sender, RoutedEventArgs e)
     {
-        _renameService.UndoRename(Files);
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
+        if (IsWin32FileList)
+        {
+            _renameService.UndoRename(Files);
+            RefreshFileList();
+            FlushFileStateUi();
+            return;
+        }
+
+        RunWpfFilesBatch(() => _renameService.UndoRename(Files), preserveSelection: true);
     }
 
     private void Validate_Click(object sender, RoutedEventArgs e)
@@ -1569,11 +2660,24 @@ public partial class MainWindow : Window
 
     #region File List Features
 
-    private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e) => RequestStatusBarUpdate();
+    private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        => HandleFileSelectionChanged();
+
+    private void HandleFileSelectionChanged()
+    {
+        _selectedFileCount = _fileListView.SelectedCount;
+        if (_fileSelectionBatchDepth > 0)
+        {
+            _fileSelectionStatusDirty = true;
+            return;
+        }
+
+        RequestStatusBarUpdate();
+        RequestActionsRefresh();
+    }
     private void FileCheckBox_Click(object sender, RoutedEventArgs e)
     {
-        UpdateStatusBar();
-        AutoPreviewIfEnabled(sender, e);
+        NotifyPreviewRefreshNeededForMarking();
     }
 
     private void FileHeaderCheckBox_Click(object sender, RoutedEventArgs e)
@@ -1582,11 +2686,14 @@ public partial class MainWindow : Window
             return;
 
         var isMarked = headerCheckBox.IsChecked == true;
-        SetMarkedInBulk(Files, _ => isMarked);
+        SetMarkedInBulk(Files, _ => isMarked, autoPreview: false);
+        NotifyPreviewRefreshNeededForMarking();
     }
 
     private void Files_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (IsWin32FileList)
+            return;
         _filesDragStartPoint = e.GetPosition(null);
         _draggedFile = GetFileAtPoint(e.GetPosition(lvFiles));
     }
@@ -1602,7 +2709,7 @@ public partial class MainWindow : Window
         if (!ReferenceEquals(column, colFileName) && !ReferenceEquals(column, colNewName))
             return;
 
-        lvFiles.SelectedItem = file;
+        _fileListView.SelectedItem = file;
         EditNewName_Click(sender, new RoutedEventArgs());
         e.Handled = true;
     }
@@ -1640,7 +2747,7 @@ public partial class MainWindow : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-            AddFilePaths(paths, recursive: true, forcePreview: true);
+            AddFilePaths(paths, recursive: true, forcePreview: _appSettings.AutoPreview);
             return;
         }
 
@@ -1658,8 +2765,8 @@ public partial class MainWindow : Window
         if (newIndex > oldIndex) newIndex--;
 
         Files.Move(oldIndex, newIndex);
-        lvFiles.SelectedItem = dragged;
-        AutoPreviewIfEnabled(sender, new RoutedEventArgs());
+        _fileListView.SelectedItem = dragged;
+        NotifyPreviewRefreshNeededForFileOrder();
     }
 
     private RenFile? GetFileAtPoint(Point point)
@@ -1690,6 +2797,8 @@ public partial class MainWindow : Window
 
     private void CommitPendingFileEdit()
     {
+        if (IsWin32FileList)
+            return;
         var committedCell = lvFiles.CommitEdit(DataGridEditingUnit.Cell, true);
         var committedRow = lvFiles.CommitEdit(DataGridEditingUnit.Row, true);
         if (committedCell && committedRow)
@@ -1701,6 +2810,12 @@ public partial class MainWindow : Window
 
     private void FilesColumnHeader_Click(object sender, DataGridSortingEventArgs e)
     {
+        if (IsWin32FileList)
+        {
+            e.Handled = true;
+            return;
+        }
+
         var sortBy = e.Column.SortMemberPath;
         if (string.IsNullOrWhiteSpace(sortBy))
             return;
@@ -1715,6 +2830,7 @@ public partial class MainWindow : Window
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(new SortDescription(sortBy, direction));
         }
+        UpdateWpfLiveSorting(sortBy);
 
         foreach (var col in lvFiles.Columns)
         {
@@ -1728,13 +2844,13 @@ public partial class MainWindow : Window
 
     private void MarkSelected_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToList();
+        var selected = GetSelectedFiles();
         SetMarkedInBulk(selected, _ => true);
     }
 
     private void UnmarkSelected_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToList();
+        var selected = GetSelectedFiles();
         SetMarkedInBulk(selected, _ => false);
     }
 
@@ -1750,73 +2866,171 @@ public partial class MainWindow : Window
 
     private void MarkOnlySelected_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToHashSet();
+        var selected = GetSelectedFiles().ToHashSet();
         SetMarkedInBulk(Files, f => selected.Contains(f));
     }
 
-    private void ClearAll_Click(object sender, RoutedEventArgs e) => Files.Clear();
-    private void ClearRenamed_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.IsRenamed).ToList()) Files.Remove(f); }
-    private void ClearFailed_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.State == "×").ToList()) Files.Remove(f); }
-    private void ClearNotChanged_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => !f.HasChanged).ToList()) Files.Remove(f); }
-    private void ClearMarked_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.IsMarked).ToList()) Files.Remove(f); }
-    private void ClearNotMarked_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => !f.IsMarked).ToList()) Files.Remove(f); }
+    private void RemoveFilesInBulk(IEnumerable<RenFile> files, string reason)
+    {
+        var targets = files?.Distinct().ToList() ?? new List<RenFile>();
+        if (targets.Count == 0)
+            return;
 
-    private void FilesSelectAll_Click(object sender, RoutedEventArgs e) => lvFiles.SelectAll();
+        LogImportDiag($"[RemoveBulk] start reason={reason} requested={targets.Count} filesBefore={Files.Count} viewBefore={_viewItems.Count}");
+        var useWin32Batch = IsWin32FileList;
+        var selectionToRestore = useWin32Batch ? null : GetSelectedFiles().ToList();
+        if (useWin32Batch)
+            BeginWin32FilesBatch();
+        else
+            BeginWpfFilesBatch();
+
+        int removed = 0;
+        try
+        {
+            removed = Files.RemoveRange(targets);
+        }
+        finally
+        {
+            if (useWin32Batch)
+                EndWin32FilesBatch();
+            else
+                EndWpfFilesBatch(selectionToRestore);
+        }
+
+        if (useWin32Batch)
+        {
+            // Defensive sync: avoid stale virtual rows when the data source is fully cleared.
+            if (Files.Count == 0 && _viewItems.Count != 0)
+                RebuildViewItems(preserveSelection: false);
+
+            _fileListView.ClearSelection();
+            RefreshFileList();
+        }
+
+        if (useWin32Batch)
+            FlushFileStateUi();
+        LogImportDiag($"[RemoveBulk] end reason={reason} requested={targets.Count} removed={removed} filesAfter={Files.Count} viewAfter={_viewItems.Count}");
+    }
+
+    private void ClearAll_Click(object sender, RoutedEventArgs e)
+    {
+        if (!IsWin32FileList)
+        {
+            RunWpfFilesBatch(() => Files.ReplaceAll(Array.Empty<RenFile>()), clearSelection: true);
+            return;
+        }
+
+        BeginWin32FilesBatch();
+        try
+        {
+            Files.ReplaceAll(Array.Empty<RenFile>());
+        }
+        finally
+        {
+            EndWin32FilesBatch();
+        }
+
+        _fileListView.ClearSelection();
+    }
+    private void ClearRenamed_Click(object sender, RoutedEventArgs e)
+        => RemoveFilesInBulk(Files.Where(f => f.IsRenamed).ToList(), "clear-renamed");
+    private void ClearFailed_Click(object sender, RoutedEventArgs e)
+        => RemoveFilesInBulk(Files.Where(f => f.State == "×").ToList(), "clear-failed");
+    private void ClearNotChanged_Click(object sender, RoutedEventArgs e)
+        => RemoveFilesInBulk(Files.Where(f => !f.HasChanged).ToList(), "clear-not-changed");
+    private void ClearMarked_Click(object sender, RoutedEventArgs e)
+        => RemoveFilesInBulk(Files.Where(f => f.IsMarked).ToList(), "clear-marked");
+    private void ClearNotMarked_Click(object sender, RoutedEventArgs e)
+        => RemoveFilesInBulk(Files.Where(f => !f.IsMarked).ToList(), "clear-not-marked");
+
+    private async void FilesSelectAll_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsWin32FileList)
+        {
+            var swWin32 = Stopwatch.StartNew();
+            RunFileSelectionBatch(() => _fileListView.SelectAll());
+            swWin32.Stop();
+            App.LogInputDebug($"[SelectAll] win32 count={Files.Count} totalMs={swWin32.ElapsedMilliseconds}");
+            return;
+        }
+
+        if (Files.Count <= LargeSelectionThreshold)
+        {
+            var sw = Stopwatch.StartNew();
+            RunFileSelectionBatch(() => _fileListView.SelectAll());
+            sw.Stop();
+            App.LogInputDebug($"[SelectAll] native count={Files.Count} totalMs={sw.ElapsedMilliseconds}");
+            return;
+        }
+
+        await SelectAllFilesInChunksAsync();
+    }
 
     private void InvertSelection_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToHashSet();
-        lvFiles.SelectedItems.Clear();
-        foreach (var f in Files.Where(f => !selected.Contains(f))) lvFiles.SelectedItems.Add(f);
+        RunFileSelectionBatch(() =>
+        {
+            var selected = GetSelectedFiles().ToHashSet();
+            var newSelection = Files.Where(f => !selected.Contains(f)).ToList();
+            SetSelectedFiles(newSelection);
+        });
     }
 
     private void MoveFileUp_Click(object sender, RoutedEventArgs e)
     {
-        var index = lvFiles.SelectedIndex;
+        if (_fileListView.SelectedCount != 1)
+            return;
+
+        var index = _fileListView.SelectedIndex;
         if (index > 0)
         {
             Files.Move(index, index - 1);
-            lvFiles.SelectedIndex = index - 1;
-            AutoPreviewIfEnabled(sender, e);
+            _fileListView.SelectedIndex = index - 1;
+            NotifyPreviewRefreshNeededForFileOrder();
         }
     }
 
     private void MoveFileDown_Click(object sender, RoutedEventArgs e)
     {
-        var index = lvFiles.SelectedIndex;
+        if (_fileListView.SelectedCount != 1)
+            return;
+
+        var index = _fileListView.SelectedIndex;
         if (index >= 0 && index < Files.Count - 1)
         {
             Files.Move(index, index + 1);
-            lvFiles.SelectedIndex = index + 1;
-            AutoPreviewIfEnabled(sender, e);
+            _fileListView.SelectedIndex = index + 1;
+            NotifyPreviewRefreshNeededForFileOrder();
         }
     }
 
     private void RemoveSelectedFiles_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var f in lvFiles.SelectedItems.Cast<RenFile>().ToList()) Files.Remove(f);
+        var targets = GetSelectedFiles().ToList();
+        if (targets.Count == 0)
+            targets = Files.Where(f => f.IsMarked).ToList();
+
+        if (targets.Count == 0)
+            return;
+        RemoveFilesInBulk(targets, "remove-selected");
+        AutoPreviewIfEnabled(sender, e);
     }
 
     private void OpenFile_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file && File.Exists(file.FullPath))
+        if (GetSelectedFile() is RenFile file && File.Exists(file.FullPath))
             Process.Start(new ProcessStartInfo(file.FullPath) { UseShellExecute = true });
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file)
+        if (GetSelectedFile() is RenFile file)
             Process.Start("explorer.exe", $"/select,\"{file.FullPath}\"");
     }
 
     private void EditNewName_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is not RenFile file)
+        if (GetSelectedFile() is not RenFile file)
             return;
 
         var dlg = new TextInputDialog(
@@ -1831,9 +3045,20 @@ public partial class MainWindow : Window
 
         if (dlg.ShowDialog() == true)
         {
-            file.NewName = dlg.InputText;
-            ApplyHighlightChangesState(file);
-            lvFiles.Items.Refresh();
+            if (IsWin32FileList)
+            {
+                file.NewName = dlg.InputText;
+                ApplyHighlightChangesState(file);
+                RefreshFileList();
+                FlushFileStateUi();
+                return;
+            }
+
+            RunWpfFilesBatch(() =>
+            {
+                file.NewName = dlg.InputText;
+                ApplyHighlightChangesState(file);
+            }, preserveSelection: true);
         }
     }
 
@@ -1841,7 +3066,29 @@ public partial class MainWindow : Window
 
     #region Menu/Toolbar Actions
 
-    private void NewProject_Click(object sender, RoutedEventArgs e) { Rules.Clear(); Files.Clear(); }
+    private void NewProject_Click(object sender, RoutedEventArgs e)
+    {
+        Rules.Clear();
+        ClearActiveFileSort();
+
+        if (IsWin32FileList)
+        {
+            BeginWin32FilesBatch();
+            try
+            {
+                Files.ReplaceAll(Array.Empty<RenFile>());
+            }
+            finally
+            {
+                EndWin32FilesBatch();
+            }
+
+            _fileListView.ClearSelection();
+            return;
+        }
+
+        RunWpfFilesBatch(() => Files.ReplaceAll(Array.Empty<RenFile>()), clearSelection: true);
+    }
 
     private void NewInstance_Click()
     {
@@ -2040,9 +3287,6 @@ public partial class MainWindow : Window
             ApplyFiltersToFiles(Files);
         else
             SetMarkedInBulk(Files, _ => true);
-
-        lvFiles.Items.Refresh();
-        UpdateStatusBar();
     }
 
     private void OpenSettingsTab(SettingsTab tab)
@@ -2052,6 +3296,7 @@ public partial class MainWindow : Window
         {
             SaveSettingsWithFeedback("settings dialog", showDialog: true);
             RuleHelpers.ResolveMetaTagsEnabled = _appSettings.ResolveMetaTags;
+            App.SetInputDebugLoggingEnabled(_appSettings.EnableInputDebugLogging);
             UpdateTrayIconState();
             // Apply language if changed
             if (_appSettings.Language == "en-US")
@@ -2059,8 +3304,17 @@ public partial class MainWindow : Window
             else
                 LanguageService.SwitchToChinese();
 
-            ApplyHighlightChangesState(Files);
-            lvFiles.Items.Refresh();
+            if (IsWin32FileList)
+            {
+                ApplyHighlightChangesState(Files);
+                if (_win32FileListView != null)
+                    ApplyWin32Palette(_win32FileListView);
+                RefreshFileList();
+                FlushFileStateUi();
+                return;
+            }
+
+            RunWpfFilesBatch(() => ApplyHighlightChangesState(Files), preserveSelection: true);
         }
     }
 
@@ -2089,6 +3343,16 @@ public partial class MainWindow : Window
 
     private void AutosizeColumns()
     {
+        if (IsWin32FileList)
+        {
+            for (int i = 0; i < _fileListColumns.Count; i++)
+            {
+                if (_fileListColumns[i].Visible)
+                    AutoSizeWin32Column(i);
+            }
+            return;
+        }
+
         foreach (var col in lvFiles.Columns)
         {
             if (col.Visibility == Visibility.Visible)
@@ -2098,23 +3362,38 @@ public partial class MainWindow : Window
 
     private void FixConflictingNames()
     {
-        var groups = Files.Where(f => f.HasChanged && !f.IsRenamed)
+        var groups = Files.Where(f => f.HasChanged)
             .GroupBy(f => Path.Combine(f.FolderPath, f.NewName).ToLowerInvariant())
             .Where(g => g.Count() > 1);
         int fixed_ = 0;
-        foreach (var group in groups)
+
+        void ApplyFixes()
         {
-            int i = 1;
-            foreach (var file in group.Skip(1))
+            foreach (var group in groups)
             {
-                var ext = Path.GetExtension(file.NewName);
-                var name = Path.GetFileNameWithoutExtension(file.NewName);
-                file.NewName = $"{name} ({++i}){ext}";
-                ApplyHighlightChangesState(file);
-                fixed_++;
+                int i = 1;
+                foreach (var file in group.Skip(1))
+                {
+                    var ext = Path.GetExtension(file.NewName);
+                    var name = Path.GetFileNameWithoutExtension(file.NewName);
+                    file.NewName = $"{name} ({++i}){ext}";
+                    ApplyHighlightChangesState(file);
+                    fixed_++;
+                }
             }
         }
-        lvFiles.Items.Refresh();
+
+        if (IsWin32FileList)
+        {
+            ApplyFixes();
+            RefreshFileList();
+            FlushFileStateUi();
+        }
+        else
+        {
+            RunWpfFilesBatch(ApplyFixes, preserveSelection: true);
+        }
+
         MessageBox.Show($"Fixed {fixed_} conflicting names.", "Fix Conflicts", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
@@ -2180,16 +3459,33 @@ public partial class MainWindow : Window
                           .ThenBy(f => f.FolderPath)
                           .ThenBy(f => f.OriginalName)
                           .ToList();
-        Files.Clear();
-        foreach (var f in sorted) Files.Add(f);
+        ClearActiveFileSort();
 
-        if (Rules.Count > 0 && _appSettings.AutoPreview)
-            _ = ExecutePreviewAsync(isAutoTrigger: true, debounceMilliseconds: AutoPreviewDebounceMilliseconds);
+        if (IsWin32FileList)
+        {
+            BeginWin32FilesBatch();
+            try
+            {
+                Files.ReplaceAll(sorted);
+            }
+            finally
+            {
+                EndWin32FilesBatch();
+            }
+
+            NotifyPreviewRefreshNeededForFileOrder();
+            return;
+        }
+
+        RunWpfFilesBatch(
+            () => Files.ReplaceAll(sorted),
+            preserveSelection: true);
+        NotifyPreviewRefreshNeededForFileOrder();
     }
 
     private void Analyze_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file)
+        if (GetSelectedFile() is RenFile file)
         {
             MessageBox.Show(
                 $"Original: {file.OriginalName}\nNew Name: {file.NewName}\nExtension: {file.Extension}\n" +
@@ -2200,6 +3496,8 @@ public partial class MainWindow : Window
 
     private void FilesColumnHeader_RightClick(object sender, MouseButtonEventArgs e)
     {
+        if (IsWin32FileList)
+            return;
         if (sender is DataGridColumnHeader header && header.Column != null)
         {
             ShowColumnsMenu(header);
@@ -2209,6 +3507,8 @@ public partial class MainWindow : Window
 
     private void FilesColumnHeader_DoubleClick(object sender, MouseButtonEventArgs e)
     {
+        if (IsWin32FileList)
+            return;
         if (sender is not DataGridColumnHeader header || header.Column == null)
             return;
 
@@ -2263,14 +3563,7 @@ public partial class MainWindow : Window
         menu.Items.Add(resetColumnWidths);
 
         var cancelSort = new MenuItem { Header = LanguageService.GetString("ColumnsMenu_CancelSorting") };
-        cancelSort.Click += (_, _) =>
-        {
-            var view = CollectionViewSource.GetDefaultView(lvFiles.ItemsSource);
-            view.SortDescriptions.Clear();
-            view.Refresh();
-            foreach (var col in lvFiles.Columns)
-                col.SortDirection = null;
-        };
+        cancelSort.Click += (_, _) => ClearWpfSort();
         menu.Items.Add(cancelSort);
 
         menu.PlacementTarget = placementTarget;
@@ -2279,6 +3572,21 @@ public partial class MainWindow : Window
 
     private void ResetColumnWidths()
     {
+        if (IsWin32FileList)
+        {
+            for (int i = 0; i < _fileListColumns.Count; i++)
+            {
+                var col = _fileListColumns[i];
+                if (!string.IsNullOrEmpty(col.Key) && _defaultColumnWidths.TryGetValue(col.Key, out var width) && width > 0)
+                    col.Width = (int)Math.Round(width);
+
+                UpdateColumnWidthCache(col, col.Width);
+                _win32FileListView?.UpdateColumnWidth(i, col.Width);
+            }
+            _win32FileListView?.ApplyColumnVisibility();
+            return;
+        }
+
         foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
@@ -2314,10 +3622,403 @@ public partial class MainWindow : Window
         UpdateColumnWidthCache(col);
     }
 
+    private void ApplyWin32Palette(Win32FileListViewHost host)
+    {
+        _win32Palette = BuildWin32Palette();
+        host.Palette = _win32Palette;
+    }
+
+    private Win32FileListPalette BuildWin32Palette()
+    {
+        var background = GetResourceColor("CardBrush", SystemColors.WindowColor);
+        var alternateBackground = GetResourceColor("SurfaceBrush", SystemColors.ControlLightLightColor);
+        var text = EnsureReadableText(
+            GetResourceColor("TextBrush", SystemColors.WindowTextColor),
+            background,
+            SystemColors.WindowTextColor);
+
+        var selectionBackground = GetResourceColor("SelectionBrush", SystemColors.HighlightColor);
+        var selectionText = EnsureReadableText(
+            GetResourceColor("TextBrush", SystemColors.HighlightTextColor),
+            selectionBackground,
+            SystemColors.HighlightTextColor);
+
+        var headerBackground = GetResourceColor("SurfaceBrush", SystemColors.ControlColor);
+        var headerText = EnsureReadableText(
+            GetResourceColor("TextSecondaryBrush", SystemColors.ControlTextColor),
+            headerBackground,
+            SystemColors.ControlTextColor);
+        var border = EnsureReadableBorder(
+            GetResourceColor("BorderBrush", SystemColors.ActiveBorderColor),
+            background);
+        var headerBorder = EnsureReadableBorder(
+            GetResourceColor("BorderBrush", SystemColors.ActiveBorderColor),
+            headerBackground);
+
+        var headerSortedBackground = GetResourceColor("PrimaryLightBrush", SystemColors.ControlLightColor);
+        var headerSortedText = EnsureReadableText(
+            GetResourceColor("PrimaryBrush", SystemColors.ControlTextColor),
+            headerSortedBackground,
+            SystemColors.ControlTextColor);
+
+        return new Win32FileListPalette
+        {
+            Background = background,
+            AlternateRowBackground = alternateBackground,
+            Text = text,
+            TextSecondary = GetResourceColor("TextSecondaryBrush", SystemColors.GrayTextColor),
+            Border = border,
+            SelectionBackground = selectionBackground,
+            SelectionText = selectionText,
+            HoverBackground = GetResourceColor("SurfaceHoverBrush", SystemColors.ControlLightColor),
+            Accent = GetResourceColor("PrimaryBrush", SystemColors.HighlightColor),
+            Success = GetResourceColor("SemanticSuccessBrush", Colors.ForestGreen),
+            Error = GetResourceColor("SemanticErrorBrush", Colors.IndianRed),
+            HeaderBackground = headerBackground,
+            HeaderText = headerText,
+            HeaderBorder = headerBorder,
+            HeaderSortedBackground = headerSortedBackground,
+            HeaderSortedText = headerSortedText
+        };
+    }
+
+    private static Color GetResourceColor(string key, Color fallback)
+    {
+        if (Application.Current?.Resources[key] is SolidColorBrush brush)
+            return brush.Color;
+        if (Application.Current?.Resources[key] is Color color)
+            return color;
+        return fallback;
+    }
+
+    private static Color EnsureReadableText(Color text, Color background, Color fallback)
+    {
+        if (GetContrastRatio(text, background) >= 3.0)
+            return text;
+
+        if (GetContrastRatio(fallback, background) >= 3.0)
+            return fallback;
+
+        return GetRelativeLuminance(background) > 0.5 ? Colors.Black : Colors.White;
+    }
+
+    private static Color EnsureReadableBorder(Color border, Color background)
+    {
+        if (GetContrastRatio(border, background) >= 1.6)
+            return border;
+
+        var fallback = GetRelativeLuminance(background) > 0.5
+            ? Color.FromRgb(176, 185, 194)
+            : Color.FromRgb(74, 85, 96);
+        if (GetContrastRatio(fallback, background) >= 1.6)
+            return fallback;
+
+        return EnsureReadableText(border, background, fallback);
+    }
+
+    private static double GetContrastRatio(Color a, Color b)
+    {
+        var l1 = GetRelativeLuminance(a);
+        var l2 = GetRelativeLuminance(b);
+        var lighter = Math.Max(l1, l2);
+        var darker = Math.Min(l1, l2);
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    private static double GetRelativeLuminance(Color color)
+    {
+        static double Channel(byte c)
+        {
+            var srgb = c / 255.0;
+            return srgb <= 0.03928 ? srgb / 12.92 : Math.Pow((srgb + 0.055) / 1.055, 2.4);
+        }
+
+        var r = Channel(color.R);
+        var g = Channel(color.G);
+        var b = Channel(color.B);
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    private void AutoSizeWin32Column(int columnIndex)
+    {
+        if (_win32FileListView == null || columnIndex < 0 || columnIndex >= _fileListColumns.Count)
+            return;
+
+        _win32FileListView.AutoSizeColumn(columnIndex);
+        var width = _win32FileListView.GetColumnWidth(columnIndex);
+        _fileListColumns[columnIndex].Width = width;
+        UpdateColumnWidthCache(_fileListColumns[columnIndex], width);
+    }
+
+    private string GetWin32CellText(int row, int col)
+    {
+        if (row < 0 || row >= _viewItems.Count)
+            return string.Empty;
+        if (col < 0 || col >= _fileListColumns.Count)
+            return string.Empty;
+
+        var file = _viewItems[row];
+        if (string.Equals(_fileListColumns[col].Key, "IsMarked", StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
+
+        return _fileListColumns[col].TextGetter?.Invoke(file) ?? string.Empty;
+    }
+
+    private Win32FileListViewHost.CellStyle? GetWin32CellStyle(int row, int col, bool isSelected)
+    {
+        if (row < 0 || row >= _viewItems.Count)
+            return null;
+        if (col < 0 || col >= _fileListColumns.Count)
+            return null;
+
+        var file = _viewItems[row];
+        var key = _fileListColumns[col].Key;
+        if (string.Equals(key, "State", StringComparison.OrdinalIgnoreCase))
+        {
+            var palette = _win32Palette;
+            return file.State switch
+            {
+                "✓" => new Win32FileListViewHost.CellStyle(palette?.Success ?? Colors.ForestGreen),
+                "×" => new Win32FileListViewHost.CellStyle(palette?.Error ?? Colors.IndianRed),
+                "→" => new Win32FileListViewHost.CellStyle(palette?.Accent ?? Colors.DodgerBlue),
+                _ => null
+            };
+        }
+
+        var newNameChanged = !string.Equals(file.NewName, file.OriginalName, StringComparison.Ordinal);
+        if (string.Equals(key, "NewName", StringComparison.OrdinalIgnoreCase) && (file.HasChanged || newNameChanged) && !isSelected)
+        {
+            var palette = _win32Palette;
+            return new Win32FileListViewHost.CellStyle(palette?.Accent ?? Colors.DodgerBlue, bold: true);
+        }
+
+        return null;
+    }
+
+    private bool GetWin32ItemChecked(int row)
+    {
+        if (row < 0 || row >= _viewItems.Count)
+            return false;
+        return _viewItems[row].IsMarked;
+    }
+
+    private void OnWin32ItemCheckedChanged(int row, bool isChecked)
+    {
+        if (row < 0 || row >= _viewItems.Count)
+            return;
+        _viewItems[row].IsMarked = isChecked;
+        NotifyPreviewRefreshNeededForMarking();
+    }
+
+    private void OnWin32ItemActivated(int row, int col)
+    {
+        if (row < 0 || row >= _viewItems.Count)
+            return;
+        if (col < 0 || col >= _fileListColumns.Count)
+            return;
+
+        var key = _fileListColumns[col].Key;
+        if (!string.Equals(key, "OriginalName", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(key, "NewName", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var file = _viewItems[row];
+        _fileListView.SelectedItem = file;
+        EditNewName_Click(this, new RoutedEventArgs());
+    }
+
+    private void OnWin32ColumnHeaderClick(int columnIndex)
+    {
+        if (columnIndex < 0 || columnIndex >= _fileListColumns.Count)
+            return;
+
+        var col = _fileListColumns[columnIndex];
+        if (string.Equals(col.Key, "IsMarked", StringComparison.OrdinalIgnoreCase))
+        {
+            ToggleAllMarks();
+            return;
+        }
+
+        if (!col.Sortable || col.SortValueGetter == null)
+            return;
+
+        if (string.Equals(_viewSortKey, col.Key, StringComparison.OrdinalIgnoreCase))
+        {
+            _viewSortDirection = _viewSortDirection == ListSortDirection.Ascending
+                ? ListSortDirection.Descending
+                : ListSortDirection.Ascending;
+        }
+        else
+        {
+            _viewSortKey = col.Key;
+            _viewSortDirection = ListSortDirection.Ascending;
+        }
+
+        var selected = GetSelectedFiles().ToList();
+        ApplyViewSort();
+        _fileListView.Refresh();
+        if (selected.Count > 0)
+            _fileListView.SetSelectedItems(selected);
+        _win32FileListView?.SetSortIndicator(columnIndex, _viewSortDirection);
+    }
+
+    private void OnWin32ColumnHeaderAutoSize(int columnIndex)
+        => AutoSizeWin32Column(columnIndex);
+
+    private void ShowWin32ColumnsMenuAtCursor()
+    {
+        var pt = WinForms.Control.MousePosition;
+        ShowWin32ColumnsMenu(new Point(pt.X, pt.Y));
+    }
+
+    private void ShowWin32ColumnsMenu(Point screenPoint)
+    {
+        var menu = new ContextMenu();
+        for (int i = 2; i < _fileListColumns.Count; i++)
+        {
+            var col = _fileListColumns[i];
+            var header = string.IsNullOrWhiteSpace(col.Header) ? $"Column {i}" : col.Header;
+            var mi = new MenuItem { Header = header, IsCheckable = true, IsChecked = col.Visible, Tag = i };
+            mi.Click += (s, _) =>
+            {
+                var index = (int)((MenuItem)s!).Tag;
+                var target = _fileListColumns[index];
+                target.Visible = ((MenuItem)s!).IsChecked;
+                if (target.Visible && target.Width <= 0)
+                {
+                    if (_appSettings.ColumnWidths.TryGetValue(target.Key, out var persistedWidth) && persistedWidth > 0)
+                        target.Width = (int)Math.Round(persistedWidth);
+                    else if (_defaultColumnWidths.TryGetValue(target.Key, out var defaultWidth) && defaultWidth > 0)
+                        target.Width = (int)Math.Round(defaultWidth);
+                }
+
+                UpdateColumnWidthCache(target, target.Width);
+                _win32FileListView?.UpdateColumnWidth(index, target.Width);
+                _win32FileListView?.ApplyColumnVisibility();
+            };
+            menu.Items.Add(mi);
+        }
+
+        menu.Items.Add(new Separator());
+        var resetColumnWidths = new MenuItem { Header = LanguageService.GetString("ColumnsMenu_ResetColumnWidths") };
+        resetColumnWidths.Click += (_, _) => ResetColumnWidths();
+        menu.Items.Add(resetColumnWidths);
+
+        var cancelSort = new MenuItem { Header = LanguageService.GetString("ColumnsMenu_CancelSorting") };
+        cancelSort.Click += (_, _) => ClearWin32Sort();
+        menu.Items.Add(cancelSort);
+
+        var wpfPoint = ScreenToWpfPoint(screenPoint);
+        menu.Placement = PlacementMode.AbsolutePoint;
+        menu.PlacementTarget = this;
+        menu.HorizontalOffset = wpfPoint.X;
+        menu.VerticalOffset = wpfPoint.Y;
+        menu.IsOpen = true;
+    }
+
+    private void ShowWin32ContextMenu(Point screenPoint)
+    {
+        if (_win32FileListView == null)
+            return;
+
+        var index = _win32FileListView.HitTestIndexFromScreenPoint(screenPoint);
+        if (index >= 0 && index < _viewItems.Count)
+        {
+            var target = _viewItems[index];
+            if (!_fileListView.SelectedItems.Contains(target))
+                _fileListView.SelectedItem = target;
+        }
+
+        var menu = lvFiles.ContextMenu;
+        if (menu == null)
+            return;
+
+        var wpfPoint = ScreenToWpfPoint(screenPoint);
+        menu.PlacementTarget = this;
+        menu.Placement = PlacementMode.AbsolutePoint;
+        menu.HorizontalOffset = wpfPoint.X;
+        menu.VerticalOffset = wpfPoint.Y;
+        menu.IsOpen = true;
+    }
+
+    private void OnWin32ReorderRequest(int from, int to)
+    {
+        if (from < 0 || to < 0 || from >= _viewItems.Count || to >= _viewItems.Count)
+            return;
+
+        var dragged = _viewItems[from];
+        var target = _viewItems[to];
+        int oldIndex = Files.IndexOf(dragged);
+        if (oldIndex < 0)
+            return;
+
+        int newIndex = Files.IndexOf(target);
+        if (newIndex < 0)
+            newIndex = Files.Count - 1;
+        if (newIndex == oldIndex)
+            return;
+        if (newIndex > oldIndex)
+            newIndex--;
+
+        Files.Move(oldIndex, newIndex);
+        _fileListView.SelectedItem = dragged;
+        NotifyPreviewRefreshNeededForFileOrder();
+    }
+
+    private void OnWin32KeyGesture(Key key, ModifierKeys modifiers)
+    {
+        if (modifiers == ModifierKeys.Control && key == Key.A)
+            TryExecute(CmdFilesSelectAll);
+        else if (modifiers == ModifierKeys.None && key == Key.Delete)
+            TryExecute(CmdRemoveSelectedFiles);
+        else if (modifiers == ModifierKeys.None && key == Key.F5)
+            TryExecute(CmdPreview);
+    }
+
+    private void ToggleAllMarks()
+    {
+        if (Files.Count == 0)
+            return;
+        var allMarked = Files.All(f => f.IsMarked);
+        SetMarkedInBulk(Files, _ => !allMarked, autoPreview: false);
+        NotifyPreviewRefreshNeededForMarking();
+    }
+
+    private void UpdateWin32HeaderCheckState()
+    {
+        if (!IsWin32FileList || _win32FileListView == null)
+            return;
+
+        if (Files.Count == 0)
+        {
+            _win32FileListView.SetHeaderCheckState(false);
+            return;
+        }
+
+        var any = Files.Any(f => f.IsMarked);
+        var all = any && Files.All(f => f.IsMarked);
+        bool? state = all ? true : any ? (bool?)null : false;
+        _win32FileListView.SetHeaderCheckState(state);
+    }
+
+    private Point ScreenToWpfPoint(Point screenPoint)
+    {
+        var source = PresentationSource.FromVisual(this);
+        if (source?.CompositionTarget != null)
+            return source.CompositionTarget.TransformFromDevice.Transform(screenPoint);
+        return screenPoint;
+    }
+
     private void About_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show(LanguageService.GetString("Msg_About"),
             LanguageService.GetString("Menu_About"), MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void DebugWindow_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new DebugWindow { Owner = this };
+        win.Show();
     }
 
     // Help menu handlers
@@ -2420,13 +4121,13 @@ public partial class MainWindow : Window
 
     private void OpenWithNotepad_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file && File.Exists(file.FullPath))
+        if (GetSelectedFile() is RenFile file && File.Exists(file.FullPath))
             Process.Start("notepad.exe", $"\"{file.FullPath}\"");
     }
 
     private void FileProperties_Click(object sender, RoutedEventArgs e)
     {
-        if (lvFiles.SelectedItem is RenFile file && File.Exists(file.FullPath))
+        if (GetSelectedFile() is RenFile file && File.Exists(file.FullPath))
             ShellExecuteProperties(file.FullPath);
     }
 
@@ -2466,18 +4167,18 @@ public partial class MainWindow : Window
 
     private void CutFilesToClipboard_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().Select(f => f.FullPath).ToArray();
-        if (selected.Length == 0) return;
+        var selectedFiles = GetSelectedFiles().ToList();
+        if (selectedFiles.Count == 0) return;
+        var selected = selectedFiles.Select(f => f.FullPath).ToArray();
         var col = new System.Collections.Specialized.StringCollection();
         col.AddRange(selected);
         Clipboard.SetFileDropList(col);
-        // Remove from list after cut
-        foreach (var f in lvFiles.SelectedItems.Cast<RenFile>().ToList()) Files.Remove(f);
+        RemoveFilesInBulk(selectedFiles, "cut-from-list");
     }
 
     private void CopyFilesToClipboard_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().Select(f => f.FullPath).ToArray();
+        var selected = GetSelectedFiles().Select(f => f.FullPath).ToArray();
         if (selected.Length == 0) return;
         var col = new System.Collections.Specialized.StringCollection();
         col.AddRange(selected);
@@ -2486,24 +4187,31 @@ public partial class MainWindow : Window
 
     private void DeleteToRecycleBin_Click(object sender, RoutedEventArgs e)
     {
-        var selected = lvFiles.SelectedItems.Cast<RenFile>().ToList();
+        var selected = GetSelectedFiles().ToList();
         if (selected.Count == 0) return;
         if (MessageBox.Show($"Move {selected.Count} file(s) to Recycle Bin?", "Confirm",
             MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
         var failed = new List<string>();
         var successCount = 0;
+        var removed = new List<RenFile>();
 
         foreach (var file in selected)
         {
             if (TrySendToRecycleBin(file.FullPath, out var error))
             {
-                Files.Remove(file);
+                removed.Add(file);
                 successCount++;
                 continue;
             }
 
             failed.Add($"{file.FullPath} -> {error}");
+        }
+
+        if (removed.Count > 0)
+        {
+            RemoveFilesInBulk(removed, "delete-to-recycle-bin");
+            AutoPreviewIfEnabled(sender, e);
         }
 
         if (failed.Count == 0)
@@ -2663,10 +4371,10 @@ public partial class MainWindow : Window
 
     // Clear extensions
     private void ClearValid_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.State == "✓" || f.HasChanged).ToList()) Files.Remove(f); }
+        => RemoveFilesInBulk(Files.Where(f => f.State == "✓" || f.HasChanged).ToList(), "clear-valid");
 
     private void ClearInvalid_Click(object sender, RoutedEventArgs e)
-    { foreach (var f in Files.Where(f => f.State == "×" || !string.IsNullOrEmpty(f.Error)).ToList()) Files.Remove(f); }
+        => RemoveFilesInBulk(Files.Where(f => f.State == "×" || !string.IsNullOrEmpty(f.Error)).ToList(), "clear-invalid");
 
     // Select extensions
     private void SelectByNameLength_Click(object sender, RoutedEventArgs e)
@@ -2676,9 +4384,11 @@ public partial class MainWindow : Window
             LanguageService.GetString("Dialog_SelectByNameLengthPrompt"),
             "20");
         if (input == null || !int.TryParse(input, out int maxLen)) return;
-        lvFiles.SelectedItems.Clear();
-        foreach (var f in Files.Where(f => f.OriginalName.Length <= maxLen))
-            lvFiles.SelectedItems.Add(f);
+        RunFileSelectionBatch(() =>
+        {
+            var selected = Files.Where(f => f.OriginalName.Length <= maxLen).ToList();
+            SetSelectedFiles(selected);
+        });
     }
 
     private void SelectByExtension_Click(object sender, RoutedEventArgs e)
@@ -2688,9 +4398,11 @@ public partial class MainWindow : Window
             LanguageService.GetString("Dialog_SelectByExtensionPrompt"),
             ".txt");
         if (ext == null) return;
-        lvFiles.SelectedItems.Clear();
-        foreach (var f in Files.Where(f => f.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase)))
-            lvFiles.SelectedItems.Add(f);
+        RunFileSelectionBatch(() =>
+        {
+            var selected = Files.Where(f => f.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase)).ToList();
+            SetSelectedFiles(selected);
+        });
     }
 
     private void SelectByMask_Click(object sender, RoutedEventArgs e)
@@ -2701,9 +4413,11 @@ public partial class MainWindow : Window
             "*.*");
         if (mask == null) return;
         var regex = WildcardToRegex(mask);
-        lvFiles.SelectedItems.Clear();
-        foreach (var f in Files.Where(f => regex.IsMatch(f.OriginalName)))
-            lvFiles.SelectedItems.Add(f);
+        RunFileSelectionBatch(() =>
+        {
+            var selected = Files.Where(f => regex.IsMatch(f.OriginalName)).ToList();
+            SetSelectedFiles(selected);
+        });
     }
 
     // Helpers
@@ -3060,6 +4774,23 @@ public partial class MainWindow : Window
         _appSettings.ColumnWidths.Clear();
         _appSettings.VisibleColumns.Clear();
 
+        if (IsWin32FileList)
+        {
+            for (int i = 0; i < _fileListColumns.Count; i++)
+            {
+                var col = _fileListColumns[i];
+                if (string.IsNullOrEmpty(col.Key))
+                    continue;
+
+                var width = _win32FileListView?.GetColumnWidth(i) ?? col.Width;
+                if (width > 0)
+                    _appSettings.ColumnWidths[col.Key] = width;
+                if (col.Visible)
+                    _appSettings.VisibleColumns.Add(col.Key);
+            }
+            return;
+        }
+
         foreach (var col in lvFiles.Columns)
         {
             var key = GetColumnKey(col);
@@ -3078,6 +4809,35 @@ public partial class MainWindow : Window
     {
         if (_appSettings.ColumnWidths.Count == 0 && _appSettings.VisibleColumns.Count == 0)
             return;
+
+        if (IsWin32FileList)
+        {
+            for (int i = 0; i < _fileListColumns.Count; i++)
+            {
+                var col = _fileListColumns[i];
+                if (string.IsNullOrEmpty(col.Key))
+                    continue;
+
+                if (_appSettings.ColumnWidths.TryGetValue(col.Key, out var width) && width > 0)
+                    col.Width = (int)Math.Round(width);
+
+                if (_appSettings.VisibleColumns.Count > 0)
+                {
+                    var isVisible = _appSettings.VisibleColumns.Contains(col.Key);
+                    col.Visible = isVisible;
+                    if (isVisible && (!_appSettings.ColumnWidths.TryGetValue(col.Key, out var persistedWidth) || persistedWidth <= 0))
+                    {
+                        if (_defaultColumnWidths.TryGetValue(col.Key, out var defaultWidth) && defaultWidth > 0)
+                            col.Width = (int)Math.Round(defaultWidth);
+                    }
+                }
+            }
+
+            for (int i = 0; i < _fileListColumns.Count; i++)
+                _win32FileListView?.UpdateColumnWidth(i, _fileListColumns[i].Width);
+            _win32FileListView?.ApplyColumnVisibility();
+            return;
+        }
 
         foreach (var col in lvFiles.Columns)
         {
@@ -3199,11 +4959,27 @@ public partial class MainWindow : Window
 
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        var focusedType = Keyboard.FocusedElement?.GetType().Name ?? "<null>";
+        App.LogInputDebug($"WindowPreviewKeyDown key={key} systemKey={e.SystemKey} modifiers={Keyboard.Modifiers} handled={e.Handled} focused={focusedType}");
+
+        if (!e.Handled
+            && IsWin32FileList
+            && win32FileListHost.IsKeyboardFocusWithin
+            && Keyboard.Modifiers == ModifierKeys.None
+            && key == Key.Delete)
+        {
+            if (TryExecute(CmdRemoveSelectedFiles))
+                e.Handled = true;
+            return;
+        }
+
         if (e.SystemKey != Key.Space || (Keyboard.Modifiers & ModifierKeys.Alt) == 0)
             return;
 
         ShowSystemMenuFrom(new Point(0, TitleBarBorder.ActualHeight));
         e.Handled = true;
+        App.LogInputDebug("WindowPreviewKeyDown handled Alt+Space system menu.");
     }
 
     private void MinimizeButton_Click(object sender, RoutedEventArgs e)

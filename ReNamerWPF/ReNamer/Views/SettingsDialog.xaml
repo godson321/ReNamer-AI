@@ -53,6 +53,13 @@
                                     <ComboBoxItem Content="{DynamicResource Theme_Dark}" Tag="Dark"/>
                                 </ComboBox>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,4">
+                                <TextBlock Text="{DynamicResource Settings_FileListEngine}" Style="{StaticResource DialogLabelText}" Width="118"/>
+                                <ComboBox x:Name="cmbFileListEngine" Width="220" Style="{StaticResource EnterpriseDialogInputComboBoxStyle}">
+                                    <ComboBoxItem Content="{DynamicResource Settings_FileListEngine_Wpf}" Tag="WpfDataGrid"/>
+                                    <ComboBoxItem Content="{DynamicResource Settings_FileListEngine_Win32}" Tag="Win32ListView"/>
+                                </ComboBox>
+                            </StackPanel>
                             <CheckBox x:Name="chkConfirmOnExit" Content="{DynamicResource Settings_ConfirmExit}" Margin="0,8"/>
                             <CheckBox x:Name="chkShowInTaskbar" Content="{DynamicResource Settings_ShowInTray}" Margin="0,4"/>
                         </StackPanel>
@@ -98,6 +105,9 @@
                     <TabItem Header="{DynamicResource Tab_Misc}" Width="50">
                         <StackPanel Margin="12">
                             <TextBlock Text="{DynamicResource Settings_MiscHint}" Style="{StaticResource DialogHintText}"/>
+                            <CheckBox x:Name="chkEnableInputDebugLogging"
+                                      Content="{DynamicResource Settings_EnableInputDebugLogging}"
+                                      Margin="0,10,0,0"/>
                         </StackPanel>
                     </TabItem>
                 </TabControl>

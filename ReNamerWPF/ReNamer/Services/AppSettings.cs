@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace ReNamer.Services;
 
 /// <summary>
-/// 应用程序设置 - 持久化到 %APPDATA%/ReNamer/settings.json
+/// 应用程序设置 - 持久化到 EXE 目录下 config/settings.json
 /// </summary>
 public class AppSettings
 {
@@ -44,6 +44,8 @@ public class AppSettings
     public bool CreateUndoLog { get; set; } = true;
     public bool ResolveMetaTags { get; set; } = true;
     public int ConflictResolution { get; set; } = 0; // 0=Skip, 1=AddSuffix, 2=Overwrite
+    public bool EnableInputDebugLogging { get; set; } = false;
+    public FileListEngine FileListEngine { get; set; } = FileListEngine.WpfDataGrid;
 
     // ─── Filters ───
     public bool FiltersApplied { get; set; } = false;
@@ -89,7 +91,7 @@ public class AppSettings
 
     // ─── Persistence ───
     private static readonly string SettingsDir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ReNamer");
+        Path.Combine(AppContext.BaseDirectory, "config");
     private static readonly string SettingsFile = Path.Combine(SettingsDir, "settings.json");
 
     private static readonly JsonSerializerOptions JsonOptions = new()

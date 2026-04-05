@@ -12,6 +12,7 @@ public partial class ReplaceConfigPanel : UserControl, IRuleConfigPanel
     {
         InitializeComponent();
         _rule = rule;
+        txtFind.TextChanged += (_, _) => UpdateMultiHint();
         LoadConfig();
     }
 
@@ -36,6 +37,8 @@ public partial class ReplaceConfigPanel : UserControl, IRuleConfigPanel
             case ReplaceOccurrence.First: rbFirst.IsChecked = true; break;
             case ReplaceOccurrence.Last: rbLast.IsChecked = true; break;
         }
+
+        UpdateMultiHint();
     }
 
     public void ApplyConfig()
@@ -50,5 +53,12 @@ public partial class ReplaceConfigPanel : UserControl, IRuleConfigPanel
         if (rbFirst.IsChecked == true) _rule.Occurrence = ReplaceOccurrence.First;
         else if (rbLast.IsChecked == true) _rule.Occurrence = ReplaceOccurrence.Last;
         else _rule.Occurrence = ReplaceOccurrence.All;
+    }
+
+    private void UpdateMultiHint()
+    {
+        txtMultiReplaceHint.Visibility = RuleHelpers.ContainsUnescapedSeparator(txtFind.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 }

@@ -40,6 +40,15 @@ public interface IStatefulRule : IRule
 }
 
 /// <summary>
+/// 预览执行提示接口。
+/// 某些规则虽然实现了 IStatefulRule，但在当前配置下并不依赖跨文件共享状态，可以安全并行。
+/// </summary>
+public interface IPreviewParallelRule : IRule
+{
+    bool CanParallelizePreview { get; }
+}
+
+/// <summary>
 /// 规则基类
 /// </summary>
 public abstract class RuleBase : IRule
@@ -164,6 +173,8 @@ public abstract class RuleBase : IRule
         StripRule r => GetStripDescriptionZh(r),
         CleanUpRule => "清理文件名",
         TransliterateRule r => r.DirectionForward ? "音译（正向）" : "音译（反向）",
+        ChineseConvertRule r => r.Direction == ChineseConvertDirection.SimplifiedToTraditional ? "简体转繁体" : "繁体转简体",
+        ChineseNumberRule r => r.AllowLooseForms ? "中文数字转阿拉伯数字（宽松）" : "中文数字转阿拉伯数字",
         RearrangeRule r => $"重排：\"{r.NewPattern}\"",
         ReformatDateRule r => $"日期：{r.SourceFormat} → {r.TargetFormat}",
         RandomizeRule r => $"随机 {r.Length} 个字符（{GetRandomizePositionZh(r.InsertWhere)}）",

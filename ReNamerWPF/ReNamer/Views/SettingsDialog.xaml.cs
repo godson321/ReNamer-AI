@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +42,13 @@ public partial class SettingsDialog : Window
         }
         if (cmbTheme.SelectedIndex < 0) cmbTheme.SelectedIndex = 0;
 
+        foreach (ComboBoxItem item in cmbFileListEngine.Items)
+        {
+            if (string.Equals(item.Tag as string, Settings.FileListEngine.ToString(), StringComparison.OrdinalIgnoreCase))
+            { cmbFileListEngine.SelectedItem = item; break; }
+        }
+        if (cmbFileListEngine.SelectedIndex < 0) cmbFileListEngine.SelectedIndex = 0;
+
         chkAutoPreview.IsChecked = Settings.AutoPreview;
         chkPreviewOnFileAdd.IsChecked = Settings.PreviewOnFileAdd;
         chkHighlightChanges.IsChecked = Settings.HighlightChanges;
@@ -52,6 +60,7 @@ public partial class SettingsDialog : Window
         chkAutoRemoveRenamed.IsChecked = Settings.AutoRemoveRenamed;
         chkCreateUndoLog.IsChecked = Settings.CreateUndoLog;
         chkResolveMetaTags.IsChecked = Settings.ResolveMetaTags;
+        chkEnableInputDebugLogging.IsChecked = Settings.EnableInputDebugLogging;
 
         rbConflictSkip.IsChecked = Settings.ConflictResolution == 0;
         rbConflictAddSuffix.IsChecked = Settings.ConflictResolution == 1;
@@ -71,6 +80,12 @@ public partial class SettingsDialog : Window
         if (cmbTheme.SelectedItem is ComboBoxItem themeItem)
             Settings.Theme = themeItem.Tag as string ?? "Light";
 
+        if (cmbFileListEngine.SelectedItem is ComboBoxItem listEngineItem
+            && Enum.TryParse<FileListEngine>(listEngineItem.Tag as string, out var engine))
+            Settings.FileListEngine = engine;
+        else
+            Settings.FileListEngine = FileListEngine.WpfDataGrid;
+
         Settings.AutoPreview = chkAutoPreview.IsChecked == true;
         Settings.PreviewOnFileAdd = chkPreviewOnFileAdd.IsChecked == true;
         Settings.HighlightChanges = chkHighlightChanges.IsChecked == true;
@@ -82,6 +97,7 @@ public partial class SettingsDialog : Window
         Settings.AutoRemoveRenamed = chkAutoRemoveRenamed.IsChecked == true;
         Settings.CreateUndoLog = chkCreateUndoLog.IsChecked == true;
         Settings.ResolveMetaTags = chkResolveMetaTags.IsChecked == true;
+        Settings.EnableInputDebugLogging = chkEnableInputDebugLogging.IsChecked == true;
 
         if (rbConflictAddSuffix.IsChecked == true) Settings.ConflictResolution = 1;
         else if (rbConflictOverwrite.IsChecked == true) Settings.ConflictResolution = 2;

@@ -189,6 +189,108 @@ public class TransliterateRuleTests
     }
 }
 
+public class ChineseConvertRuleTests
+{
+    private static RenFile MakeFile(string name = "test.txt") => new($@"C:\{name}");
+
+    [Fact]
+    public void ChineseConvert_TraditionalToSimplified()
+    {
+        var rule = new ChineseConvertRule
+        {
+            Direction = ChineseConvertDirection.TraditionalToSimplified
+        };
+
+        Assert.Equal("漫画战录.txt", rule.Execute("漫畫戰錄.txt", MakeFile("漫畫戰錄.txt")));
+    }
+
+    [Fact]
+    public void ChineseConvert_SimplifiedToTraditional()
+    {
+        var rule = new ChineseConvertRule
+        {
+            Direction = ChineseConvertDirection.SimplifiedToTraditional
+        };
+
+        Assert.Equal("漫畫戰錄.txt", rule.Execute("漫画战录.txt", MakeFile("漫画战录.txt")));
+    }
+
+    [Fact]
+    public void ChineseConvert_CanIncludeExtension_WhenSkipExtensionDisabled()
+    {
+        var rule = new ChineseConvertRule
+        {
+            Direction = ChineseConvertDirection.TraditionalToSimplified,
+            SkipExtension = false
+        };
+
+        Assert.Equal("战录.小说", rule.Execute("戰錄.小說", MakeFile("戰錄.小說")));
+    }
+}
+
+public class ChineseNumberRuleTests
+{
+    private static RenFile MakeFile(string name = "test.txt") => new($@"C:\{name}");
+
+    [Fact]
+    public void ChineseNumber_Strict_ConvertsStructuredIntegers()
+    {
+        var rule = new ChineseNumberRule();
+
+        Assert.Equal("第12卷-第203话.txt", rule.Execute("第十二卷-第二百三话.txt", MakeFile("第十二卷-第二百三话.txt")));
+    }
+
+    [Fact]
+    public void ChineseNumber_Strict_ConvertsDigitSequencesAndDates()
+    {
+        var rule = new ChineseNumberRule();
+
+        Assert.Equal("2024年3月21日.txt", rule.Execute("二〇二四年三月二十一日.txt", MakeFile("二〇二四年三月二十一日.txt")));
+        Assert.Equal("第301话.txt", rule.Execute("第三〇一话.txt", MakeFile("第三〇一话.txt")));
+    }
+
+    [Fact]
+    public void ChineseNumber_Strict_SupportsTraditionalAndFinancialDigits()
+    {
+        var rule = new ChineseNumberRule();
+
+        Assert.Equal("第1002話.txt", rule.Execute("第壹仟零贰話.txt", MakeFile("第壹仟零贰話.txt")));
+    }
+
+    [Fact]
+    public void ChineseNumber_Strict_SkipsAmbiguousExpressions()
+    {
+        var rule = new ChineseNumberRule();
+
+        Assert.Equal(
+            "百分之三十_十来集_三分之一.txt",
+            rule.Execute("百分之三十_十来集_三分之一.txt", MakeFile("百分之三十_十来集_三分之一.txt")));
+        Assert.Equal("一万二.txt", rule.Execute("一万二.txt", MakeFile("一万二.txt")));
+    }
+
+    [Fact]
+    public void ChineseNumber_Loose_ConvertsColloquialForms()
+    {
+        var rule = new ChineseNumberRule
+        {
+            AllowLooseForms = true
+        };
+
+        Assert.Equal("12000_2300_21_32.txt", rule.Execute("一万二_两千三_廿一_卅二.txt", MakeFile("一万二_两千三_廿一_卅二.txt")));
+    }
+
+    [Fact]
+    public void ChineseNumber_CanIncludeExtension_WhenSkipExtensionDisabled()
+    {
+        var rule = new ChineseNumberRule
+        {
+            SkipExtension = false
+        };
+
+        Assert.Equal("战录.123", rule.Execute("战录.一二三", MakeFile("战录.一二三")));
+    }
+}
+
 public class RearrangeRuleTests
 {
     private static RenFile MakeFile() => new(@"C:\test.txt");
@@ -219,6 +321,17 @@ public class RearrangeRuleTests
     {
         var rule = new RearrangeRule { SplitMode = RearrangeSplitMode.Positions, Delimiters = "3,6", NewPattern = "$2$1$3" };
         Assert.Equal("defabcghi.txt", rule.Execute("abcdefghi.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Rearrange_MultiDigitPlaceholder()
+    {
+        var rule = new RearrangeRule
+        {
+            Delimiters = "-",
+            NewPattern = "$10-$1"
+        };
+        Assert.Equal("j-a.txt", rule.Execute("a-b-c-d-e-f-g-h-i-j.txt", MakeFile()));
     }
 }
 
@@ -301,6 +414,30 @@ public class RandomizeRuleTests
             results.Add(result);
         }
         Assert.Equal(50, results.Count);
+    }
+
+    [Fact]
+    public void Randomize_CanParallelize_WhenUniqueDisabled()
+    {
+        var rule = new RandomizeRule
+        {
+            Unique = false,
+            InsertWhere = RandomizePosition.ReplaceCurrentName
+        };
+
+        Assert.True(rule.CanParallelizePreview);
+    }
+
+    [Fact]
+    public void Randomize_CannotParallelize_WhenUniqueEnabled()
+    {
+        var rule = new RandomizeRule
+        {
+            Unique = true,
+            InsertWhere = RandomizePosition.ReplaceCurrentName
+        };
+
+        Assert.False(rule.CanParallelizePreview);
     }
 }
 
@@ -416,5 +553,27 @@ public class MappingRuleTests
             SkipExtension = true
         };
         Assert.Equal("test.txt", rule.Execute("test.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Mapping_CanParallelize_WhenReuseAllowed()
+    {
+        var rule = new MappingRule
+        {
+            AllowReuse = true
+        };
+
+        Assert.True(rule.CanParallelizePreview);
+    }
+
+    [Fact]
+    public void Mapping_CannotParallelize_WhenReuseDisabled()
+    {
+        var rule = new MappingRule
+        {
+            AllowReuse = false
+        };
+
+        Assert.False(rule.CanParallelizePreview);
     }
 }

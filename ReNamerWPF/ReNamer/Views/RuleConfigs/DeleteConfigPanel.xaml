@@ -89,6 +89,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0" Margin="0,0,0,16">
@@ -184,7 +185,14 @@
                     </Popup>
                 </Grid>
 
-                <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,12,0,0">
+                <TextBlock x:Name="txtMultiRemoveHint"
+                           Grid.Row="2"
+                           Margin="0,0,0,6"
+                           Text="{DynamicResource RuleCfg_MultiItemModeHint}"
+                           Style="{DynamicResource DialogHintText}"
+                           Visibility="Collapsed"/>
+
+                <GroupBox Grid.Row="3" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,12,0,0">
                     <StackPanel Orientation="Horizontal" Margin="8,6">
                         <CheckBox x:Name="chkCharSetMode" Content="{DynamicResource Delete_CharSetMode}" 
                                   ToolTip="{DynamicResource Delete_CharSetMode_Tip}" Margin="0,0,16,0" VerticalContentAlignment="Center"/>

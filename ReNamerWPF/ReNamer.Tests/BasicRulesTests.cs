@@ -63,6 +63,92 @@ public class ReplaceRuleTests
         var rule = new ReplaceRule { FindText = "", ReplaceText = "X" };
         Assert.Equal("test.txt", rule.Execute("test.txt", MakeFile()));
     }
+
+    [Fact]
+    public void Replace_Multiple_WithSingleReplaceText()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "foo|bar",
+            ReplaceText = "X",
+            Occurrence = ReplaceOccurrence.All
+        };
+        Assert.Equal("X_X.txt", rule.Execute("foo_bar.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Multiple_WholeWordsOnly()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "cat|dog",
+            ReplaceText = "pet|pet",
+            WholeWordsOnly = true
+        };
+        Assert.Equal("catdog pet.txt", rule.Execute("catdog dog.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Wildcards_CaseSensitive()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "a*",
+            ReplaceText = "X",
+            UseWildcards = true,
+            CaseSensitive = true
+        };
+        Assert.Equal("Abc.txt", rule.Execute("Abc.txt", MakeFile()));
+        Assert.Equal("X.txt", rule.Execute("abc.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Regex_Last_WithGroups()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "(a)(b)",
+            ReplaceText = "$2$1",
+            UseRegex = true,
+            Occurrence = ReplaceOccurrence.Last
+        };
+        Assert.Equal("ab ba.txt", rule.Execute("ab ab.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Multiple_EscapedSeparatorLiteral()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = @"\|",
+            ReplaceText = "_"
+        };
+        Assert.Equal("a_b.txt", rule.Execute("a|b.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Multiple_First_GlobalOnce()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "a|b",
+            ReplaceText = "X|Y",
+            Occurrence = ReplaceOccurrence.First
+        };
+        Assert.Equal("Xbaba.txt", rule.Execute("ababa.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Replace_Multiple_Last_GlobalOnce()
+    {
+        var rule = new ReplaceRule
+        {
+            FindText = "a|b",
+            ReplaceText = "X|Y",
+            Occurrence = ReplaceOccurrence.Last
+        };
+        Assert.Equal("ababX.txt", rule.Execute("ababa.txt", MakeFile()));
+    }
 }
 
 public class InsertRuleTests
@@ -175,6 +261,40 @@ public class DeleteRuleTests
         };
         Assert.Equal("hello-.txt", rule.Execute("hello-world.txt", MakeFile()));
     }
+
+    [Fact]
+    public void Delete_TextRemove_MultiplePatterns()
+    {
+        var rule = new DeleteRule
+        {
+            Mode = DeleteMode.TextRemove,
+            RemovePattern = "foo|bar"
+        };
+        Assert.Equal("_.txt", rule.Execute("foo_bar.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Delete_TextRemove_EscapedSeparatorLiteral()
+    {
+        var rule = new DeleteRule
+        {
+            Mode = DeleteMode.TextRemove,
+            RemovePattern = @"\|"
+        };
+        Assert.Equal("ab.txt", rule.Execute("a|b.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Delete_TextRemove_Multiple_First_GlobalOnce()
+    {
+        var rule = new DeleteRule
+        {
+            Mode = DeleteMode.TextRemove,
+            RemovePattern = "a|b",
+            RemoveOccurrence = RemoveOccurrence.First
+        };
+        Assert.Equal("baba.txt", rule.Execute("ababa.txt", MakeFile()));
+    }
 }
 
 public class RemoveRuleTests
@@ -214,5 +334,63 @@ public class RemoveRuleTests
     {
         var rule = new RemoveRule { Pattern = "" };
         Assert.Equal("test.txt", rule.Execute("test.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Remove_Multiple_WithWildcards()
+    {
+        var rule = new RemoveRule
+        {
+            Pattern = "ab|x?",
+            UseWildcards = true,
+            Occurrence = RemoveOccurrence.All
+        };
+        Assert.Equal("c.txt", rule.Execute("abcxx.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Remove_Wildcards_CaseSensitive()
+    {
+        var rule = new RemoveRule
+        {
+            Pattern = "a*",
+            UseWildcards = true,
+            CaseSensitive = true
+        };
+        Assert.Equal("Abc.txt", rule.Execute("Abc.txt", MakeFile()));
+        Assert.Equal(".txt", rule.Execute("abc.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Remove_Multiple_EscapedSeparatorLiteral()
+    {
+        var rule = new RemoveRule
+        {
+            Pattern = @"\|",
+            Occurrence = RemoveOccurrence.All
+        };
+        Assert.Equal("ab.txt", rule.Execute("a|b.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Remove_Multiple_First_GlobalOnce()
+    {
+        var rule = new RemoveRule
+        {
+            Pattern = "a|b",
+            Occurrence = RemoveOccurrence.First
+        };
+        Assert.Equal("baba.txt", rule.Execute("ababa.txt", MakeFile()));
+    }
+
+    [Fact]
+    public void Remove_Multiple_Last_GlobalOnce()
+    {
+        var rule = new RemoveRule
+        {
+            Pattern = "a|b",
+            Occurrence = RemoveOccurrence.Last
+        };
+        Assert.Equal("abab.txt", rule.Execute("ababa.txt", MakeFile()));
     }
 }

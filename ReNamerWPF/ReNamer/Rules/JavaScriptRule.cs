@@ -11,14 +11,35 @@ using ReNamer.Models;
 
 namespace ReNamer.Rules;
 
-public class JavaScriptRule : RuleBase, IStatefulRule
+public class JavaScriptRule : RuleBase, IStatefulRule, IPreviewParallelRule
 {
+    private static readonly Regex CounterIdentifierRegex = new(
+        @"(?<![\p{L}\p{Nd}_$])Counter(?![\p{L}\p{Nd}_$])",
+        RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
     private int _counter;
+    private string _scriptText = "Result = Name;";
     private string? _scriptFilePath;
     private bool _isScriptLoading;
     private string? _scriptLoadError;
+    private string? _counterUsageCacheKey;
+    private bool _counterUsageCacheValue;
 
-    public string ScriptText { get; set; } = "Result = Name;";
+    public string ScriptText
+    {
+        get => _scriptText;
+        set
+        {
+            if (_scriptText == value)
+                return;
+
+            _scriptText = value;
+            _counterUsageCacheKey = null;
+            OnPropertyChanged(nameof(ScriptText));
+            OnPropertyChanged(nameof(Description));
+            OnPropertyChanged(nameof(IsScriptReady));
+        }
+    }
     public string? ScriptFilePath
     {
         get => _scriptFilePath;
@@ -63,6 +84,7 @@ public class JavaScriptRule : RuleBase, IStatefulRule
     public int CounterStart { get; set; } = 1;
     public int CounterStep { get; set; } = 1;
     public int CounterDigits { get; set; } = 0;
+    public bool CanParallelizePreview => !UsesSequentialCounter();
 
     public override string RuleName => "JavaScript";
 
@@ -91,9 +113,6 @@ public class JavaScriptRule : RuleBase, IStatefulRule
         ScriptText = scriptText;
         IsScriptLoading = false;
         ScriptLoadError = null;
-        OnPropertyChanged(nameof(ScriptText));
-        OnPropertyChanged(nameof(IsScriptReady));
-        OnPropertyChanged(nameof(Description));
     }
 
     public void MarkScriptLoadFailed(string filePath, string error)
@@ -106,9 +125,12 @@ public class JavaScriptRule : RuleBase, IStatefulRule
     public override string Execute(string fileName, RenFile file)
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
-        var counterText = CounterDigits > 0
-            ? _counter.ToString($"D{CounterDigits}", CultureInfo.InvariantCulture)
-            : _counter.ToString(CultureInfo.InvariantCulture);
+        bool usesCounter = UsesSequentialCounter();
+        var counterText = usesCounter
+            ? CounterDigits > 0
+                ? _counter.ToString($"D{CounterDigits}", CultureInfo.InvariantCulture)
+                : _counter.ToString(CultureInfo.InvariantCulture)
+            : string.Empty;
 
         var context = new ScriptContext
         {
@@ -134,7 +156,9 @@ public class JavaScriptRule : RuleBase, IStatefulRule
         if (SkipExtension)
             result += ext;
 
-        _counter += CounterStep;
+        if (usesCounter)
+            _counter += CounterStep;
+
         return result;
     }
 
@@ -145,6 +169,17 @@ public class JavaScriptRule : RuleBase, IStatefulRule
         if (string.IsNullOrWhiteSpace(line))
             return "(empty)";
         return line.Length > 40 ? line[..40] + "..." : line;
+    }
+
+    private bool UsesSequentialCounter()
+    {
+        var script = ScriptText ?? string.Empty;
+        if (string.Equals(_counterUsageCacheKey, script, StringComparison.Ordinal))
+            return _counterUsageCacheValue;
+
+        _counterUsageCacheKey = script;
+        _counterUsageCacheValue = CounterIdentifierRegex.IsMatch(script);
+        return _counterUsageCacheValue;
     }
 }
 

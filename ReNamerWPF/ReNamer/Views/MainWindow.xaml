@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReNamer.Views"
+        xmlns:fileList="clr-namespace:ReNamer.Views.FileList"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="{DynamicResource AppTitle}" 
         Icon="/Resources/AppIcon.ico"
-        Width="600" Height="720" MinWidth="600" MinHeight="500"
+        Width="600" Height="700" MinWidth="600" MinHeight="500"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanResize"
@@ -19,7 +20,7 @@
         PreviewKeyDown="Window_PreviewKeyDown"
         Closing="Window_Closing">
     <WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="40"
+        <shell:WindowChrome CaptionHeight="36"
                             CornerRadius="8"
                             ResizeBorderThickness="6"
                             GlassFrameThickness="0"
@@ -32,7 +33,7 @@
         <Style x:Key="StateIndicator" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding State}" Value="✓">
@@ -75,8 +76,8 @@
         </Style>
 
         <Style x:Key="EnterpriseDataGrid" TargetType="{x:Type DataGrid}">
-            <Setter Property="RowHeight" Value="32"/>
-            <Setter Property="ColumnHeaderHeight" Value="34"/>
+            <Setter Property="RowHeight" Value="24"/>
+            <Setter Property="ColumnHeaderHeight" Value="30"/>
             <Setter Property="AlternationCount" Value="2"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
             <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
@@ -183,8 +184,17 @@
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="False"/>
+                        <Condition Property="fileList:LogicalSelectionHelper.IsLogicalSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource PrimaryLightBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
                         <Condition Property="IsMouseOver" Value="True"/>
                         <Condition Property="IsSelected" Value="False"/>
+                        <Condition Property="fileList:LogicalSelectionHelper.IsLogicalSelected" Value="False"/>
                     </MultiTrigger.Conditions>
                     <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
                 </MultiTrigger>
@@ -192,7 +202,7 @@
         </Style>
 
         <Style x:Key="EnterpriseDataGridCell" TargetType="{x:Type DataGridCell}">
-            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Padding" Value="6,0"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -204,6 +214,10 @@
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                 </Trigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(fileList:LogicalSelectionHelper.IsLogicalSelected)}" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                </DataTrigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                     <Setter Property="BorderBrush" Value="#CCF7D047"/>
                     <Setter Property="BorderThickness" Value="1"/>
@@ -223,9 +237,9 @@
 
         <!-- 工具栏按钮样式 -->
         <Style x:Key="ToolbarIconButton" TargetType="Button">
-            <Setter Property="MinHeight" Value="32"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="Padding" Value="7,3"/>
+            <Setter Property="Margin" Value="0,0,3,0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -257,7 +271,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource BorderHoverBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Padding" Value="7,2"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Template">
@@ -288,11 +302,11 @@
 
         <!-- CommandBar 按钮样式 -->
         <Style x:Key="CommandBarSecondaryButton" TargetType="Button" BasedOn="{StaticResource ToolbarActionButton}">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="MinWidth" Value="112"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
         <Style x:Key="CommandBarPrimaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
@@ -303,10 +317,10 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
         <Style x:Key="FileToolbarButton" TargetType="Button" BasedOn="{StaticResource ToolbarActionButton}">
-            <Setter Property="Width" Value="108"/>
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="Padding" Value="8,0"/>
-            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Width" Value="74"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
         </Style>
     </Window.Resources>
 
@@ -332,7 +346,7 @@
             <!-- 自定义标题栏 -->
             <Border x:Name="TitleBarBorder"
                     Grid.Row="0" Background="{StaticResource PrimaryBrush}" 
-                    CornerRadius="8,8,0,0" Height="40"
+                    CornerRadius="8,8,0,0" Height="36"
                     MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
                     MouseRightButtonUp="TitleBar_MouseRightButtonUp">
                 <Grid>
@@ -343,28 +357,28 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- 应用图标和标题 -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="16,0,0,0">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0">
                         <Path x:Name="TitleBarIcon"
                               Data="{StaticResource Icon_Rename}" Fill="White" 
-                              Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center"/>
+                              Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
                         <TextBlock x:Name="TitleBarText"
                                    Text="{DynamicResource AppTitle}" 
-                                   Foreground="White" FontSize="14" FontWeight="SemiBold"
-                                   VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                   Foreground="White" FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" Margin="10,0,0,0"/>
                     </StackPanel>
 
                     <!-- 窗口控制按钮 -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal"
                                 shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                        <Button Content="—" Width="46" Height="40" 
+                        <Button Content="—" Width="42" Height="36" 
                                 Click="MinimizeButton_Click"
                                 Style="{StaticResource ToolbarIconButton}"
                                 Foreground="White" FontSize="16" Margin="0"/>
-                        <Button Content="□" Width="46" Height="40" 
+                        <Button Content="□" Width="42" Height="36" 
                                 Click="MaximizeButton_Click"
                                 Style="{StaticResource ToolbarIconButton}"
                                 Foreground="White" FontSize="16" Margin="0"/>
-                        <Button Content="✕" Width="46" Height="40" 
+                        <Button Content="✕" Width="42" Height="36" 
                                 Click="CloseButton_Click"
                                 Style="{StaticResource ToolbarIconButton}"
                                 Foreground="White" FontSize="16" Margin="0">
@@ -386,7 +400,7 @@
             </Border>
 
             <!-- 菜单栏 -->
-            <Menu Grid.Row="1" Background="{StaticResource SurfaceBrush}" Height="32">
+            <Menu Grid.Row="1" Background="{StaticResource SurfaceBrush}" Height="30">
                 <MenuItem Header="{DynamicResource Menu_File}">
                     <MenuItem Header="{DynamicResource Menu_Undo}" Command="{Binding CmdUndoRename}"/>
                     <Separator/>
@@ -421,13 +435,15 @@
                     <MenuItem x:Name="menuLanguage" Header="{DynamicResource Menu_Language}"/>
                     <Separator/>
                     <MenuItem Header="{DynamicResource Menu_About}" Command="{Binding CmdAbout}"/>
+                    <Separator/>
+                    <MenuItem Header="Debug: Clipboard Test" Click="DebugWindow_Click"/>
                 </MenuItem>
             </Menu>
 
             <!-- CommandBar（主操作栏）-->
             <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" 
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1"
-                    Padding="12,6,12,4" MinHeight="56">
+                    Padding="10,4,10,3" MinHeight="50">
                 <DockPanel LastChildFill="True">
                     <Border DockPanel.Dock="Bottom" Height="2" Margin="0,4,0,0"
                             Background="{DynamicResource PrimaryBrush}" Opacity="0.25"
@@ -437,9 +453,9 @@
                         <Button Command="{Binding CmdAddFiles}" Style="{StaticResource CommandBarSecondaryButton}">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource Icon_AddFile}" Fill="{DynamicResource PrimaryBrush}" 
-                                  Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
+                                  Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center"/>
                                 <TextBlock Text="{DynamicResource Toolbar_AddFiles}" 
-                                       VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
+                                       VerticalAlignment="Center" Margin="7,0,0,0" FontSize="13"/>
                             </StackPanel>
                         </Button>
 
@@ -447,9 +463,9 @@
                         <Button Command="{Binding CmdAddFolders}" Style="{StaticResource CommandBarSecondaryButton}">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource Icon_AddFolder}" Fill="{DynamicResource SemanticWarningBrush}" 
-                                  Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
+                                  Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center"/>
                                 <TextBlock Text="{DynamicResource Toolbar_AddFolders}" 
-                                       VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
+                                       VerticalAlignment="Center" Margin="7,0,0,0" FontSize="13"/>
                             </StackPanel>
                         </Button>
 
@@ -460,9 +476,9 @@
                         <Button Command="{Binding CmdRename}" Style="{StaticResource CommandBarSecondaryButton}">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource Icon_Rename}" Fill="{DynamicResource PrimaryBrush}" 
-                                  Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
+                                  Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center"/>
                                 <TextBlock Text="{DynamicResource Toolbar_Rename}" 
-                                       VerticalAlignment="Center" Margin="8,0,0,0" FontSize="14"/>
+                                       VerticalAlignment="Center" Margin="7,0,0,0" FontSize="13"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -472,18 +488,18 @@
             <!-- 主内容区 -->
             <Grid Grid.Row="3" Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="200" MinHeight="120"/>
+                    <RowDefinition Height="188" MinHeight="120"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*" MinHeight="150"/>
                 </Grid.RowDefinitions>
 
                 <!-- 规则面板（卡片样式）-->
-                <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="6,6,6,4" Padding="6">
+                <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="4,4,4,3" Padding="4">
                     <DockPanel>
                         <!-- 规则工具栏 -->
                         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}" 
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                MinHeight="38" Padding="8,4">
+                                MinHeight="34" Padding="6,3">
                             <StackPanel Orientation="Horizontal">
                                 <Button Command="{Binding CmdAddRule}" Style="{StaticResource ToolbarActionButton}">
                                     <StackPanel Orientation="Horizontal">
@@ -523,19 +539,25 @@
                                   PreviewMouseLeftButtonDown="Rules_PreviewMouseLeftButtonDown"
                                   MouseMove="Rules_MouseMove" Drop="Rules_Drop" DragOver="Rules_DragOver"
                                   AllowDrop="True"
+                                  ToolTip="{DynamicResource Rules_DragHint}"
                                   AlternationCount="2147483647"
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling"
                                   ScrollViewer.CanContentScroll="True"
                                   Background="{DynamicResource SurfaceBrush}"
                                   BorderThickness="1"
-                                  BorderBrush="{DynamicResource BorderBrush}"
-                                  ItemContainerStyle="{StaticResource ModernListViewItem}">
+                                  BorderBrush="{DynamicResource BorderBrush}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource ModernListViewItem}">
+                                    <Setter Property="Cursor" Value="SizeAll"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.Resources>
                                 <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource TableColumnHeader}"/>
                             </ListView.Resources>
                             <ListView.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding CmdRemoveRule}"/>
+                                <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding CmdRulesSelectAll}"/>
                             </ListView.InputBindings>
                             <ListView.ContextMenu>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -553,7 +575,7 @@
                                     <MenuItem Header="{DynamicResource Menu_ExportClipboard}" Command="{Binding CmdRuleExport}"/>
                                     <MenuItem Header="{DynamicResource CtxRule_Comment}" Command="{Binding CmdRuleComment}"/>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource CtxRule_SelectAll}" Command="{Binding CmdRulesSelectAll}"/>
+                                    <MenuItem Header="{DynamicResource CtxRule_SelectAll}" InputGestureText="Ctrl+A" Command="{Binding CmdRulesSelectAll}"/>
                                     <MenuItem Header="{DynamicResource CtxRule_MarkAll}" Command="{Binding CmdRulesMarkAll}"/>
                                     <MenuItem Header="{DynamicResource CtxRule_UnmarkAll}" Command="{Binding CmdRulesUnmarkAll}"/>
                                 </ContextMenu>
@@ -563,7 +585,9 @@
                                     <GridViewColumn Width="40">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox IsChecked="{Binding IsEnabled}" Click="RuleCheckBox_Click"/>
+                                                <CheckBox IsChecked="{Binding IsEnabled}"
+                                                          Click="RuleCheckBox_Click"
+                                                          Cursor="Arrow"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -586,16 +610,16 @@
                 </Border>
 
                 <!-- 分隔器 -->
-                <GridSplitter Grid.Row="1" Height="8" HorizontalAlignment="Stretch" 
+                <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" 
                               Background="Transparent" VerticalAlignment="Center"/>
 
                 <!-- 文件列表面板（卡片样式）-->
-                <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="6,4,6,6" Padding="6">
+                <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="4,3,4,4" Padding="4">
                     <DockPanel>
                         <!-- 文件工具栏 -->
                         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}" 
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                MinHeight="38" Padding="8,4">
+                                MinHeight="34" Padding="6,3">
                             <StackPanel Orientation="Horizontal">
                                 <Button Command="{Binding CmdClearAll}" Style="{StaticResource FileToolbarButton}">
                                     <StackPanel Orientation="Horizontal">
@@ -632,12 +656,19 @@
                                         <TextBlock Text="{DynamicResource Toolbar_Validate}" Margin="6,0,0,0" FontSize="12"/>
                                     </StackPanel>
                                 </Button>
+                                <Button Command="{Binding CmdPreview}" Style="{StaticResource FileToolbarButton}" ToolTip="F5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon_Refresh}" Fill="{StaticResource InfoBrush}" 
+                                              Width="14" Height="14" Stretch="Uniform"/>
+                                        <TextBlock Text="{DynamicResource Toolbar_Refresh}" Margin="6,0,0,0" FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
                         </Border>
 
                         <!-- 文件列表 -->
-                        <DataGrid x:Name="lvFiles" SelectionMode="Extended" SelectionUnit="FullRow" AllowDrop="True"
-                                  SelectionChanged="Files_SelectionChanged"
+                        <Grid x:Name="FileListHost">
+                            <DataGrid x:Name="lvFiles" SelectionMode="Extended" SelectionUnit="FullRow" AllowDrop="True"
                                   PreviewMouseLeftButtonDown="Files_PreviewMouseLeftButtonDown"
                                   MouseDoubleClick="Files_MouseDoubleClick"
                                   MouseMove="Files_MouseMove" Drop="Files_Drop" DragOver="Files_DragOver"
@@ -656,153 +687,160 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling"
                                   ScrollViewer.CanContentScroll="True">
-                            <DataGrid.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="TextWrapping" Value="NoWrap"/>
-                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                </Style>
-                                <Style x:Key="CenteredCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                                <Style x:Key="ChangedNewNameText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding HasChanged}" Value="True"/>
-                                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style x:Key="RightAlignedCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
-                                    <Setter Property="TextAlignment" Value="Right"/>
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                                <Style x:Key="CenteredEditingCellTextBox" TargetType="{x:Type TextBox}">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="6,0"/>
-                                </Style>
-                                <Style x:Key="CenteredFileCheckBox" TargetType="{x:Type CheckBox}">
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource EnterpriseDataGridColumnHeader}">
-                                    <EventSetter Event="MouseRightButtonUp" Handler="FilesColumnHeader_RightClick"/>
-                                    <EventSetter Event="MouseDoubleClick" Handler="FilesColumnHeader_DoubleClick"/>
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
-                            <DataGrid.InputBindings>
-                                <KeyBinding Key="Delete" Command="{Binding CmdRemoveSelectedFiles}"/>
-                                <KeyBinding Key="F5" Command="{Binding CmdPreview}"/>
-                            </DataGrid.InputBindings>
-                            <DataGrid.ContextMenu>
-                                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="{DynamicResource CtxFile_EditNewName}" Command="{Binding CmdEditNewName}"/>
-                                    <MenuItem Header="{DynamicResource Menu_AnalyzeName}" Command="{Binding CmdAnalyze}"/>
-                                    <Separator/>
-                                    <MenuItem Header="{DynamicResource CtxFile_Shell}">
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenFile}" Command="{Binding CmdOpenFile}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenFolder}" Command="{Binding CmdOpenFolder}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_OpenWithNotepad}" Command="{Binding CmdOpenWithNotepad}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_Properties}" Command="{Binding CmdFileProperties}"/>
+                                <DataGrid.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="TextWrapping" Value="NoWrap"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                    </Style>
+                                    <Style x:Key="CenteredCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                    <Style x:Key="ChangedNewNameText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasChanged}" Value="True">
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding HasChanged}" Value="True"/>
+                                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="False"/>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(fileList:LogicalSelectionHelper.IsLogicalSelected)}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style x:Key="RightAlignedCellText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CenteredCellText}">
+                                        <Setter Property="TextAlignment" Value="Right"/>
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                    <Style x:Key="CenteredEditingCellTextBox" TargetType="{x:Type TextBox}">
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="Padding" Value="6,0"/>
+                                    </Style>
+                                    <Style x:Key="CenteredFileCheckBox" TargetType="{x:Type CheckBox}">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource EnterpriseDataGridColumnHeader}">
+                                        <EventSetter Event="MouseRightButtonUp" Handler="FilesColumnHeader_RightClick"/>
+                                        <EventSetter Event="MouseDoubleClick" Handler="FilesColumnHeader_DoubleClick"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.InputBindings>
+                                    <KeyBinding Key="Delete" Command="{Binding CmdRemoveSelectedFiles}"/>
+                                    <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding CmdFilesSelectAll}"/>
+                                    <KeyBinding Key="F5" Command="{Binding CmdPreview}"/>
+                                </DataGrid.InputBindings>
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="{DynamicResource CtxFile_EditNewName}" Command="{Binding CmdEditNewName}"/>
+                                        <MenuItem Header="{DynamicResource Menu_AnalyzeName}" Command="{Binding CmdAnalyze}"/>
+                                        <MenuItem Header="{DynamicResource Toolbar_Refresh}" InputGestureText="F5" Command="{Binding CmdPreview}"/>
                                         <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_CutToClipboard}" Command="{Binding CmdCutFiles}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_CopyToClipboard}" Command="{Binding CmdCopyFiles}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_DeleteRecycle}" Command="{Binding CmdDeleteRecycle}"/>
-                                    </MenuItem>
-                                    <MenuItem Header="{DynamicResource CtxFile_Mark}">
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkItem}" Command="{Binding CmdMarkSelected}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_UnmarkItem}" Command="{Binding CmdUnmarkSelected}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_InvertMarking}" Command="{Binding CmdInvertMarking}"/>
+                                        <MenuItem Header="{DynamicResource CtxFile_Shell}">
+                                            <MenuItem Header="{DynamicResource CtxFile_OpenFile}" Command="{Binding CmdOpenFile}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_OpenFolder}" Command="{Binding CmdOpenFolder}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_OpenWithNotepad}" Command="{Binding CmdOpenWithNotepad}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_Properties}" Command="{Binding CmdFileProperties}"/>
+                                            <Separator/>
+                                            <MenuItem Header="{DynamicResource CtxFile_CutToClipboard}" Command="{Binding CmdCutFiles}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_CopyToClipboard}" Command="{Binding CmdCopyFiles}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_DeleteRecycle}" Command="{Binding CmdDeleteRecycle}"/>
+                                        </MenuItem>
+                                        <MenuItem Header="{DynamicResource CtxFile_Mark}">
+                                            <MenuItem Header="{DynamicResource CtxFile_MarkItem}" Command="{Binding CmdMarkSelected}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_UnmarkItem}" Command="{Binding CmdUnmarkSelected}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_InvertMarking}" Command="{Binding CmdInvertMarking}"/>
+                                            <Separator/>
+                                            <MenuItem Header="{DynamicResource CtxFile_MarkChangedIncCase}" Command="{Binding CmdMarkChangedIncCase}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_MarkChangedExcCase}" Command="{Binding CmdMarkChangedExcCase}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_MarkByMask}" Command="{Binding CmdMarkByMask}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_MarkOnlySelected}" Command="{Binding CmdMarkOnlySelected}"/>
+                                        </MenuItem>
+                                        <MenuItem Header="{DynamicResource CtxFile_Clear}">
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearAll}" Command="{Binding CmdClearAll}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearRenamed}" Command="{Binding CmdClearRenamed}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearFailed}" Command="{Binding CmdClearFailed}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearValid}" Command="{Binding CmdClearValid}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearInvalid}" Command="{Binding CmdClearInvalid}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearNotChanged}" Command="{Binding CmdClearNotChanged}"/>
+                                            <Separator/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearMarked}" Command="{Binding CmdClearMarked}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_ClearNotMarked}" Command="{Binding CmdClearNotMarked}"/>
+                                        </MenuItem>
+                                        <MenuItem Header="{DynamicResource CtxFile_Select}">
+                                            <MenuItem Header="{DynamicResource CtxFile_SelectAll}" InputGestureText="Ctrl+A" Command="{Binding CmdFilesSelectAll}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_InvertSelection}" Command="{Binding CmdInvertSelection}"/>
+                                            <Separator/>
+                                            <MenuItem Header="{DynamicResource CtxFile_SelectByNameLength}" Command="{Binding CmdSelectByNameLength}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_SelectByExtension}" Command="{Binding CmdSelectByExtension}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_SelectByMask}" Command="{Binding CmdSelectByMask}"/>
+                                        </MenuItem>
+                                        <MenuItem Header="{DynamicResource CtxFile_Move}">
+                                            <MenuItem Header="{DynamicResource CtxFile_MoveUp}" Command="{Binding CmdMoveFileUp}"/>
+                                            <MenuItem Header="{DynamicResource CtxFile_MoveDown}" Command="{Binding CmdMoveFileDown}"/>
+                                        </MenuItem>
                                         <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkChangedIncCase}" Command="{Binding CmdMarkChangedIncCase}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkChangedExcCase}" Command="{Binding CmdMarkChangedExcCase}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkByMask}" Command="{Binding CmdMarkByMask}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MarkOnlySelected}" Command="{Binding CmdMarkOnlySelected}"/>
-                                    </MenuItem>
-                                    <MenuItem Header="{DynamicResource CtxFile_Clear}">
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearAll}" Command="{Binding CmdClearAll}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearRenamed}" Command="{Binding CmdClearRenamed}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearFailed}" Command="{Binding CmdClearFailed}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearValid}" Command="{Binding CmdClearValid}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearInvalid}" Command="{Binding CmdClearInvalid}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearNotChanged}" Command="{Binding CmdClearNotChanged}"/>
-                                        <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearMarked}" Command="{Binding CmdClearMarked}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_ClearNotMarked}" Command="{Binding CmdClearNotMarked}"/>
-                                    </MenuItem>
-                                    <MenuItem Header="{DynamicResource CtxFile_Select}">
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectAll}" Command="{Binding CmdFilesSelectAll}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_InvertSelection}" Command="{Binding CmdInvertSelection}"/>
-                                        <Separator/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByNameLength}" Command="{Binding CmdSelectByNameLength}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByExtension}" Command="{Binding CmdSelectByExtension}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_SelectByMask}" Command="{Binding CmdSelectByMask}"/>
-                                    </MenuItem>
-                                    <MenuItem Header="{DynamicResource CtxFile_Move}">
-                                        <MenuItem Header="{DynamicResource CtxFile_MoveUp}" Command="{Binding CmdMoveFileUp}"/>
-                                        <MenuItem Header="{DynamicResource CtxFile_MoveDown}" Command="{Binding CmdMoveFileDown}"/>
-                                    </MenuItem>
-                                    <Separator/>
-                                    <MenuItem Header="{DynamicResource CtxFile_RemoveSelected}" InputGestureText="Del" Command="{Binding CmdRemoveSelectedFiles}"/>
-                                </ContextMenu>
-                            </DataGrid.ContextMenu>
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Width="44" SortMemberPath="IsMarked">
-                                    <DataGridTemplateColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <CheckBox Style="{StaticResource CenteredFileCheckBox}"
+                                        <MenuItem Header="{DynamicResource CtxFile_RemoveSelected}" InputGestureText="Del" Command="{Binding CmdRemoveSelectedFiles}"/>
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="44" SortMemberPath="IsMarked">
+                                        <DataGridTemplateColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Style="{StaticResource CenteredFileCheckBox}"
                                                       Click="FileHeaderCheckBox_Click"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.HeaderTemplate>
-                                    <DataGridTemplateColumn.CellStyle>
-                                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource EnterpriseDataGridCell}">
-                                            <Setter Property="Padding" Value="0"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                        </Style>
-                                    </DataGridTemplateColumn.CellStyle>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox Style="{StaticResource CenteredFileCheckBox}"
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.HeaderTemplate>
+                                        <DataGridTemplateColumn.CellStyle>
+                                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource EnterpriseDataGridCell}">
+                                                <Setter Property="Padding" Value="0"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTemplateColumn.CellStyle>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Style="{StaticResource CenteredFileCheckBox}"
                                                       IsChecked="{Binding IsMarked}"
                                                       Click="FileCheckBox_Click"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="{DynamicResource Column_State}" Width="50" SortMemberPath="State">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding State}" Style="{StaticResource StateIndicator}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn x:Name="colFileName" Header="{DynamicResource Column_Name}" Width="220" Binding="{Binding OriginalName}" SortMemberPath="OriginalName" IsReadOnly="True" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn x:Name="colNewName" Header="{DynamicResource Column_NewName}" Width="220" Binding="{Binding NewName}" SortMemberPath="NewName" ElementStyle="{StaticResource ChangedNewNameText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Path}" Width="200" Binding="{Binding FolderPath}" SortMemberPath="FolderPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Extension}" Width="70" Binding="{Binding Extension}" SortMemberPath="Extension" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Size}" Width="90" Binding="{Binding SizeDisplay}" SortMemberPath="SizeDisplay" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Error}" Width="150" Binding="{Binding Error}" SortMemberPath="Error" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Folder}" Width="120" Binding="{Binding FolderName}" SortMemberPath="FolderName" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NewPath}" Width="200" Binding="{Binding NewPath}" SortMemberPath="NewPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_SizeKB}" Width="90" Binding="{Binding SizeKB}" SortMemberPath="SizeKB" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_SizeMB}" Width="90" Binding="{Binding SizeMB}" SortMemberPath="SizeMB" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Created}" Width="140" Binding="{Binding CreatedDisplay}" SortMemberPath="CreatedDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_Modified}" Width="140" Binding="{Binding ModifiedDisplay}" SortMemberPath="ModifiedDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_ExifDate}" Width="140" Binding="{Binding ExifDateDisplay}" SortMemberPath="ExifDateDisplay" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NameDigits}" Width="80" Binding="{Binding NameDigits}" SortMemberPath="NameDigits" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_PathDigits}" Width="80" Binding="{Binding PathDigits}" SortMemberPath="PathDigits" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NameLength}" Width="80" Binding="{Binding NameLength}" SortMemberPath="NameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NewNameLength}" Width="100" Binding="{Binding NewNameLength}" SortMemberPath="NewNameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_PathLength}" Width="80" Binding="{Binding PathLength}" SortMemberPath="PathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_NewPathLength}" Width="100" Binding="{Binding NewPathLength}" SortMemberPath="NewPathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                                <DataGridTextColumn Header="{DynamicResource Column_OldPath}" Width="200" Binding="{Binding OldPath}" SortMemberPath="OldPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="{DynamicResource Column_State}" Width="60" SortMemberPath="State">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding State}" Style="{StaticResource StateIndicator}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn x:Name="colFileName" Header="{DynamicResource Column_Name}" Width="150" Binding="{Binding OriginalName}" SortMemberPath="OriginalName" IsReadOnly="True" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn x:Name="colNewName" Header="{DynamicResource Column_NewName}" Width="150" Binding="{Binding NewName}" SortMemberPath="NewName" ElementStyle="{StaticResource ChangedNewNameText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Path}" Width="200" Binding="{Binding FolderPath}" SortMemberPath="FolderPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Extension}" Width="70" Binding="{Binding Extension}" SortMemberPath="Extension" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Size}" Width="90" Binding="{Binding SizeDisplay}" SortMemberPath="Size" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Error}" Width="150" Binding="{Binding Error}" SortMemberPath="Error" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Folder}" Width="120" Binding="{Binding FolderName}" SortMemberPath="FolderName" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_NewPath}" Width="150" Binding="{Binding NewPath}" SortMemberPath="NewPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_SizeKB}" Width="90" Binding="{Binding SizeKB}" SortMemberPath="Size" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_SizeMB}" Width="90" Binding="{Binding SizeMB}" SortMemberPath="Size" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Created}" Width="140" Binding="{Binding CreatedDisplay}" SortMemberPath="Created" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_Modified}" Width="140" Binding="{Binding ModifiedDisplay}" SortMemberPath="Modified" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_ExifDate}" Width="140" Binding="{Binding ExifDateDisplay}" SortMemberPath="ExifDate" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_NameDigits}" Width="80" Binding="{Binding NameDigits}" SortMemberPath="NameDigits" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_PathDigits}" Width="80" Binding="{Binding PathDigits}" SortMemberPath="PathDigits" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_NameLength}" Width="80" Binding="{Binding NameLength}" SortMemberPath="NameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_NewNameLength}" Width="100" Binding="{Binding NewNameLength}" SortMemberPath="NewNameLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_PathLength}" Width="80" Binding="{Binding PathLength}" SortMemberPath="PathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_NewPathLength}" Width="100" Binding="{Binding NewPathLength}" SortMemberPath="NewPathLength" ElementStyle="{StaticResource RightAlignedCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="{DynamicResource Column_OldPath}" Width="200" Binding="{Binding OldPath}" SortMemberPath="OldPath" ElementStyle="{StaticResource CenteredCellText}" EditingElementStyle="{StaticResource CenteredEditingCellTextBox}" Visibility="Collapsed"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <ContentControl x:Name="win32FileListHost" Visibility="Collapsed"/>
+                        </Grid>
                     </DockPanel>
                 </Border>
             </Grid>
@@ -810,7 +848,7 @@
             <!-- 状态栏 -->
             <Border Grid.Row="4" Background="{StaticResource SurfaceBrush}" 
                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0"
-                    Height="32" Padding="16,0" CornerRadius="0,0,8,8"
+                    Height="28" Padding="12,0" CornerRadius="0,0,8,8"
                     MouseMove="StatusBar_MouseMove" MouseLeftButtonUp="StatusBar_Click">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -822,20 +860,20 @@
 
                     <TextBlock x:Name="tbStatusProgress" Grid.Column="0"
                                Text="{DynamicResource Status_Ready}" 
-                               VerticalAlignment="Center" FontSize="13"
+                               VerticalAlignment="Center" FontSize="12"
                                Foreground="{StaticResource TextSecondaryBrush}"/>
 
-                    <ProgressBar x:Name="pbProgress" Grid.Column="1" Height="14" Margin="8,0"
+                    <ProgressBar x:Name="pbProgress" Grid.Column="1" Height="12" Margin="8,0"
                                  VerticalAlignment="Center" Minimum="0" Maximum="100" Value="0"
                                  Visibility="Collapsed"/>
 
                     <TextBlock x:Name="tbStatusFiles" Grid.Column="2"
                                Text="{DynamicResource Status_FilesSummary}" 
-                               VerticalAlignment="Center" FontSize="13" Margin="8,0"
+                               VerticalAlignment="Center" FontSize="12" Margin="8,0"
                                Foreground="{StaticResource TextSecondaryBrush}"/>
 
                     <TextBlock x:Name="tbStatusInfo" Grid.Column="3"
-                               VerticalAlignment="Center" FontSize="13"
+                               VerticalAlignment="Center" FontSize="12"
                                Foreground="{StaticResource TextSecondaryBrush}"/>
                 </Grid>
             </Border>

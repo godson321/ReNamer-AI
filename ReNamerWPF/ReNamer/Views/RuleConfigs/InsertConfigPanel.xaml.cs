@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ReNamer.Rules;
 
 namespace ReNamer.Views.RuleConfigs;
@@ -38,6 +39,8 @@ public partial class InsertConfigPanel : UserControl, IRuleConfigPanel
             case InsertPositionType.ReplaceCurrentName: rbReplaceName.IsChecked = true; break;
         }
     }
+
+
 
     public void ApplyConfig()
     {

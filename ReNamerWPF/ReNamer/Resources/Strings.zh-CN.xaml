@@ -66,6 +66,7 @@
     <sys:String x:Key="Toolbar_AddFiles">添加文件</sys:String>
     <sys:String x:Key="Toolbar_AddFolders">添加文件夹</sys:String>
     <sys:String x:Key="Toolbar_Preview">预览</sys:String>
+    <sys:String x:Key="Toolbar_Refresh">刷新</sys:String>
     <sys:String x:Key="Toolbar_Rename">重命名</sys:String>
     <sys:String x:Key="Toolbar_Add">添加</sys:String>
     <sys:String x:Key="Toolbar_Remove">删除</sys:String>
@@ -173,6 +174,8 @@
     <sys:String x:Key="Rule_Strip">移除</sys:String>
     <sys:String x:Key="Rule_CleanUp">清理</sys:String>
     <sys:String x:Key="Rule_Transliterate">音译</sys:String>
+    <sys:String x:Key="Rule_ChineseConvert">简繁体</sys:String>
+    <sys:String x:Key="Rule_ChineseNumber">中文数字</sys:String>
     <sys:String x:Key="Rule_Rearrange">重排</sys:String>
     <sys:String x:Key="Rule_ReformatDate">日期格式化</sys:String>
     <sys:String x:Key="Rule_Randomize">随机化</sys:String>
@@ -473,6 +476,9 @@
     <!-- 状态 -->
     <sys:String x:Key="Status_Ready">就绪</sys:String>
     <sys:String x:Key="Status_Previewing">正在预览...</sys:String>
+    <sys:String x:Key="Status_PreviewCompleted">预览已刷新。</sys:String>
+    <sys:String x:Key="Status_PreviewRefreshNeeded_Order">文件顺序已调整，按 F5 刷新预览。</sys:String>
+    <sys:String x:Key="Status_PreviewRefreshNeeded_Marking">勾选状态已更新，按 F5 刷新预览。</sys:String>
     <sys:String x:Key="Status_Renaming">正在重命名...</sys:String>
     <sys:String x:Key="Status_FilesSummary">文件: {0} | 已标记: {1} | 已选择: {2}</sys:String>
 
@@ -503,6 +509,9 @@
     <sys:String x:Key="Settings_RememberWindowPos">记住窗口位置</sys:String>
     <sys:String x:Key="Settings_Language">语言:</sys:String>
     <sys:String x:Key="Settings_Theme">主题:</sys:String>
+    <sys:String x:Key="Settings_FileListEngine">文件列表引擎:</sys:String>
+    <sys:String x:Key="Settings_FileListEngine_Wpf">WPF DataGrid（默认）</sys:String>
+    <sys:String x:Key="Settings_FileListEngine_Win32">Win32 ListView（性能）</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">退出时确认</sys:String>
     <sys:String x:Key="Settings_ShowInTray">显示在系统托盘</sys:String>
     <sys:String x:Key="Msg_ConfirmExit">确定要退出程序吗？</sys:String>
@@ -510,6 +519,7 @@
     <sys:String x:Key="Tray_Exit">退出程序</sys:String>
     <sys:String x:Key="Settings_AutoPreviewRules">规则变更时自动预览</sys:String>
     <sys:String x:Key="Settings_AutoPreviewOnAdd">添加文件时自动预览</sys:String>
+    <sys:String x:Key="Rules_DragHint">可直接拖动规则调整顺序</sys:String>
     <sys:String x:Key="Settings_HighlightChanges">高亮已更改名称</sys:String>
     <sys:String x:Key="Settings_AutoValidate">自动校验新名称</sys:String>
     <sys:String x:Key="Settings_WarnInvalidChars">无效字符提示</sys:String>
@@ -521,6 +531,7 @@
     <sys:String x:Key="Settings_ConflictAddSuffix">自动添加数字后缀</sys:String>
     <sys:String x:Key="Settings_ConflictOverwrite">覆盖已有文件（危险）</sys:String>
     <sys:String x:Key="Settings_ResolveMetaTags">在插入/替换规则中解析元标签</sys:String>
+    <sys:String x:Key="Settings_EnableInputDebugLogging">启用输入调试日志（需重开设置生效）</sys:String>
     <sys:String x:Key="Language_Chinese">中文</sys:String>
     <sys:String x:Key="Language_English">English</sys:String>
     <sys:String x:Key="Theme_Light">浅色</sys:String>
@@ -578,6 +589,7 @@
     <!-- 规则配置通用 -->
     <sys:String x:Key="Config_RightToLeft">从右到左</sys:String>
     <sys:String x:Key="RuleCfg_SeparateItems">分隔多个项</sys:String>
+    <sys:String x:Key="RuleCfg_MultiItemModeHint">当前为多项模式：将按“|”分隔逐项处理</sys:String>
     <sys:String x:Key="RuleCfg_InsertMetaTag">插入元标签</sys:String>
 
     <!-- CleanUp -->
@@ -901,6 +913,26 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_HintTitle">提示：</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Hint">字母表由成对字母组成，以等号分隔，用于将非英文字符转换为对应的英文表示。</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_AutoCase">自动大小写调整</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ModeGroup">转换方向</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_Direction">转换模式</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_TraditionalToSimplified">繁体 -> 简体</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_SimplifiedToTraditional">简体 -> 繁体</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ApplyScope">应用范围</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ExtensionHint">默认只转换主文件名，不处理扩展名。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_EngineGroup">执行方式</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_EngineHint">该规则走内置 C# 快速通道，直接复用 Scripts 目录中的简繁体映射数据。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_CompatHint">如果需要自定义词典或更复杂的脚本逻辑，仍可继续使用 JavaScript 规则。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ModeGroup">识别模式</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Mode">转换策略</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Strict">严格模式</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_StrictHint">只处理无歧义表达，例如：十二、一百零二、二零二四、第三〇一话。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Loose">宽松模式</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_LooseHint">额外支持口语或旧写法，例如：一万二、两千三、廿一、卅二。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ApplyScope">应用范围</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ExtensionHint">默认只转换主文件名，不处理扩展名。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_RecognitionGroup">识别说明</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ExamplesHint">支持简体、繁体与大写数字混用，可处理卷、章、话、年月日和连续数字串。</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_BoundaryHint">默认会跳过“百分之 / 分之 / 十来 / 几十”这类容易歧义的表达，优先保证批量改名稳定。</sys:String>
 
     <sys:String x:Key="RuleCfg_UserInput_Instruction">在此输入新文件名（每行一个）：</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InputGroup">输入内容</sys:String>

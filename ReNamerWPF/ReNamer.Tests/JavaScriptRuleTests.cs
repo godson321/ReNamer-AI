@@ -62,4 +62,26 @@ public class JavaScriptRuleTests
         var result = rule.Execute("original.txt", MakeFile("original.txt"));
         Assert.Equal("original.txt", result);
     }
+
+    [Fact]
+    public void JavaScript_WithoutCounter_AllowsParallelPreview()
+    {
+        var rule = new JavaScriptRule
+        {
+            ScriptText = "Result = UpperCase(Name);"
+        };
+
+        Assert.True(rule.CanParallelizePreview);
+    }
+
+    [Fact]
+    public void JavaScript_WithCounter_DisablesParallelPreview()
+    {
+        var rule = new JavaScriptRule
+        {
+            ScriptText = "Result = Name + '_' + Counter;"
+        };
+
+        Assert.False(rule.CanParallelizePreview);
+    }
 }

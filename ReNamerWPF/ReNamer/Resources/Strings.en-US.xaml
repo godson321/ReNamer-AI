@@ -66,6 +66,7 @@
     <sys:String x:Key="Toolbar_AddFiles">Add Files</sys:String>
     <sys:String x:Key="Toolbar_AddFolders">Add Folders</sys:String>
     <sys:String x:Key="Toolbar_Preview">Preview</sys:String>
+    <sys:String x:Key="Toolbar_Refresh">Refresh</sys:String>
     <sys:String x:Key="Toolbar_Rename">Rename</sys:String>
     <sys:String x:Key="Toolbar_Add">Add</sys:String>
     <sys:String x:Key="Toolbar_Remove">Remove</sys:String>
@@ -173,6 +174,8 @@
     <sys:String x:Key="Rule_Strip">Remove</sys:String>
     <sys:String x:Key="Rule_CleanUp">CleanUp</sys:String>
     <sys:String x:Key="Rule_Transliterate">Transliterate</sys:String>
+    <sys:String x:Key="Rule_ChineseConvert">Chinese Convert</sys:String>
+    <sys:String x:Key="Rule_ChineseNumber">Chinese Number</sys:String>
     <sys:String x:Key="Rule_Rearrange">Rearrange</sys:String>
     <sys:String x:Key="Rule_ReformatDate">Reformat Date</sys:String>
     <sys:String x:Key="Rule_Randomize">Randomize</sys:String>
@@ -473,6 +476,9 @@
     <!-- Status -->
     <sys:String x:Key="Status_Ready">Ready</sys:String>
     <sys:String x:Key="Status_Previewing">Previewing...</sys:String>
+    <sys:String x:Key="Status_PreviewCompleted">Preview refreshed.</sys:String>
+    <sys:String x:Key="Status_PreviewRefreshNeeded_Order">File order changed. Press F5 to refresh preview.</sys:String>
+    <sys:String x:Key="Status_PreviewRefreshNeeded_Marking">Marking changed. Press F5 to refresh preview.</sys:String>
     <sys:String x:Key="Status_Renaming">Renaming...</sys:String>
     <sys:String x:Key="Status_FilesSummary">Files: {0} | Marked: {1} | Selected: {2}</sys:String>
 
@@ -503,6 +509,9 @@
     <sys:String x:Key="Settings_RememberWindowPos">Remember window position</sys:String>
     <sys:String x:Key="Settings_Language">Language:</sys:String>
     <sys:String x:Key="Settings_Theme">Theme:</sys:String>
+    <sys:String x:Key="Settings_FileListEngine">File list engine:</sys:String>
+    <sys:String x:Key="Settings_FileListEngine_Wpf">WPF DataGrid (default)</sys:String>
+    <sys:String x:Key="Settings_FileListEngine_Win32">Win32 ListView (performance)</sys:String>
     <sys:String x:Key="Settings_ConfirmExit">Confirm on exit</sys:String>
     <sys:String x:Key="Settings_ShowInTray">Show in system tray</sys:String>
     <sys:String x:Key="Msg_ConfirmExit">Are you sure you want to exit?</sys:String>
@@ -510,6 +519,7 @@
     <sys:String x:Key="Tray_Exit">Exit</sys:String>
     <sys:String x:Key="Settings_AutoPreviewRules">Auto-preview when rules change</sys:String>
     <sys:String x:Key="Settings_AutoPreviewOnAdd">Auto-preview when files are added</sys:String>
+    <sys:String x:Key="Rules_DragHint">Drag rules to reorder</sys:String>
     <sys:String x:Key="Settings_HighlightChanges">Highlight changed names</sys:String>
     <sys:String x:Key="Settings_AutoValidate">Auto-validate new names</sys:String>
     <sys:String x:Key="Settings_WarnInvalidChars">Warn about invalid characters</sys:String>
@@ -521,6 +531,7 @@
     <sys:String x:Key="Settings_ConflictAddSuffix">Auto-add numeric suffix</sys:String>
     <sys:String x:Key="Settings_ConflictOverwrite">Overwrite existing files (dangerous)</sys:String>
     <sys:String x:Key="Settings_ResolveMetaTags">Resolve meta tags in Insert/Replace rules</sys:String>
+    <sys:String x:Key="Settings_EnableInputDebugLogging">Enable input debug logging (applies after closing settings)</sys:String>
     <sys:String x:Key="Language_Chinese">Chinese</sys:String>
     <sys:String x:Key="Language_English">English</sys:String>
     <sys:String x:Key="Theme_Light">Light</sys:String>
@@ -578,6 +589,7 @@
     <!-- Rule Config Shared -->
     <sys:String x:Key="Config_RightToLeft">Right-to-left</sys:String>
     <sys:String x:Key="RuleCfg_SeparateItems">Separate multiple items</sys:String>
+    <sys:String x:Key="RuleCfg_MultiItemModeHint">Multi-item mode: process each item separated by "|"</sys:String>
     <sys:String x:Key="RuleCfg_InsertMetaTag">Insert Meta Tag</sys:String>
 
     <!-- CleanUp -->
@@ -902,6 +914,26 @@ Result = Name.toUpperCase() + '_' + Counter;</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_HintTitle">Hint:</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_Hint">Alphabet is a set of couples represented by letters and separated with an equal sign; they stand for translation of non-english characters to their english representation.</sys:String>
     <sys:String x:Key="RuleCfg_Transliterate_AutoCase">Auto case adjustment</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ModeGroup">Direction</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_Direction">Conversion mode</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_TraditionalToSimplified">Traditional -> Simplified</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_SimplifiedToTraditional">Simplified -> Traditional</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ApplyScope">Apply scope</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_ExtensionHint">By default only the base file name is converted and the extension is left unchanged.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_EngineGroup">Engine</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_EngineHint">This rule uses a native C# fast path and reuses the Simplified/Traditional mapping data from the Scripts folder.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseConvert_CompatHint">Keep using the JavaScript rule when you need custom dictionaries or more complex scripted logic.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ModeGroup">Recognition mode</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Mode">Conversion strategy</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Strict">Strict mode</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_StrictHint">Only converts unambiguous forms such as 12, 102, 2024, and chapter labels like 301.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_Loose">Loose mode</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_LooseHint">Also accepts colloquial and legacy forms such as 12000, 2300, 21, and 32-style inputs.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ApplyScope">Apply scope</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ExtensionHint">By default only the base file name is converted and the extension is left unchanged.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_RecognitionGroup">Recognition notes</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_ExamplesHint">Supports Simplified, Traditional, and financial numerals, including chapter labels, dates, and digit-like sequences.</sys:String>
+    <sys:String x:Key="RuleCfg_ChineseNumber_BoundaryHint">Ambiguous patterns such as percentages, fractions, and fuzzy counts are skipped by default to keep batch renaming stable.</sys:String>
 
     <sys:String x:Key="RuleCfg_UserInput_Instruction">Type your new filenames here (one per line):</sys:String>
     <sys:String x:Key="RuleCfg_UserInput_InputGroup">Input</sys:String>

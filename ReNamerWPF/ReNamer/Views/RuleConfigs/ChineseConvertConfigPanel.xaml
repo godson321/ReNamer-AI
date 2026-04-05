@@ -1,0 +1,88 @@
+<UserControl x:Class="ReNamer.Views.RuleConfigs.ChineseConvertConfigPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignWidth="520"
+             d:DesignHeight="320"
+             mc:Ignorable="d"
+             MinWidth="0"
+             MinHeight="0"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True"
+             HorizontalAlignment="Stretch"
+             Background="{DynamicResource CardBrush}">
+    <Grid Margin="6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="{DynamicResource RuleCfg_ChineseConvert_ModeGroup}" Margin="0,0,0,8">
+            <Grid Margin="6,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="118"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="{DynamicResource RuleCfg_ChineseConvert_Direction}"
+                           Style="{DynamicResource FormLabelStyle}"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2">
+                    <RadioButton x:Name="rbTraditionalToSimplified"
+                                 Content="{DynamicResource RuleCfg_ChineseConvert_TraditionalToSimplified}"
+                                 GroupName="ChineseConvertDirection"
+                                 IsChecked="True"
+                                 VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rbSimplifiedToTraditional"
+                                 Content="{DynamicResource RuleCfg_ChineseConvert_SimplifiedToTraditional}"
+                                 GroupName="ChineseConvertDirection"
+                                 Margin="0,6,0,0"
+                                 VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,0,0,8">
+            <Grid Margin="6,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="118"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="{DynamicResource RuleCfg_ChineseConvert_ApplyScope}"
+                           Style="{DynamicResource FormLabelStyle}"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2">
+                    <CheckBox x:Name="chkSkipExtension"
+                              Content="{DynamicResource Config_SkipExtension}"
+                              IsChecked="True"
+                              VerticalContentAlignment="Center"/>
+                    <TextBlock Margin="22,4,0,0"
+                               Text="{DynamicResource RuleCfg_ChineseConvert_ExtensionHint}"
+                               TextWrapping="Wrap"
+                               Style="{DynamicResource DialogHintText}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_ChineseConvert_EngineGroup}">
+            <StackPanel Margin="6,4">
+                <TextBlock Text="{DynamicResource RuleCfg_ChineseConvert_EngineHint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+                <TextBlock Margin="0,6,0,0"
+                           Text="{DynamicResource RuleCfg_ChineseConvert_CompatHint}"
+                           TextWrapping="Wrap"
+                           Style="{DynamicResource DialogHintText}"/>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

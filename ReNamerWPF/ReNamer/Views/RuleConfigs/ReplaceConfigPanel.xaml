@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -86,7 +87,14 @@
             </Button>
         </Grid>
 
-        <GroupBox Grid.Row="2" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,8,0,0">
+        <TextBlock x:Name="txtMultiReplaceHint"
+                   Grid.Row="2"
+                   Margin="126,6,0,0"
+                   Text="{DynamicResource RuleCfg_MultiItemModeHint}"
+                   Style="{DynamicResource DialogHintText}"
+                   Visibility="Collapsed"/>
+
+        <GroupBox Grid.Row="3" Header="{DynamicResource RuleCfg_Section_Options}" Margin="0,8,0,0">
             <Grid Margin="6,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="118"/>

@@ -382,19 +382,20 @@ public class RearrangeRule : RuleBase
             Array.Reverse(parts);
         }
 
-        var result = NewPattern;
-        // Replace $-N references (from end)
-        for (int i = 1; i <= parts.Length; i++)
+        var result = Regex.Replace(NewPattern, @"\$(-?\d+)", m =>
         {
-            result = result.Replace($"$-{i}", i <= parts.Length ? parts[parts.Length - i] : "");
-        }
-        // Replace $N references
-        for (int i = 1; i <= parts.Length; i++)
-        {
-            result = result.Replace($"${i}", parts[i - 1]);
-        }
-        // $0 = original name
-        result = result.Replace("$0", baseName);
+            if (!int.TryParse(m.Groups[1].Value, out var index))
+                return m.Value;
+
+            if (index == 0)
+                return baseName;
+
+            if (index > 0)
+                return index <= parts.Length ? parts[index - 1] : "";
+
+            var fromEnd = -index;
+            return fromEnd <= parts.Length ? parts[parts.Length - fromEnd] : "";
+        });
 
         result = RuleHelpers.ResolveMetaTags(result, file);
         return result + ext;
@@ -403,12 +404,11 @@ public class RearrangeRule : RuleBase
     private string[] SplitByDelimiters(string input)
     {
         if (string.IsNullOrEmpty(Delimiters)) return new[] { input };
-        // Each char in Delimiters string acts as a delimiter
-        var delims = Delimiters.Split('|');
-        if (delims.Length == 1 && Delimiters.Length > 0)
-        {
-            return input.Split(new[] { Delimiters }, StringSplitOptions.None);
-        }
+        var delims = RuleHelpers.SplitUnescaped(Delimiters)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .ToArray();
+        if (delims.Length == 0) return new[] { input };
+        if (delims.Length == 1) return input.Split(new[] { delims[0] }, StringSplitOptions.None);
         return input.Split(delims, StringSplitOptions.None);
     }
 
@@ -540,7 +540,7 @@ public class ReformatDateRule : RuleBase
 // ═══════════════════════════════════════════════════════════════
 // RandomizeRule - 随机字符串
 // ═══════════════════════════════════════════════════════════════
-public class RandomizeRule : RuleBase, IStatefulRule
+public class RandomizeRule : RuleBase, IStatefulRule, IPreviewParallelRule
 {
     public int Length { get; set; } = 8;
     public bool Unique { get; set; } = true;
@@ -552,11 +552,11 @@ public class RandomizeRule : RuleBase, IStatefulRule
     public int PositionValue { get; set; } = 1;
     public bool SkipExtension { get; set; } = true;
 
-    private static readonly Random _rng = new();
     private readonly HashSet<string> _usedStrings = new();
 
     public override string RuleName => "Randomize";
     public override string Description => $"Random {Length} chars ({InsertWhere})";
+    public bool CanParallelizePreview => !Unique;
 
     public void Reset() => _usedStrings.Clear();
 
@@ -574,7 +574,8 @@ public class RandomizeRule : RuleBase, IStatefulRule
             maxAttempts--;
         } while (Unique && _usedStrings.Contains(rand) && maxAttempts > 0);
 
-        _usedStrings.Add(rand);
+        if (Unique)
+            _usedStrings.Add(rand);
 
         var result = InsertWhere switch
         {
@@ -602,7 +603,7 @@ public class RandomizeRule : RuleBase, IStatefulRule
     {
         var sb = new StringBuilder(length);
         for (int i = 0; i < length; i++)
-            sb.Append(charset[_rng.Next(charset.Length)]);
+            sb.Append(charset[Random.Shared.Next(charset.Length)]);
         return sb.ToString();
     }
 }
@@ -661,7 +662,7 @@ public enum UserInputMode { Replace, InsertBefore, InsertAfter }
 // ═══════════════════════════════════════════════════════════════
 // MappingRule - 映射表重命名
 // ═══════════════════════════════════════════════════════════════
-public class MappingRule : RuleBase, IStatefulRule
+public class MappingRule : RuleBase, IStatefulRule, IPreviewParallelRule
 {
     public List<MappingEntry> Mappings { get; set; } = new();
     public bool AllowReuse { get; set; } = false;
@@ -674,6 +675,7 @@ public class MappingRule : RuleBase, IStatefulRule
 
     public override string RuleName => "Mapping";
     public override string Description => $"Mapping ({Mappings.Count} entries)";
+    public bool CanParallelizePreview => AllowReuse;
 
     public void Reset() => _usedMappings.Clear();
 
@@ -681,10 +683,11 @@ public class MappingRule : RuleBase, IStatefulRule
     {
         var (baseName, ext) = SplitFileName(fileName, SkipExtension, file.IsFolder);
         var cmp = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        bool trackUsedMappings = !AllowReuse;
 
         for (int i = 0; i < Mappings.Count; i++)
         {
-            if (!AllowReuse && _usedMappings.Contains(i)) continue;
+            if (trackUsedMappings && _usedMappings.Contains(i)) continue;
 
             var mapping = Mappings[i];
             var match = InverseMapping ? mapping.NewName : mapping.Match;
@@ -697,8 +700,11 @@ public class MappingRule : RuleBase, IStatefulRule
                 if (baseName.Contains(match, cmp))
                 {
                     baseName = baseName.Replace(match, replace, cmp);
-                    _usedMappings.Add(i);
-                    if (!AllowReuse) break;
+                    if (trackUsedMappings)
+                    {
+                        _usedMappings.Add(i);
+                        break;
+                    }
                 }
             }
             else
@@ -706,7 +712,8 @@ public class MappingRule : RuleBase, IStatefulRule
                 if (string.Equals(baseName, match, cmp))
                 {
                     baseName = replace;
-                    _usedMappings.Add(i);
+                    if (trackUsedMappings)
+                        _usedMappings.Add(i);
                     break;
                 }
             }

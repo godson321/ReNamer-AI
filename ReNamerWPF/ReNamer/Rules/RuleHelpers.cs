@@ -90,11 +90,12 @@ public static class RuleHelpers
     /// 执行通配符替换
     /// </summary>
     public static string ReplaceWildcard(string input, string findPattern, string replacePattern,
-        ReplaceOccurrence occurrence)
+        ReplaceOccurrence occurrence, bool caseSensitive)
     {
         var regexPattern = WildcardToRegex(findPattern, supportBackreferences: true);
         var regexReplace = ConvertWildcardReplace(replacePattern);
-        var regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
+        var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+        var regex = new Regex(regexPattern, options);
 
         return occurrence switch
         {
@@ -129,8 +130,14 @@ public static class RuleHelpers
     /// </summary>
     public static string RemoveWildcard(string input, string findPattern, RemoveOccurrence occurrence)
     {
+        return RemoveWildcard(input, findPattern, occurrence, caseSensitive: false);
+    }
+
+    public static string RemoveWildcard(string input, string findPattern, RemoveOccurrence occurrence, bool caseSensitive)
+    {
         var regexPattern = WildcardToRegex(findPattern, supportBackreferences: false);
-        var regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
+        var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+        var regex = new Regex(regexPattern, options);
 
         return occurrence switch
         {
@@ -159,6 +166,110 @@ public static class RuleHelpers
     {
         // $n 在正则替换中本身就是 $n，直接使用
         return pattern;
+    }
+
+    public static bool ContainsUnescapedSeparator(string input, char separator = '|')
+    {
+        if (string.IsNullOrEmpty(input))
+            return false;
+
+        bool escaped = false;
+        foreach (var c in input)
+        {
+            if (escaped)
+            {
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+
+            if (c == separator)
+                return true;
+        }
+
+        return false;
+    }
+
+    public static string[] SplitUnescaped(string input, char separator = '|')
+    {
+        if (input == null)
+            return Array.Empty<string>();
+
+        var parts = new System.Collections.Generic.List<string>();
+        var sb = new StringBuilder();
+        bool escaped = false;
+
+        foreach (var c in input)
+        {
+            if (escaped)
+            {
+                if (c != separator && c != '\\')
+                    sb.Append('\\');
+                sb.Append(c);
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+
+            if (c == separator)
+            {
+                parts.Add(sb.ToString());
+                sb.Clear();
+                continue;
+            }
+
+            sb.Append(c);
+        }
+
+        if (escaped)
+            sb.Append('\\');
+
+        parts.Add(sb.ToString());
+        return parts.ToArray();
+    }
+
+    public static string UnescapeSeparatorEscapes(string input, char separator = '|')
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        var sb = new StringBuilder();
+        bool escaped = false;
+
+        foreach (var c in input)
+        {
+            if (escaped)
+            {
+                if (c != separator && c != '\\')
+                    sb.Append('\\');
+                sb.Append(c);
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+
+            sb.Append(c);
+        }
+
+        if (escaped)
+            sb.Append('\\');
+
+        return sb.ToString();
     }
 
     /// <summary>

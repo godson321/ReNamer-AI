@@ -19,6 +19,7 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
     {
         InitializeComponent();
         _rule = rule;
+        txtRemovePattern.TextChanged += (_, _) => UpdateMultiHint();
         LoadConfig();
     }
 
@@ -95,6 +96,7 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
             tabDeleteMode.SelectedIndex = DetermineInitialTab();
 
             UpdatePositionInputState();
+            UpdateMultiHint();
         }
         finally
         {
@@ -336,6 +338,13 @@ public partial class DeleteConfigPanel : UserControl, IRuleConfigPanel
         // 预设选项变化时更新文本框显示
         if (HasNonCustomPresetSelection())
             txtRemovePattern.Text = BuildPresetDisplayText();
+    }
+
+    private void UpdateMultiHint()
+    {
+        txtMultiRemoveHint.Visibility = RuleHelpers.ContainsUnescapedSeparator(txtRemovePattern.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private bool HasNonCustomPresetSelection()

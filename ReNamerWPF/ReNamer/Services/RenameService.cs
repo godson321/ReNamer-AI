@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using ReNamer.Models;
 using ReNamer.Rules;
 
@@ -14,6 +18,11 @@ namespace ReNamer.Services;
 /// </summary>
 public class RenameService
 {
+    private const int ParallelPreviewThreshold = 512;
+    private static readonly int ParallelPreviewDegree = Math.Clamp(Environment.ProcessorCount, 2, 8);
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> StringPropertyCache = new();
+    private readonly record struct PreviewRuleSegment(IRule[] Rules, bool CanParallelize);
+
     /// <summary>
     /// 预览 - 应用所有规则计算新文件名
     /// </summary>
@@ -21,7 +30,7 @@ public class RenameService
     {
         var previewResults = ComputePreview(files, rules, progress);
         foreach (var (file, newName) in previewResults)
-            file.NewName = newName;
+            file.ApplyPreviewName(newName);
     }
 
     public List<(RenFile file, string newName)> ComputePreview(
@@ -30,9 +39,12 @@ public class RenameService
         Action<int, int>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        var ruleList = rules.ToList();
+        var ruleList = rules.Where(r => r.IsEnabled).ToList();
         var fileList = files.ToList();
         var previewResults = new List<(RenFile file, string newName)>(fileList.Count);
+        if (fileList.Count == 0)
+            return previewResults;
+        var engineSw = Stopwatch.StartNew();
 
         RuleHelpers.ResetMetaTagCounter();
 
@@ -47,32 +59,233 @@ public class RenameService
                 statefulRule.Reset();
         }
 
-        int index = 0;
         int total = fileList.Count;
-        foreach (var file in fileList)
+        int progressStep = Math.Max(1, total / 100);
+        if (ruleList.Count == 0)
         {
-            if (cancellationToken.IsCancellationRequested)
-                return previewResults;
-
-            // 从原始名称开始
-            var currentName = file.OriginalName;
-
-            // 依次应用每个启用的规则
-            foreach (var rule in ruleList)
+            for (int i = 0; i < total; i++)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    return previewResults;
-
-                if (rule.IsEnabled)
-                    currentName = rule.Execute(currentName, file);
+                previewResults.Add((fileList[i], fileList[i].OriginalName));
+                int cur = i + 1;
+                if (progress != null && (cur == 1 || cur == total || cur % progressStep == 0))
+                    progress(cur, total);
             }
 
-            previewResults.Add((file, currentName));
-            index++;
-            progress?.Invoke(index, total);
+            engineSw.Stop();
+            LogPreviewDebug($"[PreviewEngine] end mode=serial reason=no-rules files={total} results={previewResults.Count} elapsedMs={engineSw.ElapsedMilliseconds}");
+            return previewResults;
         }
 
+        bool allowParallel = total >= ParallelPreviewThreshold;
+        var segments = BuildPreviewSegments(ruleList, allowParallel);
+        int parallelSegmentCount = segments.Count(s => s.CanParallelize);
+        int serialSegmentCount = segments.Count - parallelSegmentCount;
+        var mode = parallelSegmentCount == 0
+            ? "serial"
+            : serialSegmentCount == 0
+                ? "parallel"
+                : "hybrid";
+        var reason = parallelSegmentCount == 0
+            ? total < ParallelPreviewThreshold
+                ? $"below-threshold({total}<{ParallelPreviewThreshold})"
+                : "no-parallel-segment"
+            : serialSegmentCount == 0
+                ? "all-rules-parallelizable"
+                : "segmented";
+        LogPreviewDebug($"[PreviewEngine] start mode={mode} reason={reason} files={total} rules={ruleList.Count} segments={segments.Count} parallelSegments={parallelSegmentCount} serialSegments={serialSegmentCount} degree={ParallelPreviewDegree}");
+
+        var currentNames = fileList.Select(static file => file.OriginalName).ToArray();
+        int processed = 0;
+
+        try
+        {
+            for (int segmentIndex = 0; segmentIndex < segments.Count; segmentIndex++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var segment = segments[segmentIndex];
+                bool reportProgress = segmentIndex == segments.Count - 1;
+                if (segment.CanParallelize)
+                {
+                    Parallel.For(
+                        0,
+                        total,
+                        new ParallelOptions
+                        {
+                            CancellationToken = cancellationToken,
+                            MaxDegreeOfParallelism = ParallelPreviewDegree
+                        },
+                        i =>
+                        {
+                            var currentName = currentNames[i];
+                            var file = fileList[i];
+                            foreach (var rule in segment.Rules)
+                                currentName = rule.Execute(currentName, file);
+
+                            currentNames[i] = currentName;
+
+                            if (!reportProgress)
+                                return;
+
+                            int cur = Interlocked.Increment(ref processed);
+                            if (progress != null && (cur == 1 || cur == total || cur % progressStep == 0))
+                                progress(cur, total);
+                        });
+                }
+                else
+                {
+                    for (int i = 0; i < total; i++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        var currentName = currentNames[i];
+                        var file = fileList[i];
+                        foreach (var rule in segment.Rules)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            currentName = rule.Execute(currentName, file);
+                        }
+
+                        currentNames[i] = currentName;
+
+                        if (!reportProgress)
+                            continue;
+
+                        processed++;
+                        if (progress != null && (processed == 1 || processed == total || processed % progressStep == 0))
+                            progress(processed, total);
+                    }
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                engineSw.Stop();
+                LogPreviewDebug($"[PreviewEngine] canceled mode={mode} files={total} results={previewResults.Count} elapsedMs={engineSw.ElapsedMilliseconds}");
+                return previewResults;
+            }
+        }
+
+        for (int i = 0; i < total; i++)
+            previewResults.Add((fileList[i], currentNames[i]));
+
+        engineSw.Stop();
+        LogPreviewDebug($"[PreviewEngine] end mode={mode} files={total} results={previewResults.Count} elapsedMs={engineSw.ElapsedMilliseconds}");
         return previewResults;
+    }
+
+    private static bool CanParallelizePreview(IReadOnlyList<IRule> rules)
+    {
+        foreach (var rule in rules)
+        {
+            if (!CanRuleParallelizePreview(rule))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static List<PreviewRuleSegment> BuildPreviewSegments(IReadOnlyList<IRule> rules, bool allowParallel)
+    {
+        var segments = new List<PreviewRuleSegment>();
+        if (rules.Count == 0)
+            return segments;
+
+        var currentRules = new List<IRule>();
+        bool currentParallel = false;
+        bool hasCurrent = false;
+
+        foreach (var rule in rules)
+        {
+            bool ruleParallel = allowParallel && CanRuleParallelizePreview(rule);
+            if (!hasCurrent)
+            {
+                currentParallel = ruleParallel;
+                hasCurrent = true;
+            }
+            else if (currentParallel != ruleParallel)
+            {
+                segments.Add(new PreviewRuleSegment(currentRules.ToArray(), currentParallel));
+                currentRules.Clear();
+                currentParallel = ruleParallel;
+            }
+
+            currentRules.Add(rule);
+        }
+
+        if (currentRules.Count > 0)
+            segments.Add(new PreviewRuleSegment(currentRules.ToArray(), currentParallel));
+
+        return segments;
+    }
+
+    private static bool CanRuleParallelizePreview(IRule rule)
+    {
+        if (UsesCounterMetaTag(rule))
+            return false;
+
+        return rule switch
+        {
+            IPreviewParallelRule previewRule => previewRule.CanParallelizePreview,
+            IStatefulRule => false,
+            _ => true
+        };
+    }
+
+    private static bool UsesCounterMetaTag(IRule rule)
+    {
+        if (rule is JavaScriptRule javaScriptRule && !javaScriptRule.EnableMetaTags)
+            return false;
+
+        var props = StringPropertyCache.GetOrAdd(
+            rule.GetType(),
+            t => t
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead
+                            && p.GetIndexParameters().Length == 0
+                            && p.PropertyType == typeof(string))
+                .ToArray());
+
+        foreach (var prop in props)
+        {
+            string? value;
+            try
+            {
+                value = prop.GetValue(rule) as string;
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (string.IsNullOrEmpty(value))
+                continue;
+
+            if (value.IndexOf("{:Counter:}", StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static void LogPreviewDebug(string message)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            Debug.WriteLine(message);
+            return;
+        }
+
+        try
+        {
+            ReNamer.App.LogInputDebug(message);
+        }
+        catch
+        {
+            Debug.WriteLine(message);
+        }
     }
 
     /// <summary>
@@ -101,7 +314,7 @@ public class RenameService
                 break;
             }
 
-            if (file.IsMarked && file.HasChanged && !file.IsRenamed)
+            if (file.IsMarked && file.HasChanged)
             {
                 var targetPath = Path.Combine(file.FolderPath, file.NewName);
                 var canRename = true;
@@ -247,7 +460,7 @@ public class RenameService
         int longPathThreshold = 260)
     {
         var errors = new List<string>();
-        var fileList = files.Where(f => !f.IsRenamed).ToList();
+        var fileList = files.ToList();
         var changedFiles = fileList.Where(f => f.HasChanged).ToList();
         var newNames = new Dictionary<string, List<RenFile>>(StringComparer.OrdinalIgnoreCase);
 

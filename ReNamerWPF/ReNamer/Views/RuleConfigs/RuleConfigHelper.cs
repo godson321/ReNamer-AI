@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ReNamer.Views.RuleConfigs;
 
@@ -9,15 +10,15 @@ namespace ReNamer.Views.RuleConfigs;
 /// </summary>
 public static class RuleConfigHelper
 {
+
     /// <summary>
     /// 在 TextBox 光标位置插入分隔符 "|"
     /// </summary>
     public static void InsertSeparator(TextBox target)
     {
         if (target == null) return;
-        var pos = target.CaretIndex;
-        target.Text = target.Text.Insert(pos, "|");
-        target.CaretIndex = pos + 1;
+        target.Text += "|";
+        target.CaretIndex = target.Text.Length;
         target.Focus();
     }
 
